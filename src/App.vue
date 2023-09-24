@@ -4,6 +4,10 @@ import {computed} from "vue";
 import {AuthRouteName} from "@/modules/auth/AuthRouter";
 import {MasterRouteName} from "@/modules/master/MasterRouter";
 import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
+import {useAuthStore} from "@/modules/auth/AuthStore";
+
+const authStore = useAuthStore()
+authStore.registerOnAuthStateChange()
 
 const router = useRouter()
 const hideNavBar = computed((): boolean => {
