@@ -1,4 +1,6 @@
 @import './base.css';
+@import "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;1,700&display=swap";
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
 
 #app {
   max-width: 1280px;
