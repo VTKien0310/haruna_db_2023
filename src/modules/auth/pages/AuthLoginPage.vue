@@ -9,16 +9,10 @@ const loginFormContent = reactive({
   password: '',
 });
 
-function emailHasBeenInput(): boolean {
-  return (loginFormContent.email && loginFormContent.email.length > 0) as boolean;
-}
-
-function passwordHasBeenInput(): boolean {
-  return (loginFormContent.password && loginFormContent.password.length > 0) as boolean;
-}
-
 const enableLoginButton = computed((): boolean => {
-  return emailHasBeenInput() && passwordHasBeenInput();
+  const emailHasBeenInput: boolean = (loginFormContent.email && loginFormContent.email.length > 0) as boolean;
+  const passwordHasBeenInput: boolean = (loginFormContent.password && loginFormContent.password.length > 0) as boolean;
+  return emailHasBeenInput && passwordHasBeenInput;
 });
 
 function handleLogin() {
@@ -28,12 +22,13 @@ function handleLogin() {
 
 <template>
   <div class="flex flex-col justify-center items-center content-center min-h-screen w-full">
-    <h1 class="branding-font">HARUNA</h1>
+    <h1 class="branding-font font-bold text-center text-4xl text-primary w-full">HARUNA</h1>
+
     <va-form
         ref="loginForm"
         tag="form"
         @submit.prevent="handleLogin"
-        class="flex flex-col justify-center items-center content-center w-2/3 sm:w-1/2 md:w-1/4"
+        class="flex flex-col justify-center items-center content-center w-2/3 sm:w-1/2 md:w-1/4 mt-8"
     >
 
       <va-input
@@ -53,7 +48,7 @@ function handleLogin() {
       <va-button
           :disabled="!enableLoginButton"
           type="submit"
-          class="mt-5 w-full"
+          class="mt-6 w-full"
       >
         Login
       </va-button>
