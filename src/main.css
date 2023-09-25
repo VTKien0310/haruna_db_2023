@@ -1,9 +1,31 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
 @import "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;1,700&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Oxygen+Mono&family=Pacifico&family=Roboto&family=Roboto+Slab&display=swap";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*font-family: 'Oxygen Mono', monospace;*/
+/*font-family: 'Pacifico', cursive;*/
+/*font-family: 'Roboto', sans-serif;*/
+/*font-family: 'Roboto Slab', serif;*/
+
+.branding-font {
+    font-family: 'Pacifico', cursive;
+}
+
+.title-font {
+    font-family: 'Oxygen Mono', monospace;
+}
+
+.sans-serif-font {
+    font-family: 'Roboto', sans-serif;
+}
+
+.serif-font {
+    font-family: 'Roboto Slab', serif;
+}
 
 html {
     box-sizing: border-box;

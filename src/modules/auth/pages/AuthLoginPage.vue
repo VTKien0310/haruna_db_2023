@@ -1,33 +1,34 @@
 <script setup lang="ts">
-import {useForm} from 'vuestic-ui'
-import {computed, reactive} from "vue";
+import {useForm} from 'vuestic-ui';
+import {computed, reactive} from 'vue';
 
-const {reset} = useForm('loginForm')
+const {reset} = useForm('loginForm');
 
 const loginFormContent = reactive({
   email: '',
-  password: ''
-})
+  password: '',
+});
 
 function emailHasBeenInput(): boolean {
-  return (loginFormContent.email && loginFormContent.email.length > 0) as boolean
+  return (loginFormContent.email && loginFormContent.email.length > 0) as boolean;
 }
 
 function passwordHasBeenInput(): boolean {
-  return (loginFormContent.password && loginFormContent.password.length > 0) as boolean
+  return (loginFormContent.password && loginFormContent.password.length > 0) as boolean;
 }
 
 const enableLoginButton = computed((): boolean => {
-  return emailHasBeenInput() && passwordHasBeenInput()
-})
+  return emailHasBeenInput() && passwordHasBeenInput();
+});
 
 function handleLogin() {
-  reset()
+  reset();
 }
 </script>
 
 <template>
   <div class="flex flex-col justify-center items-center content-center min-h-screen w-full">
+    <h1 class="branding-font">HARUNA</h1>
     <va-form
         ref="loginForm"
         tag="form"
