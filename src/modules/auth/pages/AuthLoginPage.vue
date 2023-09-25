@@ -32,7 +32,7 @@ function handleLogin() {
         ref="loginForm"
         tag="form"
         @submit.prevent="handleLogin"
-        class="flex flex-col justify-center items-center content-center w-2/3 sm:w-1/2 md:w-1/3"
+        class="flex flex-col justify-center items-center content-center w-2/3 sm:w-1/2 md:w-1/4"
     >
 
       <va-input
