@@ -8,7 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
     async function registerOnAuthStateChange(): Promise<void> {
         supabasePort.auth.onAuthStateChange(
             (event: AuthChangeEvent, session: Session | null) => {
-                const isNotAuthenticated: boolean = !session;
+                const isNotAuthenticated: boolean = !(session?.user);
 
                 if (isNotAuthenticated) {
                     router.push({
