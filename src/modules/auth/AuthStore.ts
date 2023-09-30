@@ -3,8 +3,13 @@ import {supabasePort} from "@/ports/supabase/SupabasePort";
 import type {AuthChangeEvent, Session, User} from "@supabase/supabase-js";
 import router from "@/router";
 import {AuthRouteName} from "@/modules/auth/AuthRouter";
+import type {AuthCredential} from "@/modules/auth/AuthTypes";
+import {useToast} from "vuestic-ui";
+import {MasterRouteName} from "@/modules/master/MasterRouter";
 
 export const useAuthStore = defineStore('auth', () => {
+    const {init} = useToast();
+
     async function registerOnAuthStateChange(): Promise<void> {
         supabasePort.auth.onAuthStateChange(
             (event: AuthChangeEvent, session: Session | null) => {
@@ -20,9 +25,9 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     async function me(): Promise<User | null> {
-        const {data} = await supabasePort.auth.getUser();
+        const {data: {user}} = await supabasePort.auth.getUser();
 
-        return data.user
+        return user
     }
 
     async function isCurrentlyAuthenticated(): Promise<boolean> {
@@ -31,9 +36,37 @@ export const useAuthStore = defineStore('auth', () => {
         return session != null;
     }
 
+    async function signIn(credential: AuthCredential): Promise<boolean> {
+        const {data, error} = await supabasePort.auth.signInWithPassword(credential)
+
+        if (error) {
+            init({message: 'Login failed', color: 'danger'})
+            return false;
+        }
+
+        router.push({
+            name: MasterRouteName.MASTER
+        });
+
+        return true;
+    }
+
+    async function signOut(): Promise<boolean> {
+        const {error} = await supabasePort.auth.signOut()
+
+        if (error) {
+            init({message: 'Logout failed', color: 'danger'})
+            return false;
+        }
+
+        return true;
+    }
+
     return {
         registerOnAuthStateChange,
         me,
-        isCurrentlyAuthenticated
+        isCurrentlyAuthenticated,
+        signIn,
+        signOut
     }
 })

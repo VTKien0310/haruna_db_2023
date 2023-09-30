@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import {useForm} from 'vuestic-ui';
-import {computed, reactive} from 'vue';
+import {computed, reactive, ref} from 'vue';
+import {useAuthStore} from "@/modules/auth/AuthStore";
+import type {AuthCredential} from "@/modules/auth/AuthTypes";
 
 const {reset} = useForm('loginForm');
 
-const loginFormContent = reactive({
+const authStore = useAuthStore();
+
+const loginFormContent = reactive<AuthCredential>({
   email: '',
   password: '',
 });
@@ -15,8 +19,16 @@ const enableLoginButton = computed((): boolean => {
   return emailHasBeenInput && passwordHasBeenInput;
 });
 
+const isHandlingLogin = ref<boolean>(false);
+
 function handleLogin() {
-  reset();
+  isHandlingLogin.value = true;
+  authStore.signIn(loginFormContent).then((isSuccess: boolean) => {
+    isHandlingLogin.value = false;
+    if (isSuccess) {
+      reset();
+    }
+  });
 }
 </script>
 
@@ -47,6 +59,8 @@ function handleLogin() {
 
       <va-button
           :disabled="!enableLoginButton"
+          :loading="isHandlingLogin"
+          round
           type="submit"
           class="mt-6 w-full"
       >
