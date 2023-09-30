@@ -40,7 +40,7 @@ function handleLogin() {
         ref="loginForm"
         tag="form"
         @submit.prevent="handleLogin"
-        class="flex flex-col justify-center items-center content-center w-2/3 sm:w-1/2 md:w-1/4 mt-8"
+        class="flex flex-col justify-center items-center content-center w-2/3 sm:w-1/2 md:w-1/4 mt-12"
     >
 
       <va-input
@@ -60,8 +60,9 @@ function handleLogin() {
       <va-button
           :disabled="!enableLoginButton"
           :loading="isHandlingLogin"
-          round
           type="submit"
+          round
+          gradient
           class="mt-6 w-full"
       >
         Login

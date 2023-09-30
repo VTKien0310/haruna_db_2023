@@ -16,7 +16,9 @@ const hideNavBar = computed((): boolean => {
 </script>
 
 <template>
-  <router-view/>
+  <keep-alive>
+    <router-view/>
+  </keep-alive>
   <va-app-bar
       v-if="!hideNavBar"
       bottom
