@@ -3,7 +3,11 @@
 </script>
 
 <template>
-  <router-view/>
+<va-button
+    round
+    size="large"
+    icon="upload"
+/>
 </template>
 
 <style scoped>

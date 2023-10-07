@@ -16,9 +16,11 @@ const hideNavBar = computed((): boolean => {
 </script>
 
 <template>
-  <keep-alive>
-    <router-view/>
-  </keep-alive>
+  <router-view v-slot="{ Component }">
+    <keep-alive>
+      <component :is="Component"/>
+    </keep-alive>
+  </router-view>
   <va-app-bar
       v-if="!hideNavBar"
       bottom
@@ -32,7 +34,7 @@ const hideNavBar = computed((): boolean => {
           preset="secondary"
       />
     </router-link>
-    <router-link :to="{name: GalleryRouteName.GALLERY}">
+    <router-link :to="{name: GalleryRouteName.LIST}">
       <va-button
           icon="image"
           color="backgroundPrimary"

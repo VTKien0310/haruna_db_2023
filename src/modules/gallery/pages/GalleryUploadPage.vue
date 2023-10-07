@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <router-view/>
+<h1>Gallery upload page</h1>
 </template>
 
 <style scoped>

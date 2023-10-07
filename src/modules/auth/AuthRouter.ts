@@ -1,13 +1,14 @@
 import type {RouteRecordRaw} from "vue-router";
 
 export enum AuthRouteName {
-    PROFILE = 'profile',
-    LOGIN = 'login'
+    ROOT = 'auth',
+    PROFILE = 'auth.profile',
+    LOGIN = 'auth.login'
 }
 
 const authRouter: RouteRecordRaw = {
     path: '/auth',
-    name: 'auth',
+    name: AuthRouteName.ROOT,
     component: () => import('@/modules/auth/pages/AuthPage.vue'),
     children: [
         {
