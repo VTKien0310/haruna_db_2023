@@ -9,10 +9,10 @@ function goToGalleryUploadPage(): void {
 
 <template>
   <va-button
+      @click="goToGalleryUploadPage"
       round
       size="large"
       icon="upload"
-      @click="goToGalleryUploadPage"
   />
 </template>
 
