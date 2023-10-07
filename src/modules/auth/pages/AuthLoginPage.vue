@@ -61,7 +61,6 @@ function handleLogin() {
           :disabled="!enableLoginButton"
           :loading="isHandlingLogin"
           type="submit"
-          round
           gradient
           class="mt-6 w-full"
       >

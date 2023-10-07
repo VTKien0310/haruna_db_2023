@@ -10,7 +10,7 @@ function handleLogout() {
 
 <template>
   <h1>Profile page</h1>
-  <va-button @click="handleLogout" color="danger" round>
+  <va-button @click="handleLogout" color="danger">
     Logout
   </va-button>
 </template>
