@@ -1,21 +1,45 @@
 import {defineStore} from "pinia";
 import {defaultStorageFileOptions, supabasePort} from "@/ports/supabase/SupabasePort";
-import {useToast} from "vuestic-ui";
+import {useModal, useToast} from "vuestic-ui";
 import {uuid} from "@supabase/supabase-js/dist/main/lib/helpers";
+import {ref} from "vue";
+import router from "@/router";
+import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
 
 export const useGalleryStore = defineStore('gallery', () => {
+    const pendingNewMediaFiles = ref<File[]>([])
+
+    const {confirm} = useModal();
+
+    function uploadPendingNewMediaFiles(): void {
+        confirm(`Proceed to upload ${pendingNewMediaFiles.value.length} file(s)?`).then(
+            async (confirmToProceed: boolean): Promise<void> => {
+                if (!confirmToProceed) {
+                    return;
+                }
+
+                turnOnIsHandlingCreateNewMediaState();
+                pendingNewMediaFiles.value = await handleUploadNewMediaFiles();
+                turnOffIsHandlingCreateNewMediaState();
+                redirectToGalleryListIfHasNoUploadError();
+            }
+        )
+    }
+
+    async function handleUploadNewMediaFiles(): Promise<File[]> {
+        const failedToUploadFiles: File[] = [];
+
+        for (const file of pendingNewMediaFiles.value) {
+            const fileUploadSuccessfully: boolean = await uploadMedia(file);
+            if (!fileUploadSuccessfully) {
+                failedToUploadFiles.push(file)
+            }
+        }
+
+        return failedToUploadFiles;
+    }
+
     const {init} = useToast();
-
-    function getFileExtension(file: File): string {
-        return file.type.split('/').at(-1) ?? '';
-    }
-
-    function generateFileStorageName(fileExtension: string): string {
-        const uniqueFileName: string = uuid();
-        return fileExtension
-            ? `${uniqueFileName}.${fileExtension}`
-            : uniqueFileName;
-    }
 
     async function uploadMedia(file: File): Promise<boolean> {
         const fileExtension: string = getFileExtension(file);
@@ -60,7 +84,38 @@ export const useGalleryStore = defineStore('gallery', () => {
         return true;
     }
 
+    const isHandlingCreateNewMedia = ref<boolean>(false)
+
+    function turnOnIsHandlingCreateNewMediaState(): void {
+        isHandlingCreateNewMedia.value = true;
+    }
+
+    function turnOffIsHandlingCreateNewMediaState(): void {
+        isHandlingCreateNewMedia.value = false;
+    }
+
+    function redirectToGalleryListIfHasNoUploadError(): void {
+        if (pendingNewMediaFiles.value.length === 0) {
+            router.push({
+                name: GalleryRouteName.LIST
+            })
+        }
+    }
+
+    function getFileExtension(file: File): string {
+        return file.type.split('/').at(-1) ?? '';
+    }
+
+    function generateFileStorageName(fileExtension: string): string {
+        const uniqueFileName: string = uuid();
+        return fileExtension
+            ? `${uniqueFileName}.${fileExtension}`
+            : uniqueFileName;
+    }
+
     return {
-        uploadMedia,
+        pendingNewMediaFiles,
+        uploadPendingNewMediaFiles,
+        isHandlingCreateNewMedia
     }
 })
