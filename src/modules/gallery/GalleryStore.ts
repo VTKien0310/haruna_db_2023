@@ -113,9 +113,15 @@ export const useGalleryStore = defineStore('gallery', () => {
             : uniqueFileName;
     }
 
+    function reset(): void {
+        pendingNewMediaFiles.value = [];
+        turnOffIsHandlingCreateNewMediaState();
+    }
+
     return {
         pendingNewMediaFiles,
         uploadPendingNewMediaFiles,
-        isHandlingCreateNewMedia
+        isHandlingCreateNewMedia,
+        reset
     }
 })
