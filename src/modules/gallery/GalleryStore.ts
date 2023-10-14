@@ -60,12 +60,6 @@ export const useGalleryStore = defineStore('gallery', () => {
         return true;
     }
 
-    async function uploadMultiMedia(files: File[]): Promise<void> {
-        for (const file of files) {
-            await uploadMedia(file)
-        }
-    }
-
     return {
         uploadMedia,
     }
