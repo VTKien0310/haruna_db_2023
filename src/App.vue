@@ -4,7 +4,7 @@ import {computed} from "vue";
 import {AuthRouteName} from "@/modules/auth/AuthRouter";
 import {MasterRouteName} from "@/modules/master/MasterRouter";
 import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
-import {useAuthStore} from "@/modules/auth/AuthStore";
+import {useAuthStore} from "@/modules/auth/stores/AuthStore";
 
 const authStore = useAuthStore()
 authStore.registerOnAuthStateChange()

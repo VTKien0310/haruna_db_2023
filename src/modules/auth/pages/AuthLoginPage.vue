@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useForm} from 'vuestic-ui';
 import {computed, reactive, ref} from 'vue';
-import {useAuthStore} from "@/modules/auth/AuthStore";
+import {useAuthStore} from "@/modules/auth/stores/AuthStore";
 import type {AuthCredential} from "@/modules/auth/AuthTypes";
 
 const {reset} = useForm('loginForm');

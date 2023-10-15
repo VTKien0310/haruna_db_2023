@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     async function signIn(credential: AuthCredential): Promise<boolean> {
-        const {data, error} = await supabasePort.auth.signInWithPassword(credential)
+        const {error} = await supabasePort.auth.signInWithPassword(credential)
 
         if (error) {
             init({message: 'Login failed', color: 'danger'})
