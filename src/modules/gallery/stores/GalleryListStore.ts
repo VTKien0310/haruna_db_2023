@@ -58,10 +58,15 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         offset.value = offset.value + data.length;
     }
 
-    async function refreshMedias(): Promise<void> {
+    function reset(): void {
         medias.value = []
         offset.value = 0
         hasFetchedAllRecords.value = false;
+        turnOffIsFetchingMediaState();
+    }
+
+    async function refreshMedias(): Promise<void> {
+        reset();
         return fetchMedias()
     }
 
@@ -70,6 +75,7 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         isFetchingGalleryMedias,
         hasFetchedAllRecords,
         fetchMedias,
-        refreshMedias
+        refreshMedias,
+        reset
     }
 })
