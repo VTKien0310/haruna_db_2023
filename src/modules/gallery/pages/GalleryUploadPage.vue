@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useGalleryUploadStore} from "@/modules/gallery/GalleryUploadStore";
+import {useGalleryUploadStore} from "@/modules/gallery/stores/GalleryUploadStore";
 
 const galleryUploadStore = useGalleryUploadStore();
 </script>
