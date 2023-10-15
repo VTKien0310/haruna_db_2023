@@ -6,7 +6,7 @@ import {ref} from "vue";
 import router from "@/router";
 import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
 
-export const useGalleryStore = defineStore('gallery', () => {
+export const useGalleryUploadStore = defineStore('gallery-upload', () => {
     const pendingNewMediaFiles = ref<File[]>([])
 
     const {confirm} = useModal();

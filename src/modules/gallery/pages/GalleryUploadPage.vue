@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import {useGalleryStore} from "@/modules/gallery/GalleryStore";
+import {useGalleryUploadStore} from "@/modules/gallery/GalleryUploadStore";
 
-const galleryStore = useGalleryStore();
+const galleryUploadStore = useGalleryUploadStore();
 </script>
 
 <template>
 
   <va-file-upload
-      :disabled="galleryStore.isHandlingCreateNewMedia"
-      v-model="galleryStore.pendingNewMediaFiles"
+      :disabled="galleryUploadStore.isHandlingCreateNewMedia"
+      v-model="galleryUploadStore.pendingNewMediaFiles"
       file-types="image/*"
       type="gallery"
       dropzone
@@ -18,9 +18,9 @@ const galleryStore = useGalleryStore();
 
   <div class="w-full flex flex-row justify-center content-center items-center mt-5">
     <va-button
-        @click="galleryStore.uploadPendingNewMediaFiles"
-        :loading="galleryStore.isHandlingCreateNewMedia"
-        :disabled="galleryStore.pendingNewMediaFiles.length === 0 || galleryStore.isHandlingCreateNewMedia"
+        @click="galleryUploadStore.uploadPendingNewMediaFiles"
+        :loading="galleryUploadStore.isHandlingCreateNewMedia"
+        :disabled="galleryUploadStore.pendingNewMediaFiles.length === 0 || galleryUploadStore.isHandlingCreateNewMedia"
     >
       Upload
     </va-button>
