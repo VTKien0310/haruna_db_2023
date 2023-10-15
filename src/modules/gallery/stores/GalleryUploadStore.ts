@@ -5,6 +5,7 @@ import {uuid} from "@supabase/supabase-js/dist/main/lib/helpers";
 import {ref} from "vue";
 import router from "@/router";
 import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
+import {MediaTypeEnum} from "@/modules/gallery/GalleryEntities";
 
 export const useGalleryUploadStore = defineStore('gallery-upload', () => {
     const pendingNewMediaFiles = ref<File[]>([])
@@ -68,7 +69,7 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
                 name: originalFile.name,
                 mime: originalFile.type,
                 size: originalFile.size,
-                type: 0,
+                type: MediaTypeEnum.PHOTO,
                 storage_path: storageFilePath
             })
 
