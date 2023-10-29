@@ -9,7 +9,12 @@ export const useMediaStore = defineStore('media-store', () => {
     async function createSignedUrlForMedia(media: Media): Promise<string> {
         const {data, error} = await supabasePort.storage
             .from('medias')
-            .createSignedUrl(media.storage_path, 1800)
+            .createSignedUrl(media.storage_path, 1800, {
+                transform: {
+                    width: 100,
+                    height: 100
+                }
+            })
 
         if (error || !data) {
             init({
