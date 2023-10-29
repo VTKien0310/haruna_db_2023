@@ -26,13 +26,11 @@ onMounted(() => {
       v-if="mediaSignedUrlCreated"
       :src="mediaSignedUrl"
       lazy
-      fit="contain"
-      class="gallery-list-item w-24 h-24"
+      fit="cover"
+      :ratio="1"
+      class="w-full h-full"
   ></va-image>
 </template>
 
 <style scoped>
-.gallery-list-item {
-  background-color: var(--va-background-element);
-}
 </style>
