@@ -1,11 +1,29 @@
 <script setup lang="ts">
 
 import GalleryToUploadPageButton from "@/modules/gallery/components/GalleryToUploadPageButton.vue";
+import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
+import {onMounted} from "vue";
+import GalleryListItem from "@/modules/gallery/components/GalleryListItem.vue";
+
+const galleryListStore = useGalleryListStore();
+
+onMounted(() => {
+  galleryListStore.refreshMedias()
+})
 </script>
 
 <template>
   <div class="min-h-screen">
-    <h1>Gallery list page</h1>
+
+    <div class="max-h-screen overflow-hidden">
+      <va-infinite-scroll :load="galleryListStore.fetchMedias">
+        <GalleryListItem
+            v-for="media in galleryListStore.medias"
+            :key="media.id"
+            :media="media"
+        />
+      </va-infinite-scroll>
+    </div>
 
     <div class="fixed bottom-12 right-3">
       <GalleryToUploadPageButton/>
