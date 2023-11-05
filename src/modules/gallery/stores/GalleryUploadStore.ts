@@ -6,11 +6,14 @@ import {ref} from "vue";
 import router from "@/router";
 import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
 import {MediaTypeEnum} from "@/modules/gallery/GalleryEntities";
+import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 
 export const useGalleryUploadStore = defineStore('gallery-upload', () => {
     const pendingNewMediaFiles = ref<File[]>([])
 
     const {confirm} = useModal();
+
+    const galleryListStore = useGalleryListStore();
 
     function uploadPendingNewMediaFiles(): void {
         confirm(`Proceed to upload ${pendingNewMediaFiles.value.length} file(s)?`).then(
@@ -23,6 +26,7 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
                 pendingNewMediaFiles.value = await handleUploadNewMediaFiles();
                 turnOffIsHandlingCreateNewMediaState();
                 redirectToGalleryListIfHasNoUploadError();
+                galleryListStore.refreshMedias();
             }
         )
     }

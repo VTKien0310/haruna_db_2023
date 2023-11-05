@@ -17,7 +17,7 @@ onMounted(() => {
 
     <div class="max-h-screen overflow-hidden">
       <va-infinite-scroll :load="galleryListStore.fetchMedias">
-        <div class="grid grid-cols-4 gap-px place-content-center place-items-center">
+        <div class="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-20 gap-px place-content-center place-items-center">
           <GalleryListItem
               v-for="media in galleryListStore.medias"
               :key="media.id"

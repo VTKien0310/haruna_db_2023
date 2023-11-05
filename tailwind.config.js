@@ -28,6 +28,10 @@ module.exports = {
 				lg: '1440px',
 				xl: '1920px',
 			},
+			gridTemplateColumns: {
+				'16': 'repeat(16, minmax(0, 1fr))',
+				'20': 'repeat(20, minmax(0, 1fr))'
+			}
 		},
 	},
 	plugins: [
