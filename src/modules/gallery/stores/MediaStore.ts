@@ -28,7 +28,33 @@ export const useMediaStore = defineStore('media-store', () => {
         return data.signedUrl
     }
 
+    async function getMediaById(id: string): Promise<Media | null> {
+        const {data, error} = await supabasePort.from('medias')
+            .select()
+            .limit(1)
+            .eq('id', id)
+
+        if (error || !data) {
+            init({
+                message: `Failed to fetch media with id ${id}`,
+                color: 'danger'
+            })
+            return null;
+        }
+
+        if (!data[0]) {
+            init({
+                message: `Media with id ${id} not found`,
+                color: 'danger'
+            })
+            return null;
+        }
+
+        return data[0];
+    }
+
     return {
-        createSignedUrlForMedia
+        createSignedUrlForMedia,
+        getMediaById
     }
 })
