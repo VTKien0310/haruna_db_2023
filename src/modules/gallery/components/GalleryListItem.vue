@@ -2,6 +2,8 @@
 import type {Media} from "@/modules/gallery/GalleryEntities";
 import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
 import {computed, onMounted, ref} from "vue";
+import router from "@/router";
+import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
 
 const props = defineProps<{
   media: Media
@@ -14,6 +16,15 @@ const mediaSignedUrlCreated = computed((): boolean => {
 
 const mediaStore = useMediaStore()
 
+const navigateToUploadDetailPage = (): void => {
+  router.push({
+    name: GalleryRouteName.DETAIL,
+    params: {
+      id: props.media.id
+    }
+  })
+}
+
 onMounted(() => {
   mediaStore.createSignedUrlForMedia(props.media).then((signedUrl: string) => {
     mediaSignedUrl.value = signedUrl
@@ -25,6 +36,7 @@ onMounted(() => {
   <va-image
       v-if="mediaSignedUrlCreated"
       :src="mediaSignedUrl"
+      @click="navigateToUploadDetailPage"
       lazy
       fit="cover"
       :ratio="1"

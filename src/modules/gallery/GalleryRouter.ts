@@ -3,7 +3,8 @@ import type {RouteRecordRaw} from "vue-router";
 export enum GalleryRouteName {
     ROOT = 'gallery',
     LIST = 'gallery.list',
-    UPLOAD = 'gallery.upload'
+    UPLOAD = 'gallery.upload',
+    DETAIL = 'gallery.detail'
 }
 
 const galleryRouter: RouteRecordRaw = {
@@ -21,6 +22,11 @@ const galleryRouter: RouteRecordRaw = {
             path: 'upload',
             name: GalleryRouteName.UPLOAD,
             component: () => import('@/modules/gallery/pages/GalleryUploadPage.vue')
+        },
+        {
+            path: 'upload/:id',
+            name: GalleryRouteName.DETAIL,
+            component: () => import('@/modules/gallery/pages/GalleryDetailPage.vue')
         }
     ]
 }
