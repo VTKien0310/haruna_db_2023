@@ -25,6 +25,10 @@ onMounted(async () => {
       :style="{ 'background-image': 'url('+mediaSignedUrl+')' }"
       class="h-screen bg-center bg-contain bg-scroll bg-no-repeat"
   >
+    <div class="flex flex-col justify-end content-center items-center fixed bottom-12 right-3">
+      <va-button icon="download" class="mb-1"/>
+      <va-button icon="delete" color="danger"/>
+    </div>
   </div>
 </template>
 
