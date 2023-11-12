@@ -26,7 +26,7 @@ const navigateToUploadDetailPage = (): void => {
 }
 
 onMounted(() => {
-  mediaStore.createSignedUrlForMedia(props.media).then((signedUrl: string) => {
+  mediaStore.createThumbnailUrlForMedia(props.media).then((signedUrl: string) => {
     mediaSignedUrl.value = signedUrl
   })
 })

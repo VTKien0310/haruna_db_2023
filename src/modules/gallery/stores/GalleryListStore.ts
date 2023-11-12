@@ -17,7 +17,7 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
 
     const medias = ref<Media[]>([]);
     const offset = ref<number>(0);
-    const range: number = 100;
+    const range: number = 60;
     const hasFetchedAllRecords = ref<boolean>(false);
 
     const galleryContainerScrollPosition = ref<number>(0);
