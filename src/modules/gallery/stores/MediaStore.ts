@@ -91,8 +91,6 @@ export const useMediaStore = defineStore('media-store', () => {
 
     const galleryListStore = useGalleryListStore();
 
-    const isHandlingDeleteMedia = ref<boolean>(false)
-
     async function deleteMedia(media: Media): Promise<void> {
         confirm(`Proceed to delete the file?`).then(
             async (confirmation: boolean): Promise<void> => {
@@ -100,15 +98,11 @@ export const useMediaStore = defineStore('media-store', () => {
                     return
                 }
 
-                isHandlingDeleteMedia.value = true;
-
                 const deleteDbRecordSuccess = await deleteMediaRecordInDb(media.id)
 
                 const deleteFileInBucketSuccess = deleteDbRecordSuccess
                     ? await deleteMediaFileInBucket(media.storage_path)
                     : false
-
-                isHandlingDeleteMedia.value = false;
 
                 if (!(deleteDbRecordSuccess && deleteFileInBucketSuccess)) {
                     init({
@@ -126,16 +120,10 @@ export const useMediaStore = defineStore('media-store', () => {
         )
     }
 
-    const isHandlingDownloadMedia = ref<boolean>(false)
-
     async function downloadMedia(media: Media): Promise<void> {
-        isHandlingDownloadMedia.value = true
-
         const {data, error} = await supabasePort.storage
             .from('medias')
             .download(media.storage_path)
-
-        isHandlingDownloadMedia.value = false
 
         if (error || !data) {
             init({
@@ -149,8 +137,6 @@ export const useMediaStore = defineStore('media-store', () => {
     }
 
     return {
-        isHandlingDeleteMedia,
-        isHandlingDownloadMedia,
         createThumbnailUrlForMedia,
         createFullSizeViewUrlForMedia,
         getMediaById,

@@ -11,13 +11,34 @@ const route = useRoute();
 
 const mediaStore = useMediaStore();
 
+const isHandlingDeleteMedia = ref<boolean>(false)
+const deleteMedia = (): void => {
+  isHandlingDeleteMedia.value = true
+  mediaStore
+      .deleteMedia(media.value!)
+      .then(() => isHandlingDeleteMedia.value = false)
+}
+
+const isHandlingDownloadMedia = ref<boolean>(false)
+const downloadMedia = (): void => {
+  isHandlingDownloadMedia.value = true
+  mediaStore
+      .downloadMedia(media.value!)
+      .then(() => isHandlingDownloadMedia.value = false)
+}
+
 const showProgressBar = computed((): boolean => {
-  return mediaSignedUrl.value == ''
-      || mediaStore.isHandlingDeleteMedia
-      || mediaStore.isHandlingDownloadMedia
+  return media.value == null
+      || mediaSignedUrl.value == ''
+      || isHandlingDeleteMedia.value
+      || isHandlingDownloadMedia.value
 })
 
 onMounted(async () => {
+  if (!(typeof route.params.id === 'string')) {
+    return
+  }
+
   media.value = await mediaStore.getMediaById(route.params.id)
   mediaSignedUrl.value = await mediaStore.createFullSizeViewUrlForMedia(media.value!)
 })
@@ -31,8 +52,8 @@ onMounted(async () => {
     <va-progress-bar v-show="showProgressBar" indeterminate/>
 
     <div class="flex flex-col justify-end content-center items-center fixed bottom-12 right-3">
-      <va-button @click="mediaStore.downloadMedia(media!)" round icon="download" class="mb-1"/>
-      <va-button @click="mediaStore.deleteMedia(media!)" round icon="delete" color="danger"/>
+      <va-button @click="downloadMedia" round icon="download" class="mb-1"/>
+      <va-button @click="deleteMedia" round icon="delete" color="danger"/>
     </div>
 
   </div>
