@@ -1,13 +1,19 @@
 import {defineStore} from "pinia";
 import type {Media} from "@/modules/gallery/GalleryEntities";
 import {supabasePort} from "@/ports/supabase/SupabasePort";
-import {useToast} from "vuestic-ui";
+import {useModal, useToast} from "vuestic-ui";
 import type {TransformOptions} from "@supabase/storage-js/src/lib/types";
+import router from "@/router";
+import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
+import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 
 export const useMediaStore = defineStore('media-store', () => {
     const {init} = useToast();
 
-    async function createSignedUrlForMedia(media: Media, options: { download?: string | boolean; transform?: TransformOptions }): Promise<string> {
+    async function createSignedUrlForMedia(media: Media, options: {
+        download?: string | boolean;
+        transform?: TransformOptions
+    }): Promise<string> {
         const {data, error} = await supabasePort.storage
             .from('medias')
             .createSignedUrl(media.storage_path, 1800, options)
@@ -62,9 +68,59 @@ export const useMediaStore = defineStore('media-store', () => {
         return data[0];
     }
 
+    const {confirm} = useModal();
+
+    async function deleteMediaRecordInDb(id: string): Promise<boolean> {
+        const {error} = await supabasePort.from('medias')
+            .delete()
+            .eq('id', id)
+
+        return !error;
+    }
+
+    async function deleteMediaFileInBucket(storagePath: string) {
+        const {data, error} = await supabasePort.storage
+            .from('medias')
+            .remove([storagePath])
+
+        return !error;
+    }
+
+    const galleryListStore = useGalleryListStore();
+
+    async function deleteMedia(media: Media): Promise<void> {
+        confirm(`Proceed to delete the file?`).then(
+            async (confirmation: boolean): Promise<void> => {
+                if (!confirmation) {
+                    return
+                }
+
+                const deleteDbRecordSuccess = await deleteMediaRecordInDb(media.id)
+
+                const deleteFileInBucketSuccess = deleteDbRecordSuccess
+                    ? await deleteMediaFileInBucket(media.storage_path)
+                    : false
+
+                if (!(deleteDbRecordSuccess && deleteFileInBucketSuccess)) {
+                    init({
+                        message: `Failed to delete media with id ${media.id}`,
+                        color: 'danger'
+                    })
+                    return
+                }
+
+                router.push({
+                    name: GalleryRouteName.LIST
+                })
+                galleryListStore.refreshMedias();
+            }
+        )
+    }
+
     return {
         createThumbnailUrlForMedia,
         createFullSizeViewUrlForMedia,
-        getMediaById
+        getMediaById,
+        deleteMedia
     }
 })

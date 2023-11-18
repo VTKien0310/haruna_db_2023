@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import {useRoute} from "vue-router";
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
 import type {Media} from "@/modules/gallery/GalleryEntities";
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
-const mediaSignedUrlCreated = computed((): boolean => {
-  return mediaSignedUrl.value != ''
-})
 
 const route = useRoute();
 
@@ -27,7 +24,7 @@ onMounted(async () => {
   >
     <div class="flex flex-col justify-end content-center items-center fixed bottom-12 right-3">
       <va-button round icon="download" class="mb-1"/>
-      <va-button round icon="delete" color="danger"/>
+      <va-button @click="mediaStore.deleteMedia(media!)" round icon="delete" color="danger"/>
     </div>
   </div>
 </template>
