@@ -6,6 +6,7 @@ export enum MediaTypeEnum {
 export interface Media {
     id: string
     mime: string
+    name: string
     size: number
     type: MediaTypeEnum
     storage_path: string

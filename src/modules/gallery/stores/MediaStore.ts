@@ -7,6 +7,7 @@ import router from "@/router";
 import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 import {ref} from "vue";
+import {domPort} from "@/ports/dom/DomPort";
 
 export const useMediaStore = defineStore('media-store', () => {
     const {init} = useToast();
@@ -72,7 +73,8 @@ export const useMediaStore = defineStore('media-store', () => {
     const {confirm} = useModal();
 
     async function deleteMediaRecordInDb(id: string): Promise<boolean> {
-        const {error} = await supabasePort.from('medias')
+        const {error} = await supabasePort
+            .from('medias')
             .delete()
             .eq('id', id)
 
@@ -124,11 +126,29 @@ export const useMediaStore = defineStore('media-store', () => {
         )
     }
 
+    async function downloadMedia(media: Media): Promise<void> {
+
+        const {data, error} = await supabasePort.storage
+            .from('medias')
+            .download(media.storage_path)
+
+        if (error || !data) {
+            init({
+                message: `Failed to download media with id ${media.id}`,
+                color: 'danger'
+            })
+            return
+        }
+
+        domPort.triggerDownloadBlob(data, media.name)
+    }
+
     return {
         isHandlingDeleteMedia,
         createThumbnailUrlForMedia,
         createFullSizeViewUrlForMedia,
         getMediaById,
-        deleteMedia
+        deleteMedia,
+        downloadMedia
     }
 })

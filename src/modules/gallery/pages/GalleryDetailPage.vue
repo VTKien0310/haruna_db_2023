@@ -29,7 +29,7 @@ onMounted(async () => {
     <va-progress-bar v-show="showProgressBar" indeterminate/>
 
     <div class="flex flex-col justify-end content-center items-center fixed bottom-12 right-3">
-      <va-button round icon="download" class="mb-1"/>
+      <va-button @click="mediaStore.downloadMedia(media!)" round icon="download" class="mb-1"/>
       <va-button @click="mediaStore.deleteMedia(media!)" round icon="delete" color="danger"/>
     </div>
 
