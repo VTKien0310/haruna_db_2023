@@ -12,7 +12,9 @@ const route = useRoute();
 const mediaStore = useMediaStore();
 
 const showProgressBar = computed((): boolean => {
-  return mediaSignedUrl.value == '' || mediaStore.isHandlingDeleteMedia
+  return mediaSignedUrl.value == ''
+      || mediaStore.isHandlingDeleteMedia
+      || mediaStore.isHandlingDownloadMedia
 })
 
 onMounted(async () => {

@@ -126,11 +126,16 @@ export const useMediaStore = defineStore('media-store', () => {
         )
     }
 
+    const isHandlingDownloadMedia = ref<boolean>(false)
+
     async function downloadMedia(media: Media): Promise<void> {
+        isHandlingDownloadMedia.value = true
 
         const {data, error} = await supabasePort.storage
             .from('medias')
             .download(media.storage_path)
+
+        isHandlingDownloadMedia.value = false
 
         if (error || !data) {
             init({
@@ -145,6 +150,7 @@ export const useMediaStore = defineStore('media-store', () => {
 
     return {
         isHandlingDeleteMedia,
+        isHandlingDownloadMedia,
         createThumbnailUrlForMedia,
         createFullSizeViewUrlForMedia,
         getMediaById,
