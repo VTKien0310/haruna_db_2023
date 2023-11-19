@@ -56,8 +56,8 @@ onMounted(async () => {
   >
     <va-progress-bar v-show="showProgressBar" indeterminate/>
 
-    <div class="flex flex-row justify-between content-start items-start fixed bottom-12 right-3">
-      <div v-show="showMediaDetail" class="flex flex-col justify-end content-start items-start mr-3">
+    <div class="interaction-area flex flex-row justify-between content-start items-start fixed bottom-12 right-3">
+      <div v-show="showMediaDetail" class="flex flex-col justify-start content-start items-start p-3 mr-3 w-full h-full bg-zinc-100/50">
         <p>By Ricky</p>
         <p>On 12/12/2023</p>
         <p>Size 5MB</p>
@@ -84,5 +84,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-
+.interaction-area {
+  height: 15%;
+}
 </style>
