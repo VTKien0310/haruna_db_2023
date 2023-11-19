@@ -56,35 +56,51 @@ onMounted(async () => {
   >
     <va-progress-bar v-show="showProgressBar" indeterminate/>
 
-    <div class="interaction-area flex flex-row justify-between content-start items-start fixed bottom-12 right-3">
-      <div v-show="showMediaDetail" class="flex flex-col justify-start content-start items-start p-3 mr-3 w-full h-full bg-zinc-100/50">
-        <p>By Ricky</p>
-        <p>On 12/12/2023</p>
-        <p>Size 5MB</p>
+    <div
+        class="interaction-area h-1/6 w-1/2 sm:w-1/3 md:w-1/6 lg:w-1/12 flex flex-col justify-end content-center items-center fixed bottom-12 right-3">
+      <div
+          :class="{'detail-area':showMediaDetail}"
+          class="flex flex-col justify-start content-start items-start p-3 mb-3 w-full h-full"
+      >
+        <div v-show="showMediaDetail">
+          <p>By Ricky</p>
+          <p>On 12/12/2023</p>
+          <p>Size 5MB</p>
+        </div>
       </div>
-      <div class="flex flex-col justify-end content-center items-center">
-        <va-button @click="triggerShowMediaDetail" round icon="info" class="mb-1"/>
-        <va-button @click="downloadMedia" round icon="download" class="mb-1"/>
+      <div class="flex flex-row justify-end content-center items-center w-full">
+        <va-button @click="triggerShowMediaDetail" round icon="info" class="mr-1"/>
+        <va-button @click="downloadMedia" round icon="download" class="mr-1"/>
         <va-button @click="deleteMedia" round icon="delete" color="danger"/>
       </div>
     </div>
 
-<!--    <div class="flex flex-col justify-end content-center items-center fixed bottom-12 right-3">-->
-<!--      <va-button @click="downloadMedia" round icon="download" class="mb-1"/>-->
-<!--      <va-button @click="deleteMedia" round icon="delete" color="danger"/>-->
-<!--    </div>-->
+    <!--    <div class="flex flex-col justify-end content-center items-center fixed bottom-12 right-3">-->
+    <!--      <va-button @click="downloadMedia" round icon="download" class="mb-1"/>-->
+    <!--      <va-button @click="deleteMedia" round icon="delete" color="danger"/>-->
+    <!--    </div>-->
 
-<!--    <div class="flex flex-col justify-end content-start items-start fixed bottom-12 left-3">-->
-<!--      <p>By Ricky</p>-->
-<!--      <p>On 12/12/2023</p>-->
-<!--      <p>Size 5MB</p>-->
-<!--    </div>-->
+    <!--    <div class="flex flex-col justify-end content-start items-start fixed bottom-12 left-3">-->
+    <!--      <p>By Ricky</p>-->
+    <!--      <p>On 12/12/2023</p>-->
+    <!--      <p>Size 5MB</p>-->
+    <!--    </div>-->
 
   </div>
 </template>
 
 <style scoped>
 .interaction-area {
-  height: 15%;
+  height: 15vh;
+}
+
+.detail-area {
+  background-color: var(--va-background-border);
+  border-radius: 20px;
+}
+
+.te {
+  background-color: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
 }
 </style>
