@@ -11,6 +11,11 @@ const route = useRoute();
 
 const mediaStore = useMediaStore();
 
+const showMediaDetail = ref<boolean>(false)
+const triggerShowMediaDetail = (): void => {
+  showMediaDetail.value = !showMediaDetail.value
+}
+
 const isHandlingDeleteMedia = ref<boolean>(false)
 const deleteMedia = (): void => {
   isHandlingDeleteMedia.value = true
@@ -51,10 +56,29 @@ onMounted(async () => {
   >
     <va-progress-bar v-show="showProgressBar" indeterminate/>
 
-    <div class="flex flex-col justify-end content-center items-center fixed bottom-12 right-3">
-      <va-button @click="downloadMedia" round icon="download" class="mb-1"/>
-      <va-button @click="deleteMedia" round icon="delete" color="danger"/>
+    <div class="flex flex-row justify-between content-start items-start fixed bottom-12 right-3">
+      <div v-show="showMediaDetail" class="flex flex-col justify-end content-start items-start mr-3">
+        <p>By Ricky</p>
+        <p>On 12/12/2023</p>
+        <p>Size 5MB</p>
+      </div>
+      <div class="flex flex-col justify-end content-center items-center">
+        <va-button @click="triggerShowMediaDetail" round icon="info" class="mb-1"/>
+        <va-button @click="downloadMedia" round icon="download" class="mb-1"/>
+        <va-button @click="deleteMedia" round icon="delete" color="danger"/>
+      </div>
     </div>
+
+<!--    <div class="flex flex-col justify-end content-center items-center fixed bottom-12 right-3">-->
+<!--      <va-button @click="downloadMedia" round icon="download" class="mb-1"/>-->
+<!--      <va-button @click="deleteMedia" round icon="delete" color="danger"/>-->
+<!--    </div>-->
+
+<!--    <div class="flex flex-col justify-end content-start items-start fixed bottom-12 left-3">-->
+<!--      <p>By Ricky</p>-->
+<!--      <p>On 12/12/2023</p>-->
+<!--      <p>Size 5MB</p>-->
+<!--    </div>-->
 
   </div>
 </template>

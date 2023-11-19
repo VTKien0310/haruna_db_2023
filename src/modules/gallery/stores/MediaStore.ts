@@ -91,6 +91,13 @@ export const useMediaStore = defineStore('media-store', () => {
 
     const galleryListStore = useGalleryListStore();
 
+    function redirectAndRefreshGallery(): void {
+        router.push({
+            name: GalleryRouteName.LIST
+        })
+        galleryListStore.refreshMedias();
+    }
+
     async function deleteMedia(media: Media): Promise<void> {
         confirm(`Proceed to delete the file?`).then(
             async (confirmation: boolean): Promise<void> => {
@@ -112,10 +119,7 @@ export const useMediaStore = defineStore('media-store', () => {
                     return
                 }
 
-                router.push({
-                    name: GalleryRouteName.LIST
-                })
-                galleryListStore.refreshMedias();
+                redirectAndRefreshGallery()
             }
         )
     }
