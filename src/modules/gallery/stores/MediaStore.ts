@@ -6,8 +6,9 @@ import type {TransformOptions} from "@supabase/storage-js/src/lib/types";
 import router from "@/router";
 import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
-import {ref} from "vue";
 import {domPort} from "@/ports/dom/DomPort";
+import type {Profile} from "@/modules/auth/ProfileEntities";
+import dayjs from "dayjs";
 
 export const useMediaStore = defineStore('media-store', () => {
     const {init} = useToast();
@@ -140,11 +141,51 @@ export const useMediaStore = defineStore('media-store', () => {
         domPort.triggerDownloadBlob(data, media.name)
     }
 
+    async function getMediaUploader(media: Media): Promise<Profile | null> {
+        const {data, error} = await supabasePort
+            .from('profiles')
+            .select()
+            .eq('user_id', media.uploader_id)
+
+        if (error || !data) {
+            init({
+                message: `Failed to fetch uploader of media with id ${media.id}`,
+                color: 'danger'
+            })
+            return null;
+        }
+
+        return data[0];
+    }
+
+    /**
+     * Stolen from https://gist.github.com/zentala/1e6f72438796d74531803cc3833c039c
+     *
+     * @param bytes
+     * @param decimals
+     */
+    function transformMediaSizeToReadableFormat(bytes: number, decimals: number = 2): string {
+        if (bytes == 0) return '0 Bytes';
+
+        const k = 1024,
+            sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+            i = Math.floor(Math.log(bytes) / Math.log(k));
+
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
+    }
+
+    function transformMediaCreatedAtToReadableFormat(media: Media): string {
+        return dayjs(media.created_at).format('DD/MM/YYYY')
+    }
+
     return {
         createThumbnailUrlForMedia,
         createFullSizeViewUrlForMedia,
         getMediaById,
         deleteMedia,
-        downloadMedia
+        downloadMedia,
+        getMediaUploader,
+        transformMediaSizeToReadableFormat,
+        transformMediaCreatedAtToReadableFormat
     }
 })

@@ -12,4 +12,5 @@ export interface Media {
     storage_path: string
     created_at: string
     updated_at: string
+    uploader_id: string
 }
