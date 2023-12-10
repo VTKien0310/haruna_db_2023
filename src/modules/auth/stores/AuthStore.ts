@@ -6,6 +6,8 @@ import {AuthRouteName} from "@/modules/auth/AuthRouter";
 import type {AuthCredential} from "@/modules/auth/AuthTypes";
 import {useToast} from "vuestic-ui";
 import {MasterRouteName} from "@/modules/master/MasterRouter";
+import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
+import {useGalleryUploadStore} from "@/modules/gallery/stores/GalleryUploadStore";
 
 export const useAuthStore = defineStore('auth', () => {
     const {init} = useToast();
@@ -51,6 +53,9 @@ export const useAuthStore = defineStore('auth', () => {
         return true;
     }
 
+    const galleryListStore = useGalleryListStore();
+    const galleryUploadStore = useGalleryUploadStore();
+
     async function signOut(): Promise<boolean> {
         const {error} = await supabasePort.auth.signOut()
 
@@ -58,6 +63,9 @@ export const useAuthStore = defineStore('auth', () => {
             init({message: 'Logout failed', color: 'danger'})
             return false;
         }
+
+        galleryListStore.reset()
+        galleryUploadStore.reset()
 
         return true;
     }
