@@ -95,7 +95,34 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     async function updateMeProfile(profileDetail: ProfileDetail): Promise<void> {
+        if (profileDetail.password.length !== 0) {
+            const {error} = await supabasePort.auth.updateUser({password: profileDetail.password})
+            if (error) {
+                init({
+                    message: `Failed to update password`,
+                    color: 'danger'
+                })
+            }
+        }
 
+        const currentUser = await me()
+        if (!currentUser) {
+            return;
+        }
+
+        const {error} = await supabasePort
+            .from('profiles')
+            .update({
+                name: profileDetail.name
+            })
+            .eq('user_id', currentUser.id)
+
+        if (error) {
+            init({
+                message: `Failed to update username`,
+                color: 'danger'
+            })
+        }
     }
 
     return {
@@ -103,6 +130,7 @@ export const useAuthStore = defineStore('auth', () => {
         me,
         isCurrentlyAuthenticated,
         getMeProfile,
+        updateMeProfile,
         signIn,
         signOut
     }
