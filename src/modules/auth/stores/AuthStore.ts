@@ -3,11 +3,12 @@ import {supabasePort} from "@/ports/supabase/SupabasePort";
 import type {AuthChangeEvent, Session, User} from "@supabase/supabase-js";
 import router from "@/router";
 import {AuthRouteName} from "@/modules/auth/AuthRouter";
-import type {AuthCredential} from "@/modules/auth/AuthTypes";
+import type {AuthCredential, ProfileDetail} from "@/modules/auth/AuthTypes";
 import {useToast} from "vuestic-ui";
 import {MasterRouteName} from "@/modules/master/MasterRouter";
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 import {useGalleryUploadStore} from "@/modules/gallery/stores/GalleryUploadStore";
+import type {Profile} from "@/modules/auth/ProfileEntities";
 
 export const useAuthStore = defineStore('auth', () => {
     const {init} = useToast();
@@ -70,10 +71,38 @@ export const useAuthStore = defineStore('auth', () => {
         return true;
     }
 
+    async function getMeProfile(): Promise<Profile | null> {
+        const currentUser = await me()
+        if (!currentUser) {
+            return null;
+        }
+
+        const {data, error} = await supabasePort
+            .from('profiles')
+            .select()
+            .eq('user_id', currentUser.id)
+
+        if (error || !data) {
+            init({
+                message: `Failed to fetch current user profile`,
+                color: 'danger'
+            })
+
+            return null;
+        }
+
+        return data[0];
+    }
+
+    async function updateMeProfile(profileDetail: ProfileDetail): Promise<void> {
+
+    }
+
     return {
         registerOnAuthStateChange,
         me,
         isCurrentlyAuthenticated,
+        getMeProfile,
         signIn,
         signOut
     }
