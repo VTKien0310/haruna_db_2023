@@ -9,23 +9,10 @@ import {MasterRouteName} from "@/modules/master/MasterRouter";
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 import {useGalleryUploadStore} from "@/modules/gallery/stores/GalleryUploadStore";
 import type {Profile} from "@/modules/auth/ProfileEntities";
+import {ref} from "vue";
 
 export const useAuthStore = defineStore('auth', () => {
     const {init} = useToast();
-
-    async function registerOnAuthStateChange(): Promise<void> {
-        supabasePort.auth.onAuthStateChange(
-            (event: AuthChangeEvent, session: Session | null) => {
-                const isNotAuthenticated: boolean = !(session?.user);
-
-                if (isNotAuthenticated) {
-                    router.push({
-                        name: AuthRouteName.LOGIN
-                    })
-                }
-            }
-        );
-    }
 
     async function me(): Promise<User | null> {
         const {data: {user}} = await supabasePort.auth.getUser();
@@ -71,10 +58,13 @@ export const useAuthStore = defineStore('auth', () => {
         return true;
     }
 
-    async function getMeProfile(): Promise<Profile | null> {
+    const profile = ref<Profile | null>(null)
+
+    async function refreshCurrentUserProfile(): Promise<void> {
         const currentUser = await me()
         if (!currentUser) {
-            return null;
+            profile.value = null;
+            return;
         }
 
         const {data, error} = await supabasePort
@@ -88,49 +78,68 @@ export const useAuthStore = defineStore('auth', () => {
                 color: 'danger'
             })
 
-            return null;
+            profile.value = null;
+
+            return;
         }
 
-        return data[0];
+        profile.value = data[0];
     }
 
-    async function updateMeProfile(profileDetail: ProfileDetail): Promise<void> {
-        if (profileDetail.password.length !== 0) {
+    async function registerOnAuthStateChange(): Promise<void> {
+        supabasePort.auth.onAuthStateChange(
+            (event: AuthChangeEvent, session: Session | null) => {
+                refreshCurrentUserProfile();
+
+                const isNotAuthenticated: boolean = !(session?.user);
+
+                if (isNotAuthenticated) {
+                    router.push({
+                        name: AuthRouteName.LOGIN
+                    })
+                }
+            }
+        );
+    }
+
+    async function updateCurrentUserProfile(profileDetail: ProfileDetail): Promise<void> {
+        if (profileDetail.password.length >= 8) {
             const {error} = await supabasePort.auth.updateUser({password: profileDetail.password})
             if (error) {
                 init({
-                    message: `Failed to update password`,
+                    message: error.message.slice(0, -1), // remove the "." in the error message
                     color: 'danger'
                 })
             }
         }
 
         const currentUser = await me()
-        if (!currentUser) {
-            return;
+        if (currentUser) {
+            const {error} = await supabasePort
+                .from('profiles')
+                .update({
+                    name: profileDetail.name
+                })
+                .eq('user_id', currentUser.id)
+
+            if (error) {
+                init({
+                    message: `Failed to update username`,
+                    color: 'danger'
+                })
+            }
         }
 
-        const {error} = await supabasePort
-            .from('profiles')
-            .update({
-                name: profileDetail.name
-            })
-            .eq('user_id', currentUser.id)
-
-        if (error) {
-            init({
-                message: `Failed to update username`,
-                color: 'danger'
-            })
-        }
+        await refreshCurrentUserProfile()
     }
 
     return {
+        profile,
         registerOnAuthStateChange,
         me,
         isCurrentlyAuthenticated,
-        getMeProfile,
-        updateMeProfile,
+        refreshCurrentUserProfile,
+        updateCurrentUserProfile,
         signIn,
         signOut
     }

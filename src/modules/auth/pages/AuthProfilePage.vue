@@ -1,34 +1,37 @@
 <script setup lang="ts">
 import {useAuthStore} from "@/modules/auth/stores/AuthStore";
-import {useForm} from "vuestic-ui";
 import {computed, onMounted, reactive, ref} from "vue";
 import type {ProfileDetail} from "@/modules/auth/AuthTypes";
-import type {Profile} from "@/modules/auth/ProfileEntities";
-
-const {reset} = useForm('profileForm');
 
 const authStore = useAuthStore();
-
-const profile = ref<Profile | null>(null)
 
 const profileFormContent = reactive<ProfileDetail>({
   name: '',
   password: ''
 })
 
+function reloadProfileFormContent(): void {
+  profileFormContent.name = authStore.profile?.name ?? ''
+  profileFormContent.password = ''
+}
+
 const isUpdatingProfile = ref<boolean>(false);
 
 const enableUpdateProfileButton = computed((): boolean => {
   const nameHasBeenUpdated: boolean = (profileFormContent.name && profileFormContent.name.length > 0) as boolean
-      && (profileFormContent.name !== profile.value?.name);
+      && (profileFormContent.name !== authStore.profile?.name);
 
-  const passwordHasBeenInput: boolean = (profileFormContent.password && profileFormContent.password.length > 0) as boolean;
+  const passwordHasBeenInput: boolean = (profileFormContent.password && profileFormContent.password.length >= 8) as boolean;
 
-  return nameHasBeenUpdated || passwordHasBeenInput;
+  return (nameHasBeenUpdated || passwordHasBeenInput) && !isUpdatingProfile.value;
 });
 
 function handleUpdateProfile() {
   isUpdatingProfile.value = true
+  authStore.updateCurrentUserProfile(profileFormContent).then(() => {
+    reloadProfileFormContent()
+    isUpdatingProfile.value = false
+  })
 }
 
 function handleLogout() {
@@ -36,10 +39,7 @@ function handleLogout() {
 }
 
 onMounted(() => {
-  authStore.getMeProfile().then((meProfile: Profile | null) => {
-    profile.value = meProfile
-    profileFormContent.name = meProfile?.name ?? ''
-  })
+  reloadProfileFormContent()
 })
 </script>
 
@@ -48,6 +48,7 @@ onMounted(() => {
     <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 xl:w-1/5">
 
       <va-form
+          @submit.prevent="handleUpdateProfile"
           ref="profileForm"
           tag="form"
           class="w-full mb-2 flex flex-col justify-center items-center content-center"
@@ -64,6 +65,7 @@ onMounted(() => {
             v-model="profileFormContent.password"
             label="Password"
             name="password"
+            placeholder="Minimum length of 8 characters"
             class="mt-2 w-full"
         />
 
