@@ -11,8 +11,10 @@ const profileFormContent = reactive<ProfileDetail>({
 })
 
 function reloadProfileFormContent(): void {
-  profileFormContent.name = authStore.profile?.name ?? ''
-  profileFormContent.password = ''
+  authStore.refreshCurrentUserProfile().then(() => {
+    profileFormContent.name = authStore.profile?.name ?? ''
+    profileFormContent.password = ''
+  })
 }
 
 const isUpdatingProfile = ref<boolean>(false);
@@ -69,22 +71,29 @@ onMounted(() => {
             class="mt-2 w-full"
         />
 
-        <va-button
-            :disabled="!enableUpdateProfileButton"
-            :loading="isUpdatingProfile"
-            preset="secondary"
-            border-color="primary"
-            type="submit"
-            class="mt-6 w-full"
-        >
-          Update
-        </va-button>
+        <div class="w-full mt-6 flex flex-row justify-between">
+
+          <va-button
+              :disabled="!enableUpdateProfileButton"
+              :loading="isUpdatingProfile"
+              icon="save"
+              type="submit"
+              class="w-full mr-1"
+          />
+
+          <va-button
+              @click="reloadProfileFormContent"
+              icon="replay"
+              preset="secondary"
+              border-color="primary"
+              class="w-full ml-1"
+          />
+
+        </div>
 
       </va-form>
 
-      <va-button class="w-full" @click="handleLogout" color="danger">
-        Logout
-      </va-button>
+      <va-button @click="handleLogout" icon="logout" class="w-full" color="danger"/>
 
     </div>
   </div>
