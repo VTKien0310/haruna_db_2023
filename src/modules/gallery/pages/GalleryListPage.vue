@@ -19,9 +19,9 @@ const restoreGalleryContainerLastScrollPosition = (): void => {
   }
 }
 
-onActivated(() => {
-  restoreGalleryContainerLastScrollPosition()
-})
+// onActivated(() => {
+//   restoreGalleryContainerLastScrollPosition()
+// })
 
 onMounted(() => {
   galleryListStore.refreshMedias()
