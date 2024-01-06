@@ -54,6 +54,7 @@ function handleLogin() {
           v-model="loginFormContent.password"
           label="Password"
           name="password"
+          type="password"
           class="mt-2 w-full"
       />
 

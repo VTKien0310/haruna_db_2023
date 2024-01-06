@@ -37,6 +37,7 @@ onMounted(() => {
       v-if="mediaSignedUrlCreated"
       :src="mediaSignedUrl"
       @click="navigateToUploadDetailPage"
+      lazy
       fit="cover"
       :ratio="1"
       class="w-full h-full"
