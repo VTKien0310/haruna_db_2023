@@ -18,10 +18,10 @@ const restoreGalleryContainerLastScrollPosition = (): void => {
     galleryContainer.value.scrollTop = galleryListStore.galleryContainerScrollPosition;
   }
 }
+onActivated(() => {
+  restoreGalleryContainerLastScrollPosition()
+})
 
-// onActivated(() => {
-//   restoreGalleryContainerLastScrollPosition()
-// })
 
 onMounted(() => {
   galleryListStore.refreshMedias()
