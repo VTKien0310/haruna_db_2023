@@ -67,6 +67,7 @@ onMounted(() => {
             v-model="profileFormContent.password"
             label="Password"
             name="password"
+            type="password"
             placeholder="Minimum length of 8 characters"
             class="mt-2 w-full"
         />
