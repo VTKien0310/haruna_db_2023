@@ -11,11 +11,18 @@ const router = createRouter({
         galleryRouter
     ],
     scrollBehavior(to, from, savedPosition) {
+        if (to.hash) {
+            return {
+                el: to.hash,
+                behavior: 'smooth',
+            }
+        }
+
         if (savedPosition) {
             return savedPosition
-        } else {
-            return {top: 0}
         }
+
+        return {top: 0, left: 0}
     },
 })
 
