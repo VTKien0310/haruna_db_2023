@@ -1,4 +1,5 @@
 import type {RouteRecordRaw} from "vue-router";
+import GalleryListPage from "@/modules/gallery/pages/GalleryListPage.vue";
 
 export enum GalleryRouteName {
     ROOT = 'gallery',
@@ -16,7 +17,7 @@ const galleryRouter: RouteRecordRaw = {
             path: '',
             name: GalleryRouteName.LIST,
             alias: 'list',
-            component: () => import('@/modules/gallery/pages/GalleryListPage.vue')
+            component: GalleryListPage
         },
         {
             path: 'upload',
