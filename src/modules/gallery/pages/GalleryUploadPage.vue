@@ -7,25 +7,27 @@ const galleryUploadStore = useGalleryUploadStore();
 
 <template>
   <ion-page>
-    <div class="w-full flex flex-row justify-center content-center items-center mt-5">
-      <va-button
-          @click="galleryUploadStore.uploadPendingNewMediaFiles"
-          :loading="galleryUploadStore.isHandlingCreateNewMedia"
-          :disabled="galleryUploadStore.pendingNewMediaFiles.length === 0 || galleryUploadStore.isHandlingCreateNewMedia"
-      >
-        Upload
-      </va-button>
-    </div>
+    <div>
+      <div class="w-full flex flex-row justify-center content-center items-center mt-5">
+        <va-button
+            @click="galleryUploadStore.uploadPendingNewMediaFiles"
+            :loading="galleryUploadStore.isHandlingCreateNewMedia"
+            :disabled="galleryUploadStore.pendingNewMediaFiles.length === 0 || galleryUploadStore.isHandlingCreateNewMedia"
+        >
+          Upload
+        </va-button>
+      </div>
 
-    <va-file-upload
-        :disabled="galleryUploadStore.isHandlingCreateNewMedia"
-        v-model="galleryUploadStore.pendingNewMediaFiles"
-        file-types="image/*"
-        type="gallery"
-        dropzone
-        upload-button-text="Add"
-        dropZoneText="Add files or drop them here"
-    />
+      <va-file-upload
+          :disabled="galleryUploadStore.isHandlingCreateNewMedia"
+          v-model="galleryUploadStore.pendingNewMediaFiles"
+          file-types="image/*"
+          type="gallery"
+          dropzone
+          upload-button-text="Add"
+          dropZoneText="Add files or drop them here"
+      />
+    </div>
   </ion-page>
 </template>
 
