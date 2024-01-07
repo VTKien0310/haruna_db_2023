@@ -10,13 +10,13 @@ const router = createRouter({
         authRouter,
         galleryRouter
     ],
-    scrollBehavior(to, from, savedPosition) {
-        if (savedPosition) {
-            return savedPosition
-        } else {
-            return {top: 0, left: 0}
-        }
-    },
+    // scrollBehavior(to, from, savedPosition) {
+    //     if (savedPosition) {
+    //         return savedPosition
+    //     } else {
+    //         return {top: 0, left: 0}
+    //     }
+    // },
 })
 
 export default router
