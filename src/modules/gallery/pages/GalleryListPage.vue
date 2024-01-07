@@ -37,7 +37,7 @@ onMounted(() => {
         class="h-screen overflow-scroll invisible-scroll-bar"
     >
 
-      <div class="grid grid-cols-4 place-content-center place-items-center">
+      <div class="grid grid-cols-4 gap-px place-content-center place-items-center">
         <GalleryListItem
             v-for="media in galleryListStore.medias"
             :key="media.id"

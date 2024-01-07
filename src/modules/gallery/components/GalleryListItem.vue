@@ -34,20 +34,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <ion-thumbnail v-if="!mediaSignedUrlCreated" role="article">
-      <ion-skeleton-text :animated="true"></ion-skeleton-text>
-    </ion-thumbnail>
+  <div class="w-full h-full">
+    <ion-img
+        v-if="mediaSignedUrlCreated"
+        :src="mediaSignedUrl"
+        @click="navigateToUploadDetailPage"
+        class="w-full h-full"
+    />
 
-    <ion-thumbnail v-if="mediaSignedUrlCreated" @click="navigateToUploadDetailPage" role="article">
-      <ion-img :src="mediaSignedUrl"/>
-    </ion-thumbnail>
+    <div class="flex flex-row justify-center content-center items-center">
+      <VaProgressCircle v-if="!mediaSignedUrlCreated" indeterminate/>
+    </div>
   </div>
 </template>
 
 <style scoped>
-ion-thumbnail {
-  --size: 25vw;
-  padding: 1px;
-}
 </style>
