@@ -9,13 +9,13 @@ const galleryListStore = useGalleryListStore();
 
 const galleryListPageContent = ref<HTMLDivElement | null>(null);
 
-const saveGalleryContainerLastScrollPosition = (): void => {
-  galleryListStore.galleryContainerScrollPosition = galleryListPageContent.value?.scrollTop ?? 0
+const saveGalleryListLastScrollPosition = (): void => {
+  galleryListStore.galleryListScrollPosition = galleryListPageContent.value?.scrollTop ?? 0
 }
 
-const restoreGalleryContainerLastScrollPosition = (): void => {
+const restoreGalleryListLastScrollPosition = (): void => {
   if (galleryListPageContent.value) {
-    galleryListPageContent.value.scrollTop = galleryListStore.galleryContainerScrollPosition;
+    galleryListPageContent.value.scrollTop = galleryListStore.galleryListScrollPosition;
   }
 }
 
@@ -27,14 +27,14 @@ interface ScrollEventDataType {
   }
 }
 
-const loadMoreMedias = ({target: {scrollTop, clientHeight, scrollHeight}}: ScrollEventDataType) => {
+const loadMoreMedias = ({target: {scrollTop, clientHeight, scrollHeight}}: ScrollEventDataType): void => {
   if (scrollTop + clientHeight >= scrollHeight * 0.75) {
     galleryListStore.fetchMedias()
   }
 }
 
-onActivated(() => {
-  restoreGalleryContainerLastScrollPosition()
+onActivated(async () => {
+  restoreGalleryListLastScrollPosition()
 })
 
 onMounted(() => {
@@ -45,7 +45,7 @@ onMounted(() => {
 <template>
   <div
       @scroll="loadMoreMedias"
-      @scrollend="saveGalleryContainerLastScrollPosition"
+      @scrollend="saveGalleryListLastScrollPosition"
       ref="galleryListPageContent"
       class="h-screen overflow-scroll"
   >
