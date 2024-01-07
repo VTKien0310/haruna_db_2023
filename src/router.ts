@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from 'vue-router'
+import { createRouter, createWebHistory } from '@ionic/vue-router';
 import authRouter from "@/modules/auth/AuthRouter";
 import masterRouter from "@/modules/master/MasterRouter";
 import galleryRouter from "@/modules/gallery/GalleryRouter";
@@ -10,13 +10,6 @@ const router = createRouter({
         authRouter,
         galleryRouter
     ],
-    // scrollBehavior(to, from, savedPosition) {
-    //     if (savedPosition) {
-    //         return savedPosition
-    //     } else {
-    //         return {top: 0, left: 0}
-    //     }
-    // },
 })
 
 export default router

@@ -1,14 +1,12 @@
 <script setup lang="ts">
 
-import {RouterView} from "vue-router";
+import {IonRouterOutlet, IonPage} from "@ionic/vue";
 </script>
 
 <template>
-  <router-view v-slot="{ Component }">
-    <keep-alive :exclude="['GalleryDetailPage']">
-      <component :is="Component"/>
-    </keep-alive>
-  </router-view>
+  <ion-page>
+    <ion-router-outlet/>
+  </ion-page>
 </template>
 
 <style scoped>

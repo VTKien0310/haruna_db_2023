@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import {RouterView} from 'vue-router'
+import {IonRouterOutlet, IonPage} from "@ionic/vue";
 </script>
 
 <template>
-  <router-view/>
+  <ion-page>
+    <ion-router-outlet/>
+  </ion-page>
 </template>
 
 <style scoped>
