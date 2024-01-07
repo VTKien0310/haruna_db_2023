@@ -34,7 +34,7 @@ onMounted(() => {
     <div
         @scroll="loadMoreMedias"
         ref="galleryListPageContent"
-        class="h-screen overflow-scroll"
+        class="h-screen overflow-scroll invisible-scroll-bar"
     >
 
       <div class="grid grid-cols-4 gap-px place-content-center place-items-center">
