@@ -20,7 +20,7 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     const range: number = 60;
     const hasFetchedAllRecords = ref<boolean>(false);
 
-    const galleryContainerScrollPosition = ref<number>(0);
+    const galleryListScrollPosition = ref<number>(0);
 
     const {init} = useToast()
 
@@ -61,7 +61,7 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     }
 
     function reset(): void {
-        galleryContainerScrollPosition.value = 0;
+        galleryListScrollPosition.value = 0;
         medias.value = []
         offset.value = 0
         hasFetchedAllRecords.value = false;
@@ -77,7 +77,7 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         medias,
         isFetchingGalleryMedias,
         hasFetchedAllRecords,
-        galleryContainerScrollPosition,
+        galleryListScrollPosition,
         fetchMedias,
         refreshMedias,
         reset
