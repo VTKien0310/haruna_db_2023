@@ -15,6 +15,12 @@
 
 ## Project setup for development
 
+### Start local Supabase environment
+
+```sh
+npx supabase start --ignore-health-check
+```
+
 ### Install dependencies
 
 ```sh
