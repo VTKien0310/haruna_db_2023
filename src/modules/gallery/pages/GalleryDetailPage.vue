@@ -4,6 +4,7 @@ import {computed, onMounted, ref} from "vue";
 import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
 import type {Media} from "@/modules/gallery/GalleryEntities";
 import type {Profile} from "@/modules/auth/ProfileEntities";
+import {IonPage} from "@ionic/vue";
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
@@ -54,35 +55,37 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-      :style="{ 'background-image': 'url('+mediaSignedUrl+')' }"
-      class="h-screen bg-center bg-contain bg-scroll bg-no-repeat"
-  >
-    <va-progress-bar v-show="showProgressBar" indeterminate/>
-
+  <ion-page>
     <div
-        class="interaction-area h-1/6 w-1/2 sm:w-1/3 md:w-1/6 lg:w-1/12 flex flex-col justify-end content-center items-center fixed bottom-12 right-3">
+        :style="{ 'background-image': 'url('+mediaSignedUrl+')' }"
+        class="h-screen bg-center bg-contain bg-scroll bg-no-repeat"
+    >
+      <va-progress-bar v-show="showProgressBar" indeterminate/>
 
       <div
-          :class="{'detail-area':showMediaDetail}"
-          class="flex flex-col justify-start content-start items-start p-3 mb-3 w-full h-full"
-      >
-        <div v-show="showMediaDetail">
-          <p>By {{ mediaUploader?.name ?? '' }}</p>
-          <p>On {{ media ? mediaStore.transformMediaCreatedAtToReadableFormat(media) : '' }}</p>
-          <p>Size {{ mediaStore.transformMediaSizeToReadableFormat(media?.size ?? 0) }}</p>
-        </div>
-      </div>
+          class="interaction-area h-1/6 w-1/2 sm:w-1/3 md:w-1/6 lg:w-1/12 flex flex-col justify-end content-center items-center fixed bottom-12 right-3">
 
-      <div class="flex flex-row justify-end content-center items-center w-full">
-        <va-button @click="triggerShowMediaDetail" round icon="info" class="mr-1"/>
-        <va-button @click="downloadMedia" round icon="download" class="mr-1"/>
-        <va-button @click="deleteMedia" round icon="delete" color="danger"/>
+        <div
+            :class="{'detail-area':showMediaDetail}"
+            class="flex flex-col justify-start content-start items-start p-3 mb-3 w-full h-full"
+        >
+          <div v-show="showMediaDetail">
+            <p>By {{ mediaUploader?.name ?? '' }}</p>
+            <p>On {{ media ? mediaStore.transformMediaCreatedAtToReadableFormat(media) : '' }}</p>
+            <p>Size {{ mediaStore.transformMediaSizeToReadableFormat(media?.size ?? 0) }}</p>
+          </div>
+        </div>
+
+        <div class="flex flex-row justify-end content-center items-center w-full">
+          <va-button @click="triggerShowMediaDetail" round icon="info" class="mr-1"/>
+          <va-button @click="downloadMedia" round icon="download" class="mr-1"/>
+          <va-button @click="deleteMedia" round icon="delete" color="danger"/>
+        </div>
+
       </div>
 
     </div>
-
-  </div>
+  </ion-page>
 </template>
 
 <style scoped>

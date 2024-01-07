@@ -20,8 +20,6 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     const range: number = 60;
     const hasFetchedAllRecords = ref<boolean>(false);
 
-    const galleryListScrollPosition = ref<number>(0);
-
     const {init} = useToast()
 
     async function fetchMedias(): Promise<void> {
@@ -61,7 +59,6 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     }
 
     function reset(): void {
-        galleryListScrollPosition.value = 0;
         medias.value = []
         offset.value = 0
         hasFetchedAllRecords.value = false;
@@ -77,7 +74,6 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         medias,
         isFetchingGalleryMedias,
         hasFetchedAllRecords,
-        galleryListScrollPosition,
         fetchMedias,
         refreshMedias,
         reset
