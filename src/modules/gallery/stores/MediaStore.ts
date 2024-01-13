@@ -37,7 +37,9 @@ export const useMediaStore = defineStore('media-store', () => {
         return createSignedUrlForMedia(media, {
             transform: {
                 width: 75,
-                height: 75
+                height: 75,
+                quality: 50,
+                resize: 'fill'
             }
         })
     }

@@ -4,7 +4,7 @@ import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
 import {computed, onMounted, ref} from "vue";
 import router from "@/router";
 import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
-import {IonImg, IonThumbnail, IonSkeletonText} from "@ionic/vue";
+import {IonImg} from "@ionic/vue";
 
 const props = defineProps<{
   media: Media
@@ -46,6 +46,21 @@ onMounted(() => {
       <VaProgressCircle v-if="!mediaSignedUrlCreated" indeterminate/>
     </div>
   </div>
+
+<!--  <va-image-->
+<!--      v-if="mediaSignedUrlCreated"-->
+<!--      :src="mediaSignedUrl"-->
+<!--      @click="navigateToUploadDetailPage"-->
+<!--      lazy-->
+<!--      fit="cover"-->
+<!--      :ratio="1"-->
+<!--      class="w-full h-full"-->
+<!--  >-->
+<!--    <template #loader>-->
+<!--      <VaSkeleton animation="pulse" variant="squared" width="100%" height="100%"/>-->
+<!--    </template>-->
+<!--  </va-image>-->
+
 </template>
 
 <style scoped>
