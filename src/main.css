@@ -54,3 +54,12 @@ img {
 .va-modal {
     --va-modal-z-index: 20;
 }
+
+.invisible-scroll-bar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.invisible-scroll-bar::-webkit-scrollbar {
+    display: none; /* Chromium */
+}

@@ -2,22 +2,13 @@
 
 import GalleryToUploadPageButton from "@/modules/gallery/components/GalleryToUploadPageButton.vue";
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
-import {onActivated, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import GalleryListItem from "@/modules/gallery/components/GalleryListItem.vue";
+import {IonPage} from "@ionic/vue";
 
 const galleryListStore = useGalleryListStore();
 
 const galleryListPageContent = ref<HTMLDivElement | null>(null);
-
-const saveGalleryListLastScrollPosition = (): void => {
-  galleryListStore.galleryListScrollPosition = galleryListPageContent.value?.scrollTop ?? 0
-}
-
-const restoreGalleryListLastScrollPosition = (): void => {
-  if (galleryListPageContent.value) {
-    galleryListPageContent.value.scrollTop = galleryListStore.galleryListScrollPosition;
-  }
-}
 
 interface ScrollEventDataType {
   target: {
@@ -33,47 +24,49 @@ const loadMoreMedias = ({target: {scrollTop, clientHeight, scrollHeight}}: Scrol
   }
 }
 
-onActivated(async () => {
-  restoreGalleryListLastScrollPosition()
-})
-
 onMounted(() => {
   galleryListStore.refreshMedias()
 })
 </script>
 
 <template>
-  <div
-      @scroll="loadMoreMedias"
-      @scrollend="saveGalleryListLastScrollPosition"
-      ref="galleryListPageContent"
-      class="h-screen overflow-scroll"
-  >
-
-    <div class="grid grid-cols-4 gap-px place-content-center place-items-center">
-      <GalleryListItem
-          v-for="media in galleryListStore.medias"
-          :key="media.id"
-          :media="media"
-      />
-    </div>
-
-    <!-- medias fetch progress indicator -->
+  <ion-page>
     <div
-        v-show="galleryListStore.isFetchingGalleryMedias"
-        class="w-full flex flex-row justify-center content-center items-center"
+        @scroll="loadMoreMedias"
+        ref="galleryListPageContent"
+        class="h-screen overflow-scroll invisible-scroll-bar"
     >
-      <va-progress-circle indeterminate/>
+
+      <div class="flex flex-row justify-center items-start content-start w-full">
+        <div
+            v-for="(column,columnIndex) in galleryListStore.mediasMatrix" :key="columnIndex"
+            class="flex flex-col justify-start items-center content-center w-full"
+        >
+          <GalleryListItem
+              v-for="media in column"
+              :key="media.id"
+              :media="media"
+          />
+        </div>
+      </div>
+
+      <!-- medias fetch progress indicator -->
+      <div
+          v-show="galleryListStore.isFetchingGalleryMedias && !galleryListStore.hasFetchedAllRecords"
+          class="w-full flex flex-row justify-center content-center items-center"
+      >
+        <va-progress-circle indeterminate/>
+      </div>
+
+      <div class="fixed bottom-12 right-3">
+        <GalleryToUploadPageButton/>
+      </div>
+
+      <!-- push the content up so the app bar won't block the view -->
+      <div class="h-20"></div>
+
     </div>
-
-    <div class="fixed bottom-12 right-3">
-      <GalleryToUploadPageButton/>
-    </div>
-
-    <!-- push the content up so the app bar won't block the view -->
-    <div class="h-20"></div>
-
-  </div>
+  </ion-page>
 </template>
 
 <style scoped>
