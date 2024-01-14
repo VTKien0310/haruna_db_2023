@@ -4,7 +4,7 @@ import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
 import {computed, onMounted, ref} from "vue";
 import router from "@/router";
 import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
-import {IonImg, IonThumbnail, IonSkeletonText} from "@ionic/vue";
+import {IonImg} from "@ionic/vue";
 
 const props = defineProps<{
   media: Media
@@ -34,7 +34,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full">
+  <div class="w-full h-full p-px">
+
     <ion-img
         v-if="mediaSignedUrlCreated"
         :src="mediaSignedUrl"
@@ -43,8 +44,9 @@ onMounted(() => {
     />
 
     <div class="flex flex-row justify-center content-center items-center">
-      <VaProgressCircle v-if="!mediaSignedUrlCreated" indeterminate/>
+      <va-progress-circle v-if="!mediaSignedUrlCreated" indeterminate/>
     </div>
+
   </div>
 </template>
 

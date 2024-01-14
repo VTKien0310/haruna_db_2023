@@ -15,7 +15,12 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         isFetchingGalleryMedias.value = false;
     }
 
-    const medias = ref<Media[]>([]);
+    const mediasMatrix = ref<Media[][]>([
+        [],
+        [],
+        [],
+        [],
+    ]);
     const offset = ref<number>(0);
     const range: number = 60;
     const hasFetchedAllRecords = ref<boolean>(false);
@@ -54,12 +59,51 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
             return;
         }
 
-        medias.value.push(...data)
+        data.forEach(loadBalanceFetchedDataBetweenMediaColumns)
+
         offset.value = offset.value + data.length;
     }
 
+    function loadBalanceFetchedDataBetweenMediaColumns(media: Media): void {
+        const leastLoadedColumn: number = getLeastLoadedMediaColumn()
+
+        mediasMatrix.value[leastLoadedColumn].push(media)
+    }
+
+    type ColumnStatistics = { column: number, length: number };
+
+    function getLeastLoadedMediaColumn(): number {
+        const mediasMatrixStatistics: ColumnStatistics[] = makeMediaMatrixStatistics()
+
+        mediasMatrixStatistics.sort(
+            (firstCol: ColumnStatistics, secondCol: ColumnStatistics) => firstCol.length - secondCol.length
+        )
+
+        return mediasMatrixStatistics[0].column;
+    }
+
+    function makeMediaMatrixStatistics(): ColumnStatistics[] {
+        let mediasMatrixStatistics: ColumnStatistics[] = [];
+
+        mediasMatrix.value.forEach(
+            (column: Media[], columnNumber: number): void => {
+                mediasMatrixStatistics.push({
+                    column: columnNumber,
+                    length: column.length
+                });
+            }
+        )
+
+        return mediasMatrixStatistics;
+    }
+
     function reset(): void {
-        medias.value = []
+        mediasMatrix.value = [
+            [],
+            [],
+            [],
+            [],
+        ];
         offset.value = 0
         hasFetchedAllRecords.value = false;
         turnOffIsFetchingMediaState();
@@ -71,9 +115,9 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     }
 
     return {
-        medias,
         isFetchingGalleryMedias,
         hasFetchedAllRecords,
+        mediasMatrix,
         fetchMedias,
         refreshMedias,
         reset
