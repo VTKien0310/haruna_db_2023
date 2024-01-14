@@ -15,7 +15,6 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         isFetchingGalleryMedias.value = false;
     }
 
-    const medias = ref<Media[]>([]);
     const mediasMatrix = ref<Media[][]>([
         [],
         [],
@@ -62,7 +61,6 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
 
         data.forEach(loadBalanceFetchedDataBetweenMediaColumns)
 
-        medias.value.push(...data)
         offset.value = offset.value + data.length;
     }
 
@@ -100,7 +98,12 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     }
 
     function reset(): void {
-        medias.value = []
+        mediasMatrix.value = [
+            [],
+            [],
+            [],
+            [],
+        ];
         offset.value = 0
         hasFetchedAllRecords.value = false;
         turnOffIsFetchingMediaState();
@@ -112,7 +115,6 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     }
 
     return {
-        medias,
         isFetchingGalleryMedias,
         hasFetchedAllRecords,
         mediasMatrix,
