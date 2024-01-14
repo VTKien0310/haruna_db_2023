@@ -34,7 +34,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full">
+  <div class="w-full h-full p-px">
+
     <ion-img
         v-if="mediaSignedUrlCreated"
         :src="mediaSignedUrl"
@@ -43,24 +44,10 @@ onMounted(() => {
     />
 
     <div class="flex flex-row justify-center content-center items-center">
-      <VaProgressCircle v-if="!mediaSignedUrlCreated" indeterminate/>
+      <va-progress-circle v-if="!mediaSignedUrlCreated" indeterminate/>
     </div>
+
   </div>
-
-<!--  <va-image-->
-<!--      v-if="mediaSignedUrlCreated"-->
-<!--      :src="mediaSignedUrl"-->
-<!--      @click="navigateToUploadDetailPage"-->
-<!--      lazy-->
-<!--      fit="cover"-->
-<!--      :ratio="1"-->
-<!--      class="w-full h-full"-->
-<!--  >-->
-<!--    <template #loader>-->
-<!--      <VaSkeleton animation="pulse" variant="squared" width="100%" height="100%"/>-->
-<!--    </template>-->
-<!--  </va-image>-->
-
 </template>
 
 <style scoped>

@@ -37,12 +37,17 @@ onMounted(() => {
         class="h-screen overflow-scroll invisible-scroll-bar"
     >
 
-      <div class="grid grid-cols-4 gap-px place-content-center place-items-center">
-        <GalleryListItem
-            v-for="media in galleryListStore.medias"
-            :key="media.id"
-            :media="media"
-        />
+      <div class="flex flex-row justify-center items-start content-start w-full">
+        <div
+            v-for="(column,columnIndex) in galleryListStore.mediasMatrix" :key="columnIndex"
+            class="flex flex-col justify-start items-center content-center w-full"
+        >
+          <GalleryListItem
+              v-for="media in column"
+              :key="media.id"
+              :media="media"
+          />
+        </div>
       </div>
 
       <!-- medias fetch progress indicator -->
