@@ -36,7 +36,9 @@ export const useMediaStore = defineStore('media-store', () => {
     async function createThumbnailUrlForMedia(media: Media): Promise<string> {
         return createSignedUrlForMedia(media, {
             transform: {
-                width: 100
+                width: 250,
+                height: 250,
+                resize: 'contain'
             }
         })
     }
