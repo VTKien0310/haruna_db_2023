@@ -23,7 +23,7 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     const {init} = useToast()
 
     async function fetchMedias(): Promise<void> {
-        if (hasFetchedAllRecords.value) {
+        if (hasFetchedAllRecords.value || isFetchingGalleryMedias.value) {
             return;
         }
 
