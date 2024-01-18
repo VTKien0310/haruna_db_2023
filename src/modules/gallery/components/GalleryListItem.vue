@@ -34,20 +34,34 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full p-px">
+<!--  <div class="w-full h-full">-->
 
-    <ion-img
-        v-if="mediaSignedUrlCreated"
-        :src="mediaSignedUrl"
-        @click="navigateToUploadDetailPage"
-        class="w-full h-full"
-    />
+<!--    <ion-img-->
+<!--        v-if="mediaSignedUrlCreated"-->
+<!--        :src="mediaSignedUrl"-->
+<!--        @click="navigateToUploadDetailPage"-->
+<!--        class="w-full h-full"-->
+<!--    />-->
 
-    <div class="flex flex-row justify-center content-center items-center">
-      <va-progress-circle v-if="!mediaSignedUrlCreated" indeterminate/>
-    </div>
+<!--    <div class="flex flex-row justify-center content-center items-center">-->
+<!--      <va-progress-circle v-if="!mediaSignedUrlCreated" indeterminate/>-->
+<!--    </div>-->
 
-  </div>
+<!--  </div>-->
+
+  <va-image
+      v-if="mediaSignedUrlCreated"
+      :src="mediaSignedUrl"
+      @click="navigateToUploadDetailPage"
+      lazy
+      fit="cover"
+      :ratio="1"
+      class="w-full h-full"
+  >
+    <template #loader>
+      <VaSkeleton animation="pulse" variant="squared" width="100%" height="100%"/>
+    </template>
+  </va-image>
 </template>
 
 <style scoped>
