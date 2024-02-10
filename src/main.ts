@@ -24,6 +24,12 @@ import '@ionic/vue/css/text-transformation.css';
 import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc'
+
+// load utc plugin for dayjs
+dayjs.extend(utc)
+
 const app = createApp(App)
     .use(createPinia())
     .use(IonicVue)

@@ -13,6 +13,7 @@ const authStore = useAuthStore();
 const totalMediasCount = ref<number>(0);
 const uploadedMediasCount = ref<number>(0);
 const latestUploadedMedia = ref<Media | null>(null)
+const newlyUploadedMedia = ref<number>(0);
 
 const uploadContributionPercentage = computed(() => {
   // create a filling up animation instead of a draining down for the progress bar
@@ -28,7 +29,8 @@ onIonViewDidEnter(async () => {
 
   uploadedMediasCount.value = await galleryListStore.countUserUploadedMedias(me!);
   totalMediasCount.value = await galleryListStore.countTotalMedias();
-  latestUploadedMedia.value = await galleryListStore.getLatestUploadMedia()
+  latestUploadedMedia.value = await galleryListStore.getLatestUploadMedia();
+  newlyUploadedMedia.value = await galleryListStore.countUploadedMediasWithinPassDays(7);
 });
 </script>
 
@@ -48,7 +50,7 @@ onIonViewDidEnter(async () => {
 
           <va-card class="w-full">
             <va-card-title>Newly uploaded count</va-card-title>
-            <va-card-content>10</va-card-content>
+            <va-card-content>{{ newlyUploadedMedia }}</va-card-content>
           </va-card>
 
           <va-card class="w-full">

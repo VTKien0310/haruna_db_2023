@@ -5,6 +5,7 @@ import {supabasePort} from "@/ports/supabase/SupabasePort";
 import {useToast} from "vuestic-ui";
 import {data} from 'autoprefixer';
 import type {User} from '@supabase/supabase-js';
+import dayjs from "dayjs";
 
 export const useGalleryListStore = defineStore('gallery-list', () => {
     const isFetchingGalleryMedias = ref<boolean>(false);
@@ -74,10 +75,12 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     }
 
     async function countTotalMedias(): Promise<number> {
-        const {count, error} = await supabasePort.from('medias').select('*', {
-            count: 'exact',
-            head: true,
-        });
+        const {count, error} = await supabasePort
+            .from('medias')
+            .select('*', {
+                count: 'exact',
+                head: true,
+            });
 
         if (error || count === null) {
             init({
@@ -92,10 +95,13 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     }
 
     async function countUserUploadedMedias(user: User): Promise<number> {
-        const {count, error} = await supabasePort.from('medias').select('*', {
-            count: 'exact',
-            head: true,
-        }).eq('uploader_id', user.id);
+        const {count, error} = await supabasePort
+            .from('medias')
+            .select('*', {
+                count: 'exact',
+                head: true,
+            })
+            .eq('uploader_id', user.id);
 
         if (error || count === null) {
             init({
@@ -123,6 +129,29 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         return data[0];
     }
 
+    async function countUploadedMediasWithinPassDays(days: number): Promise<number> {
+        const targetPointInTime: string = dayjs().subtract(days, 'day').utc().toISOString();
+
+        const {count, error} = await supabasePort
+            .from('medias')
+            .select('*', {
+                count: 'exact',
+                head: true,
+            })
+            .filter('created_at', 'gte', targetPointInTime);
+
+        if (error || count === null) {
+            init({
+                message: 'Failed to count newly uploaded medias',
+                color: 'danger',
+            });
+
+            return 0;
+        }
+
+        return count;
+    }
+
     return {
         isFetchingGalleryMedias,
         hasFetchedAllRecords,
@@ -133,5 +162,6 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         countTotalMedias,
         countUserUploadedMedias,
         getLatestUploadMedia,
+        countUploadedMediasWithinPassDays,
     }
 })
