@@ -30,23 +30,37 @@ onIonViewDidEnter(async () => {
 <template>
   <ion-page>
     <div class="w-full min-h-screen flex flex-col justify-start items-center content-center">
-      <div class="w-full">
-        <h5>Total media count: {{ totalMediasCount }}</h5>
-        <h5>Uploaded media count: {{ uploadedMediasCount }}</h5>
-      </div>
 
       <div class="w-full">
-        <h5>Upload contribution percentage</h5>
-        <va-progress-bar
-            :model-value="uploadContributionPercentage"
-            :max="100"
-            size="large"
-            content-inside
-            show-percent
-        >
-          {{ uploadContributionPercentage }}
-        </va-progress-bar>
+        <div class="grid grid-cols-2 gap-px place-content-center place-items-center">
+
+          <va-card class="w-full">
+            <va-card-title>Total media count</va-card-title>
+            <va-card-content>{{ totalMediasCount }}</va-card-content>
+          </va-card>
+
+          <va-card class="w-full">
+            <va-card-title>Your media count</va-card-title>
+            <va-card-content>{{ uploadedMediasCount }}</va-card-content>
+          </va-card>
+
+        </div>
       </div>
+
+      <va-card square class="w-full">
+        <va-card-title>Upload contribution percentage</va-card-title>
+        <va-card-content>
+          <va-progress-bar
+              :model-value="uploadContributionPercentage"
+              :max="100"
+              size="large"
+              content-inside
+              show-percent
+          >
+            {{ uploadContributionPercentage }}
+          </va-progress-bar>
+        </va-card-content>
+      </va-card>
 
     </div>
   </ion-page>
