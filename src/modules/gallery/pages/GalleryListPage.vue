@@ -19,7 +19,7 @@ interface ScrollEventDataType {
 }
 
 const loadMoreMedias = ({target: {scrollTop, clientHeight, scrollHeight}}: ScrollEventDataType): void => {
-  if (scrollTop + clientHeight >= scrollHeight * 0.75) {
+  if (scrollTop + clientHeight >= scrollHeight * 0.85) {
     galleryListStore.fetchMedias()
   }
 }

@@ -5,6 +5,7 @@ import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
 import type {Media} from "@/modules/gallery/GalleryEntities";
 import type {Profile} from "@/modules/auth/ProfileEntities";
 import {IonPage} from "@ionic/vue";
+import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
@@ -43,6 +44,10 @@ const showProgressBar = computed((): boolean => {
 
 const mediaUploader = ref<Profile | null>(null)
 
+const uploaderIsMe = ref<boolean>(false)
+
+const authStore = useAuthStore();
+
 onMounted(async () => {
   if (!(typeof route.params.id === 'string')) {
     return
@@ -50,7 +55,12 @@ onMounted(async () => {
 
   media.value = await mediaStore.getMediaById(route.params.id)
   mediaSignedUrl.value = await mediaStore.createFullSizeViewUrlForMedia(media.value!)
-  mediaUploader.value = await mediaStore.getMediaUploader(media.value!)
+
+  const uploader = await mediaStore.getMediaUploader(media.value!)
+  mediaUploader.value = uploader
+
+  const me = await authStore.me();
+  uploaderIsMe.value = uploader?.user_id === me?.id && !!uploader;
 })
 </script>
 
@@ -79,7 +89,7 @@ onMounted(async () => {
         <div class="flex flex-row justify-end content-center items-center w-full">
           <va-button @click="triggerShowMediaDetail" round icon="info" class="mr-1"/>
           <va-button @click="downloadMedia" round icon="download" class="mr-1"/>
-          <va-button @click="deleteMedia" round icon="delete" color="danger"/>
+          <va-button v-if="uploaderIsMe" @click="deleteMedia" round icon="delete" color="danger"/>
         </div>
 
       </div>
