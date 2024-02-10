@@ -74,12 +74,10 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     }
 
     async function countTotalMedias(): Promise<number> {
-        const { count, error } = await supabasePort.
-            from('medias').
-            select('*', {
-                count: 'exact',
-                head: true,
-            });
+        const {count, error} = await supabasePort.from('medias').select('*', {
+            count: 'exact',
+            head: true,
+        });
 
         if (error || count === null) {
             init({
@@ -94,13 +92,10 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
     }
 
     async function countUserUploadedMedias(user: User): Promise<number> {
-        const {count, error} = await supabasePort.
-            from('medias').
-            select('*', {
-                count: 'exact',
-                head: true,
-            }).
-            eq('uploader_id', user.id);
+        const {count, error} = await supabasePort.from('medias').select('*', {
+            count: 'exact',
+            head: true,
+        }).eq('uploader_id', user.id);
 
         if (error || count === null) {
             init({
@@ -114,6 +109,20 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         return count;
     }
 
+    async function getLatestUploadMedia(): Promise<Media | null> {
+        const {data, error} = await supabasePort
+            .from('medias')
+            .select()
+            .limit(1)
+            .order('created_at', {ascending: false});
+
+        if (error || data === null || data.length === 0) {
+            return null;
+        }
+
+        return data[0];
+    }
+
     return {
         isFetchingGalleryMedias,
         hasFetchedAllRecords,
@@ -123,5 +132,6 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         reset,
         countTotalMedias,
         countUserUploadedMedias,
+        getLatestUploadMedia,
     }
 })

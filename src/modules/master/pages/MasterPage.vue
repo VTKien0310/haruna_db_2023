@@ -3,12 +3,16 @@ import {IonPage, onIonViewDidEnter} from '@ionic/vue';
 import {useGalleryListStore} from '@/modules/gallery/stores/GalleryListStore';
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {computed, ref} from 'vue';
+import type {Media} from "@/modules/gallery/GalleryEntities";
+import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
 
 const galleryListStore = useGalleryListStore();
+const mediaStore = useMediaStore();
 const authStore = useAuthStore();
 
 const totalMediasCount = ref<number>(0);
 const uploadedMediasCount = ref<number>(0);
+const latestUploadedMedia = ref<Media | null>(null)
 
 const uploadContributionPercentage = computed(() => {
   // create a filling up animation instead of a draining down for the progress bar
@@ -24,6 +28,7 @@ onIonViewDidEnter(async () => {
 
   uploadedMediasCount.value = await galleryListStore.countUserUploadedMedias(me!);
   totalMediasCount.value = await galleryListStore.countTotalMedias();
+  latestUploadedMedia.value = await galleryListStore.getLatestUploadMedia()
 });
 </script>
 
@@ -36,7 +41,9 @@ onIonViewDidEnter(async () => {
 
           <va-card class="w-full">
             <va-card-title>Latest media uploaded at</va-card-title>
-            <va-card-content>YYYY - MM - DD</va-card-content>
+            <va-card-content>
+              {{ latestUploadedMedia ? mediaStore.transformMediaCreatedAtToReadableFormat(latestUploadedMedia) : '' }}
+            </va-card-content>
           </va-card>
 
           <va-card class="w-full">
