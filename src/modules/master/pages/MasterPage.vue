@@ -35,12 +35,22 @@ onIonViewDidEnter(async () => {
         <div class="grid grid-cols-2 gap-px place-content-center place-items-center">
 
           <va-card class="w-full">
+            <va-card-title>Latest media uploaded at</va-card-title>
+            <va-card-content>YYYY - MM - DD</va-card-content>
+          </va-card>
+
+          <va-card class="w-full">
+            <va-card-title>Newly uploaded count</va-card-title>
+            <va-card-content>10</va-card-content>
+          </va-card>
+
+          <va-card class="w-full">
             <va-card-title>Total media count</va-card-title>
             <va-card-content>{{ totalMediasCount }}</va-card-content>
           </va-card>
 
           <va-card class="w-full">
-            <va-card-title>Your media count</va-card-title>
+            <va-card-title>Uploaded by you count</va-card-title>
             <va-card-content>{{ uploadedMediasCount }}</va-card-content>
           </va-card>
 
