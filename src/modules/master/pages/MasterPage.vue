@@ -39,26 +39,26 @@ onIonViewDidEnter(async () => {
     <div class="w-full min-h-screen flex flex-col justify-start items-center content-center">
 
       <div class="w-full">
-        <div class="grid grid-cols-2 gap-px place-content-center place-items-center">
+        <div class="grid grid-cols-2 gap-1 place-content-center place-items-center p-2">
 
-          <va-card class="w-full">
+          <va-card class="w-full h-full m-1" color="background-primary">
             <va-card-title>Latest media uploaded at</va-card-title>
             <va-card-content>
               {{ latestUploadedMedia ? mediaStore.transformMediaCreatedAtToReadableFormat(latestUploadedMedia) : '' }}
             </va-card-content>
           </va-card>
 
-          <va-card class="w-full">
+          <va-card class="w-full h-full m-1" color="background-primary">
             <va-card-title>Newly uploaded count</va-card-title>
             <va-card-content>{{ newlyUploadedMedia }}</va-card-content>
           </va-card>
 
-          <va-card class="w-full">
+          <va-card class="w-full h-full m-1" color="background-primary">
             <va-card-title>Total media count</va-card-title>
             <va-card-content>{{ totalMediasCount }}</va-card-content>
           </va-card>
 
-          <va-card class="w-full">
+          <va-card class="w-full h-full m-1" color="background-primary">
             <va-card-title>Uploaded by you count</va-card-title>
             <va-card-content>{{ uploadedMediasCount }}</va-card-content>
           </va-card>
