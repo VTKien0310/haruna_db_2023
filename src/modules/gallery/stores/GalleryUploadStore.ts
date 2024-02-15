@@ -11,6 +11,8 @@ import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 export const useGalleryUploadStore = defineStore('gallery-upload', () => {
     const pendingNewMediaFiles = ref<File[]>([])
 
+    const isImageUploadMode = ref<boolean>(true);
+
     const {confirm} = useModal();
 
     const galleryListStore = useGalleryListStore();
@@ -127,6 +129,7 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
         pendingNewMediaFiles,
         uploadPendingNewMediaFiles,
         isHandlingCreateNewMedia,
-        reset
+        reset,
+        isImageUploadMode,
     }
 })
