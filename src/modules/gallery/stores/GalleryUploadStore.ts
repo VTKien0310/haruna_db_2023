@@ -125,11 +125,23 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
         turnOffIsHandlingCreateNewMediaState();
     }
 
+    function isValidFileForUpload(file: File): boolean {
+        return [
+            'image',
+            'video',
+        ].includes(file.type.split('/')[0]);
+    }
+
+    function filterPendingFilesForValidForUpload(): void {
+        pendingNewMediaFiles.value = pendingNewMediaFiles.value.filter(isValidFileForUpload)
+    }
+
     return {
         pendingNewMediaFiles,
         uploadPendingNewMediaFiles,
         isHandlingCreateNewMedia,
         reset,
         isImageUploadMode,
+        filterPendingFilesForValidForUpload,
     }
 })

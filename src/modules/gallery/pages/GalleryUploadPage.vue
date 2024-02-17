@@ -8,21 +8,7 @@ const galleryUploadStore = useGalleryUploadStore();
 <template>
   <ion-page>
     <div>
-      <div class="w-full flex flex-row justify-between content-center items-center mt-3 px-1">
-
-        <va-switch
-            v-model="galleryUploadStore.isImageUploadMode"
-            off-color="primary"
-            style="--va-switch-checker-background-color: #ffffff;"
-            class="w-1/4"
-        >
-          <template #innerLabel>
-            <div class="va-text-center">
-              <va-icon :name="galleryUploadStore.isImageUploadMode ? 'image' : 'videocam'"/>
-            </div>
-          </template>
-        </va-switch>
-
+      <div class="w-full flex flex-row justify-center content-center items-center mt-3 px-1">
         <va-button
             @click="galleryUploadStore.uploadPendingNewMediaFiles"
             :loading="galleryUploadStore.isHandlingCreateNewMedia"
@@ -31,13 +17,12 @@ const galleryUploadStore = useGalleryUploadStore();
         >
           Upload
         </va-button>
-
       </div>
 
       <va-file-upload
           :disabled="galleryUploadStore.isHandlingCreateNewMedia"
           v-model="galleryUploadStore.pendingNewMediaFiles"
-          :file-types="galleryUploadStore.isImageUploadMode ? 'image/*' : 'video/*'"
+          file-types="image/*,video/*"
           type="gallery"
           dropzone
           upload-button-text="Add"
