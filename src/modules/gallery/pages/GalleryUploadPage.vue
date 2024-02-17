@@ -23,6 +23,7 @@ const galleryUploadStore = useGalleryUploadStore();
           :disabled="galleryUploadStore.isHandlingCreateNewMedia"
           v-model="galleryUploadStore.pendingNewMediaFiles"
           file-types="image/*,video/*"
+          @file-added="() => galleryUploadStore.filterPendingFilesForValidForUpload()"
           type="gallery"
           dropzone
           upload-button-text="Add"
