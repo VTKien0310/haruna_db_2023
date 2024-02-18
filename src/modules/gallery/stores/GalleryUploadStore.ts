@@ -17,6 +17,24 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
 
     const galleryListStore = useGalleryListStore();
 
+    function getFileType(file: File): string {
+        return file.type.split('/')[0] ?? '';
+    }
+
+    const imageFileType: string = 'image';
+    const videoFileType: string = 'video';
+
+    function isValidFileForUpload(file: File): boolean {
+        return [
+            imageFileType,
+            videoFileType,
+        ].includes(getFileType(file));
+    }
+
+    function filterPendingFilesForValidForUpload(): void {
+        pendingNewMediaFiles.value = pendingNewMediaFiles.value.filter(isValidFileForUpload)
+    }
+
     function uploadPendingNewMediaFiles(): void {
         confirm(`Proceed to upload ${pendingNewMediaFiles.value.length} file(s)?`).then(
             async (confirmToProceed: boolean): Promise<void> => {
@@ -69,14 +87,18 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
     }
 
     async function createMediaRecord(storageFilePath: string, originalFile: File): Promise<boolean> {
+        const fileType: string = getFileType(originalFile);
+        const isImageFileType: boolean = fileType === imageFileType;
+
         const {error} = await supabasePort
             .from('medias')
             .insert({
                 name: originalFile.name,
                 mime: originalFile.type,
                 size: originalFile.size,
-                type: MediaTypeEnum.PHOTO,
-                storage_path: storageFilePath
+                type: isImageFileType ? MediaTypeEnum.PHOTO : MediaTypeEnum.VIDEO,
+                storage_path: storageFilePath,
+                thumbnail_path: isImageFileType ? null : ''
             })
 
         if (error) {
@@ -123,17 +145,6 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
     function reset(): void {
         pendingNewMediaFiles.value = [];
         turnOffIsHandlingCreateNewMediaState();
-    }
-
-    function isValidFileForUpload(file: File): boolean {
-        return [
-            'image',
-            'video',
-        ].includes(file.type.split('/')[0]);
-    }
-
-    function filterPendingFilesForValidForUpload(): void {
-        pendingNewMediaFiles.value = pendingNewMediaFiles.value.filter(isValidFileForUpload)
     }
 
     return {

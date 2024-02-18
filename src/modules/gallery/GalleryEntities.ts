@@ -10,6 +10,7 @@ export interface Media {
     size: number
     type: MediaTypeEnum
     storage_path: string
+    thumbnail_path: string | null
     created_at: string
     updated_at: string
     uploader_id: string
