@@ -13,7 +13,6 @@ const galleryUploadStore = useGalleryUploadStore();
             @click="galleryUploadStore.uploadPendingNewMediaFiles"
             :loading="galleryUploadStore.isHandlingCreateNewMedia"
             :disabled="galleryUploadStore.pendingNewMediaFiles.length === 0 || galleryUploadStore.isHandlingCreateNewMedia"
-            class="w-1/4"
         >
           Upload
         </va-button>
