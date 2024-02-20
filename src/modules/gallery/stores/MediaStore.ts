@@ -19,18 +19,23 @@ export const useMediaStore = defineStore('media-store', () => {
         transform?: TransformOptions
     };
 
+    function toastFailedToGenerateSignedUrl(path: string | null): string
+    {
+        init({
+            message: `Failed to generate signed URL for ${path}`,
+            color: 'danger'
+        });
+
+        return '';
+    }
+
     async function createSignedUrlForMedia(media: Media, options: SignedUrlOptions): Promise<string> {
         const {data, error} = await supabasePort.storage
             .from('medias')
             .createSignedUrl(media.storage_path, 1800, options)
 
         if (error || !data) {
-            init({
-                message: `Failed to generate signed URL for ${media.storage_path}`,
-                color: 'danger'
-            });
-
-            return '';
+            return toastFailedToGenerateSignedUrl(media.storage_path);
         }
 
         return data.signedUrl
@@ -49,18 +54,17 @@ export const useMediaStore = defineStore('media-store', () => {
             return createSignedUrlForMedia(media, thumbnailSpecification);
         }
 
+        if (!media.thumbnail_path) {
+            return toastFailedToGenerateSignedUrl(media.thumbnail_path);
+        }
+
         const {data, error} = await supabasePort.
             storage.
             from('thumbnails').
-            createSignedUrl(media.thumbnail_path!, 1800, thumbnailSpecification);
+            createSignedUrl(media.thumbnail_path, 1800, thumbnailSpecification);
 
         if (error || !data) {
-            init({
-                message: `Failed to generate signed URL for ${media.thumbnail_path}`,
-                color: 'danger'
-            });
-
-            return '';
+            return toastFailedToGenerateSignedUrl(media.thumbnail_path);
         }
 
         return data.signedUrl;
