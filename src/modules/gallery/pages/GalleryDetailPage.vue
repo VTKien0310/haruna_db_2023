@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {useRoute} from "vue-router";
-import {computed, onMounted, ref} from "vue";
-import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
-import type {Media} from "@/modules/gallery/GalleryEntities";
-import type {Profile} from "@/modules/auth/ProfileEntities";
-import {IonPage} from "@ionic/vue";
+import {useRoute} from 'vue-router';
+import {computed, onMounted, ref} from 'vue';
+import {useMediaStore} from '@/modules/gallery/stores/MediaStore';
+import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
+import type {Profile} from '@/modules/auth/ProfileEntities';
+import {IonPage} from '@ionic/vue';
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 
 const media = ref<Media | null>(null)
@@ -67,10 +67,14 @@ onMounted(async () => {
 <template>
   <ion-page>
     <div
-        :style="{ 'background-image': 'url('+mediaSignedUrl+')' }"
+        :style="media?.type === MediaTypeEnum.PHOTO ? { 'background-image': 'url('+mediaSignedUrl+')' } : {}"
         class="h-screen bg-center bg-contain bg-scroll bg-no-repeat"
     >
       <va-progress-bar v-show="showProgressBar" indeterminate/>
+
+      <div class="w-full h-full" v-if="media?.type === MediaTypeEnum.VIDEO">
+        <video class="w-full" :src="mediaSignedUrl" controls/>
+      </div>
 
       <div
           class="interaction-area h-1/6 w-1/2 sm:w-1/3 md:w-1/6 lg:w-1/12 flex flex-col justify-end content-center items-center fixed bottom-12 right-3">
@@ -106,10 +110,5 @@ onMounted(async () => {
 .detail-area {
   background-color: var(--va-background-border);
   border-radius: 20px;
-}
-
-.te {
-  background-color: rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
 }
 </style>
