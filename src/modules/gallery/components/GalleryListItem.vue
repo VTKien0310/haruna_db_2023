@@ -59,7 +59,7 @@ onMounted(() => {
       class="w-full h-full"
   >
     <template #loader>
-      <VaSkeleton animation="pulse" variant="squared" width="100%" height="100%"/>
+      <va-skeleton animation="pulse" variant="squared" width="100%" height="100%"/>
     </template>
   </va-image>
 </template>

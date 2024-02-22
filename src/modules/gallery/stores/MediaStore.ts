@@ -51,9 +51,26 @@ export const useMediaStore = defineStore('media-store', () => {
         };
 
         if (media.type === MediaTypeEnum.PHOTO) {
-            return createSignedUrlForMedia(media, thumbnailSpecification);
+            return createThumbnailUrlForPhotoMedia(
+                media,
+                thumbnailSpecification,
+            );
         }
 
+        return createThumbnailUrlForVideoMedia(media, thumbnailSpecification);
+    }
+
+    async function createThumbnailUrlForPhotoMedia(
+        media: Media,
+        thumbnailSpecification: SignedUrlOptions,
+    ): Promise<string> {
+        return createSignedUrlForMedia(media, thumbnailSpecification);
+    }
+
+    async function createThumbnailUrlForVideoMedia(
+        media: Media,
+        thumbnailSpecification: SignedUrlOptions,
+    ): Promise<string> {
         if (!media.thumbnail_path) {
             return toastFailedToGenerateSignedUrl(media.thumbnail_path);
         }
