@@ -35,8 +35,7 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
             .from('medias')
             .select()
             .range(offset.value, offset.value + range)
-            .order('created_at', {ascending: false})
-            .eq('type', MediaTypeEnum.PHOTO);
+            .order('created_at', {ascending: false});
 
         if (error || data === null) {
             init({
