@@ -72,8 +72,11 @@ onMounted(async () => {
     >
       <va-progress-bar v-show="showProgressBar" indeterminate/>
 
-      <div class="w-full h-full" v-if="media?.type === MediaTypeEnum.VIDEO">
-        <video class="w-full" :src="mediaSignedUrl" controls/>
+      <div
+          v-if="media?.type === MediaTypeEnum.VIDEO"
+          class="video-overlay w-full flex flex-col justify-center content-center items-center"
+      >
+        <video :src="mediaSignedUrl" class="max-w-full h-auto max-h-full" controls/>
       </div>
 
       <div
@@ -110,5 +113,9 @@ onMounted(async () => {
 .detail-area {
   background-color: var(--va-background-border);
   border-radius: 20px;
+}
+
+.video-overlay {
+  height: 90%;
 }
 </style>
