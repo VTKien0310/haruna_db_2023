@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useRoute} from 'vue-router';
-import {computed, onMounted, ref} from 'vue';
+import {computed, onMounted, ref, type StyleValue} from 'vue';
 import {useMediaStore} from '@/modules/gallery/stores/MediaStore';
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import type {Profile} from '@/modules/auth/ProfileEntities';
@@ -46,6 +46,14 @@ const mediaUploader = ref<Profile | null>(null)
 
 const uploaderIsMe = ref<boolean>(false)
 
+const mediaIsVideo = computed((): boolean => media.value?.type === MediaTypeEnum.VIDEO)
+
+const pageBackground = computed((): StyleValue => {
+  return media.value?.type === MediaTypeEnum.PHOTO
+      ? {'background-image': 'url(' + mediaSignedUrl.value + ')'}
+      : {}
+})
+
 const authStore = useAuthStore();
 
 onMounted(async () => {
@@ -67,14 +75,14 @@ onMounted(async () => {
 <template>
   <ion-page>
     <div
-        :style="media?.type === MediaTypeEnum.PHOTO ? { 'background-image': 'url('+mediaSignedUrl+')' } : {}"
+        :style="pageBackground"
         class="h-screen bg-center bg-contain bg-scroll bg-no-repeat"
     >
       <va-progress-bar v-show="showProgressBar" indeterminate/>
 
       <div
-          v-if="media?.type === MediaTypeEnum.VIDEO"
-          class="video-overlay w-full flex flex-col justify-center content-center items-center"
+          v-if="mediaIsVideo"
+          class="h-full w-full flex flex-col justify-center content-center items-center"
       >
         <video :src="mediaSignedUrl" class="max-w-full h-auto max-h-full" controls/>
       </div>
@@ -113,9 +121,5 @@ onMounted(async () => {
 .detail-area {
   background-color: var(--va-background-border);
   border-radius: 20px;
-}
-
-.video-overlay {
-  height: 90%;
 }
 </style>

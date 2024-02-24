@@ -25,6 +25,8 @@ const navigateToUploadDetailPage = (): void => {
   })
 }
 
+const mediaIsVideo = computed((): boolean => props.media.type === MediaTypeEnum.VIDEO)
+
 onMounted(() => {
   mediaStore.createThumbnailUrlForMedia(props.media).then((signedUrl: string) => {
     mediaSignedUrl.value = signedUrl
@@ -49,7 +51,7 @@ onMounted(() => {
     </va-image>
 
     <va-icon
-        v-if="media.type === MediaTypeEnum.VIDEO"
+        v-if="mediaIsVideo"
         name="videocam"
         class="absolute bottom-1 right-1"
         color="background-element"
