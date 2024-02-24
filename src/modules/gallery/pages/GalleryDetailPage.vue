@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {useRoute} from "vue-router";
-import {computed, onMounted, ref} from "vue";
-import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
-import type {Media} from "@/modules/gallery/GalleryEntities";
-import type {Profile} from "@/modules/auth/ProfileEntities";
-import {IonPage} from "@ionic/vue";
+import {useRoute} from 'vue-router';
+import {computed, onMounted, ref, type StyleValue} from 'vue';
+import {useMediaStore} from '@/modules/gallery/stores/MediaStore';
+import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
+import type {Profile} from '@/modules/auth/ProfileEntities';
+import {IonPage} from '@ionic/vue';
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 
 const media = ref<Media | null>(null)
@@ -46,6 +46,14 @@ const mediaUploader = ref<Profile | null>(null)
 
 const uploaderIsMe = ref<boolean>(false)
 
+const mediaIsVideo = computed((): boolean => media.value?.type === MediaTypeEnum.VIDEO)
+
+const pageBackground = computed((): StyleValue => {
+  return media.value?.type === MediaTypeEnum.PHOTO
+      ? {'background-image': 'url(' + mediaSignedUrl.value + ')'}
+      : {}
+})
+
 const authStore = useAuthStore();
 
 onMounted(async () => {
@@ -67,10 +75,17 @@ onMounted(async () => {
 <template>
   <ion-page>
     <div
-        :style="{ 'background-image': 'url('+mediaSignedUrl+')' }"
+        :style="pageBackground"
         class="h-screen bg-center bg-contain bg-scroll bg-no-repeat"
     >
       <va-progress-bar v-show="showProgressBar" indeterminate/>
+
+      <div
+          v-if="mediaIsVideo"
+          class="h-full w-full flex flex-col justify-center content-center items-center"
+      >
+        <video :src="mediaSignedUrl" class="max-w-full h-auto max-h-full" controls/>
+      </div>
 
       <div
           class="interaction-area h-1/6 w-1/2 sm:w-1/3 md:w-1/6 lg:w-1/12 flex flex-col justify-end content-center items-center fixed bottom-12 right-3">
@@ -106,10 +121,5 @@ onMounted(async () => {
 .detail-area {
   background-color: var(--va-background-border);
   border-radius: 20px;
-}
-
-.te {
-  background-color: rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
 }
 </style>

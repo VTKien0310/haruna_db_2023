@@ -1,46 +1,90 @@
-import {defineStore} from "pinia";
-import type {Media} from "@/modules/gallery/GalleryEntities";
-import {supabasePort} from "@/ports/supabase/SupabasePort";
-import {useModal, useToast} from "vuestic-ui";
-import type {TransformOptions} from "@supabase/storage-js/src/lib/types";
-import router from "@/router";
-import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
-import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
-import {domPort} from "@/ports/dom/DomPort";
-import type {Profile} from "@/modules/auth/ProfileEntities";
-import dayjs from "dayjs";
+import {defineStore} from 'pinia';
+import type {Media} from '@/modules/gallery/GalleryEntities';
+import {MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
+import {supabasePort} from '@/ports/supabase/SupabasePort';
+import {useModal, useToast} from 'vuestic-ui';
+import type {TransformOptions} from '@supabase/storage-js/src/lib/types';
+import router from '@/router';
+import {GalleryRouteName} from '@/modules/gallery/GalleryRouter';
+import {useGalleryListStore} from '@/modules/gallery/stores/GalleryListStore';
+import {domPort} from '@/ports/dom/DomPort';
+import type {Profile} from '@/modules/auth/ProfileEntities';
+import dayjs from 'dayjs';
 
 export const useMediaStore = defineStore('media-store', () => {
     const {init} = useToast();
 
-    async function createSignedUrlForMedia(media: Media, options: {
+    type SignedUrlOptions = {
         download?: string | boolean;
         transform?: TransformOptions
-    }): Promise<string> {
+    };
+
+    function toastFailedToGenerateSignedUrl(path: string | null): string
+    {
+        init({
+            message: `Failed to generate signed URL for ${path}`,
+            color: 'danger'
+        });
+
+        return '';
+    }
+
+    async function createSignedUrlForMedia(media: Media, options: SignedUrlOptions): Promise<string> {
         const {data, error} = await supabasePort.storage
             .from('medias')
             .createSignedUrl(media.storage_path, 1800, options)
 
         if (error || !data) {
-            init({
-                message: `Failed to generate signed URL for ${media.storage_path}`,
-                color: 'danger'
-            });
-
-            return '';
+            return toastFailedToGenerateSignedUrl(media.storage_path);
         }
 
         return data.signedUrl
     }
 
     async function createThumbnailUrlForMedia(media: Media): Promise<string> {
-        return createSignedUrlForMedia(media, {
+        const thumbnailSpecification: SignedUrlOptions = {
             transform: {
                 width: 250,
                 height: 250,
-                resize: 'contain'
-            }
-        })
+                resize: 'contain',
+            },
+        };
+
+        if (media.type === MediaTypeEnum.PHOTO) {
+            return createThumbnailUrlForPhotoMedia(
+                media,
+                thumbnailSpecification,
+            );
+        }
+
+        return createThumbnailUrlForVideoMedia(media, thumbnailSpecification);
+    }
+
+    async function createThumbnailUrlForPhotoMedia(
+        media: Media,
+        thumbnailSpecification: SignedUrlOptions,
+    ): Promise<string> {
+        return createSignedUrlForMedia(media, thumbnailSpecification);
+    }
+
+    async function createThumbnailUrlForVideoMedia(
+        media: Media,
+        thumbnailSpecification: SignedUrlOptions,
+    ): Promise<string> {
+        if (!media.thumbnail_path) {
+            return toastFailedToGenerateSignedUrl(media.thumbnail_path);
+        }
+
+        const {data, error} = await supabasePort.
+            storage.
+            from('thumbnails').
+            createSignedUrl(media.thumbnail_path, 1800, thumbnailSpecification);
+
+        if (error || !data) {
+            return toastFailedToGenerateSignedUrl(media.thumbnail_path);
+        }
+
+        return data.signedUrl;
     }
 
     async function createFullSizeViewUrlForMedia(media: Media): Promise<string> {
