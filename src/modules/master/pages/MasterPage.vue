@@ -38,8 +38,8 @@ onIonViewDidEnter(async () => {
   <ion-page>
     <div class="w-full min-h-screen flex flex-col justify-start items-center content-center">
 
-      <div class="w-full">
-        <div class="grid grid-cols-2 gap-1 place-content-center place-items-center p-2">
+      <div class="w-full px-2 pt-2">
+        <div class="w-full grid grid-cols-2 gap-1 place-content-center place-items-center">
 
           <va-card class="w-full h-full m-1" color="background-primary">
             <va-card-title>Latest media uploaded at</va-card-title>
@@ -66,20 +66,22 @@ onIonViewDidEnter(async () => {
         </div>
       </div>
 
-      <va-card square class="w-full">
-        <va-card-title>Upload contribution percentage</va-card-title>
-        <va-card-content>
-          <va-progress-bar
-              :model-value="uploadContributionPercentage"
-              :max="100"
-              size="large"
-              content-inside
-              show-percent
-          >
-            {{ uploadContributionPercentage }}
-          </va-progress-bar>
-        </va-card-content>
-      </va-card>
+      <div class="w-full px-2 pt-1">
+        <va-card class="w-full h-full" color="background-primary">
+          <va-card-title>Upload contribution percentage</va-card-title>
+          <va-card-content>
+            <va-progress-bar
+                :model-value="uploadContributionPercentage"
+                :max="100"
+                size="large"
+                content-inside
+                show-percent
+            >
+              {{ uploadContributionPercentage }}
+            </va-progress-bar>
+          </va-card-content>
+        </va-card>
+      </div>
 
     </div>
   </ion-page>

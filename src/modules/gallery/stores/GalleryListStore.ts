@@ -1,9 +1,8 @@
 import {defineStore} from "pinia";
 import {ref} from "vue";
-import type {Media} from "@/modules/gallery/GalleryEntities";
+import {type Media, MediaTypeEnum} from "@/modules/gallery/GalleryEntities";
 import {supabasePort} from "@/ports/supabase/SupabasePort";
 import {useToast} from "vuestic-ui";
-import {data} from 'autoprefixer';
 import type {User} from '@supabase/supabase-js';
 import dayjs from "dayjs";
 
