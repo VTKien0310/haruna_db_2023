@@ -14,6 +14,9 @@ import type {FileData} from "@ffmpeg/ffmpeg/dist/esm/types";
 export const useGalleryUploadStore = defineStore('gallery-upload', () => {
     const pendingNewMediaFiles = ref<File[]>([])
 
+    const currentProgressUploadedFileCount = ref<number>(0)
+    const currentProgressTotalFileCount = ref<number>(0)
+
     const isImageUploadMode = ref<boolean>(true);
 
     const {confirm} = useModal();
@@ -38,6 +41,16 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
         pendingNewMediaFiles.value = pendingNewMediaFiles.value.filter(isValidFileForUpload)
     }
 
+    function setUpFileCountStatisticForNewUploadProcess(): void {
+        currentProgressTotalFileCount.value = pendingNewMediaFiles.value.length;
+        currentProgressUploadedFileCount.value = 0;
+    }
+
+    function resetFileCountStatistic(): void {
+        currentProgressTotalFileCount.value = 0;
+        currentProgressUploadedFileCount.value = 0;
+    }
+
     function uploadPendingNewMediaFiles(): void {
         confirm(`Proceed to upload ${pendingNewMediaFiles.value.length} file(s)?`).then(
             async (confirmToProceed: boolean): Promise<void> => {
@@ -45,10 +58,15 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
                     return;
                 }
 
+                setUpFileCountStatisticForNewUploadProcess();
+
                 turnOnIsHandlingCreateNewMediaState();
                 pendingNewMediaFiles.value = await handleUploadNewMediaFiles();
+                resetFileCountStatistic();
                 turnOffIsHandlingCreateNewMediaState();
+
                 redirectToGalleryListIfHasNoUploadError();
+
                 galleryListStore.refreshMedias();
             }
         )
@@ -59,9 +77,12 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
 
         for (const file of pendingNewMediaFiles.value) {
             const fileUploadSuccessfully: boolean = await uploadMedia(file);
+
             if (!fileUploadSuccessfully) {
                 failedToUploadFiles.push(file)
             }
+
+            currentProgressUploadedFileCount.value += 1;
         }
 
         return failedToUploadFiles;
@@ -249,5 +270,7 @@ export const useGalleryUploadStore = defineStore('gallery-upload', () => {
         reset,
         isImageUploadMode,
         filterPendingFilesForValidForUpload,
+        currentProgressUploadedFileCount,
+        currentProgressTotalFileCount
     }
 })
