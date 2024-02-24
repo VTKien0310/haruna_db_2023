@@ -8,6 +8,13 @@ const galleryUploadStore = useGalleryUploadStore();
 <template>
   <ion-page>
     <div>
+
+      <va-progress-bar
+          v-show="galleryUploadStore.isHandlingCreateNewMedia"
+          :model-value="galleryUploadStore.currentProgressUploadedFileCount"
+          :max="galleryUploadStore.currentProgressTotalFileCount"
+      />
+
       <div class="w-full flex flex-row justify-center content-center items-center mt-3 px-1">
         <va-button
             @click="galleryUploadStore.uploadPendingNewMediaFiles"
@@ -27,6 +34,7 @@ const galleryUploadStore = useGalleryUploadStore();
           upload-button-text="Add"
           dropZoneText="Add files or drop them here"
       />
+
     </div>
   </ion-page>
 </template>
