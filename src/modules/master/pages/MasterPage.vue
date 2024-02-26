@@ -24,18 +24,26 @@ const uploadContributionPercentage = computed(() => {
   return Math.round((uploadedMediasCount.value * 100) / totalMediasCount.value);
 });
 
+const isFetchingData = ref<boolean>(false);
+
 onIonViewDidEnter(async () => {
+  isFetchingData.value = true;
+
   const me = await authStore.me();
 
   uploadedMediasCount.value = await galleryListStore.countUserUploadedMedias(me!);
   totalMediasCount.value = await galleryListStore.countTotalMedias();
   latestUploadedMedia.value = await galleryListStore.getLatestUploadMedia();
   newlyUploadedMedia.value = await galleryListStore.countUploadedMediasWithinPassDays(7);
+
+  isFetchingData.value = false;
 });
 </script>
 
 <template>
   <ion-page>
+    <va-progress-bar v-if="isFetchingData" class="w-full" indeterminate/>
+
     <div class="w-full min-h-screen flex flex-col justify-start items-center content-center">
 
       <div class="w-full px-2 pt-2">
@@ -44,7 +52,7 @@ onIonViewDidEnter(async () => {
           <va-card class="w-full h-full m-1" color="background-primary">
             <va-card-title>Latest media uploaded at</va-card-title>
             <va-card-content>
-              {{ latestUploadedMedia ? mediaStore.transformMediaCreatedAtToReadableFormat(latestUploadedMedia) : '' }}
+              {{ latestUploadedMedia ? mediaStore.transformMediaCreatedAtToReadableFormat(latestUploadedMedia) : '--/--/----' }}
             </va-card-content>
           </va-card>
 
@@ -84,6 +92,7 @@ onIonViewDidEnter(async () => {
       </div>
 
     </div>
+
   </ion-page>
 </template>
 
