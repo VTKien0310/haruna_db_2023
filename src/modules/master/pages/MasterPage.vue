@@ -42,9 +42,9 @@ onIonViewDidEnter(async () => {
 
 <template>
   <ion-page>
-    <va-progress-bar v-if="isFetchingData" class="w-full" indeterminate/>
-
     <div class="w-full min-h-screen flex flex-col justify-start items-center content-center">
+
+      <va-progress-bar v-if="isFetchingData" class="w-full" indeterminate/>
 
       <div class="w-full px-2 pt-2">
         <div class="w-full grid grid-cols-2 gap-1 place-content-center place-items-center">
@@ -52,7 +52,9 @@ onIonViewDidEnter(async () => {
           <va-card class="w-full h-full m-1" color="background-primary">
             <va-card-title>Latest media uploaded at</va-card-title>
             <va-card-content>
-              {{ latestUploadedMedia ? mediaStore.transformMediaCreatedAtToReadableFormat(latestUploadedMedia) : '--/--/----' }}
+              {{
+                latestUploadedMedia ? mediaStore.transformMediaCreatedAtToReadableFormat(latestUploadedMedia) : '--/--/----'
+              }}
             </va-card-content>
           </va-card>
 
@@ -92,7 +94,6 @@ onIonViewDidEnter(async () => {
       </div>
 
     </div>
-
   </ion-page>
 </template>
 
