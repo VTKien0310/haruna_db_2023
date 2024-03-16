@@ -6,6 +6,7 @@ import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
 import {useAuthStore} from "@/modules/auth/stores/AuthStore";
 import {IonApp, IonRouterOutlet} from '@ionic/vue';
 import router from "@/router";
+import {FinanceRouteName} from "@/modules/finance/FinanceRouter";
 
 const authStore = useAuthStore()
 authStore.registerOnAuthStateChange()
@@ -35,6 +36,12 @@ const hideNavBar = computed((): boolean => {
       <va-button
           @click="router.push({name: GalleryRouteName.LIST})"
           icon="image"
+          color="backgroundPrimary"
+          preset="secondary"
+      />
+      <va-button
+          @click="router.push({name: FinanceRouteName.LIST})"
+          icon="account_balance"
           color="backgroundPrimary"
           preset="secondary"
       />
