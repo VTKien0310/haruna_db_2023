@@ -10,6 +10,7 @@ import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 import {useGalleryUploadStore} from "@/modules/gallery/stores/GalleryUploadStore";
 import type {Profile} from "@/modules/auth/ProfileEntities";
 import {ref} from "vue";
+import {useTransactionCreateStore} from "@/modules/finance/stores/TransactionCreateStore";
 
 export const useAuthStore = defineStore('auth', () => {
     const {init} = useToast();
@@ -43,6 +44,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const galleryListStore = useGalleryListStore();
     const galleryUploadStore = useGalleryUploadStore();
+    const transactionCreateStore = useTransactionCreateStore();
 
     async function signOut(): Promise<boolean> {
         const {error} = await supabasePort.auth.signOut()
@@ -54,6 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         galleryListStore.reset()
         galleryUploadStore.reset()
+        transactionCreateStore.reset()
 
         return true;
     }
