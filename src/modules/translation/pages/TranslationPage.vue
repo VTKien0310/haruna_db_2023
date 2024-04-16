@@ -11,8 +11,9 @@ const translatedContent = ref<string>('')
   <ion-page>
     <div class="flex min-h-screen p-3 flex-col justify-start md:flex-col-reverse md:justify-end">
 
-      <div>
-        <va-button>Translate</va-button>
+      <div class="flex justify-start w-full">
+        <va-button icon="swap_horiz"/>
+        <va-button icon="close" preset="secondary" border-color="primary" class="ml-3"/>
       </div>
 
       <div class="flex justify-around pt-3 flex-col md:pt-0 md:flex-row">
