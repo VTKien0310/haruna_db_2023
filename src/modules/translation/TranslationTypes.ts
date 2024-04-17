@@ -1,6 +1,6 @@
 export enum LanguageCode {
-  JA = 'ja',
-  EN = 'en'
+  JA = 'JA',
+  EN = 'EN'
 }
 
 export type OriginalLanguageOption = {

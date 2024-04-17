@@ -19,6 +19,10 @@ const originalLanguageOptionSelections: OriginalLanguageOption[] = [
 
 const translatedContent = ref<string>('');
 
+const initTranslation = () => {
+  console.log('init translation');
+}
+
 </script>
 
 <template>
@@ -32,7 +36,7 @@ const translatedContent = ref<string>('');
             value-by="value"
             text-by="label"
         />
-        <va-button icon="translate" class="ml-3"/>
+        <va-button @click="initTranslation" icon="translate" class="ml-3"/>
         <va-button icon="backspace" preset="secondary" border-color="primary" class="ml-3"/>
       </div>
 
