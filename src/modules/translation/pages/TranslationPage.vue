@@ -1,9 +1,23 @@
 <script setup lang="ts">
-import {IonPage} from "@ionic/vue";
-import {ref} from "vue";
+import {IonPage} from '@ionic/vue';
+import {ref} from 'vue';
+import {LanguageCode, type OriginalLanguageOption} from '@/modules/translation/TranslationTypes';
 
-const originalContent = ref<string>('')
-const translatedContent = ref<string>('')
+const originalContent = ref<string>('');
+const originalLanguage = ref<LanguageCode>(LanguageCode.JA);
+
+const originalLanguageOptionSelections: OriginalLanguageOption[] = [
+  {
+    value: LanguageCode.JA,
+    label: 'Japanese',
+  },
+  {
+    value: LanguageCode.EN,
+    label: 'English',
+  },
+];
+
+const translatedContent = ref<string>('');
 
 </script>
 
@@ -11,9 +25,15 @@ const translatedContent = ref<string>('')
   <ion-page>
     <div class="flex min-h-screen p-3 flex-col justify-start md:flex-col-reverse md:justify-end">
 
-      <div class="flex justify-start w-full">
-        <va-button icon="swap_horiz"/>
-        <va-button icon="close" preset="secondary" border-color="primary" class="ml-3"/>
+      <div class="flex justify-start w-full md:w-1/5 lg:w-1/6">
+        <va-select
+            v-model="originalLanguage"
+            :options="originalLanguageOptionSelections"
+            value-by="value"
+            text-by="label"
+        />
+        <va-button icon="translate" class="ml-3"/>
+        <va-button icon="backspace" preset="secondary" border-color="primary" class="ml-3"/>
       </div>
 
       <div class="flex justify-around pt-3 flex-col md:pt-0 md:flex-row">
