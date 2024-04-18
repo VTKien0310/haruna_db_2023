@@ -43,10 +43,13 @@ const initTranslation = (): void => {
 
 const translationService = provider.translationService()
 const translatedContent = ref<string>('');
+const isTranslating = ref<boolean>(false)
 const translate = () => {
+  isTranslating.value = true;
   translationService.translate(originalContent.value, originalLanguage.value).then(
       (translation: string): void => {
         translatedContent.value = translation
+        isTranslating.value = false
       }
   )
 }
@@ -95,6 +98,7 @@ onIonViewWillLeave(() => {
         />
         <va-textarea
             v-model="translatedContent"
+            :loading="isTranslating"
             label="Translated content"
             class="w-full md:ml-2"
             background="background-element"
