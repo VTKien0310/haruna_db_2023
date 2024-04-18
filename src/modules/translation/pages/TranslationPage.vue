@@ -51,6 +51,15 @@ const translate = () => {
   )
 }
 
+const clearOgContent = () => {
+  originalContent.value = '';
+}
+
+const resetTranslation = (): void => {
+  clearOgContent()
+  translatedContent.value = '';
+}
+
 onIonViewWillLeave(() => {
   clearOgContentInputTimeout()
 })
@@ -67,8 +76,11 @@ onIonViewWillLeave(() => {
             value-by="value"
             text-by="label"
         />
-        <va-button preset="secondary" border-color="primary" class="ml-3">
+        <va-button @click="clearOgContent" preset="secondary" border-color="primary" class="ml-3">
           Clear
+        </va-button>
+        <va-button @click="resetTranslation" preset="secondary" border-color="primary" class="ml-3">
+          Reset
         </va-button>
       </div>
 
