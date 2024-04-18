@@ -2,9 +2,14 @@ import {Responder} from "../_shared/responder.ts";
 import provider from "../_shared/provider.ts";
 
 Deno.serve(async (req) => {
-    const {original_content, source_lang, target_lang} = await req.json()
-
     const responder: Responder = provider.responder()
+
+    // This is needed if you're planning to invoke your function from a browser.
+    if (req.method === 'OPTIONS') {
+        return responder.responseCors()
+    }
+
+    const {original_content, source_lang, target_lang} = await req.json()
 
     if (!original_content) {
         return responder.responseBadRequest('missing_original_content', 'Original content is required.')
