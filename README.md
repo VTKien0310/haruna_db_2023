@@ -33,6 +33,12 @@ npm install
 npm run dev
 ```
 
+### Start Edge functions
+
+```sh
+supabase functions serve --env-file ./supabase/functions/.env.local
+```
+
 ## Release
 
 ### Build for production
