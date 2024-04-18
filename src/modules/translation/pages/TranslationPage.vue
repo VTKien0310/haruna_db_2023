@@ -70,7 +70,7 @@ onIonViewWillLeave(() => {
 
 <template>
   <ion-page>
-    <div class="flex min-h-screen m-3 flex-col justify-start md:flex-col-reverse md:justify-end">
+    <div class="flex min-h-screen m-3 flex-col justify-start">
 
       <div class="flex justify-start w-full md:w-1/5 lg:w-1/6">
         <va-select
@@ -78,6 +78,8 @@ onIonViewWillLeave(() => {
             :options="originalLanguageOptionSelections"
             value-by="value"
             text-by="label"
+            label="Source language"
+            inner-label
         />
         <va-button @click="clearOgContent" preset="secondary" border-color="primary" class="ml-3">
           Clear
@@ -87,13 +89,12 @@ onIonViewWillLeave(() => {
         </va-button>
       </div>
 
-      <div class="flex justify-around pt-3 flex-col md:pt-0 md:flex-row">
+      <div class="flex justify-around pt-3 flex-col md:flex-row">
         <va-textarea
             v-model="originalContent"
             @input="debounceOgContentInput"
             label="Original content"
             class="w-full md:mr-2"
-            autosize
             counter
         />
         <va-textarea
@@ -102,7 +103,6 @@ onIonViewWillLeave(() => {
             label="Translated content"
             class="w-full md:ml-2"
             background="background-element"
-            autosize
             readonly
         />
       </div>
