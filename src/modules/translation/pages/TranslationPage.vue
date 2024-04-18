@@ -2,8 +2,8 @@
 import {IonPage, onIonViewWillLeave} from '@ionic/vue';
 import {ref} from 'vue';
 import {LanguageCode, type OriginalLanguageOption} from '@/modules/translation/TranslationTypes';
+import provider from "@/provider";
 
-const originalContent = ref<string>('');
 const originalLanguage = ref<LanguageCode>(LanguageCode.JA);
 
 const originalLanguageOptionSelections: OriginalLanguageOption[] = [
@@ -28,17 +28,27 @@ const debounceOgContentInput = () => {
   ogContentInputTimeout = setTimeout(initTranslation, 2000);
 }
 
-const translatedContent = ref<string>('');
+const originalContent = ref<string>('');
 const lastOgContent = ref<string>('');
 const initTranslation = (): void => {
   clearOgContentInputTimeout()
 
-  if (originalLanguage.value === lastOgContent.value || !originalContent.value) {
+  if (originalContent.value === lastOgContent.value || !originalContent.value) {
     return
   }
 
   lastOgContent.value = originalContent.value
-  translatedContent.value = originalContent.value
+  translate()
+}
+
+const translationService = provider.translationService()
+const translatedContent = ref<string>('');
+const translate = () => {
+  translationService.translate(originalContent.value, originalLanguage.value).then(
+      (translation: string): void => {
+        translatedContent.value = translation
+      }
+  )
 }
 
 onIonViewWillLeave(() => {
