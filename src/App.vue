@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import {computed} from "vue";
-import {AuthRouteName} from "@/modules/auth/AuthRouter";
-import {MasterRouteName} from "@/modules/master/MasterRouter";
-import {GalleryRouteName} from "@/modules/gallery/GalleryRouter";
-import {useAuthStore} from "@/modules/auth/stores/AuthStore";
+import {computed} from 'vue';
+import {AuthRouteName} from '@/modules/auth/AuthRouter';
+import {MasterRouteName} from '@/modules/master/MasterRouter';
+import {GalleryRouteName} from '@/modules/gallery/GalleryRouter';
+import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {IonApp, IonRouterOutlet} from '@ionic/vue';
-import router from "@/router";
+import router from '@/router';
+import {TranslationRouteName} from '@/modules/translation/TranslationRouter';
 
-const authStore = useAuthStore()
-authStore.registerOnAuthStateChange()
+const authStore = useAuthStore();
+authStore.registerOnAuthStateChange();
 
 const hideNavBar = computed((): boolean => {
-  return router.currentRoute.value.name === AuthRouteName.LOGIN
-})
+  return router.currentRoute.value.name === AuthRouteName.LOGIN;
+});
 </script>
 
 <template>
@@ -35,6 +36,12 @@ const hideNavBar = computed((): boolean => {
       <va-button
           @click="router.push({name: GalleryRouteName.LIST})"
           icon="image"
+          color="backgroundPrimary"
+          preset="secondary"
+      />
+      <va-button
+          @click="router.push({name: TranslationRouteName.TRANSLATION})"
+          icon="translate"
           color="backgroundPrimary"
           preset="secondary"
       />
