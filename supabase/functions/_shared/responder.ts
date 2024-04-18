@@ -11,8 +11,14 @@ interface ErrorResponseCommonStructure {
 }
 
 export class Responder {
+    private readonly corsHeaders: Record<string, string> = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    }
+
     private readonly defaultResponseHeaders: Record<string, string> = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...this.corsHeaders
     }
 
     private responseCommonStructure(status: number, success: boolean): ResponseCommonStructure {
@@ -63,10 +69,7 @@ export class Responder {
 
     responseCors(): Response {
         return new Response('ok', {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-            }
+            headers: this.corsHeaders
         })
     }
 }
