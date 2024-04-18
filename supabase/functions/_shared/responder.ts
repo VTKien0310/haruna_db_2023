@@ -1,40 +1,62 @@
+interface ResponseCommonStructure {
+    status: number;
+    success: boolean;
+}
+
+interface ErrorResponseCommonStructure {
+    error: {
+        code: string,
+        message: string
+    }
+}
+
 export class Responder {
     private readonly defaultResponseHeaders: Record<string, string> = {
         'Content-Type': 'application/json'
     }
 
-    private responseCommonStructure(status: number, success: boolean) {
+    private responseCommonStructure(status: number, success: boolean): ResponseCommonStructure {
         return {
             status: status,
-            success: success ? 1 : 0,
+            success: success,
         }
     }
 
-    responseSuccess(data: Record<string, any>): Response {
+    private errorResponseCommonStructure(code: string, message: string): ErrorResponseCommonStructure {
+        return {
+            error: {
+                code: code,
+                message: message
+            }
+        }
+    }
+
+    responseSuccess(data: Record<string, any> | Record<string, any>[]): Response {
+        const okStatus: number = 200;
+
         return new Response(
             JSON.stringify({
-                ...this.responseCommonStructure(200, true),
+                ...this.responseCommonStructure(okStatus, true),
                 data: data
             }),
             {
                 headers: this.defaultResponseHeaders,
-                status: 200
+                status: okStatus
             }
         )
     }
 
     responseBadRequest(code: string, message: string): Response {
+        const badRequestStatus: number = 400;
+
         return new Response(
             JSON.stringify({
-                ...this.responseCommonStructure(400, false),
-                error: {
-                    code: code,
-                    message: message
-                }
+                ...this.responseCommonStructure(badRequestStatus, false),
+                ...this.errorResponseCommonStructure(code, message)
             }),
             {
                 headers: this.defaultResponseHeaders,
-                status: 400
+                status: badRequestStatus
             }
         )
     }
