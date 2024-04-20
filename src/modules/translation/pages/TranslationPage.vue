@@ -25,7 +25,7 @@ const clearOgContentInputTimeout = (): void => {
 }
 const debounceOgContentInput = () => {
   clearOgContentInputTimeout()
-  ogContentInputTimeout = setTimeout(initTranslation, 2000);
+  ogContentInputTimeout = setTimeout(initTranslation, 1000);
 }
 
 const originalContent = ref<string>('');
@@ -70,7 +70,7 @@ onIonViewWillLeave(() => {
 
 <template>
   <ion-page>
-    <div class="flex min-h-screen m-3 flex-col justify-start">
+    <div class="flex min-h-screen h-fit m-3 flex-col justify-start">
 
       <div class="flex justify-start w-full md:w-1/5 lg:w-1/6">
         <va-select
@@ -89,10 +89,12 @@ onIonViewWillLeave(() => {
         </va-button>
       </div>
 
-      <div class="flex justify-around pt-3 flex-col md:flex-row">
+      <div class="translation-form flex justify-around h-fit pt-3 flex-col md:flex-row">
         <va-textarea
             v-model="originalContent"
             @input="debounceOgContentInput"
+            autosize
+            min-rows="10"
             label="Original content"
             class="w-full md:mr-2"
             counter
@@ -100,6 +102,8 @@ onIonViewWillLeave(() => {
         <va-textarea
             v-model="translatedContent"
             :loading="isTranslating"
+            autosize
+            min-rows="10"
             label="Translated content"
             class="w-full md:ml-2"
             background="background-element"
@@ -112,5 +116,9 @@ onIonViewWillLeave(() => {
 </template>
 
 <style scoped>
-
+@media (min-width: 768px) {
+  .translation-form {
+    min-height: 50dvh;
+  }
+}
 </style>
