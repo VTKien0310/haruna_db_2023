@@ -14,7 +14,7 @@
     "@ffmpeg/util": "^0.12.1",
     "@ionic/vue": "^7.6.3",
     "@ionic/vue-router": "^7.6.3",
-    "@supabase/supabase-js": "^2.39.3",
+    "@supabase/supabase-js": "^2.42.4",
     "@vuestic/tailwind": "^0.1.3",
     "dayjs": "^1.11.10",
     "firebase": "^10.7.1",
@@ -22,7 +22,7 @@
     "pwa-asset-generator": "^6.3.1",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
-    "vuestic-ui": "^1.8.0"
+    "vuestic-ui": "^1.9.3"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",
