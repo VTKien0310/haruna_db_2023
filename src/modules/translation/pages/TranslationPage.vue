@@ -70,7 +70,7 @@ onIonViewWillLeave(() => {
 
 <template>
   <ion-page>
-    <div class="flex min-h-screen h-fit m-3 flex-col justify-start">
+    <div class="flex flex-col justify-start h-screen overflow-scroll p-3">
 
       <div class="flex justify-start w-full md:w-1/5 lg:w-1/6">
         <va-select
@@ -89,14 +89,14 @@ onIonViewWillLeave(() => {
         </va-button>
       </div>
 
-      <div class="translation-form flex justify-around h-fit pt-3 flex-col md:flex-row">
+      <div class="translation-form flex justify-around h-fit pt-3 mb-14 flex-col md:flex-row">
         <va-textarea
             v-model="originalContent"
             @input="debounceOgContentInput"
             autosize
             min-rows="10"
             label="Original content"
-            class="w-full md:mr-2"
+            class="w-full h-fit md:mr-2"
             counter
         />
         <va-textarea
@@ -105,7 +105,7 @@ onIonViewWillLeave(() => {
             autosize
             min-rows="10"
             label="Translated content"
-            class="w-full md:ml-2"
+            class="w-full h-fit md:ml-2"
             background="background-element"
             readonly
         />
