@@ -70,7 +70,7 @@ onIonViewWillLeave(() => {
 
 <template>
   <ion-page>
-    <div class="flex flex-col justify-start h-screen overflow-scroll p-3">
+    <div class="flex flex-col justify-start h-screen overflow-y-scroll overflow-x-auto px-3 pt-3 pb-14 sm:mb-14">
 
       <div class="flex justify-start w-full md:w-1/5 lg:w-1/6">
         <va-select
@@ -89,7 +89,7 @@ onIonViewWillLeave(() => {
         </va-button>
       </div>
 
-      <div class="translation-form flex justify-around h-fit pt-3 mb-14 flex-col md:flex-row">
+      <div class="translation-form flex justify-around h-fit pt-3 flex-col md:flex-row">
         <va-textarea
             v-model="originalContent"
             @input="debounceOgContentInput"
