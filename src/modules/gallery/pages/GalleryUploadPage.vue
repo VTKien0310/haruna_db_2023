@@ -7,7 +7,7 @@ const galleryUploadStore = useGalleryUploadStore();
 
 <template>
   <ion-page>
-    <div>
+    <div class="h-screen overflow-scroll">
 
       <va-progress-bar
           v-show="galleryUploadStore.isHandlingCreateNewMedia"
