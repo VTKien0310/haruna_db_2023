@@ -5,6 +5,9 @@ import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 import {onMounted, ref} from "vue";
 import GalleryListItem from "@/modules/gallery/components/GalleryListItem.vue";
 import {IonPage} from "@ionic/vue";
+import provider from "@/provider";
+
+const galleryListService = provider.galleryListService()
 
 const galleryListStore = useGalleryListStore();
 
@@ -20,7 +23,7 @@ interface ScrollEventDataType {
 
 const loadMoreMedias = ({target: {scrollTop, clientHeight, scrollHeight}}: ScrollEventDataType): void => {
   if (scrollTop + clientHeight >= scrollHeight * 0.85) {
-    galleryListStore.fetchMedias()
+    galleryListService.fetchMedias()
   }
 }
 
