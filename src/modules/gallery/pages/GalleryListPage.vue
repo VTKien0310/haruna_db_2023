@@ -28,7 +28,7 @@ const loadMoreMedias = ({target: {scrollTop, clientHeight, scrollHeight}}: Scrol
 }
 
 onMounted(() => {
-  galleryListStore.refreshMedias()
+  galleryListService.refreshMedias()
 })
 </script>
 

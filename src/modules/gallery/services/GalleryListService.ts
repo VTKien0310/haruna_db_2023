@@ -53,4 +53,16 @@ export class GalleryListService {
 
         this.galleryListStore.offset = this.galleryListStore.offset + data.length;
     }
+
+    private reset(): void {
+        this.galleryListStore.medias = [];
+        this.galleryListStore.offset = 0
+        this.galleryListStore.hasFetchedAllRecords = false;
+        this.turnOffIsFetchingMediaState();
+    }
+
+    async refreshMedias(): Promise<void> {
+        this.reset();
+        return this.fetchMedias()
+    }
 }
