@@ -6,7 +6,7 @@ import {
   LanguageCode,
   type OriginalLanguageOption
 } from '@/modules/translation/TranslationTypes';
-import provider from "@/provider";
+import translationServiceContainer from "@/modules/translation/TranslationServiceContainer";
 
 const originalLanguage = ref<LanguageCode>(LanguageCode.JA);
 
@@ -78,7 +78,7 @@ const initTranslation = (): void => {
   translate()
 }
 
-const translationService = provider.translationService()
+const translationService = translationServiceContainer.translationService()
 const translatedContent = ref<string>('');
 const isTranslating = ref<boolean>(false)
 const translate = () => {

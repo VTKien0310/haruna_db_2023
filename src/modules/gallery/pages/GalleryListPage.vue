@@ -5,9 +5,9 @@ import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 import {onMounted, ref} from "vue";
 import GalleryListItem from "@/modules/gallery/components/GalleryListItem.vue";
 import {IonPage} from "@ionic/vue";
-import provider from "@/provider";
+import galleryServiceContainer from "@/modules/gallery/GalleryServiceContainer";
 
-const galleryListService = provider.galleryListService()
+const galleryListService = galleryServiceContainer.galleryListService()
 
 const galleryListStore = useGalleryListStore();
 
