@@ -3,6 +3,7 @@ import {useAuthStore} from "@/modules/auth/stores/AuthStore";
 import {computed, onMounted, reactive, ref} from "vue";
 import type {ProfileDetail} from "@/modules/auth/AuthTypes";
 import {IonPage} from "@ionic/vue";
+import galleryServiceContainer from "@/modules/gallery/GalleryServiceContainer";
 
 const authStore = useAuthStore();
 
@@ -37,8 +38,11 @@ function handleUpdateProfile() {
   })
 }
 
-function handleLogout() {
-  authStore.signOut()
+const uploadMediaService = galleryServiceContainer.uploadMediaService();
+
+const handleLogout = async () => {
+  uploadMediaService.reset()
+  await authStore.signOut();
 }
 
 onMounted(() => {
