@@ -293,13 +293,13 @@ export class UploadMediaService {
 
   filterPendingFilesForValidForUpload(): void {
     this.galleryUploadStore.pendingNewMediaFiles = this.galleryUploadStore
-      .pendingNewMediaFiles.filter(this.isValidFileForUpload);
-  }
-
-  isValidFileForUpload(file: File): boolean {
-    return [
-      imageFileType,
-      videoFileType,
-    ].includes(this.getFileType(file));
+      .pendingNewMediaFiles
+      .filter(
+        (file) =>
+          [
+            imageFileType,
+            videoFileType,
+          ].includes(this.getFileType(file)),
+      );
   }
 }

@@ -7,11 +7,12 @@ export class GalleryServiceContainer {
   }
 
   uploadMediaService(): UploadMediaService {
-    return new UploadMediaService(this.galleryListService());
+    return new UploadMediaService(
+      this.galleryListService(),
+    );
   }
 }
 
-const galleryServiceContainer: GalleryServiceContainer =
-  new GalleryServiceContainer();
+const galleryServiceContainer = new GalleryServiceContainer();
 
 export default galleryServiceContainer;
