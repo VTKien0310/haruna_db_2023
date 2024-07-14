@@ -1,5 +1,5 @@
 import type {SupabaseClient} from "@supabase/supabase-js";
-import {LanguageCode} from "@/modules/translation/TranslationTypes.ts";
+import {LanguageCode} from "@/modules/translation/TranslationTypes";
 import {useToast} from "vuestic-ui";
 
 export class TranslationService {
