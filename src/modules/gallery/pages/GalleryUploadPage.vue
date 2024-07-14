@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {useGalleryUploadStore} from "@/modules/gallery/stores/GalleryUploadStore";
 import {IonPage} from "@ionic/vue";
-import galleryServiceContainer from "@/modules/gallery/GalleryServiceContainer";
+import {useUploadMediaService} from "@/modules/gallery/GalleryServiceContainer";
 
-const uploadMediaService = galleryServiceContainer.uploadMediaService();
+const uploadMediaService = useUploadMediaService();
 
 const galleryUploadStore = useGalleryUploadStore();
 

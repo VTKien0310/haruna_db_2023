@@ -6,11 +6,14 @@ import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import type {Profile} from '@/modules/auth/ProfileEntities';
 import {IonPage} from '@ionic/vue';
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
+import {useMediaDetailService} from "@/modules/gallery/GalleryServiceContainer";
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
 
 const route = useRoute();
+
+const mediaDetailService = useMediaDetailService();
 
 const mediaStore = useMediaStore();
 
@@ -96,8 +99,8 @@ onMounted(async () => {
         >
           <div v-show="showMediaDetail">
             <p>By {{ mediaUploader?.name ?? '' }}</p>
-            <p>On {{ media ? mediaStore.transformMediaCreatedAtToReadableFormat(media) : '' }}</p>
-            <p>Size {{ mediaStore.transformMediaSizeToReadableFormat(media?.size ?? 0) }}</p>
+            <p>On {{ media ? mediaDetailService.transformMediaCreatedAtToHumanReadableFormat(media) : '' }}</p>
+            <p>Size {{ mediaDetailService.transformMediaSizeToHumanReadableFormat(media?.size ?? 0) }}</p>
           </div>
         </div>
 

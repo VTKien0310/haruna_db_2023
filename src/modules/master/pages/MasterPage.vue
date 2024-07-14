@@ -5,6 +5,9 @@ import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {computed, ref} from 'vue';
 import type {Media} from "@/modules/gallery/GalleryEntities";
 import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
+import {useMediaDetailService} from "@/modules/gallery/GalleryServiceContainer";
+
+const mediaDetailService = useMediaDetailService();
 
 const galleryListStore = useGalleryListStore();
 const mediaStore = useMediaStore();
@@ -53,7 +56,7 @@ onIonViewDidEnter(async () => {
             <va-card-title>Latest media uploaded at</va-card-title>
             <va-card-content>
               {{
-                latestUploadedMedia ? mediaStore.transformMediaCreatedAtToReadableFormat(latestUploadedMedia) : '--/--/----'
+                latestUploadedMedia ? mediaDetailService.transformMediaCreatedAtToHumanReadableFormat(latestUploadedMedia) : '--/--/----'
               }}
             </va-card-content>
           </va-card>

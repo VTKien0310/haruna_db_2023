@@ -1,18 +1,17 @@
 import { GalleryListService } from "@/modules/gallery/services/GalleryListService";
 import { UploadMediaService } from "@/modules/gallery/services/UploadMediaService";
+import { MediaDetailService } from "@/modules/gallery/services/MediaDetailService";
 
-export class GalleryServiceContainer {
-  galleryListService(): GalleryListService {
-    return new GalleryListService();
-  }
+const useGalleryListService = () => new GalleryListService();
 
-  uploadMediaService(): UploadMediaService {
-    return new UploadMediaService(
-      this.galleryListService(),
-    );
-  }
-}
+const useUploadMediaService = () =>
+  new UploadMediaService(
+    useGalleryListService(),
+  );
 
-const galleryServiceContainer = new GalleryServiceContainer();
+const useMediaDetailService = () =>
+  new MediaDetailService(
+    useGalleryListService(),
+  );
 
-export default galleryServiceContainer;
+export { useGalleryListService, useMediaDetailService, useUploadMediaService };

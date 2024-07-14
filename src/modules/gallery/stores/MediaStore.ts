@@ -203,26 +203,6 @@ export const useMediaStore = defineStore('media-store', () => {
         return data[0];
     }
 
-    /**
-     * Stolen from https://gist.github.com/zentala/1e6f72438796d74531803cc3833c039c
-     *
-     * @param bytes
-     * @param decimals
-     */
-    function transformMediaSizeToReadableFormat(bytes: number, decimals: number = 2): string {
-        if (bytes == 0) return '0 Bytes';
-
-        const k = 1024,
-            sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-            i = Math.floor(Math.log(bytes) / Math.log(k));
-
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
-    }
-
-    function transformMediaCreatedAtToReadableFormat(media: Media): string {
-        return dayjs(media.created_at).format('DD/MM/YYYY')
-    }
-
     return {
         createThumbnailUrlForMedia,
         createFullSizeViewUrlForMedia,
@@ -230,7 +210,5 @@ export const useMediaStore = defineStore('media-store', () => {
         deleteMedia,
         downloadMedia,
         getMediaUploader,
-        transformMediaSizeToReadableFormat,
-        transformMediaCreatedAtToReadableFormat
     }
 })

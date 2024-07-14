@@ -3,7 +3,7 @@ import {useAuthStore} from "@/modules/auth/stores/AuthStore";
 import {computed, onMounted, reactive, ref} from "vue";
 import type {ProfileDetail} from "@/modules/auth/AuthTypes";
 import {IonPage} from "@ionic/vue";
-import galleryServiceContainer from "@/modules/gallery/GalleryServiceContainer";
+import {useUploadMediaService} from "@/modules/gallery/GalleryServiceContainer";
 
 const authStore = useAuthStore();
 
@@ -38,7 +38,7 @@ function handleUpdateProfile() {
   })
 }
 
-const uploadMediaService = galleryServiceContainer.uploadMediaService();
+const uploadMediaService = useUploadMediaService();
 
 const handleLogout = async () => {
   uploadMediaService.reset()
