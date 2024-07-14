@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {useRoute} from 'vue-router';
 import {computed, onMounted, ref, type StyleValue} from 'vue';
-import {useMediaStore} from '@/modules/gallery/stores/MediaStore';
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import type {Profile} from '@/modules/auth/ProfileEntities';
 import {IonPage} from '@ionic/vue';
@@ -12,10 +11,7 @@ const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
 
 const route = useRoute();
-
 const mediaDetailService = useMediaDetailService();
-
-const mediaStore = useMediaStore();
 
 const showMediaDetail = ref<boolean>(false)
 const triggerShowMediaDetail = (): void => {
@@ -25,17 +21,17 @@ const triggerShowMediaDetail = (): void => {
 const isHandlingDeleteMedia = ref<boolean>(false)
 const deleteMedia = (): void => {
   isHandlingDeleteMedia.value = true
-  mediaStore
-      .deleteMedia(media.value!)
-      .then(() => isHandlingDeleteMedia.value = false)
+  mediaDetailService.deleteMedia(media.value!).then(
+      () => isHandlingDeleteMedia.value = false
+  )
 }
 
 const isHandlingDownloadMedia = ref<boolean>(false)
 const downloadMedia = (): void => {
   isHandlingDownloadMedia.value = true
-  mediaStore
-      .downloadMedia(media.value!)
-      .then(() => isHandlingDownloadMedia.value = false)
+  mediaDetailService.downloadMedia(media.value!).then(
+      () => isHandlingDownloadMedia.value = false
+  )
 }
 
 const showProgressBar = computed((): boolean => {
@@ -64,10 +60,10 @@ onMounted(async () => {
     return
   }
 
-  media.value = await mediaStore.getMediaById(route.params.id)
-  mediaSignedUrl.value = await mediaStore.createFullSizeViewUrlForMedia(media.value!)
+  media.value = await mediaDetailService.getMediaById(route.params.id)
+  mediaSignedUrl.value = await mediaDetailService.createFullSizeViewUrlForMedia(media.value!)
 
-  const uploader = await mediaStore.getMediaUploader(media.value!)
+  const uploader = await mediaDetailService.getMediaUploader(media.value!)
   mediaUploader.value = uploader
 
   const me = await authStore.me();

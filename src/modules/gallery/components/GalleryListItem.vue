@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
-import {useMediaStore} from '@/modules/gallery/stores/MediaStore';
 import {computed, onMounted, ref} from 'vue';
 import router from '@/router';
 import {GalleryRouteName} from '@/modules/gallery/GalleryRouter';
+import {useMediaDetailService} from "@/modules/gallery/GalleryServiceContainer";
 
 const props = defineProps<{
   media: Media
@@ -14,7 +14,7 @@ const mediaSignedUrlCreated = computed((): boolean => {
   return mediaSignedUrl.value != ''
 })
 
-const mediaStore = useMediaStore()
+const mediaDetailService = useMediaDetailService();
 
 const navigateToUploadDetailPage = (): void => {
   router.push({
@@ -28,7 +28,7 @@ const navigateToUploadDetailPage = (): void => {
 const mediaIsVideo = computed((): boolean => props.media.type === MediaTypeEnum.VIDEO)
 
 onMounted(() => {
-  mediaStore.createThumbnailUrlForMedia(props.media).then((signedUrl: string) => {
+  mediaDetailService.createThumbnailUrlForMedia(props.media).then((signedUrl: string) => {
     mediaSignedUrl.value = signedUrl
   })
 })

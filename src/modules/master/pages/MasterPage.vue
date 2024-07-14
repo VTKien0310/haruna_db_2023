@@ -4,13 +4,11 @@ import {useGalleryListStore} from '@/modules/gallery/stores/GalleryListStore';
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {computed, ref} from 'vue';
 import type {Media} from "@/modules/gallery/GalleryEntities";
-import {useMediaStore} from "@/modules/gallery/stores/MediaStore";
 import {useMediaDetailService} from "@/modules/gallery/GalleryServiceContainer";
 
 const mediaDetailService = useMediaDetailService();
 
 const galleryListStore = useGalleryListStore();
-const mediaStore = useMediaStore();
 const authStore = useAuthStore();
 
 const totalMediasCount = ref<number>(0);
