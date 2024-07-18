@@ -1,11 +1,13 @@
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 import {useToast} from "vuestic-ui";
-import {supabasePort} from "@/ports/supabase/SupabasePort";
 import type {Media} from "@/modules/gallery/GalleryEntities";
+import type {SupabaseClient} from '@supabase/supabase-js';
 
 export class GalleryListService {
     private readonly galleryListStore = useGalleryListStore();
     private readonly toastInit = useToast().init;
+
+    constructor(private readonly supabasePort: SupabaseClient) {}
 
     turnOnIsFetchingMediaState(): void {
         this.galleryListStore.isFetchingGalleryMedias = true
@@ -24,7 +26,7 @@ export class GalleryListService {
 
         const range: number = 60;
 
-        const {data, error} = await supabasePort
+        const {data, error} = await this.supabasePort
             .from('medias')
             .select()
             .range(this.galleryListStore.offset, this.galleryListStore.offset + range)

@@ -3,15 +3,13 @@ import { useModal, useToast } from "vuestic-ui";
 import router from "@/router";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
-import {
-  defaultStorageFileOptions,
-  supabasePort,
-} from "@/ports/supabase/SupabasePort";
+import {defaultStorageFileOptions} from '@/ports/supabase/SupabasePort';
 import { uuid } from "@supabase/supabase-js/dist/main/lib/helpers";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import type { FileData } from "@ffmpeg/ffmpeg/dist/esm/types";
+import type {SupabaseClient} from '@supabase/supabase-js';
 
 const imageFileType: string = "image";
 const videoFileType: string = "video";
@@ -21,7 +19,10 @@ export class UploadMediaService {
   private readonly confirmModal = useModal().confirm;
   private readonly toastInit = useToast().init;
 
-  constructor(private readonly galleryListService: GalleryListService) {
+  constructor(
+      private readonly supabasePort: SupabaseClient,
+      private readonly galleryListService: GalleryListService
+  ) {
   }
 
   uploadPendingNewMediaFiles(): void {
@@ -69,7 +70,7 @@ export class UploadMediaService {
     const fileExtension: string = this.getFileExtension(file);
     const fileStorageName: string = this.generateFileStorageName(fileExtension);
 
-    const { data, error } = await supabasePort.storage
+    const { data, error } = await this.supabasePort.storage
       .from("medias")
       .upload(fileStorageName, file, defaultStorageFileOptions);
 
@@ -118,7 +119,7 @@ export class UploadMediaService {
       return this.toastFailedToCreateMediaRecord(originalFile);
     }
 
-    const { error } = await supabasePort
+    const { error } = await this.supabasePort
       .from("medias")
       .insert({
         name: originalFile.name,
@@ -140,7 +141,7 @@ export class UploadMediaService {
     storageVideoFilePath: string,
     video: File,
   ): Promise<string> {
-    const { data, error } = await supabasePort.storage
+    const { data, error } = await this.supabasePort.storage
       .from("medias")
       .createSignedUrl(storageVideoFilePath, 300);
 
@@ -203,7 +204,7 @@ export class UploadMediaService {
     thumbnail: FileData,
     thumbnailFileName: string,
   ): Promise<string> {
-    const { data, error } = await supabasePort.storage
+    const { data, error } = await this.supabasePort.storage
       .from("thumbnails")
       .upload(
         thumbnailFileName,
@@ -227,7 +228,7 @@ export class UploadMediaService {
     storageFilePath: string,
     originalFile: File,
   ): Promise<boolean> {
-    const { error } = await supabasePort
+    const { error } = await this.supabasePort
       .from("medias")
       .insert({
         name: originalFile.name,

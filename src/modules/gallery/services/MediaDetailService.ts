@@ -2,13 +2,13 @@ import dayjs from "dayjs";
 import type { Media } from "@/modules/gallery/GalleryEntities";
 import { useModal, useToast } from "vuestic-ui";
 import type { Profile } from "@/modules/auth/ProfileEntities";
-import { supabasePort } from "@/ports/supabase/SupabasePort";
 import { domPort } from "@/ports/dom/DomPort";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
 import router from "@/router";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 import type { TransformOptions } from "@supabase/storage-js/src/lib/types";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
+import type {SupabaseClient} from '@supabase/supabase-js';
 
 type SignedUrlOptions = {
   download?: string | boolean;
@@ -19,11 +19,14 @@ export class MediaDetailService {
   private readonly toastInit = useToast().init;
   private readonly confirmModal = useModal().confirm;
 
-  constructor(private readonly galleryListService: GalleryListService) {
+  constructor(
+      private readonly supabasePort: SupabaseClient,
+      private readonly galleryListService: GalleryListService
+  ) {
   }
 
   async downloadMedia(media: Media): Promise<void> {
-    const { data, error } = await supabasePort.storage
+    const { data, error } = await this.supabasePort.storage
       .from("medias")
       .download(media.storage_path);
 
@@ -39,7 +42,7 @@ export class MediaDetailService {
   }
 
   async getMediaUploader(media: Media): Promise<Profile | null> {
-    const { data, error } = await supabasePort
+    const { data, error } = await this.supabasePort
       .from("profiles")
       .select()
       .eq("user_id", media.uploader_id);
@@ -92,7 +95,7 @@ export class MediaDetailService {
     media: Media,
     options: SignedUrlOptions,
   ): Promise<string> {
-    const { data, error } = await supabasePort.storage
+    const { data, error } = await this.supabasePort.storage
       .from("medias")
       .createSignedUrl(media.storage_path, 1800, options);
 
@@ -118,7 +121,7 @@ export class MediaDetailService {
       return this.toastFailedToGenerateSignedUrl(media.thumbnail_path);
     }
 
-    const { data, error } = await supabasePort
+    const { data, error } = await this.supabasePort
       .storage
       .from("thumbnails")
       .createSignedUrl(media.thumbnail_path, 1800, thumbnailSpecification);
@@ -154,7 +157,7 @@ export class MediaDetailService {
   }
 
   async getMediaById(id: string): Promise<Media | null> {
-    const { data, error } = await supabasePort.from("medias")
+    const { data, error } = await this.supabasePort.from("medias")
       .select()
       .limit(1)
       .eq("id", id);
@@ -186,7 +189,7 @@ export class MediaDetailService {
   }
 
   private async deleteMediaRecordInDb(id: string): Promise<boolean> {
-    const { error } = await supabasePort
+    const { error } = await this.supabasePort
       .from("medias")
       .delete()
       .eq("id", id);
@@ -195,7 +198,7 @@ export class MediaDetailService {
   }
 
   private async deleteMediaFileInBucket(storagePath: string) {
-    const { data, error } = await supabasePort.storage
+    const { data, error } = await this.supabasePort.storage
       .from("medias")
       .remove([storagePath]);
 
