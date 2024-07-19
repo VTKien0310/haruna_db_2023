@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {ref} from "vue";
-import {type Media, MediaTypeEnum} from "@/modules/gallery/GalleryEntities";
+import {type Media} from "@/modules/gallery/GalleryEntities";
 import {supabasePort} from "@/ports/supabase/SupabasePort";
 import {useToast} from "vuestic-ui";
 import type {User} from '@supabase/supabase-js';
@@ -155,6 +155,7 @@ export const useGalleryListStore = defineStore('gallery-list', () => {
         isFetchingGalleryMedias,
         hasFetchedAllRecords,
         medias,
+        offset,
         fetchMedias,
         refreshMedias,
         reset,

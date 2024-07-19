@@ -7,7 +7,6 @@ import type {AuthCredential, ProfileDetail} from "@/modules/auth/AuthTypes";
 import {useToast} from "vuestic-ui";
 import {MasterRouteName} from "@/modules/master/MasterRouter";
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
-import {useGalleryUploadStore} from "@/modules/gallery/stores/GalleryUploadStore";
 import type {Profile} from "@/modules/auth/ProfileEntities";
 import {ref} from "vue";
 
@@ -42,7 +41,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     const galleryListStore = useGalleryListStore();
-    const galleryUploadStore = useGalleryUploadStore();
 
     async function signOut(): Promise<boolean> {
         const {error} = await supabasePort.auth.signOut()
@@ -53,7 +51,6 @@ export const useAuthStore = defineStore('auth', () => {
         }
 
         galleryListStore.reset()
-        galleryUploadStore.reset()
 
         return true;
     }
