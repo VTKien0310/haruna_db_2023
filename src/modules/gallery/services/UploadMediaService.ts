@@ -19,6 +19,11 @@ export class UploadMediaService {
   private readonly confirmModal = useModal().confirm;
   private readonly toastInit = useToast().init;
 
+  /**
+   * Represents the lazy-loaded FFmpeg object.
+   */
+  private ffmpeg: FFmpeg | null = null;
+
   constructor(
       private readonly supabasePort: SupabaseClient,
       private readonly galleryListService: GalleryListService
@@ -137,6 +142,39 @@ export class UploadMediaService {
     return true;
   }
 
+  /**
+   * Loads FFmpeg and returns an instance of FFmpeg.
+   * If FFmpeg is already loaded, it returns the existing instance.
+   *
+   * @private
+   * @returns {Promise<FFmpeg>} A Promise that resolves to an instance of FFmpeg.
+   */
+  private async loadFfmpeg(): Promise<FFmpeg> {
+    // ffmpeg is already loaded
+    if (this.ffmpeg) {
+      return this.ffmpeg;
+    }
+
+    // load ffmpeg wasm
+    const ffmpeg: FFmpeg = new FFmpeg();
+    const ffmpegWasmCdnBaseURL: string = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm';
+    // toBlobURL is used to bypass CORS issue, urls with the same domain can be used directly.
+    await ffmpeg.load({
+      coreURL: await toBlobURL(
+          `${ffmpegWasmCdnBaseURL}/ffmpeg-core.js`,
+          'text/javascript',
+      ),
+      wasmURL: await toBlobURL(
+          `${ffmpegWasmCdnBaseURL}/ffmpeg-core.wasm`,
+          'application/wasm',
+      ),
+    });
+
+    this.ffmpeg = ffmpeg;
+
+    return this.ffmpeg;
+  }
+
   private async generateThumbnailForVideo(
     storageVideoFilePath: string,
     video: File,
@@ -156,21 +194,7 @@ export class UploadMediaService {
     }
 
     try {
-      /* Load ffmpeg wasm  */
-      const ffmpeg: FFmpeg = new FFmpeg();
-      const ffmpegWasmCdnBaseURL: string =
-        "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
-      // toBlobURL is used to bypass CORS issue, urls with the same domain can be used directly.
-      await ffmpeg.load({
-        coreURL: await toBlobURL(
-          `${ffmpegWasmCdnBaseURL}/ffmpeg-core.js`,
-          "text/javascript",
-        ),
-        wasmURL: await toBlobURL(
-          `${ffmpegWasmCdnBaseURL}/ffmpeg-core.wasm`,
-          "application/wasm",
-        ),
-      });
+      const ffmpeg: FFmpeg = await this.loadFfmpeg();
 
       const storageFileName: string = storageVideoFilePath.split("/").at(-1)!
         .split(".").at(0)!;
