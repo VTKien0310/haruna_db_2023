@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {useForm} from 'vuestic-ui';
 import {computed, reactive, ref} from 'vue';
-import {useAuthStore} from "@/modules/auth/stores/AuthStore";
 import type {AuthCredential} from "@/modules/auth/AuthTypes";
 import {IonPage} from "@ionic/vue";
+import {useAuthenticationService} from '@/modules/auth/AuthServiceContainer';
 
 const {reset} = useForm('loginForm');
 
-const authStore = useAuthStore();
+const authenticationService = useAuthenticationService();
 
 const loginFormContent = reactive<AuthCredential>({
   email: '',
@@ -24,7 +24,7 @@ const isHandlingLogin = ref<boolean>(false);
 
 function handleLogin() {
   isHandlingLogin.value = true;
-  authStore.signIn(loginFormContent).then((isSuccess: boolean) => {
+  authenticationService.signIn(loginFormContent).then((isSuccess: boolean) => {
     isHandlingLogin.value = false;
     if (isSuccess) {
       reset();

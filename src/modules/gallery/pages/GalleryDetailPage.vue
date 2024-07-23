@@ -4,8 +4,8 @@ import {computed, onMounted, ref, type StyleValue} from 'vue';
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import type {Profile} from '@/modules/auth/ProfileEntities';
 import {IonPage} from '@ionic/vue';
-import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {useMediaDetailService} from "@/modules/gallery/GalleryServiceContainer";
+import {useProfileService} from '@/modules/auth/AuthServiceContainer';
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
@@ -53,7 +53,7 @@ const pageBackground = computed((): StyleValue => {
       : {}
 })
 
-const authStore = useAuthStore();
+const profileService = useProfileService();
 
 onMounted(async () => {
   if (!(typeof route.params.id === 'string')) {
@@ -66,7 +66,7 @@ onMounted(async () => {
   const uploader = await mediaDetailService.getMediaUploader(media.value!)
   mediaUploader.value = uploader
 
-  const me = await authStore.me();
+  const me = await profileService.me();
   uploaderIsMe.value = uploader?.user_id === me?.id && !!uploader;
 })
 </script>

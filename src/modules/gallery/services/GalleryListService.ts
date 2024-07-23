@@ -56,7 +56,7 @@ export class GalleryListService {
         this.galleryListStore.offset = this.galleryListStore.offset + data.length;
     }
 
-    private reset(): void {
+    reset(): void {
         this.galleryListStore.medias = [];
         this.galleryListStore.offset = 0
         this.galleryListStore.hasFetchedAllRecords = false;

@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import {IonPage, onIonViewDidEnter} from '@ionic/vue';
 import {useGalleryListStore} from '@/modules/gallery/stores/GalleryListStore';
-import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {computed, ref} from 'vue';
 import type {Media} from "@/modules/gallery/GalleryEntities";
 import {useMediaDetailService} from "@/modules/gallery/GalleryServiceContainer";
+import {useProfileService} from '@/modules/auth/AuthServiceContainer';
 
 const mediaDetailService = useMediaDetailService();
 
 const galleryListStore = useGalleryListStore();
-const authStore = useAuthStore();
+const profileService = useProfileService();
 
 const totalMediasCount = ref<number>(0);
 const uploadedMediasCount = ref<number>(0);
@@ -30,7 +30,7 @@ const isFetchingData = ref<boolean>(false);
 onIonViewDidEnter(async () => {
   isFetchingData.value = true;
 
-  const me = await authStore.me();
+  const me = await profileService.me();
 
   uploadedMediasCount.value = await galleryListStore.countUserUploadedMedias(me!);
   totalMediasCount.value = await galleryListStore.countTotalMedias();
