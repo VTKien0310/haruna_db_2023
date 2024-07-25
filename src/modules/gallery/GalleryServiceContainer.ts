@@ -2,6 +2,9 @@ import { GalleryListService } from "@/modules/gallery/services/GalleryListServic
 import { UploadMediaService } from "@/modules/gallery/services/UploadMediaService";
 import { MediaDetailService } from "@/modules/gallery/services/MediaDetailService";
 import {supabasePort} from '@/ports/supabase/SupabasePort';
+import {
+  GalleryStatisticService
+} from '@/modules/gallery/services/GalleryStatisticService';
 
 const useGalleryListService = () => new GalleryListService(supabasePort);
 
@@ -15,4 +18,13 @@ const useMediaDetailService = () => new MediaDetailService(
     useGalleryListService(),
 );
 
-export { useGalleryListService, useMediaDetailService, useUploadMediaService };
+const useGalleryStatisticService = () => new GalleryStatisticService(
+    supabasePort,
+);
+
+export {
+  useGalleryListService,
+  useMediaDetailService,
+  useUploadMediaService,
+  useGalleryStatisticService,
+};
