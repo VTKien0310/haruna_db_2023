@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import {IonPage, onIonViewDidEnter} from '@ionic/vue';
-import {useGalleryListStore} from '@/modules/gallery/stores/GalleryListStore';
 import {computed, ref} from 'vue';
 import type {Media} from "@/modules/gallery/GalleryEntities";
-import {useMediaDetailService} from "@/modules/gallery/GalleryServiceContainer";
+import {useGalleryStatisticService, useMediaDetailService} from '@/modules/gallery/GalleryServiceContainer';
 import {useProfileService} from '@/modules/auth/AuthServiceContainer';
 
 const mediaDetailService = useMediaDetailService();
+const galleryStatisticService = useGalleryStatisticService();
 
-const galleryListStore = useGalleryListStore();
 const profileService = useProfileService();
 
 const totalMediasCount = ref<number>(0);
@@ -32,10 +31,10 @@ onIonViewDidEnter(async () => {
 
   const me = await profileService.me();
 
-  uploadedMediasCount.value = await galleryListStore.countUserUploadedMedias(me!);
-  totalMediasCount.value = await galleryListStore.countTotalMedias();
-  latestUploadedMedia.value = await galleryListStore.getLatestUploadMedia();
-  newlyUploadedMedia.value = await galleryListStore.countUploadedMediasWithinPassDays(7);
+  uploadedMediasCount.value = await galleryStatisticService.countUserUploadedMedias(me!);
+  totalMediasCount.value = await galleryStatisticService.countTotalMedias();
+  latestUploadedMedia.value = await galleryStatisticService.getLatestUploadMedia();
+  newlyUploadedMedia.value = await galleryStatisticService.countUploadedMediasWithinPassDays(7);
 
   isFetchingData.value = false;
 });

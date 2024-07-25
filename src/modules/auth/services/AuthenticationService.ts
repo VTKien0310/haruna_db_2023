@@ -2,7 +2,7 @@ import {useToast} from 'vuestic-ui';
 import type {
   AuthChangeEvent,
   Session,
-  SupabaseClient, User,
+  SupabaseClient,
 } from '@supabase/supabase-js';
 import type {AuthCredential} from '@/modules/auth/AuthTypes';
 import router from '@/router';
