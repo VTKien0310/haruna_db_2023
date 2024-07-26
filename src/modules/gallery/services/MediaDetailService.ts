@@ -133,12 +133,13 @@ export class MediaDetailService {
     return data.signedUrl;
   }
 
-  async createThumbnailUrlForMedia(media: Media): Promise<string> {
+  async createThumbnailUrlForMedia(media: Media, forGridUsage: boolean = true): Promise<string> {
+    // grid use 1:1 display ratio while list use 4:3 display ratio
     const thumbnailSpecification: SignedUrlOptions = {
       transform: {
-        width: 250,
-        height: 250,
-        resize: "contain",
+        width: forGridUsage ? 300 : 512,
+        height: forGridUsage ? 300 : 384,
+        resize: 'contain',
       },
     };
 
@@ -231,5 +232,14 @@ export class MediaDetailService {
         this.redirectAndRefreshGallery();
       },
     );
+  }
+
+  navigateToMediaDetailPage(mediaId: string): void {
+    router.push({
+      name: GalleryRouteName.DETAIL,
+      params: {
+        id: mediaId
+      }
+    })
   }
 }

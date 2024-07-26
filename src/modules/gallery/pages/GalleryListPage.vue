@@ -3,9 +3,10 @@
 import GalleryToUploadPageButton from "@/modules/gallery/components/GalleryToUploadPageButton.vue";
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
 import {onMounted, ref} from "vue";
-import GalleryListItem from "@/modules/gallery/components/GalleryListItem.vue";
 import {IonPage} from "@ionic/vue";
 import {useGalleryListService} from "@/modules/gallery/GalleryServiceContainer";
+import GalleryGridItem from '@/modules/gallery/components/GalleryGridItem.vue';
+import GalleryListItem from '@/modules/gallery/components/GalleryListItem.vue';
 
 const galleryListService = useGalleryListService();
 
@@ -41,12 +42,20 @@ onMounted(() => {
     >
 
       <div class="grid gap-px place-content-center place-items-center grid-cols-4 md:grid-cols-6 lg:grid-cols-10">
-        <GalleryListItem
+        <GalleryGridItem
             v-for="media in galleryListStore.medias"
             :key="media.id"
             :media="media"
         />
       </div>
+
+<!--      <div class="grid gap-px place-content-center place-items-center grid-cols-1">-->
+<!--        <GalleryListItem-->
+<!--            v-for="media in galleryListStore.medias"-->
+<!--            :key="media.id"-->
+<!--            :media="media"-->
+<!--        />-->
+<!--      </div>-->
 
       <!-- medias fetch progress indicator -->
       <div
