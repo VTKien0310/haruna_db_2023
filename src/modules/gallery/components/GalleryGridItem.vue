@@ -29,7 +29,6 @@ onMounted(() => {
         v-if="mediaThumbnailSignedUrlCreated"
         :src="mediaThumbnailSignedUrl"
         @click="mediaDetailService.navigateToMediaDetailPage(media.id)"
-        lazy
         fit="cover"
         :ratio="1"
         class="w-full h-full"
