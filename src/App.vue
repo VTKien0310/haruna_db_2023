@@ -3,13 +3,13 @@ import {computed} from 'vue';
 import {AuthRouteName} from '@/modules/auth/AuthRouter';
 import {MasterRouteName} from '@/modules/master/MasterRouter';
 import {GalleryRouteName} from '@/modules/gallery/GalleryRouter';
-import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {IonApp, IonRouterOutlet} from '@ionic/vue';
 import router from '@/router';
 import {TranslationRouteName} from '@/modules/translation/TranslationRouter';
+import {useAuthenticationService} from '@/modules/auth/AuthServiceContainer';
 
-const authStore = useAuthStore();
-authStore.registerOnAuthStateChange();
+const authenticationService = useAuthenticationService();
+authenticationService.registerOnAuthStateChange();
 
 const hideNavBar = computed((): boolean => {
   return router.currentRoute.value.name === AuthRouteName.LOGIN;
