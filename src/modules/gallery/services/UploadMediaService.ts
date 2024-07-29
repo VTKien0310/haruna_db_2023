@@ -64,8 +64,6 @@ export class UploadMediaService {
       if (!fileUploadSuccessfully) {
         failedToUploadFiles.push(file);
       }
-
-      this.galleryUploadStore.currentProgressUploadedFileCount += 1;
     }
 
     return failedToUploadFiles;
@@ -87,6 +85,9 @@ export class UploadMediaService {
 
       return false;
     }
+
+    // upload file progress count for both image and video
+    this.galleryUploadStore.currentProgressUploadedFileCount += 1;
 
     return await this.createMediaRecord(data.path, file);
   }
@@ -138,6 +139,9 @@ export class UploadMediaService {
     if (error) {
       return this.toastFailedToCreateMediaRecord(originalFile);
     }
+
+    // create db record progress count for video
+    this.galleryUploadStore.currentProgressUploadedFileCount += 1;
 
     return true;
   }
@@ -213,6 +217,9 @@ export class UploadMediaService {
       ]);
       const thumbnail: FileData = await ffmpeg.readFile(thumbnailFileName);
 
+      // create thumbnail progress count for video
+      this.galleryUploadStore.currentProgressUploadedFileCount += 1;
+
       return await this.storeVideoThumbnail(thumbnail, thumbnailFileName);
     } catch (e: unknown) {
       this.toastInit({
@@ -245,6 +252,9 @@ export class UploadMediaService {
       return "";
     }
 
+    // upload thumbnail progress count for video
+    this.galleryUploadStore.currentProgressUploadedFileCount += 1;
+
     return data.path;
   }
 
@@ -267,6 +277,9 @@ export class UploadMediaService {
       return this.toastFailedToCreateMediaRecord(originalFile);
     }
 
+    // create db record progress count for image
+    this.galleryUploadStore.currentProgressUploadedFileCount += 1;
+
     return true;
   }
 
@@ -284,8 +297,22 @@ export class UploadMediaService {
   }
 
   private setUpFileCountStatisticForNewUploadProcess(): void {
-    this.galleryUploadStore.currentProgressTotalFileCount =
-      this.galleryUploadStore.pendingNewMediaFiles.length;
+    const pendingImageFileCount = this.galleryUploadStore.pendingNewMediaFiles.filter(
+        (file) => this.getFileType(file) === imageFileType,
+    ).length;
+
+    // each image has 2 progress counts: upload the file + create the db record
+    const imageProgressCount = pendingImageFileCount * 2;
+
+    const pendingVideoFileCount = this.galleryUploadStore.pendingNewMediaFiles.filter(
+        (file) => this.getFileType(file) === videoFileType,
+    ).length;
+
+    // each video has 4 progress counts: upload the file + create the db record + create the thumbnail + upload the thumbnail
+    const videoProgressCount = pendingVideoFileCount * 4;
+
+    this.galleryUploadStore.currentProgressTotalFileCount = imageProgressCount +
+        videoProgressCount;
 
     this.galleryUploadStore.currentProgressUploadedFileCount = 0;
   }
