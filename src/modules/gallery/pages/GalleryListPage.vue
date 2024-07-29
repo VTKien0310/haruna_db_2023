@@ -2,10 +2,21 @@
 
 import GalleryToUploadPageButton from "@/modules/gallery/components/GalleryToUploadPageButton.vue";
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
-import {onMounted, ref} from "vue";
-import GalleryListItem from "@/modules/gallery/components/GalleryListItem.vue";
+import {onMounted, ref} from 'vue';
 import {IonPage} from "@ionic/vue";
 import {useGalleryListService} from "@/modules/gallery/GalleryServiceContainer";
+import GalleryGridItem from '@/modules/gallery/components/GalleryGridItem.vue';
+import GalleryListItem from '@/modules/gallery/components/GalleryListItem.vue';
+import type {ButtonOption} from 'vuestic-ui';
+
+const viewModeOptions: ButtonOption[] = [
+  {value: 'grid', icon: 'grid_view'},
+  {value: 'list', icon: 'splitscreen'},
+];
+
+type ViewMode = 'grid' | 'list';
+
+const currentViewMode = ref<ViewMode>('grid');
 
 const galleryListService = useGalleryListService();
 
@@ -34,13 +45,38 @@ onMounted(() => {
 
 <template>
   <ion-page>
+
+    <div class="flex flex-row justify-end items-center content-center m-1">
+      <!-- view mode selection -->
+      <va-button-toggle
+          v-model="currentViewMode"
+          :options="viewModeOptions"
+          preset="secondary"
+          border-color="primary"
+      />
+    </div>
+
     <div
         @scroll="loadMoreMedias"
         ref="galleryListPageContent"
         class="h-screen overflow-scroll invisible-scroll-bar"
     >
 
-      <div class="grid gap-px place-content-center place-items-center grid-cols-4 md:grid-cols-6 lg:grid-cols-10">
+      <!-- grid view -->
+      <div v-show="currentViewMode === 'grid'"
+           class="grid gap-px place-content-center place-items-center grid-cols-4 md:grid-cols-6 lg:grid-cols-10"
+      >
+        <GalleryGridItem
+            v-for="media in galleryListStore.medias"
+            :key="media.id"
+            :media="media"
+        />
+      </div>
+
+      <!-- list view -->
+      <div v-show="currentViewMode === 'list'"
+           class="grid gap-px place-content-center place-items-center grid-cols-1"
+      >
         <GalleryListItem
             v-for="media in galleryListStore.medias"
             :key="media.id"
@@ -64,6 +100,7 @@ onMounted(() => {
       <div class="h-20"></div>
 
     </div>
+
   </ion-page>
 </template>
 
