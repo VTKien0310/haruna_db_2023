@@ -7,7 +7,10 @@ import {useGalleryListService} from '@/modules/gallery/GalleryServiceContainer';
 import router from '@/router';
 import {useToastService} from '@/modules/master/MasterServiceContainer';
 
-const useProfileService = () => new ProfileService(supabasePort);
+const useProfileService = () => new ProfileService(
+    supabasePort,
+    useToastService(),
+);
 
 const useAuthenticationService = () => new AuthenticationService(
     router,
