@@ -1,13 +1,15 @@
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
-import {useToast} from "vuestic-ui";
 import type {Media} from "@/modules/gallery/GalleryEntities";
 import type {SupabaseClient} from '@supabase/supabase-js';
+import type {ToastService} from '@/modules/master/services/ToastService';
 
 export class GalleryListService {
     private readonly galleryListStore = useGalleryListStore();
-    private readonly toastInit = useToast().init;
 
-    constructor(private readonly supabasePort: SupabaseClient) {}
+    constructor(
+        private readonly supabasePort: SupabaseClient,
+        private readonly toastService: ToastService,
+    ) {}
 
     turnOnIsFetchingMediaState(): void {
         this.galleryListStore.isFetchingGalleryMedias = true
@@ -33,10 +35,7 @@ export class GalleryListService {
             .order('created_at', {ascending: false});
 
         if (error || data === null) {
-            this.toastInit({
-                message: 'Failed to fetch medias',
-                color: 'danger'
-            })
+            this.toastService.error('Failed to fetch medias')
             return;
         }
 

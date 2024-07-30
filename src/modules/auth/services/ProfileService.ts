@@ -1,14 +1,16 @@
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
-import {useToast} from 'vuestic-ui';
 import type {SupabaseClient, User} from '@supabase/supabase-js';
 import type {ProfileDetail} from '@/modules/auth/AuthTypes';
 import {supabasePort} from '@/ports/supabase/SupabasePort';
+import type {ToastService} from '@/modules/master/services/ToastService';
 
 export class ProfileService {
   private readonly authStore = useAuthStore();
-  private readonly toastInit = useToast().init;
 
-  constructor(private readonly supabasePort: SupabaseClient) {}
+  constructor(
+      private readonly supabasePort: SupabaseClient,
+      private readonly toastService: ToastService,
+  ) {}
 
   async me(): Promise<User | null> {
     const {data: {user}} = await this.supabasePort.auth.getUser();
@@ -28,10 +30,7 @@ export class ProfileService {
         eq('user_id', currentUser.id);
 
     if (error || !data) {
-      this.toastInit({
-        message: `Failed to fetch current user profile`,
-        color: 'danger',
-      });
+      this.toastService.error(`Failed to fetch current user profile`);
 
       this.authStore.profile = null;
 
@@ -44,12 +43,11 @@ export class ProfileService {
   async updateCurrentUserProfile(profileDetail: ProfileDetail): Promise<void> {
     if (profileDetail.password.length >= 8) {
       const {error} = await supabasePort.auth.updateUser(
-          {password: profileDetail.password});
+          {password: profileDetail.password},
+      );
       if (error) {
-        this.toastInit({
-          message: error.message.slice(0, -1), // remove the "." in the error message
-          color: 'danger',
-        });
+        const errorMessage = error.message.slice(0, -1); // remove the "." in the error message
+        this.toastService.error(errorMessage);
       }
     }
 
@@ -60,10 +58,7 @@ export class ProfileService {
       }).eq('user_id', currentUser.id);
 
       if (error) {
-        this.toastInit({
-          message: `Failed to update username`,
-          color: 'danger',
-        });
+        this.toastService.error(`Failed to update username`);
       }
     }
 
