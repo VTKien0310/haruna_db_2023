@@ -8,7 +8,6 @@ import { uuid } from "@supabase/supabase-js/dist/main/lib/helpers";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
-import type { FileData } from "@ffmpeg/ffmpeg/dist/esm/types";
 import type {SupabaseClient} from '@supabase/supabase-js';
 
 const imageFileType: string = "image";
@@ -180,82 +179,78 @@ export class UploadMediaService {
   }
 
   private async generateThumbnailForVideo(
-    storageVideoFilePath: string,
-    video: File,
+      storageVideoFilePath: string,
+      video: File,
   ): Promise<string> {
-    const { data, error } = await this.supabasePort.storage
-      .from("medias")
-      .createSignedUrl(storageVideoFilePath, 300);
+    // the video's signed url is needed to fetch the video to local and create the thumbnail
+    const {data, error} = await this.supabasePort.
+        storage.
+        from('medias').
+        createSignedUrl(storageVideoFilePath, 600);
 
     if (error || !data) {
       this.toastInit({
         message:
-          `Failed to generate signed URL for ${storageVideoFilePath} to create thumbnail`,
-        color: "danger",
+            `Failed to generate signed URL for ${storageVideoFilePath} to create thumbnail`,
+        color: 'danger',
       });
 
-      return "";
+      return '';
     }
 
     try {
+      // prepare to create video thumbnail
       const ffmpeg: FFmpeg = await this.loadFfmpeg();
 
-      const storageFileName: string = storageVideoFilePath.split("/").at(-1)!
-        .split(".").at(0)!;
+      const storageFileName: string = storageVideoFilePath.split('/').
+          at(-1)!.split('.').at(0)!;
       const thumbnailFileName: string = `${storageFileName}_thumb.png`;
 
-      /* Create video thumbnail using the frame at 1s of the video  */
+      // create video thumbnail using the frame at 1s of the video
       await ffmpeg.writeFile(video.name, await fetchFile(data.signedUrl));
       await ffmpeg.exec([
-        "-i",
+        '-i',
         video.name,
-        "-ss",
-        "00:00:01",
-        "-frames:v",
-        "1",
+        '-ss',
+        '00:00:01',
+        '-frames:v',
+        '1',
         thumbnailFileName,
       ]);
-      const thumbnail: FileData = await ffmpeg.readFile(thumbnailFileName);
+      const thumbnail = await ffmpeg.readFile(thumbnailFileName);
 
       // create thumbnail progress count for video
       this.galleryUploadStore.currentProgressUploadedFileCount += 1;
 
-      return await this.storeVideoThumbnail(thumbnail, thumbnailFileName);
+      // upload the thumbnail to storage
+      const thumbnailUploadResult = await this.supabasePort.storage.from(
+          'thumbnails').upload(
+          thumbnailFileName,
+          new Blob([thumbnail], {type: 'image/png'}),
+          defaultStorageFileOptions,
+      );
+
+      if (thumbnailUploadResult.error || !thumbnailUploadResult.data?.path) {
+        this.toastInit({
+          message: `Failed to upload thumbnail ${thumbnailFileName}`,
+          color: 'danger',
+        });
+
+        return '';
+      }
+
+      // upload thumbnail progress count for video
+      this.galleryUploadStore.currentProgressUploadedFileCount += 1;
+
+      return thumbnailUploadResult.data.path;
     } catch (e: unknown) {
       this.toastInit({
         message: `Failed to create thumbnail for ${video.name}`,
-        color: "danger",
+        color: 'danger',
       });
 
-      return "";
+      return '';
     }
-  }
-
-  private async storeVideoThumbnail(
-    thumbnail: FileData,
-    thumbnailFileName: string,
-  ): Promise<string> {
-    const { data, error } = await this.supabasePort.storage
-      .from("thumbnails")
-      .upload(
-        thumbnailFileName,
-        new Blob([thumbnail.buffer], { type: "image/png" }),
-        defaultStorageFileOptions,
-      );
-
-    if (error || !data?.path) {
-      this.toastInit({
-        message: `Failed to upload thumbnail ${thumbnailFileName}`,
-        color: "danger",
-      });
-
-      return "";
-    }
-
-    // upload thumbnail progress count for video
-    this.galleryUploadStore.currentProgressUploadedFileCount += 1;
-
-    return data.path;
   }
 
   private async createPhotoMediaRecord(
