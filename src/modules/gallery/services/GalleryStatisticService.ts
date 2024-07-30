@@ -1,12 +1,13 @@
-import {useToast} from 'vuestic-ui';
 import type {SupabaseClient, User} from '@supabase/supabase-js';
 import dayjs from 'dayjs';
 import type {Media} from '@/modules/gallery/GalleryEntities';
+import type {ToastService} from '@/modules/master/services/ToastService';
 
 export class GalleryStatisticService {
-  private readonly toastInit = useToast().init;
-
-  constructor(private readonly supabasePort: SupabaseClient) {}
+  constructor(
+      private readonly supabasePort: SupabaseClient,
+      private readonly toastService: ToastService,
+  ) {}
 
   async countTotalMedias(): Promise<number> {
     const {count, error} = await this.supabasePort.
@@ -17,10 +18,7 @@ export class GalleryStatisticService {
         });
 
     if (error || count === null) {
-      this.toastInit({
-        message: 'Failed to count total medias',
-        color: 'danger',
-      });
+      this.toastService.error('Failed to count total medias');
 
       return 0;
     }
@@ -38,10 +36,7 @@ export class GalleryStatisticService {
         eq('uploader_id', user.id);
 
     if (error || count === null) {
-      this.toastInit({
-        message: 'Failed to count user\'s uploaded medias',
-        color: 'danger',
-      });
+      this.toastService.error('Failed to count user\'s uploaded medias');
 
       return 0;
     }
@@ -64,10 +59,7 @@ export class GalleryStatisticService {
         filter('created_at', 'gte', targetPointInTime);
 
     if (error || count === null) {
-      this.toastInit({
-        message: 'Failed to count newly uploaded medias',
-        color: 'danger',
-      });
+      this.toastService.error('Failed to count newly uploaded medias');
 
       return 0;
     }

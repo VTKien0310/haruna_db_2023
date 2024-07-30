@@ -34,6 +34,7 @@ const useMediaDetailService = () => new MediaDetailService(
 
 const useGalleryStatisticService = () => new GalleryStatisticService(
     supabasePort,
+    useToastService(),
 );
 
 export {
