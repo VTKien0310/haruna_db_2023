@@ -3,13 +3,13 @@ import type { Media } from "@/modules/gallery/GalleryEntities";
 import type { Profile } from "@/modules/auth/ProfileEntities";
 import { domPort } from "@/ports/dom/DomPort";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
-import router from "@/router";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 import type { TransformOptions } from "@supabase/storage-js/src/lib/types";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
 import type {SupabaseClient} from '@supabase/supabase-js';
 import type {ModalService} from '@/modules/master/services/ModalService';
 import type {ToastService} from '@/modules/master/services/ToastService';
+import type {Router} from 'vue-router';
 
 type SignedUrlOptions = {
   download?: string | boolean;
@@ -18,6 +18,7 @@ type SignedUrlOptions = {
 
 export class MediaDetailService {
   constructor(
+      private readonly router: Router,
       private readonly supabasePort: SupabaseClient,
       private readonly toastService: ToastService,
       private readonly modalService: ModalService,
@@ -168,7 +169,7 @@ export class MediaDetailService {
   }
 
   private redirectAndRefreshGallery(): void {
-    router.push({
+    this.router.push({
       name: GalleryRouteName.LIST,
     });
     this.galleryListService.refreshMedias();
@@ -217,7 +218,7 @@ export class MediaDetailService {
   }
 
   navigateToMediaDetailPage(mediaId: string): void {
-    router.push({
+    this.router.push({
       name: GalleryRouteName.DETAIL,
       params: {
         id: mediaId
