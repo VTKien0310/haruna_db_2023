@@ -7,7 +7,7 @@ export class ModalService {
     this.confirmModal = useModal().confirm;
   }
 
-  confirm(options: string | ModalOptions): Promise<boolean> {
+  confirm(options: string): Promise<boolean> {
     return this.confirmModal(options);
   }
 }
