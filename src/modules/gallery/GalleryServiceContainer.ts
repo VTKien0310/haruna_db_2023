@@ -11,7 +11,10 @@ import {
 } from '@/modules/master/MasterServiceContainer';
 import router from '@/router';
 
-const useGalleryListService = () => new GalleryListService(supabasePort);
+const useGalleryListService = () => new GalleryListService(
+    supabasePort,
+    useToastService(),
+);
 
 const useUploadMediaService = () => new UploadMediaService(
     router,
