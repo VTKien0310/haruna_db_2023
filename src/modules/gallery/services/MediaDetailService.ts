@@ -137,8 +137,8 @@ export class MediaDetailService {
     // grid use 1:1 display ratio while list use 4:3 display ratio
     const thumbnailSpecification: SignedUrlOptions = {
       transform: {
-        width: forGridUsage ? 300 : 512,
-        height: forGridUsage ? 300 : 384,
+        width: forGridUsage ? 500 : 750,
+        height: forGridUsage ? 500 : 563,
         resize: 'contain',
       },
     };
