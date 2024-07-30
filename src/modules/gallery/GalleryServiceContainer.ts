@@ -26,6 +26,8 @@ const useUploadMediaService = () => new UploadMediaService(
 
 const useMediaDetailService = () => new MediaDetailService(
     supabasePort,
+    useToastService(),
+    useModalService(),
     useGalleryListService(),
 );
 
