@@ -1,23 +1,23 @@
-import {useToast} from 'vuestic-ui';
 import type {
   AuthChangeEvent,
   Session,
   SupabaseClient,
 } from '@supabase/supabase-js';
 import type {AuthCredential} from '@/modules/auth/AuthTypes';
-import router from '@/router';
 import {MasterRouteName} from '@/modules/master/MasterRouter';
 import type {
   GalleryListService,
 } from '@/modules/gallery/services/GalleryListService';
 import {AuthRouteName} from '@/modules/auth/AuthRouter';
 import type {ProfileService} from '@/modules/auth/services/ProfileService';
+import type {ToastService} from '@/modules/master/services/ToastService';
+import type {Router} from 'vue-router';
 
 export class AuthenticationService {
-  private readonly toastInit = useToast().init;
-
   constructor(
+      private readonly router: Router,
       private readonly supabasePort: SupabaseClient,
+      private readonly toastService: ToastService,
       private readonly galleryListService: GalleryListService,
       private readonly profileService: ProfileService,
   ) {}
@@ -32,11 +32,11 @@ export class AuthenticationService {
     const {error} = await this.supabasePort.auth.signInWithPassword(credential);
 
     if (error) {
-      this.toastInit({message: 'Login failed', color: 'danger'});
+      this.toastService.error('Login failed');
       return false;
     }
 
-    router.push({
+    this.router.push({
       name: MasterRouteName.MASTER,
     });
 
@@ -47,7 +47,7 @@ export class AuthenticationService {
     const {error} = await this.supabasePort.auth.signOut();
 
     if (error) {
-      this.toastInit({message: 'Logout failed', color: 'danger'});
+      this.toastService.error('Logout failed');
       return false;
     }
 
@@ -64,7 +64,7 @@ export class AuthenticationService {
           const isNotAuthenticated: boolean = !(session?.user);
 
           if (isNotAuthenticated) {
-            router.push({
+            this.router.push({
               name: AuthRouteName.LOGIN,
             });
           }
