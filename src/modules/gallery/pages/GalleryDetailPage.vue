@@ -6,6 +6,7 @@ import type {Profile} from '@/modules/auth/ProfileEntities';
 import {IonPage} from '@ionic/vue';
 import {useGalleryListService, useMediaDetailService} from '@/modules/gallery/GalleryServiceContainer';
 import {useProfileService} from '@/modules/auth/AuthServiceContainer';
+import {usePointerSwipe, useSwipe, type UseSwipeDirection} from '@vueuse/core';
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
@@ -54,8 +55,34 @@ const pageBackground = computed((): StyleValue => {
 })
 
 const galleryListService = useGalleryListService();
+const mediaDisplayArea = ref(null);
 const prevMediaId = ref<string | null>(null);
 const nextMediaId = ref<string | null>(null);
+const navigateToAdjacentMedia = (swipeDirection: UseSwipeDirection) => {
+  // navigate backward
+  if (swipeDirection === 'right' && prevMediaId.value) {
+    mediaDetailService.navigateToMediaDetailPage(prevMediaId.value);
+    return;
+  }
+
+  // navigate forward
+  if (swipeDirection === 'left' && nextMediaId.value) {
+    mediaDetailService.navigateToMediaDetailPage(nextMediaId.value);
+    return;
+  }
+};
+// for mobile browser
+useSwipe(mediaDisplayArea, {
+  onSwipeEnd(e, direction) {
+    navigateToAdjacentMedia(direction);
+  },
+});
+// for desktop browser
+usePointerSwipe(mediaDisplayArea, {
+  onSwipeEnd(e, direction) {
+    navigateToAdjacentMedia(direction);
+  },
+});
 
 const profileService = useProfileService();
 
@@ -82,6 +109,7 @@ onMounted(async () => {
 <template>
   <ion-page>
     <div
+        ref="mediaDisplayArea"
         :style="pageBackground"
         class="h-screen bg-center bg-contain bg-scroll bg-no-repeat"
     >
