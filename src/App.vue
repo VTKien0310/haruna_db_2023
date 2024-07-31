@@ -7,6 +7,7 @@ import {IonApp, IonRouterOutlet} from '@ionic/vue';
 import router from '@/router';
 import {TranslationRouteName} from '@/modules/translation/TranslationRouter';
 import {useAuthenticationService} from '@/modules/auth/AuthServiceContainer';
+import {FinanceRouteName} from '@/modules/finance/FinanceRouter';
 
 const authenticationService = useAuthenticationService();
 authenticationService.registerOnAuthStateChange();
