@@ -4,7 +4,7 @@ import {computed, onMounted, ref, type StyleValue} from 'vue';
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import type {Profile} from '@/modules/auth/ProfileEntities';
 import {IonPage} from '@ionic/vue';
-import {useMediaDetailService} from "@/modules/gallery/GalleryServiceContainer";
+import {useGalleryListService, useMediaDetailService} from '@/modules/gallery/GalleryServiceContainer';
 import {useProfileService} from '@/modules/auth/AuthServiceContainer';
 
 const media = ref<Media | null>(null)
@@ -53,6 +53,10 @@ const pageBackground = computed((): StyleValue => {
       : {}
 })
 
+const galleryListService = useGalleryListService();
+const prevMediaId = ref<string | null>(null);
+const nextMediaId = ref<string | null>(null);
+
 const profileService = useProfileService();
 
 onMounted(async () => {
@@ -68,6 +72,10 @@ onMounted(async () => {
 
   const me = await profileService.me();
   uploaderIsMe.value = uploader?.user_id === me?.id && !!uploader;
+
+  ({prevId: prevMediaId.value, nextId: nextMediaId.value} = await galleryListService.getPrevAndNextMediaIdInList(
+      media.value!,
+  ));
 })
 </script>
 
