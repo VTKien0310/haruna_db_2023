@@ -66,4 +66,41 @@ export class GalleryListService {
         this.reset();
         return this.fetchMedias()
     }
+
+    async getPrevAndNextMediaIdInList(currentMedia: Media): Promise<{
+        prevId: string | null,
+        nextId: string | null
+    }> {
+        const currentMediaListIndex: number = this.galleryListStore.medias.findIndex(
+            (media: Media) => media.id === currentMedia.id,
+        );
+
+        const currentMediaNotFoundInList = currentMediaListIndex === -1;
+        if (currentMediaNotFoundInList) {
+            return {
+                prevId: null,
+                nextId: null,
+            };
+        }
+
+        const prevMediaId: string | null = currentMediaListIndex > 0
+            ? this.galleryListStore.medias[currentMediaListIndex - 1].id
+            : null;
+
+        // load more media if the current media is last in list
+        const currentMediaIsLastInList: boolean = currentMediaListIndex ===
+            this.galleryListStore.medias.length - 1;
+        if (currentMediaIsLastInList) {
+            await this.fetchMedias();
+        }
+
+        const nextMediaIndex: number = currentMediaListIndex + 1;
+        const nextMediaId: string | null = this.galleryListStore.medias[nextMediaIndex]?.id
+            ?? null;
+
+        return {
+            prevId: prevMediaId,
+            nextId: nextMediaId,
+        };
+    }
 }
