@@ -1,8 +1,19 @@
 <script setup lang="ts">
 import {useGalleryUploadStore} from "@/modules/gallery/stores/GalleryUploadStore";
 import {IonPage} from "@ionic/vue";
+import {useUploadMediaService} from "@/modules/gallery/GalleryServiceContainer";
+
+const uploadMediaService = useUploadMediaService();
 
 const galleryUploadStore = useGalleryUploadStore();
+
+const newPendingFileAdded = () => {
+  uploadMediaService.filterPendingFilesForValidForUpload()
+}
+
+const uploadPendingMedia = () => {
+  uploadMediaService.uploadPendingNewMediaFiles();
+}
 </script>
 
 <template>
@@ -17,7 +28,7 @@ const galleryUploadStore = useGalleryUploadStore();
 
       <div class="w-full flex flex-row justify-center content-center items-center mt-3 px-1">
         <va-button
-            @click="galleryUploadStore.uploadPendingNewMediaFiles"
+            @click="uploadPendingMedia"
             :loading="galleryUploadStore.isHandlingCreateNewMedia"
             :disabled="galleryUploadStore.pendingNewMediaFiles.length === 0 || galleryUploadStore.isHandlingCreateNewMedia"
         >
@@ -29,7 +40,7 @@ const galleryUploadStore = useGalleryUploadStore();
           :disabled="galleryUploadStore.isHandlingCreateNewMedia"
           v-model="galleryUploadStore.pendingNewMediaFiles"
           file-types="image/*,video/*"
-          @file-added="() => galleryUploadStore.filterPendingFilesForValidForUpload()"
+          @file-added="newPendingFileAdded"
           dropzone
           upload-button-text="Add"
           dropZoneText="Add files or drop them here"

@@ -3,7 +3,11 @@ import {useAuthStore} from "@/modules/auth/stores/AuthStore";
 import {computed, onMounted, reactive, ref} from "vue";
 import type {ProfileDetail} from "@/modules/auth/AuthTypes";
 import {IonPage} from "@ionic/vue";
+import {useUploadMediaService} from "@/modules/gallery/GalleryServiceContainer";
+import {useAuthenticationService, useProfileService} from '@/modules/auth/AuthServiceContainer';
 
+const authenticationService = useAuthenticationService();
+const profileService = useProfileService();
 const authStore = useAuthStore();
 
 const profileFormContent = reactive<ProfileDetail>({
@@ -12,7 +16,7 @@ const profileFormContent = reactive<ProfileDetail>({
 })
 
 function reloadProfileFormContent(): void {
-  authStore.refreshCurrentUserProfile().then(() => {
+  profileService.refreshCurrentUserProfile().then(() => {
     profileFormContent.name = authStore.profile?.name ?? ''
     profileFormContent.password = ''
   })
@@ -31,14 +35,17 @@ const enableUpdateProfileButton = computed((): boolean => {
 
 function handleUpdateProfile() {
   isUpdatingProfile.value = true
-  authStore.updateCurrentUserProfile(profileFormContent).then(() => {
+  profileService.updateCurrentUserProfile(profileFormContent).then(() => {
     reloadProfileFormContent()
     isUpdatingProfile.value = false
   })
 }
 
-function handleLogout() {
-  authStore.signOut()
+const uploadMediaService = useUploadMediaService();
+
+const handleLogout = async () => {
+  uploadMediaService.reset()
+  await authenticationService.signOut();
 }
 
 onMounted(() => {
