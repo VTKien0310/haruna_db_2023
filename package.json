@@ -16,6 +16,7 @@
     "@ionic/vue-router": "^7.6.3",
     "@supabase/supabase-js": "^2.42.4",
     "@vuestic/tailwind": "^0.1.3",
+    "@vueuse/core": "^10.11.0",
     "dayjs": "^1.11.10",
     "firebase": "^10.7.1",
     "pinia": "^2.1.6",

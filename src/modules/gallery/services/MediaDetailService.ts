@@ -1,14 +1,30 @@
 import dayjs from "dayjs";
 import type { Media } from "@/modules/gallery/GalleryEntities";
-import { useModal, useToast } from "vuestic-ui";
 import type { Profile } from "@/modules/auth/ProfileEntities";
 import { domPort } from "@/ports/dom/DomPort";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
-import router from "@/router";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 import type { TransformOptions } from "@supabase/storage-js/src/lib/types";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
 import type {SupabaseClient} from '@supabase/supabase-js';
+import type {ModalService} from '@/modules/master/services/ModalService';
+import type {ToastService} from '@/modules/master/services/ToastService';
+import type {Router} from 'vue-router';
+
+type DisplayRatio = {
+  width: number;
+  height: number;
+}
+
+const thumbnailSquareRatio: DisplayRatio = {
+  width: 500,
+  height: 500,
+};
+
+const thumbnailFourToThreeRatio: DisplayRatio = {
+  width: 750,
+  height: 563,
+};
 
 type SignedUrlOptions = {
   download?: string | boolean;
@@ -16,11 +32,11 @@ type SignedUrlOptions = {
 };
 
 export class MediaDetailService {
-  private readonly toastInit = useToast().init;
-  private readonly confirmModal = useModal().confirm;
-
   constructor(
+      private readonly router: Router,
       private readonly supabasePort: SupabaseClient,
+      private readonly toastService: ToastService,
+      private readonly modalService: ModalService,
       private readonly galleryListService: GalleryListService
   ) {
   }
@@ -31,10 +47,7 @@ export class MediaDetailService {
       .download(media.storage_path);
 
     if (error || !data) {
-      this.toastInit({
-        message: `Failed to download media with id ${media.id}`,
-        color: "danger",
-      });
+      this.toastService.error(`Failed to download media with id ${media.id}`);
       return;
     }
 
@@ -48,10 +61,7 @@ export class MediaDetailService {
       .eq("user_id", media.uploader_id);
 
     if (error || !data) {
-      this.toastInit({
-        message: `Failed to fetch uploader of media with id ${media.id}`,
-        color: "danger",
-      });
+      this.toastService.error(`Failed to fetch uploader of media with id ${media.id}`);
       return null;
     }
 
@@ -83,10 +93,7 @@ export class MediaDetailService {
   }
 
   private toastFailedToGenerateSignedUrl(path: string | null): string {
-    this.toastInit({
-      message: `Failed to generate signed URL for ${path}`,
-      color: "danger",
-    });
+    this.toastService.error(`Failed to generate signed URL for ${path}`);
 
     return "";
   }
@@ -135,10 +142,14 @@ export class MediaDetailService {
 
   async createThumbnailUrlForMedia(media: Media, forGridUsage: boolean = true): Promise<string> {
     // grid use 1:1 display ratio while list use 4:3 display ratio
+    const thumbnailDisplayRatio: DisplayRatio = forGridUsage
+        ? thumbnailSquareRatio
+        : thumbnailFourToThreeRatio;
+
     const thumbnailSpecification: SignedUrlOptions = {
       transform: {
-        width: forGridUsage ? 300 : 512,
-        height: forGridUsage ? 300 : 384,
+        width: thumbnailDisplayRatio.width,
+        height: thumbnailDisplayRatio.height,
         resize: 'contain',
       },
     };
@@ -164,18 +175,12 @@ export class MediaDetailService {
       .eq("id", id);
 
     if (error || !data) {
-      this.toastInit({
-        message: `Failed to fetch media with id ${id}`,
-        color: "danger",
-      });
+      this.toastService.error(`Failed to fetch media with id ${id}`);
       return null;
     }
 
     if (!data[0]) {
-      this.toastInit({
-        message: `Media with id ${id} not found`,
-        color: "danger",
-      });
+      this.toastService.error(`Media with id ${id} not found`);
       return null;
     }
 
@@ -183,7 +188,7 @@ export class MediaDetailService {
   }
 
   private redirectAndRefreshGallery(): void {
-    router.push({
+    this.router.push({
       name: GalleryRouteName.LIST,
     });
     this.galleryListService.refreshMedias();
@@ -207,7 +212,7 @@ export class MediaDetailService {
   }
 
   async deleteMedia(media: Media): Promise<void> {
-    this.confirmModal(`Proceed to delete the file?`).then(
+    this.modalService.confirm(`Proceed to delete the file?`).then(
       async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;
@@ -222,10 +227,7 @@ export class MediaDetailService {
           : false;
 
         if (!(deleteDbRecordSuccess && deleteFileInBucketSuccess)) {
-          this.toastInit({
-            message: `Failed to delete media with id ${media.id}`,
-            color: "danger",
-          });
+          this.toastService.error(`Failed to delete media with id ${media.id}`);
           return;
         }
 
@@ -235,7 +237,7 @@ export class MediaDetailService {
   }
 
   navigateToMediaDetailPage(mediaId: string): void {
-    router.push({
+    this.router.push({
       name: GalleryRouteName.DETAIL,
       params: {
         id: mediaId

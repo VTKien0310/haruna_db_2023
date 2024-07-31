@@ -1,13 +1,15 @@
 import {useGalleryListStore} from "@/modules/gallery/stores/GalleryListStore";
-import {useToast} from "vuestic-ui";
 import type {Media} from "@/modules/gallery/GalleryEntities";
 import type {SupabaseClient} from '@supabase/supabase-js';
+import type {ToastService} from '@/modules/master/services/ToastService';
 
 export class GalleryListService {
     private readonly galleryListStore = useGalleryListStore();
-    private readonly toastInit = useToast().init;
 
-    constructor(private readonly supabasePort: SupabaseClient) {}
+    constructor(
+        private readonly supabasePort: SupabaseClient,
+        private readonly toastService: ToastService,
+    ) {}
 
     turnOnIsFetchingMediaState(): void {
         this.galleryListStore.isFetchingGalleryMedias = true
@@ -33,10 +35,7 @@ export class GalleryListService {
             .order('created_at', {ascending: false});
 
         if (error || data === null) {
-            this.toastInit({
-                message: 'Failed to fetch medias',
-                color: 'danger'
-            })
+            this.toastService.error('Failed to fetch medias')
             return;
         }
 
@@ -66,5 +65,42 @@ export class GalleryListService {
     async refreshMedias(): Promise<void> {
         this.reset();
         return this.fetchMedias()
+    }
+
+    async getPrevAndNextMediaIdInList(currentMedia: Media): Promise<{
+        prevId: string | null,
+        nextId: string | null
+    }> {
+        const currentMediaListIndex: number = this.galleryListStore.medias.findIndex(
+            (media: Media) => media.id === currentMedia.id,
+        );
+
+        const currentMediaNotFoundInList = currentMediaListIndex === -1;
+        if (currentMediaNotFoundInList) {
+            return {
+                prevId: null,
+                nextId: null,
+            };
+        }
+
+        const prevMediaId: string | null = currentMediaListIndex > 0
+            ? this.galleryListStore.medias[currentMediaListIndex - 1].id
+            : null;
+
+        // load more media if the current media is last in list
+        const currentMediaIsLastInList: boolean = currentMediaListIndex ===
+            this.galleryListStore.medias.length - 1;
+        if (currentMediaIsLastInList) {
+            await this.fetchMedias();
+        }
+
+        const nextMediaIndex: number = currentMediaListIndex + 1;
+        const nextMediaId: string | null = this.galleryListStore.medias[nextMediaIndex]?.id
+            ?? null;
+
+        return {
+            prevId: prevMediaId,
+            nextId: nextMediaId,
+        };
     }
 }
