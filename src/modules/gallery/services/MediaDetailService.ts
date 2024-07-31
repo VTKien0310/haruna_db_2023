@@ -11,6 +11,21 @@ import type {ModalService} from '@/modules/master/services/ModalService';
 import type {ToastService} from '@/modules/master/services/ToastService';
 import type {Router} from 'vue-router';
 
+type DisplayRatio = {
+  width: number;
+  height: number;
+}
+
+const thumbnailSquareRatio: DisplayRatio = {
+  width: 500,
+  height: 500,
+};
+
+const thumbnailFourToThreeRatio: DisplayRatio = {
+  width: 750,
+  height: 563,
+};
+
 type SignedUrlOptions = {
   download?: string | boolean;
   transform?: TransformOptions;
@@ -127,10 +142,14 @@ export class MediaDetailService {
 
   async createThumbnailUrlForMedia(media: Media, forGridUsage: boolean = true): Promise<string> {
     // grid use 1:1 display ratio while list use 4:3 display ratio
+    const thumbnailDisplayRatio: DisplayRatio = forGridUsage
+        ? thumbnailSquareRatio
+        : thumbnailFourToThreeRatio;
+
     const thumbnailSpecification: SignedUrlOptions = {
       transform: {
-        width: forGridUsage ? 500 : 750,
-        height: forGridUsage ? 500 : 563,
+        width: thumbnailDisplayRatio.width,
+        height: thumbnailDisplayRatio.height,
         resize: 'contain',
       },
     };

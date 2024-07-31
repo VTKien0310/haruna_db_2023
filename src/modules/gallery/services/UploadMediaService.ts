@@ -60,7 +60,7 @@ export class UploadMediaService {
     const failedToUploadFiles: File[] = [];
 
     for (const file of this.galleryUploadStore.pendingNewMediaFiles) {
-      const fileUploadSuccessfully: boolean = await this.uploadMedia(file);
+      const fileUploadSuccessfully: boolean = await this.uploadNewMedia(file);
 
       if (!fileUploadSuccessfully) {
         failedToUploadFiles.push(file);
@@ -70,7 +70,7 @@ export class UploadMediaService {
     return failedToUploadFiles;
   }
 
-  private async uploadMedia(file: File): Promise<boolean> {
+  private async uploadNewMedia(file: File): Promise<boolean> {
     const fileExtension: string = this.getFileExtension(file);
     const fileStorageName: string = this.generateFileStorageName(fileExtension);
 
@@ -87,7 +87,7 @@ export class UploadMediaService {
     // upload file progress count for both image and video
     this.galleryUploadStore.currentProgressUploadedFileCount += 1;
 
-    return await this.createMediaRecord(data.path, file);
+    return await this.createMediaDbRecord(data.path, file);
   }
 
   private getFileExtension(file: File): string {
@@ -101,16 +101,16 @@ export class UploadMediaService {
       : uniqueFileName;
   }
 
-  private async createMediaRecord(
+  private async createMediaDbRecord(
     storageFilePath: string,
     originalFile: File,
   ): Promise<boolean> {
     return this.getFileType(originalFile) === imageFileType
-      ? this.createPhotoMediaRecord(storageFilePath, originalFile)
-      : this.createVideoMediaRecord(storageFilePath, originalFile);
+      ? this.createPhotoMediaDbRecord(storageFilePath, originalFile)
+      : this.createVideoMediaDbRecord(storageFilePath, originalFile);
   }
 
-  private async createVideoMediaRecord(
+  private async createVideoMediaDbRecord(
     storageFilePath: string,
     originalFile: File,
   ): Promise<boolean> {
@@ -218,12 +218,13 @@ export class UploadMediaService {
       this.galleryUploadStore.currentProgressUploadedFileCount += 1;
 
       // upload the thumbnail to storage
-      const thumbnailUploadResult = await this.supabasePort.storage.from(
-          'thumbnails').upload(
-          thumbnailFileName,
-          new Blob([thumbnail], {type: 'image/png'}),
-          defaultStorageFileOptions,
-      );
+      const thumbnailUploadResult = await this.supabasePort.storage.
+          from('thumbnails').
+          upload(
+              thumbnailFileName,
+              new Blob([thumbnail], {type: 'image/png'}),
+              defaultStorageFileOptions,
+          );
 
       if (thumbnailUploadResult.error || !thumbnailUploadResult.data?.path) {
         this.toastService.error(`Failed to upload thumbnail ${thumbnailFileName}`);
@@ -242,7 +243,7 @@ export class UploadMediaService {
     }
   }
 
-  private async createPhotoMediaRecord(
+  private async createPhotoMediaDbRecord(
     storageFilePath: string,
     originalFile: File,
   ): Promise<boolean> {
