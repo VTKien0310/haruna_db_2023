@@ -22,8 +22,8 @@ const thumbnailSquareRatio: DisplayRatio = {
 };
 
 const thumbnailFourToThreeRatio: DisplayRatio = {
-  width: 750,
-  height: 563,
+  width: 1024,
+  height: 768,
 };
 
 type SignedUrlOptions = {
