@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useRoute} from 'vue-router';
-import {computed, onMounted, ref, type StyleValue} from 'vue';
+import {computed, onMounted, ref, type StyleValue, watch} from 'vue';
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import type {Profile} from '@/modules/auth/ProfileEntities';
 import {IonPage} from '@ionic/vue';
@@ -9,13 +9,13 @@ import {
   useGalleryNavigationService,
   useMediaDetailService,
 } from '@/modules/gallery/GalleryServiceContainer';
-import {useProfileService} from '@/modules/auth/AuthServiceContainer';
 import {usePointerSwipe, useSwipe} from '@vueuse/core';
+import {useAuthStore} from '@/modules/auth/stores/AuthStore';
+import {useMasterNavigationService} from '@/modules/master/MasterServiceContainer';
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
 
-const route = useRoute();
 const mediaDetailService = useMediaDetailService();
 
 const showMediaDetail = ref<boolean>(false)
@@ -75,14 +75,17 @@ usePointerSwipe(mediaDisplayArea, {
   },
 });
 
-const profileService = useProfileService();
+const route = useRoute();
 const galleryListService = useGalleryListService();
+const masterNavigationService = useMasterNavigationService();
+const authStore = useAuthStore();
 const fetchMediaDetailPageData = async () => {
-  if (!(typeof route.params.id === 'string')) {
+  if (!(typeof route.query.file === 'string')) {
+    masterNavigationService.navigateTo404();
     return
   }
 
-  media.value = await mediaDetailService.getMediaById(route.params.id);
+  media.value = await mediaDetailService.getMediaById(route.query.file);
   if (!media.value){
     return;
   }
@@ -92,14 +95,16 @@ const fetchMediaDetailPageData = async () => {
   const uploader = await mediaDetailService.getMediaUploader(media.value!);
   mediaUploader.value = uploader;
 
-  const me = await profileService.me();
-  uploaderIsMe.value = uploader?.user_id === me?.id && !!uploader;
+  uploaderIsMe.value = !!uploader && uploader.user_id === authStore.profile?.user_id;
 
   ({prevId: prevMediaId.value, nextId: nextMediaId.value} = await galleryListService.getPrevAndNextMediaIdInList(
       media.value!,
   ));
 };
 
+watch(() => route.query.file, fetchMediaDetailPageData);
+// onIonViewDidEnter() is not used here since we only want to load the data once
+// using it will load the data again when this page is re-opened
 onMounted(fetchMediaDetailPageData)
 </script>
 

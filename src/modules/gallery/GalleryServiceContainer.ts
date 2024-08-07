@@ -6,6 +6,7 @@ import {
   GalleryStatisticService
 } from '@/modules/gallery/services/GalleryStatisticService';
 import {
+  useMasterNavigationService,
   useModalService,
   useToastService,
 } from '@/modules/master/MasterServiceContainer';
@@ -13,7 +14,6 @@ import router from '@/router';
 import {
   GalleryNavigationService
 } from '@/modules/gallery/services/GalleryNavigationService';
-import {useIonRouter} from '@ionic/vue';
 
 const useGalleryListService = () => new GalleryListService(
     supabasePort,
@@ -33,6 +33,7 @@ const useMediaDetailService = () => new MediaDetailService(
     supabasePort,
     useToastService(),
     useModalService(),
+    useMasterNavigationService(),
     useGalleryListService(),
 );
 
@@ -43,7 +44,6 @@ const useGalleryStatisticService = () => new GalleryStatisticService(
 
 const useGalleryNavigationService = () => new GalleryNavigationService(
     router,
-    useIonRouter(),
 );
 
 export {

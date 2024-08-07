@@ -1,21 +1,14 @@
 import type {Router} from 'vue-router';
-import type {UseIonRouterResult} from '@ionic/vue';
 import {GalleryRouteName} from '@/modules/gallery/GalleryRouter';
 import type {UseSwipeDirection} from '@vueuse/core';
 
 export class GalleryNavigationService {
   constructor(
       private readonly router: Router,
-      private readonly ionRouter: UseIonRouterResult,
   ) {}
 
   navigateToMediaDetailPage(mediaId: string): void {
-    this.router.push({
-      name: GalleryRouteName.DETAIL,
-      params: {
-        id: mediaId,
-      },
-    });
+    this.router.push(this.mediaDetailRoute(mediaId));
   }
 
   navigateToAdjacentMedia(
@@ -25,24 +18,23 @@ export class GalleryNavigationService {
   ): void {
     // navigate backward
     if (swipeDirection === 'right' && prevMediaId) {
-      this.ionRouter.replace({
-        name: GalleryRouteName.DETAIL,
-        params: {
-          id: prevMediaId,
-        },
-      });
+      this.router.replace(this.mediaDetailRoute(prevMediaId));
       return;
     }
 
     // navigate forward
     if (swipeDirection === 'left' && nextMediaId) {
-      this.ionRouter.replace({
-        name: GalleryRouteName.DETAIL,
-        params: {
-          id: nextMediaId,
-        },
-      });
+      this.router.replace(this.mediaDetailRoute(nextMediaId));
       return;
     }
+  }
+
+  private mediaDetailRoute(mediaId: string) {
+    return {
+      name: GalleryRouteName.DETAIL,
+      query: {
+        file: mediaId,
+      },
+    };
   }
 }
