@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import {computed, onMounted, ref} from 'vue';
-import {useMediaDetailService} from "@/modules/gallery/GalleryServiceContainer";
+import {useGalleryNavigationService, useMediaDetailService} from '@/modules/gallery/GalleryServiceContainer';
 
 const props = defineProps<{
   media: Media
@@ -13,6 +13,7 @@ const mediaThumbnailSignedUrlCreated = computed((): boolean => {
 })
 
 const mediaDetailService = useMediaDetailService();
+const galleryNavigationService  = useGalleryNavigationService();
 
 const mediaIsVideo = computed((): boolean => props.media.type === MediaTypeEnum.VIDEO)
 
@@ -28,7 +29,7 @@ onMounted(() => {
     <va-image
         v-if="mediaThumbnailSignedUrlCreated"
         :src="mediaThumbnailSignedUrl"
-        @click="mediaDetailService.navigateToMediaDetailPage(media.id)"
+        @click="galleryNavigationService.navigateToMediaDetailPage(media.id)"
         fit="cover"
         :ratio="1"
         class="w-full h-full"

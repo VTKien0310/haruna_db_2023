@@ -235,13 +235,4 @@ export class MediaDetailService {
       },
     );
   }
-
-  navigateToMediaDetailPage(mediaId: string): void {
-    this.router.push({
-      name: GalleryRouteName.DETAIL,
-      params: {
-        id: mediaId
-      }
-    })
-  }
 }
