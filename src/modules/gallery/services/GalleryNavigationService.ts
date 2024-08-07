@@ -8,12 +8,7 @@ export class GalleryNavigationService {
   ) {}
 
   navigateToMediaDetailPage(mediaId: string): void {
-    this.router.push({
-      name: GalleryRouteName.DETAIL,
-      query: {
-        file: mediaId,
-      },
-    });
+    this.router.push(this.mediaDetailRoute(mediaId));
   }
 
   navigateToAdjacentMedia(
@@ -23,24 +18,23 @@ export class GalleryNavigationService {
   ): void {
     // navigate backward
     if (swipeDirection === 'right' && prevMediaId) {
-      this.router.replace({
-        name: GalleryRouteName.DETAIL,
-        query: {
-          file: prevMediaId,
-        },
-      });
+      this.router.replace(this.mediaDetailRoute(prevMediaId));
       return;
     }
 
     // navigate forward
     if (swipeDirection === 'left' && nextMediaId) {
-      this.router.replace({
-        name: GalleryRouteName.DETAIL,
-        query: {
-          file: nextMediaId,
-        },
-      });
+      this.router.replace(this.mediaDetailRoute(nextMediaId));
       return;
     }
+  }
+
+  private mediaDetailRoute(mediaId: string) {
+    return {
+      name: GalleryRouteName.DETAIL,
+      query: {
+        file: mediaId,
+      },
+    };
   }
 }
