@@ -13,7 +13,6 @@ import router from '@/router';
 import {
   GalleryNavigationService
 } from '@/modules/gallery/services/GalleryNavigationService';
-import {useIonRouter} from '@ionic/vue';
 
 const useGalleryListService = () => new GalleryListService(
     supabasePort,
@@ -43,7 +42,6 @@ const useGalleryStatisticService = () => new GalleryStatisticService(
 
 const useGalleryNavigationService = () => new GalleryNavigationService(
     router,
-    useIonRouter(),
 );
 
 export {

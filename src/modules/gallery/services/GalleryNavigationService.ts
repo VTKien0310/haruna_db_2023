@@ -1,19 +1,17 @@
 import type {Router} from 'vue-router';
-import type {UseIonRouterResult} from '@ionic/vue';
 import {GalleryRouteName} from '@/modules/gallery/GalleryRouter';
 import type {UseSwipeDirection} from '@vueuse/core';
 
 export class GalleryNavigationService {
   constructor(
       private readonly router: Router,
-      private readonly ionRouter: UseIonRouterResult,
   ) {}
 
   navigateToMediaDetailPage(mediaId: string): void {
     this.router.push({
       name: GalleryRouteName.DETAIL,
-      params: {
-        id: mediaId,
+      query: {
+        file: mediaId,
       },
     });
   }
@@ -25,10 +23,10 @@ export class GalleryNavigationService {
   ): void {
     // navigate backward
     if (swipeDirection === 'right' && prevMediaId) {
-      this.ionRouter.replace({
+      this.router.replace({
         name: GalleryRouteName.DETAIL,
-        params: {
-          id: prevMediaId,
+        query: {
+          file: prevMediaId,
         },
       });
       return;
@@ -36,10 +34,10 @@ export class GalleryNavigationService {
 
     // navigate forward
     if (swipeDirection === 'left' && nextMediaId) {
-      this.ionRouter.replace({
+      this.router.replace({
         name: GalleryRouteName.DETAIL,
-        params: {
-          id: nextMediaId,
+        query: {
+          file: nextMediaId,
         },
       });
       return;

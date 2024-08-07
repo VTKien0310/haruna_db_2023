@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useRoute} from 'vue-router';
-import {computed, onMounted, ref, type StyleValue} from 'vue';
+import {computed, onMounted, ref, type StyleValue, watch} from 'vue';
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import type {Profile} from '@/modules/auth/ProfileEntities';
 import {IonPage} from '@ionic/vue';
@@ -78,11 +78,11 @@ usePointerSwipe(mediaDisplayArea, {
 const profileService = useProfileService();
 const galleryListService = useGalleryListService();
 const fetchMediaDetailPageData = async () => {
-  if (!(typeof route.params.id === 'string')) {
+  if (!(typeof route.query.file === 'string')) {
     return
   }
 
-  media.value = await mediaDetailService.getMediaById(route.params.id);
+  media.value = await mediaDetailService.getMediaById(route.query.file);
   if (!media.value){
     return;
   }
@@ -100,6 +100,7 @@ const fetchMediaDetailPageData = async () => {
   ));
 };
 
+watch(() => route.query.file, fetchMediaDetailPageData);
 onMounted(fetchMediaDetailPageData)
 </script>
 
