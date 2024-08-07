@@ -1,6 +1,5 @@
 import type {Router} from 'vue-router';
 import {GalleryRouteName} from '@/modules/gallery/GalleryRouter';
-import type {UseSwipeDirection} from '@vueuse/core';
 
 export class GalleryNavigationService {
   constructor(
@@ -11,22 +10,8 @@ export class GalleryNavigationService {
     this.router.push(this.mediaDetailRoute(mediaId));
   }
 
-  navigateToAdjacentMedia(
-      swipeDirection: UseSwipeDirection,
-      prevMediaId: string | null,
-      nextMediaId: string | null,
-  ): void {
-    // navigate backward
-    if (swipeDirection === 'right' && prevMediaId) {
-      this.router.replace(this.mediaDetailRoute(prevMediaId));
-      return;
-    }
-
-    // navigate forward
-    if (swipeDirection === 'left' && nextMediaId) {
-      this.router.replace(this.mediaDetailRoute(nextMediaId));
-      return;
-    }
+  replaceMediaDetailPage(mediaId: string): void {
+    this.router.replace(this.mediaDetailRoute(mediaId));
   }
 
   private mediaDetailRoute(mediaId: string) {
