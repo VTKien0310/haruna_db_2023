@@ -18,6 +18,8 @@ const galleryRouter: RouteRecordRaw[] = [
     component: () => import('@/modules/gallery/pages/GalleryUploadPage.vue'),
   },
   {
+    // gallery detail page uses query string instead of route param
+    // this is intended to better support swiping left and right to view adjacent files
     path: '/gallery/view',
     name: GalleryRouteName.DETAIL,
     component: () => import('@/modules/gallery/pages/GalleryDetailPage.vue'),

@@ -29,6 +29,7 @@ const authStore = useAuthStore();
 onIonViewDidEnter(async () => {
   isFetchingData.value = true;
 
+  // ensure current user's profile is loaded in the store
   if (!authStore.profile) {
     await profileService.refreshCurrentUserProfile();
   }

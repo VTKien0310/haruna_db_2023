@@ -92,7 +92,7 @@ const fetchMediaDetailPageData = async () => {
   const uploader = await mediaDetailService.getMediaUploader(media.value!);
   mediaUploader.value = uploader;
 
-  uploaderIsMe.value = uploader?.user_id === authStore.profile?.user_id && !!uploader;
+  uploaderIsMe.value = !!uploader && uploader.user_id === authStore.profile?.user_id;
 
   ({prevId: prevMediaId.value, nextId: nextMediaId.value} = await galleryListService.getPrevAndNextMediaIdInList(
       media.value!,
@@ -100,6 +100,8 @@ const fetchMediaDetailPageData = async () => {
 };
 
 watch(() => route.query.file, fetchMediaDetailPageData);
+// onIonViewDidEnter() is not used here since we only want to load the data once
+// using it will load the data again when this page is re-opened
 onMounted(fetchMediaDetailPageData)
 </script>
 
