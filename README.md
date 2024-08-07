@@ -44,7 +44,7 @@ supabase functions serve --env-file ./supabase/functions/.env.local
 ### Build for production
 
 ```sh
- vite build --mode production
+vite build --mode production
 ```
 
 ### Deploy to Firebase hosting
