@@ -9,9 +9,9 @@ import {
   useGalleryNavigationService,
   useMediaDetailService,
 } from '@/modules/gallery/GalleryServiceContainer';
-import {usePointerSwipe, useSwipe} from '@vueuse/core';
+import {usePointerSwipe, useSwipe, type UseSwipeDirection} from '@vueuse/core';
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
-import {useMasterNavigationService} from '@/modules/master/MasterServiceContainer';
+import {createAnimation, type Animation} from '@ionic/vue';
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
@@ -62,26 +62,60 @@ const mediaDisplayArea = ref(null);
 const prevMediaId = ref<string | null>(null);
 const nextMediaId = ref<string | null>(null);
 const galleryNavigationService = useGalleryNavigationService();
+let navigateToNextMediaAnimation: Animation;
+let navigateToPrevMediaAnimation: Animation;
+const registerNavigateAnimation = () => {
+  navigateToPrevMediaAnimation = createAnimation().
+      addElement(mediaDisplayArea.value!).
+      duration(500).
+      fromTo('transform', 'translateX(0px)', 'translateX(100px)').
+      fromTo('opacity', '1', '0.2');
+
+  navigateToNextMediaAnimation = createAnimation().
+      addElement(mediaDisplayArea.value!).
+      duration(500).
+      fromTo('transform', 'translateX(0px)', 'translateX(-100px)').
+      fromTo('opacity', '1', '0.2');
+}
+const navigateToAdjacentMedia = (direction: UseSwipeDirection) => {
+  if (direction === 'right') {
+    navigateToPrevMediaAnimation.play().then(() => {
+      if (prevMediaId.value) {
+        galleryNavigationService.replaceMediaDetailPage(prevMediaId.value);
+      }
+      navigateToPrevMediaAnimation.stop();
+    });
+    return;
+  }
+
+  if (direction === 'left') {
+    navigateToNextMediaAnimation.play().then(() => {
+      if (nextMediaId.value) {
+        galleryNavigationService.replaceMediaDetailPage(nextMediaId.value);
+      }
+      navigateToNextMediaAnimation.stop();
+    });
+    return;
+  }
+};
 // for mobile browser
 useSwipe(mediaDisplayArea, {
   onSwipeEnd(e, direction) {
-    galleryNavigationService.navigateToAdjacentMedia(direction, prevMediaId.value, nextMediaId.value);
+    navigateToAdjacentMedia(direction);
   },
 });
 // for desktop browser
 usePointerSwipe(mediaDisplayArea, {
   onSwipeEnd(e, direction) {
-    galleryNavigationService.navigateToAdjacentMedia(direction, prevMediaId.value, nextMediaId.value);
+    navigateToAdjacentMedia(direction);
   },
 });
 
 const route = useRoute();
 const galleryListService = useGalleryListService();
-const masterNavigationService = useMasterNavigationService();
 const authStore = useAuthStore();
 const fetchMediaDetailPageData = async () => {
   if (!(typeof route.query.file === 'string')) {
-    masterNavigationService.navigateTo404();
     return
   }
 
@@ -105,7 +139,10 @@ const fetchMediaDetailPageData = async () => {
 watch(() => route.query.file, fetchMediaDetailPageData);
 // onIonViewDidEnter() is not used here since we only want to load the data once
 // using it will load the data again when this page is re-opened
-onMounted(fetchMediaDetailPageData)
+onMounted(() => {
+  registerNavigateAnimation();
+  fetchMediaDetailPageData();
+});
 </script>
 
 <template>
