@@ -10,6 +10,10 @@ import {
   useToastService,
 } from '@/modules/master/MasterServiceContainer';
 import router from '@/router';
+import {
+  GalleryNavigationService
+} from '@/modules/gallery/services/GalleryNavigationService';
+import {useIonRouter} from '@ionic/vue';
 
 const useGalleryListService = () => new GalleryListService(
     supabasePort,
@@ -37,9 +41,15 @@ const useGalleryStatisticService = () => new GalleryStatisticService(
     useToastService(),
 );
 
+const useGalleryNavigationService = () => new GalleryNavigationService(
+    router,
+    useIonRouter(),
+);
+
 export {
   useGalleryListService,
   useMediaDetailService,
   useUploadMediaService,
   useGalleryStatisticService,
+  useGalleryNavigationService
 };

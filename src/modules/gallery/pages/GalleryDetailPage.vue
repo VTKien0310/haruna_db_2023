@@ -4,9 +4,13 @@ import {computed, onMounted, ref, type StyleValue} from 'vue';
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import type {Profile} from '@/modules/auth/ProfileEntities';
 import {IonPage} from '@ionic/vue';
-import {useGalleryListService, useMediaDetailService} from '@/modules/gallery/GalleryServiceContainer';
+import {
+  useGalleryListService,
+  useGalleryNavigationService,
+  useMediaDetailService,
+} from '@/modules/gallery/GalleryServiceContainer';
 import {useProfileService} from '@/modules/auth/AuthServiceContainer';
-import {usePointerSwipe, useSwipe, type UseSwipeDirection} from '@vueuse/core';
+import {usePointerSwipe, useSwipe} from '@vueuse/core';
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
@@ -54,48 +58,39 @@ const pageBackground = computed((): StyleValue => {
       : {}
 })
 
-const galleryListService = useGalleryListService();
 const mediaDisplayArea = ref(null);
 const prevMediaId = ref<string | null>(null);
 const nextMediaId = ref<string | null>(null);
-const navigateToAdjacentMedia = (swipeDirection: UseSwipeDirection) => {
-  // navigate backward
-  if (swipeDirection === 'right' && prevMediaId.value) {
-    mediaDetailService.navigateToMediaDetailPage(prevMediaId.value);
-    return;
-  }
-
-  // navigate forward
-  if (swipeDirection === 'left' && nextMediaId.value) {
-    mediaDetailService.navigateToMediaDetailPage(nextMediaId.value);
-    return;
-  }
-};
+const galleryNavigationService = useGalleryNavigationService();
 // for mobile browser
 useSwipe(mediaDisplayArea, {
   onSwipeEnd(e, direction) {
-    navigateToAdjacentMedia(direction);
+    galleryNavigationService.navigateToAdjacentMedia(direction, prevMediaId.value, nextMediaId.value);
   },
 });
 // for desktop browser
 usePointerSwipe(mediaDisplayArea, {
   onSwipeEnd(e, direction) {
-    navigateToAdjacentMedia(direction);
+    galleryNavigationService.navigateToAdjacentMedia(direction, prevMediaId.value, nextMediaId.value);
   },
 });
 
 const profileService = useProfileService();
-
-onMounted(async () => {
+const galleryListService = useGalleryListService();
+const fetchMediaDetailPageData = async () => {
   if (!(typeof route.params.id === 'string')) {
     return
   }
 
-  media.value = await mediaDetailService.getMediaById(route.params.id)
-  mediaSignedUrl.value = await mediaDetailService.createFullSizeViewUrlForMedia(media.value!)
+  media.value = await mediaDetailService.getMediaById(route.params.id);
+  if (!media.value){
+    return;
+  }
 
-  const uploader = await mediaDetailService.getMediaUploader(media.value!)
-  mediaUploader.value = uploader
+  mediaSignedUrl.value = await mediaDetailService.createFullSizeViewUrlForMedia(media.value!);
+
+  const uploader = await mediaDetailService.getMediaUploader(media.value!);
+  mediaUploader.value = uploader;
 
   const me = await profileService.me();
   uploaderIsMe.value = uploader?.user_id === me?.id && !!uploader;
@@ -103,7 +98,9 @@ onMounted(async () => {
   ({prevId: prevMediaId.value, nextId: nextMediaId.value} = await galleryListService.getPrevAndNextMediaIdInList(
       media.value!,
   ));
-})
+};
+
+onMounted(fetchMediaDetailPageData)
 </script>
 
 <template>

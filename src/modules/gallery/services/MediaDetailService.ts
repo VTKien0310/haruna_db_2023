@@ -22,8 +22,8 @@ const thumbnailSquareRatio: DisplayRatio = {
 };
 
 const thumbnailFourToThreeRatio: DisplayRatio = {
-  width: 750,
-  height: 563,
+  width: 1024,
+  height: 768,
 };
 
 type SignedUrlOptions = {
@@ -234,14 +234,5 @@ export class MediaDetailService {
         this.redirectAndRefreshGallery();
       },
     );
-  }
-
-  navigateToMediaDetailPage(mediaId: string): void {
-    this.router.push({
-      name: GalleryRouteName.DETAIL,
-      params: {
-        id: mediaId
-      }
-    })
   }
 }
