@@ -3,12 +3,10 @@ import {IonPage, onIonViewDidEnter} from '@ionic/vue';
 import {computed, ref} from 'vue';
 import type {Media} from "@/modules/gallery/GalleryEntities";
 import {useGalleryStatisticService, useMediaDetailService} from '@/modules/gallery/GalleryServiceContainer';
+import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {useProfileService} from '@/modules/auth/AuthServiceContainer';
 
 const mediaDetailService = useMediaDetailService();
-const galleryStatisticService = useGalleryStatisticService();
-
-const profileService = useProfileService();
 
 const totalMediasCount = ref<number>(0);
 const uploadedMediasCount = ref<number>(0);
@@ -25,13 +23,17 @@ const uploadContributionPercentage = computed(() => {
 });
 
 const isFetchingData = ref<boolean>(false);
-
+const galleryStatisticService = useGalleryStatisticService();
+const profileService = useProfileService();
+const authStore = useAuthStore();
 onIonViewDidEnter(async () => {
   isFetchingData.value = true;
 
-  const me = await profileService.me();
+  if (!authStore.profile) {
+    await profileService.refreshCurrentUserProfile();
+  }
 
-  uploadedMediasCount.value = await galleryStatisticService.countUserUploadedMedias(me!);
+  uploadedMediasCount.value = await galleryStatisticService.countUserUploadedMedias(authStore.profile!.user_id);
   totalMediasCount.value = await galleryStatisticService.countTotalMedias();
   latestUploadedMedia.value = await galleryStatisticService.getLatestUploadMedia();
   newlyUploadedMedia.value = await galleryStatisticService.countUploadedMediasWithinPassDays(7);

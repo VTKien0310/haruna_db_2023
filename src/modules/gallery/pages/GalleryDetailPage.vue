@@ -9,13 +9,12 @@ import {
   useGalleryNavigationService,
   useMediaDetailService,
 } from '@/modules/gallery/GalleryServiceContainer';
-import {useProfileService} from '@/modules/auth/AuthServiceContainer';
 import {usePointerSwipe, useSwipe} from '@vueuse/core';
+import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
 
-const route = useRoute();
 const mediaDetailService = useMediaDetailService();
 
 const showMediaDetail = ref<boolean>(false)
@@ -75,8 +74,9 @@ usePointerSwipe(mediaDisplayArea, {
   },
 });
 
-const profileService = useProfileService();
+const route = useRoute();
 const galleryListService = useGalleryListService();
+const authStore = useAuthStore();
 const fetchMediaDetailPageData = async () => {
   if (!(typeof route.query.file === 'string')) {
     return
@@ -92,8 +92,7 @@ const fetchMediaDetailPageData = async () => {
   const uploader = await mediaDetailService.getMediaUploader(media.value!);
   mediaUploader.value = uploader;
 
-  const me = await profileService.me();
-  uploaderIsMe.value = uploader?.user_id === me?.id && !!uploader;
+  uploaderIsMe.value = uploader?.user_id === authStore.profile?.user_id && !!uploader;
 
   ({prevId: prevMediaId.value, nextId: nextMediaId.value} = await galleryListService.getPrevAndNextMediaIdInList(
       media.value!,
