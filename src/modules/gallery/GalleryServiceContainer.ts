@@ -6,6 +6,7 @@ import {
   GalleryStatisticService
 } from '@/modules/gallery/services/GalleryStatisticService';
 import {
+  useMasterNavigationService,
   useModalService,
   useToastService,
 } from '@/modules/master/MasterServiceContainer';
@@ -32,6 +33,7 @@ const useMediaDetailService = () => new MediaDetailService(
     supabasePort,
     useToastService(),
     useModalService(),
+    useMasterNavigationService(),
     useGalleryListService(),
 );
 

@@ -11,6 +11,7 @@ import {
 } from '@/modules/gallery/GalleryServiceContainer';
 import {usePointerSwipe, useSwipe} from '@vueuse/core';
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
+import {useMasterNavigationService} from '@/modules/master/MasterServiceContainer';
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
@@ -76,9 +77,11 @@ usePointerSwipe(mediaDisplayArea, {
 
 const route = useRoute();
 const galleryListService = useGalleryListService();
+const masterNavigationService = useMasterNavigationService();
 const authStore = useAuthStore();
 const fetchMediaDetailPageData = async () => {
   if (!(typeof route.query.file === 'string')) {
+    masterNavigationService.navigateTo404();
     return
   }
 
