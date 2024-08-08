@@ -26,14 +26,14 @@ export class GalleryStatisticService {
     return count;
   }
 
-  async countUserUploadedMedias(user: User): Promise<number> {
+  async countUserUploadedMedias(userId: string): Promise<number> {
     const {count, error} = await this.supabasePort.
         from('medias').
         select('*', {
           count: 'exact',
           head: true,
         }).
-        eq('uploader_id', user.id);
+        eq('uploader_id', userId);
 
     if (error || count === null) {
       this.toastService.error('Failed to count user\'s uploaded medias');

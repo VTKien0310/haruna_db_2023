@@ -6,10 +6,14 @@ import {
   GalleryStatisticService
 } from '@/modules/gallery/services/GalleryStatisticService';
 import {
+  useMasterNavigationService,
   useModalService,
   useToastService,
 } from '@/modules/master/MasterServiceContainer';
 import router from '@/router';
+import {
+  GalleryNavigationService
+} from '@/modules/gallery/services/GalleryNavigationService';
 
 const useGalleryListService = () => new GalleryListService(
     supabasePort,
@@ -29,6 +33,7 @@ const useMediaDetailService = () => new MediaDetailService(
     supabasePort,
     useToastService(),
     useModalService(),
+    useMasterNavigationService(),
     useGalleryListService(),
 );
 
@@ -37,9 +42,14 @@ const useGalleryStatisticService = () => new GalleryStatisticService(
     useToastService(),
 );
 
+const useGalleryNavigationService = () => new GalleryNavigationService(
+    router,
+);
+
 export {
   useGalleryListService,
   useMediaDetailService,
   useUploadMediaService,
   useGalleryStatisticService,
+  useGalleryNavigationService
 };

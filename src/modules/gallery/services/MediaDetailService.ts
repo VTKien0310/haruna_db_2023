@@ -10,6 +10,9 @@ import type {SupabaseClient} from '@supabase/supabase-js';
 import type {ModalService} from '@/modules/master/services/ModalService';
 import type {ToastService} from '@/modules/master/services/ToastService';
 import type {Router} from 'vue-router';
+import type {
+  MasterNavigationService
+} from '@/modules/master/services/MasterNavigationService';
 
 type DisplayRatio = {
   width: number;
@@ -22,8 +25,8 @@ const thumbnailSquareRatio: DisplayRatio = {
 };
 
 const thumbnailFourToThreeRatio: DisplayRatio = {
-  width: 750,
-  height: 563,
+  width: 1024,
+  height: 768,
 };
 
 type SignedUrlOptions = {
@@ -37,6 +40,7 @@ export class MediaDetailService {
       private readonly supabasePort: SupabaseClient,
       private readonly toastService: ToastService,
       private readonly modalService: ModalService,
+      private readonly masterNavigationService: MasterNavigationService,
       private readonly galleryListService: GalleryListService
   ) {
   }
@@ -176,11 +180,13 @@ export class MediaDetailService {
 
     if (error || !data) {
       this.toastService.error(`Failed to fetch media with id ${id}`);
+      this.masterNavigationService.navigateTo404();
       return null;
     }
 
     if (!data[0]) {
       this.toastService.error(`Media with id ${id} not found`);
+      this.masterNavigationService.navigateTo404();
       return null;
     }
 
@@ -234,14 +240,5 @@ export class MediaDetailService {
         this.redirectAndRefreshGallery();
       },
     );
-  }
-
-  navigateToMediaDetailPage(mediaId: string): void {
-    this.router.push({
-      name: GalleryRouteName.DETAIL,
-      params: {
-        id: mediaId
-      }
-    })
   }
 }

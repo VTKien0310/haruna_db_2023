@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import {useRoute} from 'vue-router';
-import {computed, onMounted, ref, type StyleValue} from 'vue';
+import {computed, onMounted, ref, type StyleValue, watch} from 'vue';
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import type {Profile} from '@/modules/auth/ProfileEntities';
 import {IonPage} from '@ionic/vue';
-import {useGalleryListService, useMediaDetailService} from '@/modules/gallery/GalleryServiceContainer';
-import {useProfileService} from '@/modules/auth/AuthServiceContainer';
+import {
+  useGalleryListService,
+  useGalleryNavigationService,
+  useMediaDetailService,
+} from '@/modules/gallery/GalleryServiceContainer';
 import {usePointerSwipe, useSwipe, type UseSwipeDirection} from '@vueuse/core';
+import {useAuthStore} from '@/modules/auth/stores/AuthStore';
+import {createAnimation, type Animation} from '@ionic/vue';
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
 
-const route = useRoute();
 const mediaDetailService = useMediaDetailService();
 
 const showMediaDetail = ref<boolean>(false)
@@ -54,20 +58,43 @@ const pageBackground = computed((): StyleValue => {
       : {}
 })
 
-const galleryListService = useGalleryListService();
 const mediaDisplayArea = ref(null);
 const prevMediaId = ref<string | null>(null);
 const nextMediaId = ref<string | null>(null);
-const navigateToAdjacentMedia = (swipeDirection: UseSwipeDirection) => {
-  // navigate backward
-  if (swipeDirection === 'right' && prevMediaId.value) {
-    mediaDetailService.navigateToMediaDetailPage(prevMediaId.value);
+const galleryNavigationService = useGalleryNavigationService();
+let navigateToNextMediaAnimation: Animation;
+let navigateToPrevMediaAnimation: Animation;
+const registerNavigateAnimation = () => {
+  navigateToPrevMediaAnimation = createAnimation().
+      addElement(mediaDisplayArea.value!).
+      duration(500).
+      fromTo('transform', 'translateX(0px)', 'translateX(100px)').
+      fromTo('opacity', '1', '0.2');
+
+  navigateToNextMediaAnimation = createAnimation().
+      addElement(mediaDisplayArea.value!).
+      duration(500).
+      fromTo('transform', 'translateX(0px)', 'translateX(-100px)').
+      fromTo('opacity', '1', '0.2');
+}
+const navigateToAdjacentMedia = (direction: UseSwipeDirection) => {
+  if (direction === 'right') {
+    navigateToPrevMediaAnimation.play().then(() => {
+      if (prevMediaId.value) {
+        galleryNavigationService.replaceMediaDetailPage(prevMediaId.value);
+      }
+      navigateToPrevMediaAnimation.stop();
+    });
     return;
   }
 
-  // navigate forward
-  if (swipeDirection === 'left' && nextMediaId.value) {
-    mediaDetailService.navigateToMediaDetailPage(nextMediaId.value);
+  if (direction === 'left') {
+    navigateToNextMediaAnimation.play().then(() => {
+      if (nextMediaId.value) {
+        galleryNavigationService.replaceMediaDetailPage(nextMediaId.value);
+      }
+      navigateToNextMediaAnimation.stop();
+    });
     return;
   }
 };
@@ -84,26 +111,38 @@ usePointerSwipe(mediaDisplayArea, {
   },
 });
 
-const profileService = useProfileService();
-
-onMounted(async () => {
-  if (!(typeof route.params.id === 'string')) {
+const route = useRoute();
+const galleryListService = useGalleryListService();
+const authStore = useAuthStore();
+const fetchMediaDetailPageData = async () => {
+  if (!(typeof route.query.file === 'string')) {
     return
   }
 
-  media.value = await mediaDetailService.getMediaById(route.params.id)
-  mediaSignedUrl.value = await mediaDetailService.createFullSizeViewUrlForMedia(media.value!)
+  media.value = await mediaDetailService.getMediaById(route.query.file);
+  if (!media.value){
+    return;
+  }
 
-  const uploader = await mediaDetailService.getMediaUploader(media.value!)
-  mediaUploader.value = uploader
+  mediaSignedUrl.value = await mediaDetailService.createFullSizeViewUrlForMedia(media.value!);
 
-  const me = await profileService.me();
-  uploaderIsMe.value = uploader?.user_id === me?.id && !!uploader;
+  const uploader = await mediaDetailService.getMediaUploader(media.value!);
+  mediaUploader.value = uploader;
+
+  uploaderIsMe.value = !!uploader && uploader.user_id === authStore.profile?.user_id;
 
   ({prevId: prevMediaId.value, nextId: nextMediaId.value} = await galleryListService.getPrevAndNextMediaIdInList(
       media.value!,
   ));
-})
+};
+
+watch(() => route.query.file, fetchMediaDetailPageData);
+// onIonViewDidEnter() is not used here since we only want to load the data once
+// using it will load the data again when this page is re-opened
+onMounted(() => {
+  registerNavigateAnimation();
+  fetchMediaDetailPageData();
+});
 </script>
 
 <template>
