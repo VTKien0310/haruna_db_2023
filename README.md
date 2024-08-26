@@ -1,5 +1,11 @@
 # haruna_db_2023
 
+## Description
+
+A multipurpose application for everyday use. The application currently provides:
+- Images and videos storage
+- Translation for English and Japanese
+
 ## Project specification
 
 - Vue 3.3
