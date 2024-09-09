@@ -1,10 +1,14 @@
 # haruna_db_2023
 
-## Description
+## About
 
 A multipurpose application for everyday use. The application currently provides:
+
 - Images and videos storage
 - Translation for English and Japanese
+
+The application's namesake is derived from the
+battleship [Haruna](https://en.wikipedia.org/wiki/Japanese_battleship_Haruna).
 
 ## Project specification
 
