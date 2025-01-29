@@ -67,13 +67,13 @@ let navigateToPrevMediaAnimation: Animation;
 const registerNavigateAnimation = () => {
   navigateToPrevMediaAnimation = createAnimation().
       addElement(mediaDisplayArea.value!).
-      duration(500).
+      duration(750).
       fromTo('transform', 'translateX(0px)', 'translateX(100px)').
       fromTo('opacity', '1', '0.2');
 
   navigateToNextMediaAnimation = createAnimation().
       addElement(mediaDisplayArea.value!).
-      duration(500).
+      duration(750).
       fromTo('transform', 'translateX(0px)', 'translateX(-100px)').
       fromTo('opacity', '1', '0.2');
 }
