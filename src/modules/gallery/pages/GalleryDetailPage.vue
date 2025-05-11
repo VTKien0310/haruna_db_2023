@@ -12,6 +12,7 @@ import {
 import {usePointerSwipe, useSwipe, type UseSwipeDirection} from '@vueuse/core';
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {createAnimation, type Animation} from '@ionic/vue';
+import {VaButton, VaProgressBar} from 'vuestic-ui';
 
 const media = ref<Media | null>(null)
 const mediaSignedUrl = ref<string>('')
@@ -67,13 +68,13 @@ let navigateToPrevMediaAnimation: Animation;
 const registerNavigateAnimation = () => {
   navigateToPrevMediaAnimation = createAnimation().
       addElement(mediaDisplayArea.value!).
-      duration(750).
+      duration(500).
       fromTo('transform', 'translateX(0px)', 'translateX(100px)').
       fromTo('opacity', '1', '0.2');
 
   navigateToNextMediaAnimation = createAnimation().
       addElement(mediaDisplayArea.value!).
-      duration(750).
+      duration(500).
       fromTo('transform', 'translateX(0px)', 'translateX(-100px)').
       fromTo('opacity', '1', '0.2');
 }
