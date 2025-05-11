@@ -70,13 +70,13 @@ const registerNavigateAnimation = () => {
       addElement(mediaDisplayArea.value!).
       duration(500).
       fromTo('transform', 'translateX(0px)', 'translateX(100px)').
-      fromTo('opacity', '1', '0.2');
+      fromTo('opacity', '1', '0');
 
   navigateToNextMediaAnimation = createAnimation().
       addElement(mediaDisplayArea.value!).
       duration(500).
       fromTo('transform', 'translateX(0px)', 'translateX(-100px)').
-      fromTo('opacity', '1', '0.2');
+      fromTo('opacity', '1', '0');
 };
 const navigateToAdjacentMedia = (direction: UseSwipeDirection) => {
   if (direction === 'right') {
