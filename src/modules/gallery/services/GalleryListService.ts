@@ -26,7 +26,7 @@ export class GalleryListService {
 
         this.turnOnIsFetchingMediaState();
 
-        const range: number = 60;
+        const range: number = 50;
 
         const {data, error} = await this.supabasePort
             .from('medias')

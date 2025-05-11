@@ -12,51 +12,52 @@ import {
 import {usePointerSwipe, useSwipe, type UseSwipeDirection} from '@vueuse/core';
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {createAnimation, type Animation} from '@ionic/vue';
+import {VaButton, VaProgressBar} from 'vuestic-ui';
 
-const media = ref<Media | null>(null)
-const mediaSignedUrl = ref<string>('')
+const media = ref<Media | null>(null);
+const mediaSignedUrl = ref<string>('');
 
 const mediaDetailService = useMediaDetailService();
 
-const showMediaDetail = ref<boolean>(false)
+const showMediaDetail = ref<boolean>(false);
 const triggerShowMediaDetail = (): void => {
-  showMediaDetail.value = !showMediaDetail.value
-}
+  showMediaDetail.value = !showMediaDetail.value;
+};
 
-const isHandlingDeleteMedia = ref<boolean>(false)
+const isHandlingDeleteMedia = ref<boolean>(false);
 const deleteMedia = (): void => {
-  isHandlingDeleteMedia.value = true
+  isHandlingDeleteMedia.value = true;
   mediaDetailService.deleteMedia(media.value!).then(
-      () => isHandlingDeleteMedia.value = false
-  )
-}
+      () => isHandlingDeleteMedia.value = false,
+  );
+};
 
-const isHandlingDownloadMedia = ref<boolean>(false)
+const isHandlingDownloadMedia = ref<boolean>(false);
 const downloadMedia = (): void => {
-  isHandlingDownloadMedia.value = true
+  isHandlingDownloadMedia.value = true;
   mediaDetailService.downloadMedia(media.value!).then(
-      () => isHandlingDownloadMedia.value = false
-  )
-}
+      () => isHandlingDownloadMedia.value = false,
+  );
+};
 
 const showProgressBar = computed((): boolean => {
   return media.value == null
       || mediaSignedUrl.value == ''
       || isHandlingDeleteMedia.value
-      || isHandlingDownloadMedia.value
-})
+      || isHandlingDownloadMedia.value;
+});
 
-const mediaUploader = ref<Profile | null>(null)
+const mediaUploader = ref<Profile | null>(null);
 
-const uploaderIsMe = ref<boolean>(false)
+const uploaderIsMe = ref<boolean>(false);
 
-const mediaIsVideo = computed((): boolean => media.value?.type === MediaTypeEnum.VIDEO)
+const mediaIsVideo = computed((): boolean => media.value?.type === MediaTypeEnum.VIDEO);
 
 const pageBackground = computed((): StyleValue => {
   return media.value?.type === MediaTypeEnum.PHOTO
       ? {'background-image': 'url(' + mediaSignedUrl.value + ')'}
-      : {}
-})
+      : {};
+});
 
 const mediaDisplayArea = ref(null);
 const prevMediaId = ref<string | null>(null);
@@ -69,17 +70,23 @@ const registerNavigateAnimation = () => {
       addElement(mediaDisplayArea.value!).
       duration(500).
       fromTo('transform', 'translateX(0px)', 'translateX(100px)').
-      fromTo('opacity', '1', '0.2');
+      fromTo('opacity', '1', '0');
 
   navigateToNextMediaAnimation = createAnimation().
       addElement(mediaDisplayArea.value!).
       duration(500).
       fromTo('transform', 'translateX(0px)', 'translateX(-100px)').
-      fromTo('opacity', '1', '0.2');
-}
+      fromTo('opacity', '1', '0');
+};
 const navigateToAdjacentMedia = (direction: UseSwipeDirection) => {
   if (direction === 'right') {
     navigateToPrevMediaAnimation.play().then(() => {
+      // add a white background to the display area after animation completes
+      if (mediaDisplayArea.value) {
+        (mediaDisplayArea.value as HTMLElement).style.backgroundColor = 'white';
+        (mediaDisplayArea.value as HTMLElement).style.backgroundImage = 'none';
+      }
+
       if (prevMediaId.value) {
         galleryNavigationService.replaceMediaDetailPage(prevMediaId.value);
       }
@@ -90,6 +97,12 @@ const navigateToAdjacentMedia = (direction: UseSwipeDirection) => {
 
   if (direction === 'left') {
     navigateToNextMediaAnimation.play().then(() => {
+      // add a white background to the display area after animation completes
+      if (mediaDisplayArea.value) {
+        (mediaDisplayArea.value as HTMLElement).style.backgroundColor = 'white';
+        (mediaDisplayArea.value as HTMLElement).style.backgroundImage = 'none';
+      }
+
       if (nextMediaId.value) {
         galleryNavigationService.replaceMediaDetailPage(nextMediaId.value);
       }
@@ -116,11 +129,11 @@ const galleryListService = useGalleryListService();
 const authStore = useAuthStore();
 const fetchMediaDetailPageData = async () => {
   if (!(typeof route.query.file === 'string')) {
-    return
+    return;
   }
 
   media.value = await mediaDetailService.getMediaById(route.query.file);
-  if (!media.value){
+  if (!media.value) {
     return;
   }
 
@@ -143,6 +156,14 @@ onMounted(() => {
   registerNavigateAnimation();
   fetchMediaDetailPageData();
 });
+
+// reset the background color when media changes
+watch([media, mediaSignedUrl], () => {
+  if (mediaDisplayArea.value && media.value) {
+    // reset background color to transparent when new media loads
+    (mediaDisplayArea.value as HTMLElement).style.backgroundColor = 'transparent';
+  }
+}, {immediate: true});
 </script>
 
 <template>
@@ -150,7 +171,7 @@ onMounted(() => {
     <div
         ref="mediaDisplayArea"
         :style="pageBackground"
-        class="h-screen bg-center bg-contain bg-scroll bg-no-repeat"
+        class="h-screen bg-center bg-contain bg-scroll bg-no-repeat transition-colors duration-300"
     >
       <va-progress-bar v-show="showProgressBar" indeterminate/>
 
