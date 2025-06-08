@@ -62,7 +62,7 @@ onMounted(() => {
             @submit.prevent="handleUpdateProfile"
             ref="profileForm"
             tag="form"
-            class="w-full mb-2 flex flex-col justify-center items-center content-center"
+            class="w-full !mb-2 flex flex-col justify-center items-center content-center"
         >
 
           <va-input
