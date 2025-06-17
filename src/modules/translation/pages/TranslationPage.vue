@@ -4,9 +4,10 @@ import {ref} from 'vue';
 import {
   type DebounceTimeOption,
   LanguageCode,
-  type OriginalLanguageOption
+  type OriginalLanguageOption,
 } from '@/modules/translation/TranslationTypes';
-import {useTranslationService} from "@/modules/translation/TranslationServiceContainer";
+import {useTranslationService} from '@/modules/translation/TranslationServiceContainer';
+import {VaButton, VaSelect, VaTextarea} from 'vuestic-ui';
 
 const originalLanguage = ref<LanguageCode>(LanguageCode.JA);
 
@@ -21,88 +22,84 @@ const originalLanguageOptionSelections: OriginalLanguageOption[] = [
   },
 ];
 
-const debounceTime = ref<number>(1000)
+const debounceTime = ref<number>(1500);
 
 const debounceTimeOptionSelections: DebounceTimeOption[] = [
   {
-    value: 1000,
-    label: '1s'
-  },
-  {
     value: 1500,
-    label: '1.5s'
+    label: '1.5s',
   },
   {
     value: 2000,
-    label: '2s'
+    label: '2s',
   },
   {
     value: 2500,
-    label: '2.5s'
+    label: '2.5s',
   },
   {
     value: 3000,
-    label: '3s'
+    label: '3s',
   },
   {
     value: 4000,
-    label: '4s'
+    label: '4s',
   },
   {
     value: 5000,
-    label: '5s'
-  }
+    label: '5s',
+  },
 ];
 
 let ogContentInputTimeout: ReturnType<typeof setTimeout> | null | undefined = null;
 const clearOgContentInputTimeout = (): void => {
   if (ogContentInputTimeout) {
-    clearTimeout(ogContentInputTimeout)
+    clearTimeout(ogContentInputTimeout);
   }
-}
+};
 const debounceOgContentInput = () => {
-  clearOgContentInputTimeout()
+  clearOgContentInputTimeout();
   ogContentInputTimeout = setTimeout(initTranslation, debounceTime.value);
-}
+};
 
 const originalContent = ref<string>('');
 const lastOgContent = ref<string>('');
 const initTranslation = (): void => {
-  clearOgContentInputTimeout()
+  clearOgContentInputTimeout();
 
   if (originalContent.value === lastOgContent.value || !originalContent.value) {
-    return
+    return;
   }
 
-  lastOgContent.value = originalContent.value
-  translate()
-}
+  lastOgContent.value = originalContent.value;
+  translate();
+};
 
 const translationService = useTranslationService();
 const translatedContent = ref<string>('');
-const isTranslating = ref<boolean>(false)
+const isTranslating = ref<boolean>(false);
 const translate = () => {
   isTranslating.value = true;
   translationService.translate(originalContent.value, originalLanguage.value).then(
       (translation: string): void => {
-        translatedContent.value = translation
-        isTranslating.value = false
-      }
-  )
-}
+        translatedContent.value = translation;
+        isTranslating.value = false;
+      },
+  );
+};
 
 const clearOgContent = () => {
   originalContent.value = '';
-}
+};
 
 const resetTranslation = (): void => {
-  clearOgContent()
+  clearOgContent();
   translatedContent.value = '';
-}
+};
 
 onIonViewWillLeave(() => {
-  clearOgContentInputTimeout()
-})
+  clearOgContentInputTimeout();
+});
 </script>
 
 <template>
@@ -139,19 +136,17 @@ onIonViewWillLeave(() => {
         <va-textarea
             v-model="originalContent"
             @input="debounceOgContentInput"
-            autosize
-            min-rows="10"
+            :resize="false"
             label="Original content"
-            class="w-full h-fit md:mr-2"
+            class="translation-textarea w-full md:mr-2"
             counter
         />
         <va-textarea
             v-model="translatedContent"
             :loading="isTranslating"
-            autosize
-            min-rows="10"
+            :resize="false"
             label="Translated content"
-            class="w-full h-fit md:ml-2"
+            class="translation-textarea w-full md:ml-2"
             background="background-element"
             readonly
         />
@@ -162,9 +157,18 @@ onIonViewWillLeave(() => {
 </template>
 
 <style scoped>
+.translation-textarea {
+  height: 42.5dvh;
+}
+
 @media (min-width: 768px) {
   .translation-form {
     min-height: 50dvh;
+  }
+
+  .translation-textarea {
+    min-height: 100%;
+    height: 85dvh;
   }
 }
 </style>
