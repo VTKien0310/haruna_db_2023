@@ -2,6 +2,7 @@
 import {useGalleryUploadStore} from "@/modules/gallery/stores/GalleryUploadStore";
 import {IonPage} from "@ionic/vue";
 import {useUploadMediaService} from "@/modules/gallery/GalleryServiceContainer";
+import {VaButton, VaFileUpload, VaProgressBar} from 'vuestic-ui';
 
 const uploadMediaService = useUploadMediaService();
 

@@ -5,6 +5,7 @@ import type {ProfileDetail} from "@/modules/auth/AuthTypes";
 import {IonPage} from "@ionic/vue";
 import {useUploadMediaService} from "@/modules/gallery/GalleryServiceContainer";
 import {useAuthenticationService, useProfileService} from '@/modules/auth/AuthServiceContainer';
+import {VaButton, VaForm, VaInput} from 'vuestic-ui';
 
 const authenticationService = useAuthenticationService();
 const profileService = useProfileService();

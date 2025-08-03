@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useForm} from 'vuestic-ui';
+import {useForm, VaButton, VaForm, VaInput} from 'vuestic-ui';
 import {computed, reactive, ref} from 'vue';
 import type {AuthCredential} from "@/modules/auth/AuthTypes";
 import {IonPage} from "@ionic/vue";

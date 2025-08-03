@@ -7,7 +7,7 @@ import {IonPage} from "@ionic/vue";
 import {useGalleryListService} from "@/modules/gallery/GalleryServiceContainer";
 import GalleryGridItem from '@/modules/gallery/components/GalleryGridItem.vue';
 import GalleryListItem from '@/modules/gallery/components/GalleryListItem.vue';
-import type {ButtonOption} from 'vuestic-ui';
+import {type ButtonOption, VaButtonToggle, VaProgressCircle} from 'vuestic-ui';
 
 const viewModeOptions: ButtonOption[] = [
   {value: 'grid', icon: 'grid_view'},

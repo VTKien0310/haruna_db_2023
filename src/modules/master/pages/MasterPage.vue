@@ -5,6 +5,7 @@ import type {Media} from "@/modules/gallery/GalleryEntities";
 import {useGalleryStatisticService, useMediaDetailService} from '@/modules/gallery/GalleryServiceContainer';
 import {useAuthStore} from '@/modules/auth/stores/AuthStore';
 import {useProfileService} from '@/modules/auth/AuthServiceContainer';
+import {VaCard, VaCardContent, VaCardTitle, VaProgressBar} from 'vuestic-ui';
 
 const mediaDetailService = useMediaDetailService();
 
@@ -29,7 +30,7 @@ const authStore = useAuthStore();
 onIonViewDidEnter(async () => {
   isFetchingData.value = true;
 
-  // ensure current user's profile is loaded in the store
+  // ensure the current user's profile is loaded in the store
   if (!authStore.profile) {
     await profileService.refreshCurrentUserProfile();
   }

@@ -2,6 +2,7 @@
 import {type Media, MediaTypeEnum} from '@/modules/gallery/GalleryEntities';
 import {computed, onMounted, ref} from 'vue';
 import {useGalleryNavigationService, useMediaDetailService} from '@/modules/gallery/GalleryServiceContainer';
+import {VaIcon} from 'vuestic-ui';
 
 const props = defineProps<{
   media: Media
