@@ -3,6 +3,8 @@ import authRouter from "@/modules/auth/AuthRouter";
 import masterRouter from "@/modules/master/MasterRouter";
 import galleryRouter from "@/modules/gallery/GalleryRouter";
 import translationRouter from "@/modules/translation/TranslationRouter";
+import webpageBookmarkRouter
+  from '@/modules/webpage-bookmark/WebpageBookmarkRouter.ts';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,7 +12,8 @@ const router = createRouter({
         ...masterRouter,
         ...authRouter,
         ...galleryRouter,
-        ...translationRouter
+        ...translationRouter,
+        ...webpageBookmarkRouter
     ],
 })
 
