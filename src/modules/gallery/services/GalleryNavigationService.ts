@@ -1,10 +1,8 @@
-import type {Router} from 'vue-router';
-import {GalleryRouteName} from '@/modules/gallery/GalleryRouter';
+import type { Router } from "vue-router";
+import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 
 export class GalleryNavigationService {
-  constructor(
-      private readonly router: Router,
-  ) {}
+  constructor(private readonly router: Router) {}
 
   navigateToMediaDetailPage(mediaId: string): void {
     this.router.push(this.mediaDetailRoute(mediaId));

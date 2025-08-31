@@ -1,11 +1,11 @@
-import {Responder} from "./responder.ts";
+import { Responder } from "./responder.ts";
 
 class Provider {
-    responder(): Responder {
-        return new Responder()
-    }
+  responder(): Responder {
+    return new Responder();
+  }
 }
 
-const provider: Provider = new Provider()
+const provider: Provider = new Provider();
 
-export default provider
+export default provider;
