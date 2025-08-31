@@ -6,18 +6,16 @@ import type { GalleryListService } from "@/modules/gallery/services/GalleryListS
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 import type { TransformOptions } from "@supabase/storage-js/src/lib/types";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
-import type {SupabaseClient} from '@supabase/supabase-js';
-import type {ModalService} from '@/modules/master/services/ModalService';
-import type {ToastService} from '@/modules/master/services/ToastService';
-import type {Router} from 'vue-router';
-import type {
-  MasterNavigationService
-} from '@/modules/master/services/MasterNavigationService';
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { ModalService } from "@/modules/master/services/ModalService";
+import type { ToastService } from "@/modules/master/services/ToastService";
+import type { Router } from "vue-router";
+import type { MasterNavigationService } from "@/modules/master/services/MasterNavigationService";
 
 type DisplayRatio = {
   width: number;
   height: number;
-}
+};
 
 const thumbnailSquareRatio: DisplayRatio = {
   width: 500,
@@ -36,14 +34,13 @@ type SignedUrlOptions = {
 
 export class MediaDetailService {
   constructor(
-      private readonly router: Router,
-      private readonly supabasePort: SupabaseClient,
-      private readonly toastService: ToastService,
-      private readonly modalService: ModalService,
-      private readonly masterNavigationService: MasterNavigationService,
-      private readonly galleryListService: GalleryListService
-  ) {
-  }
+    private readonly router: Router,
+    private readonly supabasePort: SupabaseClient,
+    private readonly toastService: ToastService,
+    private readonly modalService: ModalService,
+    private readonly masterNavigationService: MasterNavigationService,
+    private readonly galleryListService: GalleryListService,
+  ) {}
 
   async downloadMedia(media: Media): Promise<void> {
     const { data, error } = await this.supabasePort.storage
@@ -65,7 +62,9 @@ export class MediaDetailService {
       .eq("user_id", media.uploader_id);
 
     if (error || !data) {
-      this.toastService.error(`Failed to fetch uploader of media with id ${media.id}`);
+      this.toastService.error(
+        `Failed to fetch uploader of media with id ${media.id}`,
+      );
       return null;
     }
 
@@ -88,8 +87,9 @@ export class MediaDetailService {
       sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
       i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " +
-      sizes[i];
+    return (
+      parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i]
+    );
   }
 
   transformMediaCreatedAtToHumanReadableFormat(media: Media): string {
@@ -132,8 +132,7 @@ export class MediaDetailService {
       return this.toastFailedToGenerateSignedUrl(media.thumbnail_path);
     }
 
-    const { data, error } = await this.supabasePort
-      .storage
+    const { data, error } = await this.supabasePort.storage
       .from("thumbnails")
       .createSignedUrl(media.thumbnail_path, 1800, thumbnailSpecification);
 
@@ -144,17 +143,20 @@ export class MediaDetailService {
     return data.signedUrl;
   }
 
-  async createThumbnailUrlForMedia(media: Media, forGridUsage: boolean = true): Promise<string> {
+  async createThumbnailUrlForMedia(
+    media: Media,
+    forGridUsage: boolean = true,
+  ): Promise<string> {
     // grid use 1:1 display ratio while list use 4:3 display ratio
     const thumbnailDisplayRatio: DisplayRatio = forGridUsage
-        ? thumbnailSquareRatio
-        : thumbnailFourToThreeRatio;
+      ? thumbnailSquareRatio
+      : thumbnailFourToThreeRatio;
 
     const thumbnailSpecification: SignedUrlOptions = {
       transform: {
         width: thumbnailDisplayRatio.width,
         height: thumbnailDisplayRatio.height,
-        resize: 'contain',
+        resize: "contain",
       },
     };
 
@@ -173,7 +175,8 @@ export class MediaDetailService {
   }
 
   async getMediaById(id: string): Promise<Media | null> {
-    const { data, error } = await this.supabasePort.from("medias")
+    const { data, error } = await this.supabasePort
+      .from("medias")
       .select()
       .limit(1)
       .eq("id", id);
@@ -218,8 +221,9 @@ export class MediaDetailService {
   }
 
   async deleteMedia(media: Media): Promise<void> {
-    this.modalService.confirm(`Proceed to delete the file?`).then(
-      async (confirmation: boolean): Promise<void> => {
+    this.modalService
+      .confirm(`Proceed to delete the file?`)
+      .then(async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;
         }
@@ -238,7 +242,6 @@ export class MediaDetailService {
         }
 
         this.redirectAndRefreshGallery();
-      },
-    );
+      });
   }
 }

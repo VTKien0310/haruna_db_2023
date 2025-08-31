@@ -1,15 +1,15 @@
 import { useGalleryUploadStore } from "@/modules/gallery/stores/GalleryUploadStore";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
-import {defaultStorageFileOptions} from '@/ports/supabase/SupabasePort';
+import { defaultStorageFileOptions } from "@/ports/supabase/SupabasePort";
 import { uuid } from "@supabase/supabase-js/dist/main/lib/helpers";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
-import type {SupabaseClient} from '@supabase/supabase-js';
-import type {ToastService} from '@/modules/master/services/ToastService';
-import type {ModalService} from '@/modules/master/services/ModalService';
-import type {Router} from 'vue-router';
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { ToastService } from "@/modules/master/services/ToastService";
+import type { ModalService } from "@/modules/master/services/ModalService";
+import type { Router } from "vue-router";
 
 const imageFileType: string = "image";
 const videoFileType: string = "video";
@@ -23,19 +23,19 @@ export class UploadMediaService {
   private ffmpeg: FFmpeg | null = null;
 
   constructor(
-      private readonly router: Router,
-      private readonly supabasePort: SupabaseClient,
-      private readonly toastService: ToastService,
-      private readonly modalService: ModalService,
-      private readonly galleryListService: GalleryListService,
-  ) {
-  }
+    private readonly router: Router,
+    private readonly supabasePort: SupabaseClient,
+    private readonly toastService: ToastService,
+    private readonly modalService: ModalService,
+    private readonly galleryListService: GalleryListService,
+  ) {}
 
   uploadPendingNewMediaFiles(): void {
-    this.modalService.confirm(
-      `Proceed to upload ${this.galleryUploadStore.pendingNewMediaFiles.length} file(s)?`,
-    ).then(
-      async (confirmToProceed: boolean): Promise<void> => {
+    this.modalService
+      .confirm(
+        `Proceed to upload ${this.galleryUploadStore.pendingNewMediaFiles.length} file(s)?`,
+      )
+      .then(async (confirmToProceed: boolean): Promise<void> => {
         if (!confirmToProceed) {
           return;
         }
@@ -43,8 +43,8 @@ export class UploadMediaService {
         this.setUpFileCountStatisticForNewUploadProcess();
         this.turnOnIsHandlingCreateNewMediaState();
 
-        this.galleryUploadStore.pendingNewMediaFiles = await this
-          .handleUploadNewMediaFiles();
+        this.galleryUploadStore.pendingNewMediaFiles =
+          await this.handleUploadNewMediaFiles();
 
         this.resetFileCountStatistic();
         this.turnOffIsHandlingCreateNewMediaState();
@@ -52,8 +52,7 @@ export class UploadMediaService {
         this.redirectToGalleryListIfHasNoUploadError();
 
         this.galleryListService.refreshMedias();
-      },
-    );
+      });
   }
 
   private async handleUploadNewMediaFiles(): Promise<File[]> {
@@ -123,16 +122,14 @@ export class UploadMediaService {
       return this.toastFailedToCreateMediaRecord(originalFile);
     }
 
-    const { error } = await this.supabasePort
-      .from("medias")
-      .insert({
-        name: originalFile.name,
-        mime: originalFile.type,
-        size: originalFile.size,
-        type: MediaTypeEnum.VIDEO,
-        storage_path: storageFilePath,
-        thumbnail_path: thumbnailPath,
-      });
+    const { error } = await this.supabasePort.from("medias").insert({
+      name: originalFile.name,
+      mime: originalFile.type,
+      size: originalFile.size,
+      type: MediaTypeEnum.VIDEO,
+      storage_path: storageFilePath,
+      thumbnail_path: thumbnailPath,
+    });
 
     if (error) {
       return this.toastFailedToCreateMediaRecord(originalFile);
@@ -159,16 +156,17 @@ export class UploadMediaService {
 
     // load ffmpeg wasm
     const ffmpeg: FFmpeg = new FFmpeg();
-    const ffmpegWasmCdnBaseURL: string = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm';
+    const ffmpegWasmCdnBaseURL: string =
+      "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
     // toBlobURL is used to bypass CORS issue, urls with the same domain can be used directly.
     await ffmpeg.load({
       coreURL: await toBlobURL(
-          `${ffmpegWasmCdnBaseURL}/ffmpeg-core.js`,
-          'text/javascript',
+        `${ffmpegWasmCdnBaseURL}/ffmpeg-core.js`,
+        "text/javascript",
       ),
       wasmURL: await toBlobURL(
-          `${ffmpegWasmCdnBaseURL}/ffmpeg-core.wasm`,
-          'application/wasm',
+        `${ffmpegWasmCdnBaseURL}/ffmpeg-core.wasm`,
+        "application/wasm",
       ),
     });
 
@@ -178,38 +176,42 @@ export class UploadMediaService {
   }
 
   private async generateThumbnailForVideo(
-      storageVideoFilePath: string,
-      video: File,
+    storageVideoFilePath: string,
+    video: File,
   ): Promise<string> {
     // the video's signed url is needed to fetch the video to local and create the thumbnail
-    const {data, error} = await this.supabasePort.
-        storage.
-        from('medias').
-        createSignedUrl(storageVideoFilePath, 600);
+    const { data, error } = await this.supabasePort.storage
+      .from("medias")
+      .createSignedUrl(storageVideoFilePath, 600);
 
     if (error || !data) {
-      this.toastService.error(`Failed to generate signed URL for ${storageVideoFilePath} to create thumbnail`);
+      this.toastService.error(
+        `Failed to generate signed URL for ${storageVideoFilePath} to create thumbnail`,
+      );
 
-      return '';
+      return "";
     }
 
     try {
       // prepare to create video thumbnail
       const ffmpeg: FFmpeg = await this.loadFfmpeg();
 
-      const storageFileName: string = storageVideoFilePath.split('/').
-          at(-1)!.split('.').at(0)!;
+      const storageFileName: string = storageVideoFilePath
+        .split("/")
+        .at(-1)!
+        .split(".")
+        .at(0)!;
       const thumbnailFileName: string = `${storageFileName}_thumb.png`;
 
       // create video thumbnail using the frame at 1s of the video
       await ffmpeg.writeFile(video.name, await fetchFile(data.signedUrl));
       await ffmpeg.exec([
-        '-i',
+        "-i",
         video.name,
-        '-ss',
-        '00:00:01',
-        '-frames:v',
-        '1',
+        "-ss",
+        "00:00:01",
+        "-frames:v",
+        "1",
         thumbnailFileName,
       ]);
       const thumbnail = await ffmpeg.readFile(thumbnailFileName);
@@ -218,18 +220,20 @@ export class UploadMediaService {
       this.galleryUploadStore.currentProgressUploadedFileCount += 1;
 
       // upload the thumbnail to storage
-      const thumbnailUploadResult = await this.supabasePort.storage.
-          from('thumbnails').
-          upload(
-              thumbnailFileName,
-              new Blob([thumbnail], {type: 'image/png'}),
-              defaultStorageFileOptions,
-          );
+      const thumbnailUploadResult = await this.supabasePort.storage
+        .from("thumbnails")
+        .upload(
+          thumbnailFileName,
+          new Blob([thumbnail], { type: "image/png" }),
+          defaultStorageFileOptions,
+        );
 
       if (thumbnailUploadResult.error || !thumbnailUploadResult.data?.path) {
-        this.toastService.error(`Failed to upload thumbnail ${thumbnailFileName}`);
+        this.toastService.error(
+          `Failed to upload thumbnail ${thumbnailFileName}`,
+        );
 
-        return '';
+        return "";
       }
 
       // upload thumbnail progress count for video
@@ -239,7 +243,7 @@ export class UploadMediaService {
     } catch (e: unknown) {
       this.toastService.error(`Failed to create thumbnail for ${video.name}`);
 
-      return '';
+      return "";
     }
   }
 
@@ -247,16 +251,14 @@ export class UploadMediaService {
     storageFilePath: string,
     originalFile: File,
   ): Promise<boolean> {
-    const { error } = await this.supabasePort
-      .from("medias")
-      .insert({
-        name: originalFile.name,
-        mime: originalFile.type,
-        size: originalFile.size,
-        type: MediaTypeEnum.PHOTO,
-        storage_path: storageFilePath,
-        thumbnail_path: null,
-      });
+    const { error } = await this.supabasePort.from("medias").insert({
+      name: originalFile.name,
+      mime: originalFile.type,
+      size: originalFile.size,
+      type: MediaTypeEnum.PHOTO,
+      storage_path: storageFilePath,
+      thumbnail_path: null,
+    });
 
     if (error) {
       return this.toastFailedToCreateMediaRecord(originalFile);
@@ -279,22 +281,24 @@ export class UploadMediaService {
   }
 
   private setUpFileCountStatisticForNewUploadProcess(): void {
-    const pendingImageFileCount = this.galleryUploadStore.pendingNewMediaFiles.filter(
+    const pendingImageFileCount =
+      this.galleryUploadStore.pendingNewMediaFiles.filter(
         (file) => this.getFileType(file) === imageFileType,
-    ).length;
+      ).length;
 
     // each image has 2 progress counts: upload the file + create the db record
     const imageProgressCount = pendingImageFileCount * 2;
 
-    const pendingVideoFileCount = this.galleryUploadStore.pendingNewMediaFiles.filter(
+    const pendingVideoFileCount =
+      this.galleryUploadStore.pendingNewMediaFiles.filter(
         (file) => this.getFileType(file) === videoFileType,
-    ).length;
+      ).length;
 
     // each video has 4 progress counts: upload the file + create the db record + create the thumbnail + upload the thumbnail
     const videoProgressCount = pendingVideoFileCount * 4;
 
-    this.galleryUploadStore.currentProgressTotalFileCount = imageProgressCount +
-        videoProgressCount;
+    this.galleryUploadStore.currentProgressTotalFileCount =
+      imageProgressCount + videoProgressCount;
 
     this.galleryUploadStore.currentProgressUploadedFileCount = 0;
   }
@@ -326,14 +330,9 @@ export class UploadMediaService {
   }
 
   filterPendingFilesForValidForUpload(): void {
-    this.galleryUploadStore.pendingNewMediaFiles = this.galleryUploadStore
-      .pendingNewMediaFiles
-      .filter(
-        (file) =>
-          [
-            imageFileType,
-            videoFileType,
-          ].includes(this.getFileType(file)),
+    this.galleryUploadStore.pendingNewMediaFiles =
+      this.galleryUploadStore.pendingNewMediaFiles.filter((file) =>
+        [imageFileType, videoFileType].includes(this.getFileType(file)),
       );
   }
 }

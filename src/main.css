@@ -10,54 +10,66 @@
 /*font-family: 'Roboto Slab', serif;*/
 
 .branding-font {
-    font-family: 'Pacifico', cursive;
+  font-family: "Pacifico", cursive;
 }
 
 .title-font {
-    font-family: 'Oxygen Mono', monospace;
+  font-family: "Oxygen Mono", monospace;
 }
 
 .sans-serif-font {
-    font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .serif-font {
-    font-family: 'Roboto Slab', serif;
+  font-family: "Roboto Slab", serif;
 }
 
 html {
-    box-sizing: border-box;
-    font-size: 16px;
+  box-sizing: border-box;
+  font-size: 16px;
 }
 
-*, *:before, *:after {
-    box-sizing: inherit;
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
-body, h1, h2, h3, h4, h5, h6, p, ol, ul {
-    margin: 0;
-    padding: 0;
-    font-weight: normal;
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
 }
 
-ol, ul {
-    list-style: none;
+ol,
+ul {
+  list-style: none;
 }
 
 img {
-    max-width: 100%;
-    height: auto;
+  max-width: 100%;
+  height: auto;
 }
 
 .va-modal {
-    --va-modal-z-index: 20;
+  --va-modal-z-index: 20;
 }
 
 .invisible-scroll-bar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .invisible-scroll-bar::-webkit-scrollbar {
-    display: none; /* Chromium */
+  display: none; /* Chromium */
 }

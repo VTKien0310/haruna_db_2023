@@ -1,5 +1,5 @@
-import type {Router} from 'vue-router';
-import {MasterRouteName} from '@/modules/master/MasterRouter';
+import type { Router } from "vue-router";
+import { MasterRouteName } from "@/modules/master/MasterRouter";
 
 export class MasterNavigationService {
   constructor(private readonly router: Router) {}

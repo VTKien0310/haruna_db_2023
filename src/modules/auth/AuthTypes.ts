@@ -1,9 +1,9 @@
 export interface AuthCredential {
-    email: string,
-    password: string
+  email: string;
+  password: string;
 }
 
 export interface ProfileDetail {
-    name: string,
-    password: string
+  name: string;
+  password: string;
 }

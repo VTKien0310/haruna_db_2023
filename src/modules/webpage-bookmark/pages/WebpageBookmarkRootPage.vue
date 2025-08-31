@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {IonPage} from '@ionic/vue';
+import { IonPage } from "@ionic/vue";
 </script>
 
 <template>
@@ -8,6 +8,4 @@ import {IonPage} from '@ionic/vue';
   </ion-page>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
