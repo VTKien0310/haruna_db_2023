@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { IonPage } from "@ionic/vue";
+import WebpageBookmarkDirectoryHeader from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectoryHeader.vue";
 </script>
 
 <template>
   <ion-page>
-    <h1>Webpage Bookmark Root Page</h1>
+    <WebpageBookmarkDirectoryHeader name="/" />
   </ion-page>
 </template>
 
