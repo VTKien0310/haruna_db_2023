@@ -50,7 +50,7 @@ onMounted(() => {
 
 <template>
   <ion-page>
-    <div class="flex flex-row justify-end items-center content-center m-1">
+    <div class="m-1 flex flex-row content-center items-center justify-end">
       <!-- view mode selection -->
       <va-button-toggle
         v-model="currentViewMode"
@@ -63,12 +63,12 @@ onMounted(() => {
     <div
       @scroll="loadMoreMedias"
       ref="galleryListPageContent"
-      class="h-screen overflow-scroll invisible-scroll-bar"
+      class="invisible-scroll-bar h-screen overflow-scroll"
     >
       <!-- grid view -->
       <div
         v-show="currentViewMode === 'grid'"
-        class="grid gap-px place-content-center place-items-center grid-cols-4 md:grid-cols-6 lg:grid-cols-10"
+        class="grid grid-cols-4 place-content-center place-items-center gap-px md:grid-cols-6 lg:grid-cols-10"
       >
         <GalleryGridItem
           v-for="media in galleryListStore.medias"
@@ -80,7 +80,7 @@ onMounted(() => {
       <!-- list view -->
       <div
         v-show="currentViewMode === 'list'"
-        class="grid gap-px place-content-center place-items-center grid-cols-1"
+        class="grid grid-cols-1 place-content-center place-items-center gap-px"
       >
         <GalleryListItem
           v-for="media in galleryListStore.medias"
@@ -95,12 +95,12 @@ onMounted(() => {
           galleryListStore.isFetchingGalleryMedias &&
           !galleryListStore.hasFetchedAllRecords
         "
-        class="w-full flex flex-row justify-center content-center items-center"
+        class="flex w-full flex-row content-center items-center justify-center"
       >
         <va-progress-circle indeterminate />
       </div>
 
-      <div class="fixed bottom-12 right-3">
+      <div class="fixed right-3 bottom-12">
         <GalleryToUploadPageButton />
       </div>
 

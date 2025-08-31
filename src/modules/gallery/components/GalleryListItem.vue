@@ -41,13 +41,13 @@ onMounted(() => {
       v-if="mediaThumbnailSignedUrlCreated"
       :src="mediaThumbnailSignedUrl"
       alt="Uploaded media"
-      class="max-w-full max-h-screen m-auto"
+      class="m-auto max-h-screen max-w-full"
     />
 
     <va-icon
       v-if="mediaIsVideo"
       name="videocam"
-      class="absolute bottom-1 right-1"
+      class="absolute right-1 bottom-1"
       color="background-element"
     />
   </div>

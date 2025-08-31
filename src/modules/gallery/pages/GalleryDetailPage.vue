@@ -186,27 +186,27 @@ watch(
     <div
       ref="mediaDisplayArea"
       :style="pageBackground"
-      class="h-screen bg-center bg-contain bg-scroll bg-no-repeat transition-colors duration-300"
+      class="h-screen bg-contain bg-scroll bg-center bg-no-repeat transition-colors duration-300"
     >
       <va-progress-bar v-show="showProgressBar" indeterminate />
 
       <div
         v-if="mediaIsVideo"
-        class="h-full w-full flex flex-col justify-center content-center items-center"
+        class="flex h-full w-full flex-col content-center items-center justify-center"
       >
         <video
           :src="mediaSignedUrl"
-          class="max-w-full h-auto max-h-full"
+          class="h-auto max-h-full max-w-full"
           controls
         />
       </div>
 
       <div
-        class="interaction-area h-1/6 w-1/2 sm:w-1/3 md:w-1/6 lg:w-1/12 flex flex-col justify-end content-center items-center fixed bottom-12 right-3"
+        class="interaction-area fixed right-3 bottom-12 flex h-1/6 w-1/2 flex-col content-center items-center justify-end sm:w-1/3 md:w-1/6 lg:w-1/12"
       >
         <div
           :class="{ 'detail-area': showMediaDetail }"
-          class="flex flex-col justify-start content-start items-start p-3 mb-3 w-full h-full"
+          class="mb-3 flex h-full w-full flex-col content-start items-start justify-start p-3"
         >
           <div v-show="showMediaDetail">
             <p>By {{ mediaUploader?.name ?? "" }}</p>
@@ -232,7 +232,7 @@ watch(
         </div>
 
         <div
-          class="flex flex-row justify-end content-center items-center w-full"
+          class="flex w-full flex-row content-center items-center justify-end"
         >
           <va-button
             @click="triggerShowMediaDetail"

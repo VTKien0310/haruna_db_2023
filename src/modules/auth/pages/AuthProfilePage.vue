@@ -65,14 +65,14 @@ onMounted(() => {
 <template>
   <ion-page>
     <div
-      class="w-full min-h-screen p-3 flex flex-col justify-start sm:justify-center items-center content-center"
+      class="flex min-h-screen w-full flex-col content-center items-center justify-start p-3 sm:justify-center"
     >
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 xl:w-1/5">
         <va-form
           @submit.prevent="handleUpdateProfile"
           ref="profileForm"
           tag="form"
-          class="w-full !mb-2 flex flex-col justify-center items-center content-center"
+          class="!mb-2 flex w-full flex-col content-center items-center justify-center"
         >
           <va-input
             v-model="profileFormContent.name"
@@ -90,13 +90,13 @@ onMounted(() => {
             class="mt-2 w-full"
           />
 
-          <div class="w-full mt-6 flex flex-row justify-between">
+          <div class="mt-6 flex w-full flex-row justify-between">
             <va-button
               :disabled="!enableUpdateProfileButton"
               :loading="isUpdatingProfile"
               icon="save"
               type="submit"
-              class="w-full mr-1"
+              class="mr-1 w-full"
             />
 
             <va-button
@@ -104,7 +104,7 @@ onMounted(() => {
               icon="replay"
               preset="secondary"
               border-color="primary"
-              class="w-full ml-1"
+              class="ml-1 w-full"
             />
           </div>
         </va-form>

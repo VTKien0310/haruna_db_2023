@@ -55,15 +55,15 @@ onIonViewDidEnter(async () => {
 <template>
   <ion-page>
     <div
-      class="w-full min-h-screen flex flex-col justify-start items-center content-center"
+      class="flex min-h-screen w-full flex-col content-center items-center justify-start"
     >
       <va-progress-bar v-if="isFetchingData" class="w-full" indeterminate />
 
       <div class="w-full px-2 pt-2">
         <div
-          class="w-full grid grid-cols-2 gap-1 place-content-center place-items-center"
+          class="grid w-full grid-cols-2 place-content-center place-items-center gap-1"
         >
-          <va-card class="w-full h-full m-1" color="background-primary">
+          <va-card class="m-1 h-full w-full" color="background-primary">
             <va-card-title>Latest media uploaded at</va-card-title>
             <va-card-content>
               {{
@@ -76,17 +76,17 @@ onIonViewDidEnter(async () => {
             </va-card-content>
           </va-card>
 
-          <va-card class="w-full h-full m-1" color="background-primary">
+          <va-card class="m-1 h-full w-full" color="background-primary">
             <va-card-title>Newly uploaded count</va-card-title>
             <va-card-content>{{ newlyUploadedMedia }}</va-card-content>
           </va-card>
 
-          <va-card class="w-full h-full m-1" color="background-primary">
+          <va-card class="m-1 h-full w-full" color="background-primary">
             <va-card-title>Total media count</va-card-title>
             <va-card-content>{{ totalMediasCount }}</va-card-content>
           </va-card>
 
-          <va-card class="w-full h-full m-1" color="background-primary">
+          <va-card class="m-1 h-full w-full" color="background-primary">
             <va-card-title>Uploaded by you count</va-card-title>
             <va-card-content>{{ uploadedMediasCount }}</va-card-content>
           </va-card>
@@ -94,7 +94,7 @@ onIonViewDidEnter(async () => {
       </div>
 
       <div class="w-full px-2 pt-1">
-        <va-card class="w-full h-full" color="background-primary">
+        <va-card class="h-full w-full" color="background-primary">
           <va-card-title>Upload contribution percentage</va-card-title>
           <va-card-content>
             <va-progress-bar

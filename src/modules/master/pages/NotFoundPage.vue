@@ -6,7 +6,7 @@ import { IonPage } from "@ionic/vue";
   <ion-page>
     <img
       src="https://http.cat/images/404.jpg"
-      class="max-w-full max-h-screen m-auto"
+      class="m-auto max-h-screen max-w-full"
       alt="404 image from HTTP Cat"
     />
   </ion-page>

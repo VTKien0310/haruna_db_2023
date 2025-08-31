@@ -26,7 +26,7 @@ const hideNavBar = computed((): boolean => {
       v-if="!hideNavBar"
       bottom
       fixed
-      class="flex flex-row justify-around content-center items-center"
+      class="flex flex-row content-center items-center justify-around"
     >
       <va-button
         @click="router.push({ name: MasterRouteName.MASTER })"

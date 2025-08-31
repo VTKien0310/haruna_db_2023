@@ -38,10 +38,10 @@ function handleLogin() {
 <template>
   <ion-page>
     <div
-      class="flex flex-col justify-center items-center content-center min-h-screen w-full"
+      class="flex min-h-screen w-full flex-col content-center items-center justify-center"
     >
       <h1
-        class="branding-font font-bold text-center text-4xl text-primary w-full"
+        class="branding-font text-primary w-full text-center text-4xl font-bold"
       >
         HARUNA
       </h1>
@@ -50,7 +50,7 @@ function handleLogin() {
         ref="loginForm"
         tag="form"
         @submit.prevent="handleLogin"
-        class="flex flex-col justify-center items-center content-center w-2/3 sm:w-1/2 md:w-1/4 mt-12"
+        class="mt-12 flex w-2/3 flex-col content-center items-center justify-center sm:w-1/2 md:w-1/4"
       >
         <va-input
           v-model="loginFormContent.email"

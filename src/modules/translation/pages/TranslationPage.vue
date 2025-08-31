@@ -106,9 +106,9 @@ onIonViewWillLeave(() => {
 <template>
   <ion-page>
     <div
-      class="flex flex-col justify-start h-screen overflow-y-scroll overflow-x-auto px-3 pt-3 pb-14 sm:mb-14"
+      class="flex h-screen flex-col justify-start overflow-x-auto overflow-y-scroll px-3 pt-3 pb-14 sm:mb-14"
     >
-      <div class="flex justify-start w-full md:w-1/2 lg:w-1/3">
+      <div class="flex w-full justify-start md:w-1/2 lg:w-1/3">
         <va-select
           v-model="originalLanguage"
           :options="originalLanguageOptionSelections"
@@ -145,7 +145,7 @@ onIonViewWillLeave(() => {
       </div>
 
       <div
-        class="translation-form flex justify-around h-fit pt-3 flex-col md:flex-row"
+        class="translation-form flex h-fit flex-col justify-around pt-3 md:flex-row"
       >
         <va-textarea
           v-model="originalContent"

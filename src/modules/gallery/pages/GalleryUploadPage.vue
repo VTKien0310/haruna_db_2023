@@ -27,7 +27,7 @@ const uploadPendingMedia = () => {
       />
 
       <div
-        class="w-full flex flex-row justify-center content-center items-center mt-3 px-1"
+        class="mt-3 flex w-full flex-row content-center items-center justify-center px-1"
       >
         <va-button
           @click="uploadPendingMedia"

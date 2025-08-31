@@ -33,14 +33,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full relative">
+  <div class="relative h-full w-full">
     <va-image
       v-if="mediaThumbnailSignedUrlCreated"
       :src="mediaThumbnailSignedUrl"
       @click="galleryNavigationService.navigateToMediaDetailPage(media.id)"
       fit="cover"
       :ratio="1"
-      class="w-full h-full"
+      class="h-full w-full"
     >
       <template #loader>
         <va-skeleton
@@ -55,7 +55,7 @@ onMounted(() => {
     <va-icon
       v-if="mediaIsVideo"
       name="videocam"
-      class="absolute bottom-1 right-1"
+      class="absolute right-1 bottom-1"
       color="background-element"
     />
   </div>
