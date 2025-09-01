@@ -1,23 +1,19 @@
 <script setup lang="ts">
 import { VaButton } from "vuestic-ui";
+import type { WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 
 defineProps<{
-  name: string;
+  webpageBookmark: WebpageBookmark;
 }>();
 </script>
 
 <template>
   <div class="m-1 flex flex-row content-center items-center justify-between">
-    <p>{{ name }}</p>
+    <p>{{ webpageBookmark.name }}</p>
     <div class="flex flex-row content-center items-center justify-end">
       <va-button
-        icon="create_new_folder"
-        preset="secondary"
-        border-color="primary"
-        class="mr-1"
-      />
-      <va-button
-        icon="playlist_add"
+        :disabled="webpageBookmark.level === 0"
+        icon="arrow_back"
         preset="secondary"
         border-color="primary"
       />
