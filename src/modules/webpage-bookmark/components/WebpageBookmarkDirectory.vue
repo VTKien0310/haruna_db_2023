@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VaTextarea } from "vuestic-ui";
+import { VaButton, VaTextarea } from "vuestic-ui";
 import WebpageBookmarkDirectoryHeader from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectoryHeader.vue";
 import {
   WEB_BOOKMARK_ROOT_DIR_ID,
@@ -10,28 +10,59 @@ const props = defineProps<{
   webpageBookmark: WebpageBookmark;
 }>();
 
-const isRootDirectory = props.webpageBookmark.id === WEB_BOOKMARK_ROOT_DIR_ID;
+// for the root directory, there will be some unavailable behaviors and data
+const isNotRootDirectory =
+  props.webpageBookmark.id !== WEB_BOOKMARK_ROOT_DIR_ID;
 </script>
 
 <template>
-  <div class="grid h-full grid-flow-row grid-cols-1 grid-rows-16 gap-2 pb-10">
-    <WebpageBookmarkDirectoryHeader
-      :webpage-bookmark="webpageBookmark"
-      class="row-span-1 self-start"
-    />
+  <div class="relative h-full w-full">
+    <div class="grid h-full grid-flow-row grid-cols-1 grid-rows-16 gap-2 pb-10">
+      <WebpageBookmarkDirectoryHeader
+        :webpage-bookmark="webpageBookmark"
+        class="row-span-1 self-start"
+      />
 
-    <va-textarea
-      v-if="!isRootDirectory"
-      v-model="webpageBookmark.description"
-      readonly
-      class="row-span-3 h-full w-full self-center px-2"
-    />
+      <va-textarea
+        v-if="isNotRootDirectory"
+        v-model="webpageBookmark.description"
+        readonly
+        class="row-span-3 h-full w-full self-center px-2"
+      />
+
+      <div
+        :class="[isNotRootDirectory ? 'row-span-12' : 'row-span-15']"
+        class="overflow-y-auto px-2"
+      >
+        <p v-for="i in 100">Placeholder content {{ i }}</p>
+      </div>
+    </div>
 
     <div
-      :class="[isRootDirectory ? 'row-span-15' : 'row-span-12']"
-      class="overflow-y-auto px-2"
+      class="absolute right-1 bottom-10 flex flex-col content-center items-center justify-around"
     >
-      <p v-for="i in 100">Placeholder content {{ i }}</p>
+      <va-button
+        icon="add"
+        round
+        class="m-1"
+        preset="secondary"
+        border-color="primary"
+      />
+      <va-button
+        icon="create_new_folder"
+        round
+        class="m-1"
+        preset="secondary"
+        border-color="primary"
+      />
+      <va-button v-if="isNotRootDirectory" icon="edit" round class="m-1" />
+      <va-button
+        v-if="isNotRootDirectory"
+        icon="delete"
+        round
+        class="m-1"
+        color="danger"
+      />
     </div>
   </div>
 </template>
