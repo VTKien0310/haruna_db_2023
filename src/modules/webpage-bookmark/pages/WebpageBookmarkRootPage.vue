@@ -1,23 +1,20 @@
 <script setup lang="ts">
 import { IonPage } from "@ionic/vue";
-import WebpageBookmarkDirectoryHeader from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectoryHeader.vue";
-import {
-  makeVirtualWebBookmarkRootDirectory,
-  type WebpageBookmark,
-} from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
+import { makeVirtualWebBookmarkRootDirectory } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore.ts";
+import WebpageBookmarkDirectory from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectory.vue";
 
 const authStore = useAuthStore();
 
-const virtualRootWebBookmarkDir: WebpageBookmark =
-  makeVirtualWebBookmarkRootDirectory(authStore.profile?.user_id ?? "");
+// since the root directory is not stored in the database, we create a virtual one here
+const virtualWebBookmarkRootDir = makeVirtualWebBookmarkRootDirectory(
+  authStore.profile?.user_id ?? "",
+);
 </script>
 
 <template>
   <ion-page>
-    <WebpageBookmarkDirectoryHeader
-      :webpage-bookmark="virtualRootWebBookmarkDir"
-    />
+    <WebpageBookmarkDirectory :webpage-bookmark="virtualWebBookmarkRootDir" />
   </ion-page>
 </template>
 

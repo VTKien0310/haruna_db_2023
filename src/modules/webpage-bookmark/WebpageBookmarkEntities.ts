@@ -17,12 +17,12 @@ export interface WebpageBookmark {
   updated_at: string;
 }
 
-export const ROOT_WEB_BOOKMARK_DIR_ID = "ROOT_WEB_BOOKMARK_DIR_ID";
+export const WEB_BOOKMARK_ROOT_DIR_ID = "WEB_BOOKMARK_ROOT_DIR_ID";
 
 export const makeVirtualWebBookmarkRootDirectory = (
   owner_id: string,
 ): WebpageBookmark => ({
-  id: ROOT_WEB_BOOKMARK_DIR_ID,
+  id: WEB_BOOKMARK_ROOT_DIR_ID,
   owner_id,
   url: "",
   name: "/",
