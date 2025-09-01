@@ -13,7 +13,7 @@ defineProps<{
     <div class="flex flex-row content-center items-center justify-end">
       <va-button
         :disabled="webpageBookmark.level === 0"
-        icon="arrow_back"
+        icon="move_up"
         preset="secondary"
         border-color="primary"
       />
