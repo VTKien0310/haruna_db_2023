@@ -20,9 +20,9 @@ const props = defineProps<{
 
 const { isValid, validate, reset, resetValidation } = useForm("formRef");
 
-const showForm = ref(false);
+const showForm = ref<boolean>(false);
 
-const triggerShowForm = () => {
+const triggerShowForm = (): void => {
   showForm.value = !showForm.value;
   resetValidation();
 };
@@ -39,19 +39,22 @@ const formData = reactive<CreateDirectoryFormData>({
 
 const createWebpageBookmarkService = useCreateWebpageBookmarkService();
 
-const submitForm = () => {
-  const parentDirectory =
-    props.parentWebpageBookmark.id !== WEB_BOOKMARK_ROOT_DIR_ID
-      ? props.parentWebpageBookmark
-      : undefined;
+const parentIsRootDirectory =
+  props.parentWebpageBookmark.id === WEB_BOOKMARK_ROOT_DIR_ID;
 
-  createWebpageBookmarkService.createDirectory(
-    formData.name,
-    formData.description,
-    parentDirectory,
-  );
+const submitForm = (): void => {
+  const resetFormOnCreateSuccess = (success: boolean) => {
+    if (success) reset();
+  };
 
-  reset();
+  createWebpageBookmarkService
+    .createDirectory(
+      formData.name,
+      formData.description,
+      parentIsRootDirectory ? undefined : props.parentWebpageBookmark,
+    )
+    .then(resetFormOnCreateSuccess);
+
   triggerShowForm();
 };
 </script>

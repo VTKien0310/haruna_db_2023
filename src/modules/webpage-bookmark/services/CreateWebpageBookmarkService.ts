@@ -18,12 +18,12 @@ export class CreateWebpageBookmarkService {
   ): Promise<boolean> {
     const directoryData = {
       name: name,
-      url: "",
+      url: "", // a directory doesn't have url
       description: description,
       type: WebpageBookmarkType.DIRECTORY,
       root_id: parent?.root_id ?? null,
       parent_id: parent?.id ?? null,
-      level: parent ? parent.level + 1 : 0,
+      level: parent ? parent.level + 1 : 1,
     };
 
     const { error } = await this.supabasePort
