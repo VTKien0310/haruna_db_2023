@@ -15,13 +15,14 @@ export class CreateWebpageBookmarkService {
     name: string,
     description: string,
     parent?: WebpageBookmark,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const directoryData = {
       name: name,
+      url: "",
       description: description,
       type: WebpageBookmarkType.DIRECTORY,
-      root_id: parent ? parent.root_id : null,
-      parent_id: parent ? parent.id : null,
+      root_id: parent?.root_id ?? null,
+      parent_id: parent?.id ?? null,
       level: parent ? parent.level + 1 : 0,
     };
 
@@ -31,6 +32,9 @@ export class CreateWebpageBookmarkService {
 
     if (error) {
       this.toastService.error("Failed to create directory");
+      return false;
     }
+
+    return true;
   }
 }

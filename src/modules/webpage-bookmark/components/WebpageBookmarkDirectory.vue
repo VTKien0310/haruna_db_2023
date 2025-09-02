@@ -5,6 +5,7 @@ import {
   WEB_BOOKMARK_ROOT_DIR_ID,
   type WebpageBookmark,
 } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
+import CreateWebpageBookmarkDirectoryForm from "@/modules/webpage-bookmark/components/CreateWebpageBookmarkDirectoryForm.vue";
 
 const props = defineProps<{
   webpageBookmark: WebpageBookmark;
@@ -27,6 +28,7 @@ const isNotRootDirectory =
         v-if="isNotRootDirectory"
         v-model="webpageBookmark.description"
         readonly
+        :resize="false"
         class="row-span-3 h-full w-full self-center px-2"
       />
 
@@ -48,12 +50,8 @@ const isNotRootDirectory =
         preset="secondary"
         border-color="primary"
       />
-      <va-button
-        icon="create_new_folder"
-        round
-        class="m-1"
-        preset="secondary"
-        border-color="primary"
+      <CreateWebpageBookmarkDirectoryForm
+        :parent-webpage-bookmark="webpageBookmark"
       />
       <va-button v-if="isNotRootDirectory" icon="edit" round class="m-1" />
       <va-button
