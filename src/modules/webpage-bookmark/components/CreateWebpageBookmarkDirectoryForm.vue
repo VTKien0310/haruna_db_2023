@@ -13,7 +13,7 @@ import {
 } from "vuestic-ui";
 import { computed, reactive, ref } from "vue";
 import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
-import type { CreateDirectoryData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import type { CreateWebBookmarkDirectoryData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 
 const props = defineProps<{
   parentWebpageBookmark: WebpageBookmark;
@@ -28,7 +28,7 @@ const triggerShowForm = (): void => {
   resetValidation();
 };
 
-const formData = reactive<CreateDirectoryData>({
+const formData = reactive<CreateWebBookmarkDirectoryData>({
   name: "",
   description: "",
 });
