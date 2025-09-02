@@ -9,7 +9,7 @@ import {
 import { useAuthStore } from "@/modules/auth/stores/AuthStore.ts";
 import WebpageBookmarkDirectory from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectory.vue";
 import { useRoute } from "vue-router";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useWebpageBookmarkDetailService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 
 const webpageBookmark = ref<WebpageBookmark | null>(null);
@@ -20,9 +20,7 @@ const route = useRoute();
 
 const webpageBookmarkDetailService = useWebpageBookmarkDetailService();
 
-const fetchWebpageBookmark = async (): Promise<void> => {
-  const id = route.params.id as string;
-
+const fetchWebpageBookmark = async (id: string): Promise<void> => {
   if (id === WEB_BOOKMARK_ROOT_DIR_ID) {
     // since the root directory is not stored in the database, we create a virtual one here
     webpageBookmark.value = makeVirtualWebBookmarkRootDirectory(
@@ -35,7 +33,16 @@ const fetchWebpageBookmark = async (): Promise<void> => {
     await webpageBookmarkDetailService.getWebpageBookmark(id);
 };
 
-onMounted(fetchWebpageBookmark);
+watch(
+  () => route.params.id,
+  (id) => {
+    fetchWebpageBookmark(id as string);
+  },
+);
+
+onMounted(() => {
+  fetchWebpageBookmark(route.params.id as string);
+});
 </script>
 
 <template>
