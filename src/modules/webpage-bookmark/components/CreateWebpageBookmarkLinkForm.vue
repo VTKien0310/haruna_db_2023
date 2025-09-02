@@ -13,7 +13,7 @@ import {
 } from "vuestic-ui";
 import { reactive, ref } from "vue";
 import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
-import type { CreateWebBookmarkDirectoryData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import type { CreateWebBookmarkLinkData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 
 const props = defineProps<{
   parentWebpageBookmark: WebpageBookmark;
@@ -32,14 +32,25 @@ const triggerShowForm = (): void => {
   resetValidation();
 };
 
-const formData = reactive<CreateWebBookmarkDirectoryData>({
+const formData = reactive<CreateWebBookmarkLinkData>({
   name: "",
+  url: "",
   description: "",
 });
 
 const resetFormData = (): void => {
   formData.name = "";
+  formData.url = "";
   formData.description = "";
+};
+
+const isValidUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    return true;
+  } catch (error) {
+    return false;
+  }
 };
 
 const createWebpageBookmarkService = useCreateWebpageBookmarkService();
@@ -57,7 +68,7 @@ const submitForm = (): void => {
     : props.parentWebpageBookmark;
 
   createWebpageBookmarkService
-    .createDirectory(formData, directoryParent)
+    .createLink(formData, directoryParent)
     .then((success: boolean) => {
       if (success) {
         resetFormData();
@@ -71,7 +82,7 @@ const submitForm = (): void => {
 <template>
   <va-button
     @click="triggerShowForm"
-    icon="create_new_folder"
+    icon="add"
     round
     class="m-1"
     preset="secondary"
@@ -80,7 +91,7 @@ const submitForm = (): void => {
 
   <va-modal
     v-model="showForm"
-    title="Create new directory"
+    title="Add new link"
     hide-default-actions
     no-dismiss
   >
@@ -92,10 +103,16 @@ const submitForm = (): void => {
       <va-input
         v-model="formData.name"
         :rules="[
-          (value) =>
-            (value && value.length > 0) || 'Directory name is required',
+          (value) => (value && value.length > 0) || 'Link name is required',
         ]"
         label="Name"
+        class="mb-2 w-full"
+      />
+      <va-input
+        v-model="formData.url"
+        type="url"
+        :rules="[(value) => isValidUrl(value) || 'Must be a valid URL']"
+        label="URL"
         class="mb-2 w-full"
       />
       <va-textarea

@@ -6,6 +6,7 @@ import {
   type WebpageBookmark,
 } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import CreateWebpageBookmarkDirectoryForm from "@/modules/webpage-bookmark/components/CreateWebpageBookmarkDirectoryForm.vue";
+import CreateWebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/CreateWebpageBookmarkLinkForm.vue";
 
 const props = defineProps<{
   webpageBookmark: WebpageBookmark;
@@ -43,12 +44,8 @@ const isNotRootDirectory =
     <div
       class="absolute right-1 bottom-10 flex flex-col content-center items-center justify-around"
     >
-      <va-button
-        icon="add"
-        round
-        class="m-1"
-        preset="secondary"
-        border-color="primary"
+      <CreateWebpageBookmarkLinkForm
+        :parent-webpage-bookmark="webpageBookmark"
       />
       <CreateWebpageBookmarkDirectoryForm
         :parent-webpage-bookmark="webpageBookmark"
