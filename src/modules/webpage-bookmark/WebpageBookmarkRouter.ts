@@ -9,7 +9,7 @@ const webpageBookmarkRouter: RouteRecordRaw[] = [
     name: WebpageBookmarkRouteName.ROOT,
     path: "/webpage-bookmark/:id",
     component: () =>
-      import("@/modules/webpage-bookmark/pages/WebpageBookmarkRootPage.vue"),
+      import("@/modules/webpage-bookmark/pages/WebpageBookmarkDetailPage.vue"),
   },
 ];
 
