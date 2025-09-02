@@ -17,7 +17,7 @@ export interface WebpageBookmark {
   updated_at: string;
 }
 
-export const WEB_BOOKMARK_ROOT_DIR_ID = "WEB_BOOKMARK_ROOT_DIR_ID";
+export const WEB_BOOKMARK_ROOT_DIR_ID = "WEBPAGE_BOOKMARK_ROOT_DIRECTORY";
 
 export const makeVirtualWebBookmarkRootDirectory = (
   owner_id: string,
