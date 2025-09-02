@@ -4,6 +4,7 @@ import {
   type WebpageBookmark,
   WebpageBookmarkType,
 } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
+import type { CreateDirectoryData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 
 export class CreateWebpageBookmarkService {
   constructor(
@@ -12,14 +13,13 @@ export class CreateWebpageBookmarkService {
   ) {}
 
   async createDirectory(
-    name: string,
-    description: string,
+    creationData: CreateDirectoryData,
     parent?: WebpageBookmark,
   ): Promise<boolean> {
     const directoryData = {
-      name: name,
+      name: creationData.name,
       url: "", // a directory doesn't have url
-      description: description,
+      description: creationData.description,
       type: WebpageBookmarkType.DIRECTORY,
       root_id: parent?.root_id ?? null,
       parent_id: parent?.id ?? null,

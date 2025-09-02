@@ -11,14 +11,15 @@ import {
   VaModal,
   VaTextarea,
 } from "vuestic-ui";
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
+import type { CreateDirectoryData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 
 const props = defineProps<{
   parentWebpageBookmark: WebpageBookmark;
 }>();
 
-const { isValid, validate, reset, resetValidation } = useForm("formRef");
+const { validate, resetValidation } = useForm("formRef");
 
 const showForm = ref<boolean>(false);
 
@@ -27,15 +28,19 @@ const triggerShowForm = (): void => {
   resetValidation();
 };
 
-interface CreateDirectoryFormData {
-  name: string;
-  description: string;
-}
-
-const formData = reactive<CreateDirectoryFormData>({
+const formData = reactive<CreateDirectoryData>({
   name: "",
   description: "",
 });
+
+const resetFormData = (): void => {
+  formData.name = "";
+  formData.description = "";
+};
+
+const validCreationData = computed(
+  (): boolean => (formData.name && formData.name.length > 0) as boolean,
+);
 
 const createWebpageBookmarkService = useCreateWebpageBookmarkService();
 
@@ -43,17 +48,21 @@ const parentIsRootDirectory =
   props.parentWebpageBookmark.id === WEB_BOOKMARK_ROOT_DIR_ID;
 
 const submitForm = (): void => {
-  const resetFormOnCreateSuccess = (success: boolean) => {
-    if (success) reset();
-  };
+  if (!validCreationData.value) {
+    return;
+  }
+
+  const directoryParent = parentIsRootDirectory
+    ? undefined
+    : props.parentWebpageBookmark;
 
   createWebpageBookmarkService
-    .createDirectory(
-      formData.name,
-      formData.description,
-      parentIsRootDirectory ? undefined : props.parentWebpageBookmark,
-    )
-    .then(resetFormOnCreateSuccess);
+    .createDirectory(formData, directoryParent)
+    .then((success: boolean) => {
+      if (success) {
+        resetFormData();
+      }
+    });
 
   triggerShowForm();
 };
@@ -110,7 +119,7 @@ const submitForm = (): void => {
         </va-button>
         <va-button
           @click="validate() && submitForm()"
-          :disabled="!isValid"
+          :disabled="!validCreationData"
           type="submit"
         >
           Submit
