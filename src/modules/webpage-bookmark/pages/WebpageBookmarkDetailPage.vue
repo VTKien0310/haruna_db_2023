@@ -16,6 +16,9 @@ const webpageBookmarkDetailService = useWebpageBookmarkDetailService();
 watch(
   () => route.params.id,
   (id) => {
+    if (!id) {
+      return;
+    }
     webpageBookmarkDetailService.loadWebpageBookmarkIntoStore(id as string);
   },
 );
