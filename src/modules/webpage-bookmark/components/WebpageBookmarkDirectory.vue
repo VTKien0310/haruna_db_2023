@@ -9,7 +9,7 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 </script>
 
 <template>
-  <div class="relative h-full w-full">
+  <div class="relative w-full">
     <div class="grid h-full grid-flow-row grid-cols-1 grid-rows-16 gap-2 pb-10">
       <WebpageBookmarkDirectoryHeader class="row-span-1 self-start" />
 

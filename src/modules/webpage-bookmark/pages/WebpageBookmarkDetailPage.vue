@@ -29,13 +29,8 @@ onMounted(() => {
 
 <template>
   <ion-page>
-    <va-progress-bar v-if="webpageBookmarkStore.isFetchingData" indeterminate />
-    <WebpageBookmarkDirectory
-      v-if="
-        !webpageBookmarkStore.isFetchingData &&
-        webpageBookmarkStore.currentRecordIsDirectory
-      "
-    />
+    <va-progress-bar v-show="webpageBookmarkStore.isFetchingData" indeterminate style="height: 1%" />
+    <WebpageBookmarkDirectory v-if="webpageBookmarkStore.currentRecordIsDirectory" style="height: 99%"/>
   </ion-page>
 </template>
 
