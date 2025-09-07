@@ -7,11 +7,15 @@ import {
 import { WebpageBookmarkDetailService } from "@/modules/webpage-bookmark/services/WebpageBookmarkDetailService.ts";
 import { ListWebpageBookmarkService } from "@/modules/webpage-bookmark/services/ListWebpageBookmarkService.ts";
 
-const useCreateWebpageBookmarkService = () =>
-  new CreateWebpageBookmarkService(supabasePort, useToastService());
-
 const useListWebpageBookmarkService = () =>
   new ListWebpageBookmarkService(supabasePort, useToastService());
+
+const useCreateWebpageBookmarkService = () =>
+  new CreateWebpageBookmarkService(
+    supabasePort,
+    useToastService(),
+    useListWebpageBookmarkService(),
+  );
 
 const useWebpageBookmarkDetailService = () =>
   new WebpageBookmarkDetailService(

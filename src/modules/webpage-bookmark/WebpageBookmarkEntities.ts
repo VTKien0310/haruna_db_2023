@@ -25,7 +25,7 @@ export const makeVirtualWebBookmarkRootDirectory = (
   id: WEB_BOOKMARK_ROOT_DIR_ID,
   owner_id,
   url: "",
-  name: "/",
+  name: "~",
   description: "",
   type: WebpageBookmarkType.DIRECTORY,
   root_id: null,

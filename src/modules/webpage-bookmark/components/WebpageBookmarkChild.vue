@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import {
-  type WebpageBookmark,
-  WebpageBookmarkType,
-} from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
+import { type WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import { VaHover, VaIcon } from "vuestic-ui";
 import router from "@/router";
 import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter.ts";
 import { ref } from "vue";
+import { useWebpageBookmarkDetailService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 
 const props = defineProps<{
   webpageBookmark: WebpageBookmark;
 }>();
 
+const webpageBookmarkDetailService = useWebpageBookmarkDetailService();
+
 const isDirectory =
-  props.webpageBookmark.type === WebpageBookmarkType.DIRECTORY;
+  webpageBookmarkDetailService.isDirectoryWebpageBookmarkRecord(
+    props.webpageBookmark,
+  );
 
 const isBeingHovered = ref<boolean>(false);
 

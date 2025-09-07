@@ -19,6 +19,10 @@ export const useWebpageBookmarkDetailStore = defineStore(
     const currentIsRoot = computed<boolean>(
       (): boolean => webpageBookmark.value?.id === WEB_BOOKMARK_ROOT_DIR_ID,
     );
+    const currentParentId = computed<string>(
+      (): string =>
+        webpageBookmark.value?.parent_id ?? WEB_BOOKMARK_ROOT_DIR_ID,
+    );
 
     const webpageBookmarkChildren = ref<WebpageBookmark[]>([]);
 
@@ -31,6 +35,7 @@ export const useWebpageBookmarkDetailStore = defineStore(
       webpageBookmark,
       currentIsDirectory,
       currentIsRoot,
+      currentParentId,
       webpageBookmarkChildren,
       isFetchingData,
       triggerIsFetchingData,

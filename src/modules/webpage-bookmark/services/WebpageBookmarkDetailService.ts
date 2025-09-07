@@ -4,6 +4,7 @@ import {
   makeVirtualWebBookmarkRootDirectory,
   WEB_BOOKMARK_ROOT_DIR_ID,
   type WebpageBookmark,
+  WebpageBookmarkType,
 } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import type { MasterNavigationService } from "@/modules/master/services/MasterNavigationService.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
@@ -57,5 +58,13 @@ export class WebpageBookmarkDetailService {
     await this.listWebpageBookmarkService.refreshChildrenWebpageBookmarks();
 
     this.webpageBookmarkDetailStore.triggerIsFetchingData();
+  }
+
+  isDirectoryWebpageBookmarkRecord(webpageBookmark: WebpageBookmark): boolean {
+    return webpageBookmark.type === WebpageBookmarkType.DIRECTORY;
+  }
+
+  isLinkWebpageBookmarkRecord(webpageBookmark: WebpageBookmark): boolean {
+    return webpageBookmark.type === WebpageBookmarkType.LINK;
   }
 }
