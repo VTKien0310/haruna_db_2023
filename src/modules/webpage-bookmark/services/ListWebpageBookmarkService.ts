@@ -11,14 +11,20 @@ export class ListWebpageBookmarkService {
     private readonly toastService: ToastService,
   ) {}
 
-  async listChildrenWebpageBookmarks(): Promise<WebpageBookmark[]> {
+  async refreshChildrenWebpageBookmarks(): Promise<void> {
     if (!this.webpageBookmarkDetailStore.currentRecordIsDirectory) {
-      return [];
+      this.webpageBookmarkDetailStore.webpageBookmarkChildren = [];
+      return;
     }
 
-    return this.webpageBookmarkDetailStore.currentRecordIsRoot
-      ? this.listLevelOneRecords()
-      : this.listLevelChildrenRecords();
+    if (this.webpageBookmarkDetailStore.currentRecordIsRoot) {
+      this.webpageBookmarkDetailStore.webpageBookmarkChildren =
+        await this.listLevelOneRecords();
+      return;
+    }
+
+    this.webpageBookmarkDetailStore.webpageBookmarkChildren =
+      await this.listLevelChildrenRecords();
   }
 
   private async listLevelOneRecords(): Promise<WebpageBookmark[]> {

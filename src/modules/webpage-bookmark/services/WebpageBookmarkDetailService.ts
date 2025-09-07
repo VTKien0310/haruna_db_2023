@@ -8,6 +8,7 @@ import {
 import type { MasterNavigationService } from "@/modules/master/services/MasterNavigationService.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore.ts";
+import type { ListWebpageBookmarkService } from "@/modules/webpage-bookmark/services/ListWebpageBookmarkService.ts";
 
 export class WebpageBookmarkDetailService {
   private readonly webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
@@ -17,6 +18,7 @@ export class WebpageBookmarkDetailService {
     private readonly supabasePort: SupabaseClient,
     private readonly toastService: ToastService,
     private readonly masterNavigationService: MasterNavigationService,
+    private readonly listWebpageBookmarkService: ListWebpageBookmarkService,
   ) {}
 
   async getWebpageBookmarkRecord(id: string): Promise<WebpageBookmark | null> {
@@ -41,7 +43,7 @@ export class WebpageBookmarkDetailService {
     return data[0];
   }
 
-  async loadWebpageBookmark(id: string): Promise<void> {
+  async loadWebpageBookmarkIntoStore(id: string): Promise<void> {
     this.webpageBookmarkDetailStore.triggerIsFetchingData();
 
     // since the root directory is not stored in the database, we create a virtual one here
@@ -51,6 +53,8 @@ export class WebpageBookmarkDetailService {
             this.authStore.profile?.user_id ?? "",
           )
         : await this.getWebpageBookmarkRecord(id);
+
+    await this.listWebpageBookmarkService.refreshChildrenWebpageBookmarks();
 
     this.webpageBookmarkDetailStore.triggerIsFetchingData();
   }

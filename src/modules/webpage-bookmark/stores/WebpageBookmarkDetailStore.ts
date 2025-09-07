@@ -11,14 +11,16 @@ export const useWebpageBookmarkDetailStore = defineStore(
   () => {
     const webpageBookmark = ref<WebpageBookmark | null>(null);
 
-    const currentRecordIsDirectory = computed<boolean>(
+    const currentIsDirectory = computed<boolean>(
       (): boolean =>
         webpageBookmark.value?.type === WebpageBookmarkType.DIRECTORY,
     );
     // for the root directory, there will be some unavailable behaviors and data
-    const currentRecordIsRoot = computed<boolean>(
+    const currentIsRoot = computed<boolean>(
       (): boolean => webpageBookmark.value?.id === WEB_BOOKMARK_ROOT_DIR_ID,
     );
+
+    const webpageBookmarkChildren = ref<WebpageBookmark[]>([]);
 
     const isFetchingData = ref<boolean>(false);
     const triggerIsFetchingData = (): void => {
@@ -27,8 +29,9 @@ export const useWebpageBookmarkDetailStore = defineStore(
 
     return {
       webpageBookmark,
-      currentRecordIsDirectory,
-      currentRecordIsRoot,
+      currentRecordIsDirectory: currentIsDirectory,
+      currentRecordIsRoot: currentIsRoot,
+      webpageBookmarkChildren,
       isFetchingData,
       triggerIsFetchingData,
     };

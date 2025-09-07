@@ -16,12 +16,14 @@ const webpageBookmarkDetailService = useWebpageBookmarkDetailService();
 watch(
   () => route.params.id,
   (id) => {
-    webpageBookmarkDetailService.loadWebpageBookmark(id as string);
+    webpageBookmarkDetailService.loadWebpageBookmarkIntoStore(id as string);
   },
 );
 
 onMounted(() => {
-  webpageBookmarkDetailService.loadWebpageBookmark(route.params.id as string);
+  webpageBookmarkDetailService.loadWebpageBookmarkIntoStore(
+    route.params.id as string,
+  );
 });
 </script>
 
