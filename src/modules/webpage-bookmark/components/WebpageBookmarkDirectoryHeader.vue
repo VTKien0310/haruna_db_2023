@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { VaButton } from "vuestic-ui";
-import type { WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
+import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 
-defineProps<{
-  webpageBookmark: WebpageBookmark;
-}>();
+const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 </script>
 
 <template>
   <div class="m-1 flex flex-row content-center items-center justify-between">
-    <p>{{ webpageBookmark.name }}</p>
+    <p>{{ webpageBookmarkDetailStore.webpageBookmark?.name }}</p>
     <div class="flex flex-row content-center items-center justify-end">
       <va-button
-        :disabled="webpageBookmark.level === 0"
+        :disabled="webpageBookmarkDetailStore.currentRecordIsRoot"
         icon="move_up"
         preset="secondary"
         border-color="primary"

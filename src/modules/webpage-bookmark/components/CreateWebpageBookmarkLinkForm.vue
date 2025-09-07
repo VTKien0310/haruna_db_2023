@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import {
-  WEB_BOOKMARK_ROOT_DIR_ID,
-  type WebpageBookmark,
-} from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
-import {
   useForm,
   VaButton,
   VaForm,
@@ -14,10 +10,9 @@ import {
 import { reactive, ref } from "vue";
 import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import type { CreateWebBookmarkLinkData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 
-const props = defineProps<{
-  parentWebpageBookmark: WebpageBookmark;
-}>();
+const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
 const {
   isValid: validCreationData,
@@ -55,17 +50,14 @@ const isValidUrl = (url: string): boolean => {
 
 const createWebpageBookmarkService = useCreateWebpageBookmarkService();
 
-const parentIsRootDirectory =
-  props.parentWebpageBookmark.id === WEB_BOOKMARK_ROOT_DIR_ID;
-
 const submitForm = (): void => {
   if (!validCreationData.value) {
     return;
   }
 
-  const directoryParent = parentIsRootDirectory
+  const directoryParent = webpageBookmarkDetailStore.currentRecordIsRoot
     ? undefined
-    : props.parentWebpageBookmark;
+    : webpageBookmarkDetailStore.webpageBookmark!;
 
   createWebpageBookmarkService
     .createLink(formData, directoryParent)

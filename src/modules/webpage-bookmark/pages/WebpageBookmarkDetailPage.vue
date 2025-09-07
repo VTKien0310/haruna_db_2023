@@ -1,55 +1,38 @@
 <script setup lang="ts">
 import { IonPage } from "@ionic/vue";
-import {
-  makeVirtualWebBookmarkRootDirectory,
-  WEB_BOOKMARK_ROOT_DIR_ID,
-  type WebpageBookmark,
-  WebpageBookmarkType,
-} from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
-import { useAuthStore } from "@/modules/auth/stores/AuthStore.ts";
 import WebpageBookmarkDirectory from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectory.vue";
 import { useRoute } from "vue-router";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, watch } from "vue";
 import { useWebpageBookmarkDetailService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
+import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
+import { VaProgressBar } from "vuestic-ui";
 
-const webpageBookmark = ref<WebpageBookmark | null>(null);
-
-const authStore = useAuthStore();
+const webpageBookmarkStore = useWebpageBookmarkDetailStore();
 
 const route = useRoute();
 
 const webpageBookmarkDetailService = useWebpageBookmarkDetailService();
 
-const fetchWebpageBookmark = async (id: string): Promise<void> => {
-  if (id === WEB_BOOKMARK_ROOT_DIR_ID) {
-    // since the root directory is not stored in the database, we create a virtual one here
-    webpageBookmark.value = makeVirtualWebBookmarkRootDirectory(
-      authStore.profile?.user_id ?? "",
-    );
-    return;
-  }
-
-  webpageBookmark.value =
-    await webpageBookmarkDetailService.getWebpageBookmark(id);
-};
-
 watch(
   () => route.params.id,
   (id) => {
-    fetchWebpageBookmark(id as string);
+    webpageBookmarkDetailService.loadWebpageBookmark(id as string);
   },
 );
 
 onMounted(() => {
-  fetchWebpageBookmark(route.params.id as string);
+  webpageBookmarkDetailService.loadWebpageBookmark(route.params.id as string);
 });
 </script>
 
 <template>
   <ion-page>
+    <va-progress-bar v-if="webpageBookmarkStore.isFetchingData" indeterminate />
     <WebpageBookmarkDirectory
-      v-if="webpageBookmark?.type === WebpageBookmarkType.DIRECTORY"
-      :webpage-bookmark="webpageBookmark"
+      v-if="
+        !webpageBookmarkStore.isFetchingData &&
+        webpageBookmarkStore.currentRecordIsDirectory
+      "
     />
   </ion-page>
 </template>
