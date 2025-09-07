@@ -39,7 +39,7 @@ const resetFormData = (): void => {
 
 const createWebpageBookmarkService = useCreateWebpageBookmarkService();
 
-const submitForm = (): void => {
+const submitForm = async (): Promise<void> => {
   if (!validCreationData.value) {
     return;
   }
@@ -48,15 +48,16 @@ const submitForm = (): void => {
     ? undefined
     : webpageBookmarkDetailStore.webpageBookmark!;
 
-  createWebpageBookmarkService
-    .createDirectory(formData, directoryParent)
-    .then((success: boolean) => {
-      if (success) {
-        resetFormData();
-      }
-    });
-
   triggerShowForm();
+
+  const createSuccess = await createWebpageBookmarkService.createDirectory(
+    formData,
+    directoryParent,
+  );
+
+  if (createSuccess) {
+    resetFormData();
+  }
 };
 </script>
 

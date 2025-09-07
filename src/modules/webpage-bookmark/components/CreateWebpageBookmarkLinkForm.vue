@@ -50,7 +50,7 @@ const isValidUrl = (url: string): boolean => {
 
 const createWebpageBookmarkService = useCreateWebpageBookmarkService();
 
-const submitForm = (): void => {
+const submitForm = async (): Promise<void> => {
   if (!validCreationData.value) {
     return;
   }
@@ -59,15 +59,16 @@ const submitForm = (): void => {
     ? undefined
     : webpageBookmarkDetailStore.webpageBookmark!;
 
-  createWebpageBookmarkService
-    .createLink(formData, directoryParent)
-    .then((success: boolean) => {
-      if (success) {
-        resetFormData();
-      }
-    });
-
   triggerShowForm();
+
+  const createSuccess = await createWebpageBookmarkService.createLink(
+    formData,
+    directoryParent,
+  );
+
+  if (createSuccess) {
+    resetFormData();
+  }
 };
 </script>
 
