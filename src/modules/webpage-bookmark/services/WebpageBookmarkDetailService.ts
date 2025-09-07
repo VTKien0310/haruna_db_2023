@@ -28,7 +28,7 @@ export class WebpageBookmarkDetailService {
 
     if (error || !data) {
       this.toastService.error(`Failed to fetch bookmark record with id ${id}`);
-      this.masterNavigationService.navigateTo404();
+      this.masterNavigationService.navigateTo400();
       return null;
     }
 

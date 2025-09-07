@@ -183,7 +183,7 @@ export class MediaDetailService {
 
     if (error || !data) {
       this.toastService.error(`Failed to fetch media with id ${id}`);
-      this.masterNavigationService.navigateTo404();
+      this.masterNavigationService.navigateTo400();
       return null;
     }
 
