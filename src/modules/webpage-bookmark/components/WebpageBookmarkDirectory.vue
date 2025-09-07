@@ -4,6 +4,7 @@ import WebpageBookmarkDirectoryHeader from "@/modules/webpage-bookmark/component
 import CreateWebpageBookmarkDirectoryForm from "@/modules/webpage-bookmark/components/CreateWebpageBookmarkDirectoryForm.vue";
 import CreateWebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/CreateWebpageBookmarkLinkForm.vue";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
+import WebpageBookmarkChild from "@/modules/webpage-bookmark/components/WebpageBookmarkChild.vue";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 </script>
@@ -31,7 +32,11 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
         ]"
         class="overflow-y-auto px-2"
       >
-        <p v-for="i in 100">Placeholder content {{ i }}</p>
+        <WebpageBookmarkChild
+          v-for="child in webpageBookmarkDetailStore.webpageBookmarkChildren"
+          :key="child.id"
+          :webpage-bookmark="child"
+        />
       </div>
     </div>
 

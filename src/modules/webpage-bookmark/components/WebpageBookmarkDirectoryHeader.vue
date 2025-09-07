@@ -6,8 +6,10 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 </script>
 
 <template>
-  <div class="m-1 flex flex-row content-center items-center justify-between">
-    <p>{{ webpageBookmarkDetailStore.webpageBookmark?.name }}</p>
+  <div
+    class="m-1 ml-3 flex flex-row content-center items-center justify-between"
+  >
+    <p class="">{{ webpageBookmarkDetailStore.webpageBookmark?.name }}</p>
     <div class="flex flex-row content-center items-center justify-end">
       <va-button
         :disabled="webpageBookmarkDetailStore.currentIsRoot"
