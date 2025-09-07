@@ -12,8 +12,6 @@ import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/Webp
 import type { CreateWebBookmarkLinkData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 
-const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
-
 const {
   isValid: validCreationData,
   validate,
@@ -55,16 +53,9 @@ const submitForm = async (): Promise<void> => {
     return;
   }
 
-  const directoryParent = webpageBookmarkDetailStore.currentRecordIsRoot
-    ? undefined
-    : webpageBookmarkDetailStore.webpageBookmark!;
-
   triggerShowForm();
 
-  const createSuccess = await createWebpageBookmarkService.createLink(
-    formData,
-    directoryParent,
-  );
+  const createSuccess = await createWebpageBookmarkService.createLink(formData);
 
   if (createSuccess) {
     resetFormData();

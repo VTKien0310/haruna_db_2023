@@ -14,7 +14,7 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
       <WebpageBookmarkDirectoryHeader class="row-span-1 self-start" />
 
       <va-textarea
-        v-if="!webpageBookmarkDetailStore.currentRecordIsRoot"
+        v-if="!webpageBookmarkDetailStore.currentIsRoot"
         :model-value="
           webpageBookmarkDetailStore.webpageBookmark?.description ?? ''
         "
@@ -25,7 +25,7 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
       <div
         :class="[
-          !webpageBookmarkDetailStore.currentRecordIsRoot
+          !webpageBookmarkDetailStore.currentIsRoot
             ? 'row-span-12'
             : 'row-span-15',
         ]"
@@ -41,13 +41,13 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
       <CreateWebpageBookmarkLinkForm />
       <CreateWebpageBookmarkDirectoryForm />
       <va-button
-        v-if="!webpageBookmarkDetailStore.currentRecordIsRoot"
+        v-if="!webpageBookmarkDetailStore.currentIsRoot"
         icon="edit"
         round
         class="m-1"
       />
       <va-button
-        v-if="!webpageBookmarkDetailStore.currentRecordIsRoot"
+        v-if="!webpageBookmarkDetailStore.currentIsRoot"
         icon="delete"
         round
         class="m-1"

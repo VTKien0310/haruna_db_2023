@@ -12,12 +12,12 @@ export class ListWebpageBookmarkService {
   ) {}
 
   async refreshChildrenWebpageBookmarks(): Promise<void> {
-    if (!this.webpageBookmarkDetailStore.currentRecordIsDirectory) {
+    if (!this.webpageBookmarkDetailStore.currentIsDirectory) {
       this.webpageBookmarkDetailStore.webpageBookmarkChildren = [];
       return;
     }
 
-    if (this.webpageBookmarkDetailStore.currentRecordIsRoot) {
+    if (this.webpageBookmarkDetailStore.currentIsRoot) {
       this.webpageBookmarkDetailStore.webpageBookmarkChildren =
         await this.listLevelOneRecords();
       return;

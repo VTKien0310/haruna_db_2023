@@ -29,8 +29,8 @@ export const useWebpageBookmarkDetailStore = defineStore(
 
     return {
       webpageBookmark,
-      currentRecordIsDirectory: currentIsDirectory,
-      currentRecordIsRoot: currentIsRoot,
+      currentIsDirectory,
+      currentIsRoot,
       webpageBookmarkChildren,
       isFetchingData,
       triggerIsFetchingData,

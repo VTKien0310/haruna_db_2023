@@ -10,7 +10,7 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
     <p>{{ webpageBookmarkDetailStore.webpageBookmark?.name }}</p>
     <div class="flex flex-row content-center items-center justify-end">
       <va-button
-        :disabled="webpageBookmarkDetailStore.currentRecordIsRoot"
+        :disabled="webpageBookmarkDetailStore.currentIsRoot"
         icon="move_up"
         preset="secondary"
         border-color="primary"
