@@ -38,7 +38,7 @@ export class CreateWebpageBookmarkService {
       return false;
     }
 
-    await this.listWebpageBookmarkService.refreshChildrenWebpageBookmarks();
+    await this.refreshChildrenWebpageBookmarks();
 
     return true;
   }
@@ -61,7 +61,7 @@ export class CreateWebpageBookmarkService {
       return false;
     }
 
-    await this.listWebpageBookmarkService.refreshChildrenWebpageBookmarks();
+    await this.refreshChildrenWebpageBookmarks();
 
     return true;
   }
@@ -82,5 +82,11 @@ export class CreateWebpageBookmarkService {
       parent_id: parent.id,
       level: parent.level + 1,
     };
+  }
+
+  private async refreshChildrenWebpageBookmarks(): Promise<void> {
+    this.webpageBookmarkDetailStore.triggerIsFetchingData();
+    await this.listWebpageBookmarkService.refreshChildrenWebpageBookmarks();
+    this.webpageBookmarkDetailStore.triggerIsFetchingData();
   }
 }
