@@ -6,6 +6,7 @@ import { onMounted, watch } from "vue";
 import { useWebpageBookmarkDetailService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import { VaProgressBar } from "vuestic-ui";
+import WebpageBookmarkLink from "@/modules/webpage-bookmark/components/WebpageBookmarkLink.vue";
 
 const webpageBookmarkStore = useWebpageBookmarkDetailStore();
 
@@ -39,6 +40,10 @@ onMounted(() => {
     />
     <WebpageBookmarkDirectory
       v-if="webpageBookmarkStore.currentIsDirectory"
+      style="height: 99%"
+    />
+    <WebpageBookmarkLink
+      v-if="!webpageBookmarkStore.currentIsDirectory"
       style="height: 99%"
     />
   </ion-page>
