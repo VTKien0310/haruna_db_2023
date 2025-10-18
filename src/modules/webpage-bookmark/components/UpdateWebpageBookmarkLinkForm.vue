@@ -10,6 +10,7 @@ import {
 import { reactive, ref } from "vue";
 import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 import type { WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
+import { isValidUrl } from "@/modules/master/MasterUtil.ts";
 
 const props = defineProps<{
   webpageBookmark: WebpageBookmark;
@@ -38,15 +39,6 @@ const resetFormData = (): void => {
   formData.name = props.webpageBookmark.name;
   formData.url = props.webpageBookmark.url;
   formData.description = props.webpageBookmark.description;
-};
-
-const isValidUrl = (url: string): boolean => {
-  try {
-    new URL(url);
-    return true;
-  } catch (error) {
-    return false;
-  }
 };
 
 const submitForm = async (): Promise<void> => {

@@ -10,6 +10,7 @@ import {
 import { reactive, ref } from "vue";
 import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import { isValidUrl } from "@/modules/master/MasterUtil.ts";
 
 const {
   isValid: validCreationData,
@@ -34,15 +35,6 @@ const resetFormData = (): void => {
   formData.name = "";
   formData.url = "";
   formData.description = "";
-};
-
-const isValidUrl = (url: string): boolean => {
-  try {
-    new URL(url);
-    return true;
-  } catch (error) {
-    return false;
-  }
 };
 
 const createWebpageBookmarkService = useCreateWebpageBookmarkService();
