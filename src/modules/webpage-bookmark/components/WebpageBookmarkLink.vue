@@ -49,21 +49,21 @@ const openUrl = (): void => {
       />
 
       <div
-        class="row-span-1 flex w-full flex-row content-center items-center justify-between px-2"
+        class="row-span-1 flex w-full flex-row content-center items-center justify-between px-2 md:justify-center lg:justify-center xl:justify-center"
       >
         <va-button
           @click="copyUrl"
           icon="content_copy"
           preset="secondary"
           border-color="primary"
-          class="mr-1 w-full"
+          class="mr-1 w-full md:w-1/4 lg:w-1/6 xl:w-1/6"
         />
         <va-button
           @click="openUrl"
           icon="open_in_new"
           preset="secondary"
           border-color="primary"
-          class="ml-1 w-full"
+          class="ml-1 w-full md:w-1/4 lg:w-1/6 xl:w-1/6"
         />
       </div>
     </div>
