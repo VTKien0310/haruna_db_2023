@@ -10,7 +10,6 @@ import {
 import { reactive, ref } from "vue";
 import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import type { CreateWebBookmarkLinkData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
-import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 
 const {
   isValid: validCreationData,
