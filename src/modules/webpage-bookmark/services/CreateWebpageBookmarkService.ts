@@ -3,7 +3,7 @@ import type { ToastService } from "@/modules/master/services/ToastService.ts";
 import { WebpageBookmarkType } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import type {
   CreateWebBookmarkDirectoryData,
-  CreateWebBookmarkLinkData,
+  WebBookmarkLinkFormData,
   WebBookmarkHierarchicalData,
 } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
@@ -43,7 +43,7 @@ export class CreateWebpageBookmarkService {
     return true;
   }
 
-  async createLink(creationData: CreateWebBookmarkLinkData): Promise<boolean> {
+  async createLink(creationData: WebBookmarkLinkFormData): Promise<boolean> {
     const linkData = {
       name: creationData.name,
       url: creationData.url,

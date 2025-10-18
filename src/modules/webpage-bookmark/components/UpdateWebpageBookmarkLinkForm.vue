@@ -8,8 +8,12 @@ import {
   VaTextarea,
 } from "vuestic-ui";
 import { reactive, ref } from "vue";
-import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import type { WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
+
+const props = defineProps<{
+  webpageBookmark: WebpageBookmark;
+}>();
 
 const {
   isValid: validCreationData,
@@ -25,15 +29,15 @@ const triggerShowForm = (): void => {
 };
 
 const formData = reactive<WebBookmarkLinkFormData>({
-  name: "",
-  url: "",
-  description: "",
+  name: props.webpageBookmark.name,
+  url: props.webpageBookmark.url,
+  description: props.webpageBookmark.description,
 });
 
 const resetFormData = (): void => {
-  formData.name = "";
-  formData.url = "";
-  formData.description = "";
+  formData.name = props.webpageBookmark.name;
+  formData.url = props.webpageBookmark.url;
+  formData.description = props.webpageBookmark.description;
 };
 
 const isValidUrl = (url: string): boolean => {
@@ -45,8 +49,6 @@ const isValidUrl = (url: string): boolean => {
   }
 };
 
-const createWebpageBookmarkService = useCreateWebpageBookmarkService();
-
 const submitForm = async (): Promise<void> => {
   if (!validCreationData.value) {
     return;
@@ -54,27 +56,16 @@ const submitForm = async (): Promise<void> => {
 
   triggerShowForm();
 
-  const createSuccess = await createWebpageBookmarkService.createLink(formData);
-
-  if (createSuccess) {
-    resetFormData();
-  }
+  resetFormData();
 };
 </script>
 
 <template>
-  <va-button
-    @click="triggerShowForm"
-    icon="add"
-    round
-    class="m-1"
-    preset="secondary"
-    border-color="primary"
-  />
+  <va-button @click="triggerShowForm" icon="edit" round class="m-1" />
 
   <va-modal
     v-model="showForm"
-    title="Add new link"
+    title="Update link"
     hide-default-actions
     no-dismiss
   >
@@ -122,7 +113,7 @@ const submitForm = async (): Promise<void> => {
           :disabled="!validCreationData"
           type="submit"
         >
-          Submit
+          Update
         </va-button>
       </div>
     </va-form>

@@ -3,7 +3,7 @@ export interface CreateWebBookmarkDirectoryData {
   description: string;
 }
 
-export interface CreateWebBookmarkLinkData {
+export interface WebBookmarkLinkFormData {
   name: string;
   url: string;
   description: string;

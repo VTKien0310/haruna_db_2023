@@ -4,6 +4,7 @@ import WebpageBookmarkDirectoryHeader from "@/modules/webpage-bookmark/component
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import { useToastService } from "@/modules/master/MasterServiceContainer.ts";
 import { useDeleteWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
+import UpdateWebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/UpdateWebpageBookmarkLinkForm.vue";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
@@ -70,7 +71,10 @@ const openUrl = (): void => {
     <div
       class="absolute right-1 bottom-10 flex flex-col content-center items-center justify-around"
     >
-      <va-button icon="edit" round class="m-1" />
+      <UpdateWebpageBookmarkLinkForm
+        v-if="webpageBookmarkDetailStore.webpageBookmark"
+        :webpage-bookmark="webpageBookmarkDetailStore.webpageBookmark!"
+      />
       <va-button
         @click="deleteLink"
         icon="delete"
