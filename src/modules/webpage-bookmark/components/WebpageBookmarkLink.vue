@@ -3,8 +3,17 @@ import { VaButton, VaInput, VaTextarea } from "vuestic-ui";
 import WebpageBookmarkDirectoryHeader from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectoryHeader.vue";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import { useToastService } from "@/modules/master/MasterServiceContainer.ts";
+import { useDeleteWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
+
+const deleteWebpageBookmarkService = useDeleteWebpageBookmarkService();
+
+const deleteLink = (): void => {
+  deleteWebpageBookmarkService.deleteWebpageBookmarkLink(
+    webpageBookmarkDetailStore.webpageBookmark!,
+  );
+};
 
 const toastService = useToastService();
 const copyUrl = (): void => {
@@ -61,14 +70,9 @@ const openUrl = (): void => {
     <div
       class="absolute right-1 bottom-10 flex flex-col content-center items-center justify-around"
     >
+      <va-button icon="edit" round class="m-1" />
       <va-button
-        v-if="!webpageBookmarkDetailStore.currentIsRoot"
-        icon="edit"
-        round
-        class="m-1"
-      />
-      <va-button
-        v-if="!webpageBookmarkDetailStore.currentIsRoot"
+        @click="deleteLink"
         icon="delete"
         round
         class="m-1"
