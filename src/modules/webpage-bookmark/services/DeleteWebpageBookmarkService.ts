@@ -1,6 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ToastService } from "@/modules/master/services/ToastService.ts";
-import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import type { Router } from "vue-router";
 import {
   WEB_BOOKMARK_ROOT_DIR_ID,
@@ -11,8 +10,6 @@ import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBook
 import type { ModalService } from "@/modules/master/services/ModalService.ts";
 
 export class DeleteWebpageBookmarkService {
-  private readonly webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
-
   constructor(
     private readonly supabasePort: SupabaseClient,
     private readonly toastService: ToastService,
@@ -35,6 +32,8 @@ export class DeleteWebpageBookmarkService {
       return false;
     }
 
+    this.toastService.info(`Deleted ${record.name} successfully`);
+
     return true;
   }
 
@@ -43,6 +42,54 @@ export class DeleteWebpageBookmarkService {
       name: WebpageBookmarkRouteName.ROOT,
       params: { id: record.parent_id ?? WEB_BOOKMARK_ROOT_DIR_ID },
     });
+  }
+
+  private async checkDirectoryDeletionCondition(
+    record: WebpageBookmark,
+  ): Promise<boolean> {
+    const { count, error } = await this.supabasePort
+      .from("webpage_bookmarks")
+      .select("*", {
+        count: "exact",
+        head: true,
+      })
+      .eq("parent_id", record.id);
+
+    if (error) {
+      return false;
+    }
+
+    return count === 0;
+  }
+
+  deleteWebpageBookmarkDirectory(record: WebpageBookmark): void {
+    if (record.type !== WebpageBookmarkType.DIRECTORY) {
+      return;
+    }
+
+    this.modalService
+      .confirm("Are you sure you want to delete this directory?")
+      .then(async (confirmation: boolean): Promise<void> => {
+        if (!confirmation) {
+          return;
+        }
+
+        const canDeleteDirectory =
+          await this.checkDirectoryDeletionCondition(record);
+        if (!canDeleteDirectory) {
+          this.toastService.error(
+            "Cannot delete directory because it has children",
+          );
+          return;
+        }
+
+        const deleteSuccess = await this.deleteWebpageBookmarkRecord(record);
+        if (!deleteSuccess) {
+          return;
+        }
+
+        this.redirectToParentDirectory(record);
+      });
   }
 
   deleteWebpageBookmarkLink(record: WebpageBookmark): void {
@@ -58,7 +105,6 @@ export class DeleteWebpageBookmarkService {
         }
 
         const deleteSuccess = await this.deleteWebpageBookmarkRecord(record);
-
         if (!deleteSuccess) {
           return;
         }

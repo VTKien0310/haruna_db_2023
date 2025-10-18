@@ -5,8 +5,17 @@ import CreateWebpageBookmarkDirectoryForm from "@/modules/webpage-bookmark/compo
 import CreateWebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/CreateWebpageBookmarkLinkForm.vue";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import WebpageBookmarkChild from "@/modules/webpage-bookmark/components/WebpageBookmarkChild.vue";
+import { useDeleteWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
+
+const deleteWebpageBookmarkService = useDeleteWebpageBookmarkService();
+
+const deleteDirectory = (): void => {
+  deleteWebpageBookmarkService.deleteWebpageBookmarkDirectory(
+    webpageBookmarkDetailStore.webpageBookmark!,
+  );
+};
 </script>
 
 <template>
@@ -53,6 +62,7 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
       />
       <va-button
         v-if="!webpageBookmarkDetailStore.currentIsRoot"
+        @click="deleteDirectory"
         icon="delete"
         round
         class="m-1"
