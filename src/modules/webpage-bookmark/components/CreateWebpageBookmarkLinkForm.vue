@@ -23,6 +23,7 @@ const onSubmit = (formData: WebBookmarkLinkFormData): Promise<boolean> => {
     :form-style-is-primary="false"
     :initial-form-data="initialCreateLinkFormData"
     :on-submit="onSubmit"
+    :reset-form-on-submit-success="true"
     submit-btn-label="Create"
   />
 </template>

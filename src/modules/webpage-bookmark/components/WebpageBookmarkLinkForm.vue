@@ -16,6 +16,7 @@ interface Props {
   formStyleIsPrimary?: boolean;
   initialFormData: WebBookmarkLinkFormData;
   onSubmit: (formData: WebBookmarkLinkFormData) => Promise<boolean>;
+  resetFormOnSubmitSuccess: boolean;
   submitBtnLabel?: string;
 }
 
@@ -25,6 +26,7 @@ const {
   formStyleIsPrimary = true,
   initialFormData,
   onSubmit,
+  resetFormOnSubmitSuccess,
   submitBtnLabel = "Submit",
 } = defineProps<Props>();
 
@@ -71,7 +73,7 @@ const submitForm = async (): Promise<void> => {
 
   const submitResult = await onSubmit(formData);
 
-  if (submitResult) {
+  if (submitResult && resetFormOnSubmitSuccess) {
     resetFormData();
   }
 };
