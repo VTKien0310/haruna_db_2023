@@ -1,15 +1,15 @@
-import type {RouteRecordRaw} from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
 
 export enum TranslationRouteName {
-    TRANSLATION = 'translation',
+  TRANSLATION = "translation",
 }
 
 const translationRouter: RouteRecordRaw[] = [
-    {
-        path: '/translation',
-        name: TranslationRouteName.TRANSLATION,
-        component: () => import('@/modules/translation/pages/TranslationPage.vue')
-    }
-]
+  {
+    path: "/translation",
+    name: TranslationRouteName.TRANSLATION,
+    component: () => import("@/modules/translation/pages/TranslationPage.vue"),
+  },
+];
 
-export default translationRouter
+export default translationRouter;

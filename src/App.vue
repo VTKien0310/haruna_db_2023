@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import {computed} from 'vue';
-import {AuthRouteName} from '@/modules/auth/AuthRouter';
-import {MasterRouteName} from '@/modules/master/MasterRouter';
-import {GalleryRouteName} from '@/modules/gallery/GalleryRouter';
-import {IonApp, IonRouterOutlet} from '@ionic/vue';
-import router from '@/router';
-import {TranslationRouteName} from '@/modules/translation/TranslationRouter';
-import {useAuthenticationService} from '@/modules/auth/AuthServiceContainer';
+import { computed } from "vue";
+import { AuthRouteName } from "@/modules/auth/AuthRouter";
+import { MasterRouteName } from "@/modules/master/MasterRouter";
+import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
+import { IonApp, IonRouterOutlet } from "@ionic/vue";
+import router from "@/router";
+import { TranslationRouteName } from "@/modules/translation/TranslationRouter";
+import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
+import { VaAppBar, VaButton } from "vuestic-ui";
+import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter";
+import { WEB_BOOKMARK_ROOT_DIR_ID } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 
 const authenticationService = useAuthenticationService();
 authenticationService.registerOnAuthStateChange();
@@ -18,43 +21,51 @@ const hideNavBar = computed((): boolean => {
 
 <template>
   <ion-app>
-
-    <ion-router-outlet/>
+    <ion-router-outlet />
 
     <va-app-bar
-        v-if="!hideNavBar"
-        bottom
-        fixed
-        class="flex flex-row justify-around content-center items-center"
+      v-if="!hideNavBar"
+      bottom
+      fixed
+      class="flex flex-row content-center items-center justify-around"
     >
       <va-button
-          @click="router.push({name: MasterRouteName.MASTER})"
-          icon="home"
-          color="backgroundPrimary"
-          preset="secondary"
+        @click="router.push({ name: MasterRouteName.MASTER })"
+        icon="home"
+        color="backgroundPrimary"
+        preset="secondary"
       />
       <va-button
-          @click="router.push({name: GalleryRouteName.LIST})"
-          icon="image"
-          color="backgroundPrimary"
-          preset="secondary"
+        @click="router.push({ name: GalleryRouteName.LIST })"
+        icon="image"
+        color="backgroundPrimary"
+        preset="secondary"
       />
       <va-button
-          @click="router.push({name: TranslationRouteName.TRANSLATION})"
-          icon="translate"
-          color="backgroundPrimary"
-          preset="secondary"
+        @click="router.push({ name: TranslationRouteName.TRANSLATION })"
+        icon="translate"
+        color="backgroundPrimary"
+        preset="secondary"
       />
       <va-button
-          @click="router.push({name: AuthRouteName.PROFILE})"
-          icon="person"
-          color="backgroundPrimary"
-          preset="secondary"
+        @click="
+          router.push({
+            name: WebpageBookmarkRouteName.ROOT,
+            params: { id: WEB_BOOKMARK_ROOT_DIR_ID },
+          })
+        "
+        icon="bookmark"
+        color="backgroundPrimary"
+        preset="secondary"
+      />
+      <va-button
+        @click="router.push({ name: AuthRouteName.PROFILE })"
+        icon="person"
+        color="backgroundPrimary"
+        preset="secondary"
       />
     </va-app-bar>
-
   </ion-app>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

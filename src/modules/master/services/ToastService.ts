@@ -1,7 +1,7 @@
-import {type ToastOptions, useToast} from 'vuestic-ui';
+import { type ToastOptions, useToast } from "vuestic-ui";
 
 export class ToastService {
-  private readonly toastInit: (options: (string | ToastOptions)) => (string | null);
+  private readonly toastInit: (options: string | ToastOptions) => string | null;
 
   constructor() {
     this.toastInit = useToast().init;
@@ -10,7 +10,14 @@ export class ToastService {
   error(message: string): void {
     this.toastInit({
       message: message,
-      color: 'danger',
+      color: "danger",
+    });
+  }
+
+  info(message: string): void {
+    this.toastInit({
+      message: message,
+      color: "primary",
     });
   }
 }
