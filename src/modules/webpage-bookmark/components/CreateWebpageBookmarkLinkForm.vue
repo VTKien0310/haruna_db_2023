@@ -3,7 +3,7 @@ import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/Webp
 import WebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/WebpageBookmarkLinkForm.vue";
 import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 
-const initialCreateLinkFormData = {
+const initialCreateLinkFormData: WebBookmarkLinkFormData = {
   name: "",
   url: "",
   description: "",

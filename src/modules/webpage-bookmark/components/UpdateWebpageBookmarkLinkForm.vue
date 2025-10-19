@@ -8,7 +8,7 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
 const webpageBookmark = webpageBookmarkDetailStore.webpageBookmark;
 
-const initialUpdateLinkFormData = {
+const initialUpdateLinkFormData: WebBookmarkLinkFormData = {
   name: webpageBookmark?.name ?? "",
   url: webpageBookmark?.url ?? "",
   description: webpageBookmark?.description ?? "",
