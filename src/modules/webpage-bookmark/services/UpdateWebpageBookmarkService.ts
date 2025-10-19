@@ -2,7 +2,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ToastService } from "@/modules/master/services/ToastService.ts";
 import type { WebpageBookmarkDetailService } from "@/modules/webpage-bookmark/services/WebpageBookmarkDetailService.ts";
 import type { WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
-import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import type {
+  WebBookmarkDirectoryFormData,
+  WebBookmarkLinkFormData,
+} from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 
 export class UpdateWebpageBookmarkService {
   constructor(
@@ -47,6 +50,31 @@ export class UpdateWebpageBookmarkService {
     const updateResult = await this.updateRecord(record, {
       name: formData.name,
       url: formData.url,
+      description: formData.description,
+    });
+    if (!updateResult) {
+      return false;
+    }
+
+    await this.refreshRecordData(record);
+
+    return true;
+  }
+
+  async updateWebpageBookmarkDirectory(
+    record: WebpageBookmark,
+    formData: WebBookmarkDirectoryFormData,
+  ): Promise<boolean> {
+    if (
+      !this.webpageBookmarkDetailService.isDirectoryWebpageBookmarkRecord(
+        record,
+      )
+    ) {
+      return false;
+    }
+
+    const updateResult = await this.updateRecord(record, {
+      name: formData.name,
       description: formData.description,
     });
     if (!updateResult) {
