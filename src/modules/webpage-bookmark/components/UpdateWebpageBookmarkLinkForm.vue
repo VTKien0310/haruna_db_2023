@@ -2,6 +2,7 @@
 import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import WebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/WebpageBookmarkLinkForm.vue";
+import { useUpdateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
@@ -13,8 +14,13 @@ const initialUpdateLinkFormData = {
   description: webpageBookmark?.description ?? "",
 };
 
+const updateWebpageBookmarkService = useUpdateWebpageBookmarkService();
+
 const onSubmit = (formData: WebBookmarkLinkFormData): Promise<boolean> => {
-  return Promise.resolve(true);
+  return updateWebpageBookmarkService.updateWebpageBookmarkLink(
+    webpageBookmark!,
+    formData,
+  );
 };
 </script>
 

@@ -22,7 +22,9 @@ export class WebpageBookmarkDetailService {
     private readonly listWebpageBookmarkService: ListWebpageBookmarkService,
   ) {}
 
-  async getWebpageBookmarkRecord(id: string): Promise<WebpageBookmark | null> {
+  private async getWebpageBookmarkRecord(
+    id: string,
+  ): Promise<WebpageBookmark | null> {
     const { data, error } = await this.supabasePort
       .from("webpage_bookmarks")
       .select()
