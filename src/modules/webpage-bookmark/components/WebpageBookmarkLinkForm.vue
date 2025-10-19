@@ -104,6 +104,8 @@ const submitForm = async (): Promise<void> => {
         v-model="formData.name"
         :rules="[
           (value) => (value && value.length > 0) || 'Link name is required',
+          (value) =>
+            (value && value.length <= 30) || 'Link name max length is 30',
         ]"
         label="Name"
         class="mb-2 w-full"

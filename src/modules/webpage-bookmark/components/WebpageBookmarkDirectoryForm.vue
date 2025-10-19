@@ -94,6 +94,8 @@ const submitForm = async (): Promise<void> => {
         :rules="[
           (value) =>
             (value && value.length > 0) || 'Directory name is required',
+          (value) =>
+            (value && value.length <= 30) || 'Directory name max length is 30',
         ]"
         label="Name"
         class="mb-2 w-full"

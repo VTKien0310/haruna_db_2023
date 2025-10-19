@@ -40,7 +40,7 @@ const deleteDirectory = (): void => {
             ? 'row-span-12'
             : 'row-span-15',
         ]"
-        class="overflow-y-auto px-2"
+        class="overflow-x-clip overflow-y-auto px-2"
       >
         <WebpageBookmarkChild
           v-for="child in webpageBookmarkDetailStore.webpageBookmarkChildren"
