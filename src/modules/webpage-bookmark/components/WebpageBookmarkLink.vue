@@ -71,10 +71,7 @@ const openUrl = (): void => {
     <div
       class="absolute right-1 bottom-10 flex flex-col content-center items-center justify-around"
     >
-      <UpdateWebpageBookmarkLinkForm
-        v-if="webpageBookmarkDetailStore.webpageBookmark"
-        :webpage-bookmark="webpageBookmarkDetailStore.webpageBookmark!"
-      />
+      <UpdateWebpageBookmarkLinkForm/>
       <va-button
         @click="deleteLink"
         icon="delete"

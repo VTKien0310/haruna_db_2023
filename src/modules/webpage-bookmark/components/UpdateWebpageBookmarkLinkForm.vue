@@ -9,12 +9,12 @@ import {
 } from "vuestic-ui";
 import { reactive, ref } from "vue";
 import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
-import type { WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import { isValidUrl } from "@/modules/master/MasterUtil.ts";
+import {useWebpageBookmarkDetailStore} from '@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts';
 
-const props = defineProps<{
-  webpageBookmark: WebpageBookmark;
-}>();
+const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
+
+const webpageBookmark = webpageBookmarkDetailStore.webpageBookmark;
 
 const {
   isValid: validCreationData,
@@ -30,15 +30,15 @@ const triggerShowForm = (): void => {
 };
 
 const formData = reactive<WebBookmarkLinkFormData>({
-  name: props.webpageBookmark.name,
-  url: props.webpageBookmark.url,
-  description: props.webpageBookmark.description,
+  name: webpageBookmark?.name ?? '',
+  url: webpageBookmark?.url ?? '',
+  description: webpageBookmark?.description ?? '',
 });
 
 const resetFormData = (): void => {
-  formData.name = props.webpageBookmark.name;
-  formData.url = props.webpageBookmark.url;
-  formData.description = props.webpageBookmark.description;
+  formData.name = webpageBookmark?.name ?? '';
+  formData.url = webpageBookmark?.url ?? '';
+  formData.description = webpageBookmark?.description ?? '';
 };
 
 const submitForm = async (): Promise<void> => {
