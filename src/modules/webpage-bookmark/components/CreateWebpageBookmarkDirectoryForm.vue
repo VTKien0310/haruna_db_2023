@@ -3,7 +3,7 @@ import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/Webp
 import WebpageBookmarkDirectoryForm from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectoryForm.vue";
 import type { WebBookmarkDirectoryFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 
-const initialCreateDirectoryFormData = {
+const initialCreateDirectoryFormData: WebBookmarkDirectoryFormData = {
   name: "",
   description: "",
 };
