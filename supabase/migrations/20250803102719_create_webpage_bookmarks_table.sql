@@ -136,6 +136,6 @@ to authenticated
 using ((( SELECT auth.uid() AS uid) = user_id));
 
 
-CREATE TRIGGER handle_updated_at BEFORE UPDATE ON public.webpage_bookmarks FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');
+CREATE TRIGGER handle_updated_at BEFORE UPDATE ON public.webpage_bookmarks FOR EACH ROW EXECUTE FUNCTION extensions.moddatetime('updated_at');
 
 
