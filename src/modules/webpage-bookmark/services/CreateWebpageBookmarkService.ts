@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ToastService } from "@/modules/master/services/ToastService.ts";
 import { WebpageBookmarkType } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import type {
-  CreateWebBookmarkDirectoryData,
+  WebBookmarkDirectoryFormData,
   WebBookmarkLinkFormData,
   WebBookmarkHierarchicalData,
 } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
@@ -19,7 +19,7 @@ export class CreateWebpageBookmarkService {
   ) {}
 
   async createDirectory(
-    creationData: CreateWebBookmarkDirectoryData,
+    creationData: WebBookmarkDirectoryFormData,
   ): Promise<boolean> {
     const directoryData = {
       name: creationData.name,

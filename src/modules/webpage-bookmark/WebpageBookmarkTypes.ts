@@ -1,4 +1,4 @@
-export interface CreateWebBookmarkDirectoryData {
+export interface WebBookmarkDirectoryFormData {
   name: string;
   description: string;
 }
