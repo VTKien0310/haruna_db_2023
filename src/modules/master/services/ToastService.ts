@@ -13,4 +13,11 @@ export class ToastService {
       color: "danger",
     });
   }
+
+  info(message: string): void {
+    this.toastInit({
+      message: message,
+      color: "primary",
+    });
+  }
 }

@@ -9,6 +9,7 @@ import { TranslationRouteName } from "@/modules/translation/TranslationRouter";
 import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
 import { VaAppBar, VaButton } from "vuestic-ui";
 import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter";
+import { WEB_BOOKMARK_ROOT_DIR_ID } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 
 const authenticationService = useAuthenticationService();
 authenticationService.registerOnAuthStateChange();
@@ -47,7 +48,12 @@ const hideNavBar = computed((): boolean => {
         preset="secondary"
       />
       <va-button
-        @click="router.push({ name: WebpageBookmarkRouteName.ROOT })"
+        @click="
+          router.push({
+            name: WebpageBookmarkRouteName.ROOT,
+            params: { id: WEB_BOOKMARK_ROOT_DIR_ID },
+          })
+        "
         icon="bookmark"
         color="backgroundPrimary"
         preset="secondary"

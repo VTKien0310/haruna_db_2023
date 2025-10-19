@@ -9,4 +9,10 @@ export class MasterNavigationService {
       name: MasterRouteName.NOT_FOUND,
     });
   }
+
+  navigateTo400(): void {
+    this.router.replace({
+      name: MasterRouteName.BAD_REQUEST,
+    });
+  }
 }
