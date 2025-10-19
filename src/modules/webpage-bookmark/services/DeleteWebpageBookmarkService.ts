@@ -4,10 +4,10 @@ import type { Router } from "vue-router";
 import {
   WEB_BOOKMARK_ROOT_DIR_ID,
   type WebpageBookmark,
-  WebpageBookmarkType,
 } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter.ts";
 import type { ModalService } from "@/modules/master/services/ModalService.ts";
+import type { WebpageBookmarkDetailService } from "@/modules/webpage-bookmark/services/WebpageBookmarkDetailService.ts";
 
 export class DeleteWebpageBookmarkService {
   constructor(
@@ -15,6 +15,7 @@ export class DeleteWebpageBookmarkService {
     private readonly toastService: ToastService,
     private readonly router: Router,
     private readonly modalService: ModalService,
+    private readonly webpageBookmarkDetailService: WebpageBookmarkDetailService,
   ) {}
 
   private async deleteWebpageBookmarkRecord(
@@ -63,7 +64,11 @@ export class DeleteWebpageBookmarkService {
   }
 
   deleteWebpageBookmarkDirectory(record: WebpageBookmark): void {
-    if (record.type !== WebpageBookmarkType.DIRECTORY) {
+    if (
+      !this.webpageBookmarkDetailService.isDirectoryWebpageBookmarkRecord(
+        record,
+      )
+    ) {
       return;
     }
 
@@ -93,7 +98,9 @@ export class DeleteWebpageBookmarkService {
   }
 
   deleteWebpageBookmarkLink(record: WebpageBookmark): void {
-    if (record.type !== WebpageBookmarkType.LINK) {
+    if (
+      !this.webpageBookmarkDetailService.isLinkWebpageBookmarkRecord(record)
+    ) {
       return;
     }
 

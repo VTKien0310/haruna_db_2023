@@ -34,6 +34,7 @@ const useDeleteWebpageBookmarkService = () =>
     useToastService(),
     router,
     useModalService(),
+    useWebpageBookmarkDetailService(),
   );
 
 export {
