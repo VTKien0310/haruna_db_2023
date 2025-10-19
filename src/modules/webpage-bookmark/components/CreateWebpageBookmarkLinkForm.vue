@@ -1,124 +1,30 @@
 <script setup lang="ts">
-import {
-  useForm,
-  VaButton,
-  VaForm,
-  VaInput,
-  VaModal,
-  VaTextarea,
-} from "vuestic-ui";
-import { reactive, ref } from "vue";
 import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
+import WebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/WebpageBookmarkLinkForm.vue";
 import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
-import { isValidUrl } from "@/modules/master/MasterUtil.ts";
 
-const {
-  isValid: validCreationData,
-  validate,
-  resetValidation,
-} = useForm("formRef");
-
-const showForm = ref<boolean>(false);
-
-const triggerShowForm = (): void => {
-  showForm.value = !showForm.value;
-  resetValidation();
-};
-
-const formData = reactive<WebBookmarkLinkFormData>({
+const initialCreateLinkFormData = {
   name: "",
   url: "",
   description: "",
-});
-
-const resetFormData = (): void => {
-  formData.name = "";
-  formData.url = "";
-  formData.description = "";
 };
 
 const createWebpageBookmarkService = useCreateWebpageBookmarkService();
 
-const submitForm = async (): Promise<void> => {
-  if (!validCreationData.value) {
-    return;
-  }
-
-  triggerShowForm();
-
-  const createSuccess = await createWebpageBookmarkService.createLink(formData);
-
-  if (createSuccess) {
-    resetFormData();
-  }
+const onSubmit = (formData: WebBookmarkLinkFormData): Promise<boolean> => {
+  return createWebpageBookmarkService.createLink(formData);
 };
 </script>
 
 <template>
-  <va-button
-    @click="triggerShowForm"
-    icon="add"
-    round
-    class="m-1"
-    preset="secondary"
-    border-color="primary"
+  <WebpageBookmarkLinkForm
+    form-icon="add"
+    form-title="Create new link"
+    :form-style-is-primary="false"
+    :initial-form-data="initialCreateLinkFormData"
+    :on-submit="onSubmit"
+    submit-btn-label="Create"
   />
-
-  <va-modal
-    v-model="showForm"
-    title="Add new link"
-    hide-default-actions
-    no-dismiss
-  >
-    <!--    form content-->
-    <va-form
-      ref="formRef"
-      class="flex w-full flex-col content-center justify-center"
-    >
-      <va-input
-        v-model="formData.name"
-        :rules="[
-          (value) => (value && value.length > 0) || 'Link name is required',
-        ]"
-        label="Name"
-        class="mb-2 w-full"
-      />
-      <va-input
-        v-model="formData.url"
-        type="url"
-        :rules="[(value) => isValidUrl(value) || 'Must be a valid URL']"
-        label="URL"
-        class="mb-2 w-full"
-      />
-      <va-textarea
-        v-model="formData.description"
-        label="Description"
-        :min-rows="5"
-        :max-rows="5"
-        :resize="false"
-        class="mb-2 w-full"
-      />
-
-      <!--      form action-->
-      <div class="flex w-full flex-row content-center justify-end">
-        <va-button
-          @click="triggerShowForm"
-          preset="secondary"
-          color="secondary"
-          class="mr-2"
-        >
-          Cancel
-        </va-button>
-        <va-button
-          @click="validate() && submitForm()"
-          :disabled="!validCreationData"
-          type="submit"
-        >
-          Submit
-        </va-button>
-      </div>
-    </va-form>
-  </va-modal>
 </template>
 
 <style scoped></style>
