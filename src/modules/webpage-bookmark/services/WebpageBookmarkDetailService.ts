@@ -111,53 +111,46 @@ export class WebpageBookmarkDetailService {
       return WEB_BOOKMARK_ROOT_DIR_NAME;
     }
 
+    const pathParts: string[] = [WEB_BOOKMARK_ROOT_DIR_NAME];
+
+    // Level 1: Root / Item
     if (webpageBookmark.level === 1) {
-      return WEB_BOOKMARK_ROOT_DIR_NAME + " / " + webpageBookmark.name;
+      pathParts.push(webpageBookmark.name);
+      return pathParts.join(" / ");
     }
 
-    if (webpageBookmark.level === 2) {
-      const rootWebpageBookmark =
-        await this.getWebpageBookmarkRoot(webpageBookmark);
-
-      return (
-        WEB_BOOKMARK_ROOT_DIR_NAME +
-        " / " +
-        rootWebpageBookmark?.name +
-        " / " +
-        webpageBookmark.name
-      );
-    }
-
-    if (webpageBookmark.level === 3) {
-      const rootWebpageBookmark =
-        await this.getWebpageBookmarkRoot(webpageBookmark);
-      const parentWebpageBookmark =
-        await this.getWebpageBookmarkParent(webpageBookmark);
-
-      return (
-        WEB_BOOKMARK_ROOT_DIR_NAME +
-        " / " +
-        rootWebpageBookmark?.name +
-        " / " +
-        parentWebpageBookmark?.name +
-        " / " +
-        webpageBookmark.name
-      );
-    }
-
+    // Level 2+: Fetch root bookmark
     const rootWebpageBookmark =
       await this.getWebpageBookmarkRoot(webpageBookmark);
+    if (rootWebpageBookmark?.name) {
+      pathParts.push(rootWebpageBookmark.name);
+    }
+
+    // Level 2: Root / Level1 / Item
+    if (webpageBookmark.level === 2) {
+      pathParts.push(webpageBookmark.name);
+      return pathParts.join(" / ");
+    }
+
+    // Level 3+: Fetch parent bookmark
     const parentWebpageBookmark =
       await this.getWebpageBookmarkParent(webpageBookmark);
 
-    return (
-      WEB_BOOKMARK_ROOT_DIR_NAME +
-      " / " +
-      rootWebpageBookmark?.name +
-      " /.. / " +
-      parentWebpageBookmark?.name +
-      " / " +
-      webpageBookmark.name
-    );
+    // Level 3: Root / Level1 / Level2 / Item
+    if (webpageBookmark.level === 3) {
+      if (parentWebpageBookmark?.name) {
+        pathParts.push(parentWebpageBookmark.name);
+      }
+      pathParts.push(webpageBookmark.name);
+      return pathParts.join(" / ");
+    }
+
+    // Level 4+: Root / Level1 / .. / Parent / Item
+    pathParts.push("..");
+    if (parentWebpageBookmark?.name) {
+      pathParts.push(parentWebpageBookmark.name);
+    }
+    pathParts.push(webpageBookmark.name);
+    return pathParts.join(" / ");
   }
 }
