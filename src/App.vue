@@ -54,7 +54,7 @@ const hideNavBar = computed((): boolean => {
             params: { id: WEB_BOOKMARK_ROOT_DIR_ID },
           })
         "
-        icon="bookmark"
+        icon="topic"
         color="backgroundPrimary"
         preset="secondary"
       />
