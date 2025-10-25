@@ -11,6 +11,8 @@ export const useWebpageBookmarkDetailStore = defineStore(
   () => {
     const webpageBookmark = ref<WebpageBookmark | null>(null);
 
+    const webpageBookmarkHeaderTitle = ref<string>("");
+
     const currentIsDirectory = computed<boolean>(
       (): boolean =>
         webpageBookmark.value?.type === WebpageBookmarkType.DIRECTORY,
@@ -33,6 +35,7 @@ export const useWebpageBookmarkDetailStore = defineStore(
 
     return {
       webpageBookmark,
+      webpageBookmarkHeaderTitle,
       currentIsDirectory,
       currentIsRoot,
       currentParentId,

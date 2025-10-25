@@ -22,13 +22,8 @@ watch(
     }
     webpageBookmarkDetailService.loadWebpageBookmarkIntoStore(id as string);
   },
+  { immediate: true },
 );
-
-onMounted(() => {
-  webpageBookmarkDetailService.loadWebpageBookmarkIntoStore(
-    route.params.id as string,
-  );
-});
 </script>
 
 <template>

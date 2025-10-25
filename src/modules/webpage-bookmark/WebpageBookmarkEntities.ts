@@ -19,13 +19,15 @@ export interface WebpageBookmark {
 
 export const WEB_BOOKMARK_ROOT_DIR_ID = "WEBPAGE_BOOKMARK_ROOT_DIRECTORY";
 
+export const WEB_BOOKMARK_ROOT_DIR_NAME = "~";
+
 export const makeVirtualWebBookmarkRootDirectory = (
   owner_id: string,
 ): WebpageBookmark => ({
   id: WEB_BOOKMARK_ROOT_DIR_ID,
   owner_id,
   url: "",
-  name: "~",
+  name: WEB_BOOKMARK_ROOT_DIR_NAME,
   description: "",
   type: WebpageBookmarkType.DIRECTORY,
   root_id: null,
