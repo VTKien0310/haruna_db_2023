@@ -50,4 +50,5 @@ export {
   useWebpageBookmarkDetailService,
   useDeleteWebpageBookmarkService,
   useUpdateWebpageBookmarkService,
+  useListWebpageBookmarkService,
 };

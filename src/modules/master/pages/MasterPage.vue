@@ -9,6 +9,7 @@ import {
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
 import { useProfileService } from "@/modules/auth/AuthServiceContainer";
 import { VaCard, VaCardContent, VaCardTitle, VaProgressBar } from "vuestic-ui";
+import { useListWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 
 const mediaDetailService = useMediaDetailService();
 
@@ -30,6 +31,7 @@ const isFetchingData = ref<boolean>(false);
 const galleryStatisticService = useGalleryStatisticService();
 const profileService = useProfileService();
 const authStore = useAuthStore();
+const listWebpageBookmarkService = useListWebpageBookmarkService();
 onIonViewDidEnter(async () => {
   isFetchingData.value = true;
 
@@ -47,6 +49,13 @@ onIonViewDidEnter(async () => {
     await galleryStatisticService.getLatestUploadMedia();
   newlyUploadedMedia.value =
     await galleryStatisticService.countUploadedMediasWithinPassDays(7);
+
+  const deepestLevelWebpageBookmark =
+    await listWebpageBookmarkService.getDeepestLevelWebpageBookmark();
+  const webpageBookmarkLinkCount =
+    await listWebpageBookmarkService.countWebpageBookmarkLinks();
+  const webpageBookmarkDirectoryCount =
+    await listWebpageBookmarkService.countWebpageBookmarkDirectories();
 
   isFetchingData.value = false;
 });
