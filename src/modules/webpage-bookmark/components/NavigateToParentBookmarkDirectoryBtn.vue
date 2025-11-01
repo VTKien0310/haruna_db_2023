@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { VaButton } from "vuestic-ui";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import router from "@/router.ts";
 import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter.ts";
+import { VaButton } from "vuestic-ui";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
@@ -15,17 +15,15 @@ const navigateToParentDirectory = (): void => {
 </script>
 
 <template>
-  <div
-    class="flex w-full flex-row content-center items-center justify-between pt-3 pr-1 pb-1 pl-4"
-  >
-    <p class="overflow-hidden text-ellipsis whitespace-nowrap">
-      {{
-        webpageBookmarkDetailStore.isFetchingData
-          ? "Fetching data..."
-          : webpageBookmarkDetailStore.webpageBookmarkHeaderTitle
-      }}
-    </p>
-  </div>
+  <va-button
+    @click="navigateToParentDirectory"
+    :disabled="webpageBookmarkDetailStore.currentIsRoot"
+    round
+    icon="move_up"
+    class="m-1"
+    preset="secondary"
+    border-color="primary"
+  />
 </template>
 
 <style scoped></style>
