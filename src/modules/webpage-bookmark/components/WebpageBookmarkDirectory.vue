@@ -7,6 +7,7 @@ import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores
 import WebpageBookmarkChild from "@/modules/webpage-bookmark/components/WebpageBookmarkChild.vue";
 import { useDeleteWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import UpdateWebpageBookmarkDirectoryForm from "@/modules/webpage-bookmark/components/UpdateWebpageBookmarkDirectoryForm.vue";
+import NavigateToParentBookmarkDirectoryBtn from "@/modules/webpage-bookmark/components/NavigateToParentBookmarkDirectoryBtn.vue";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
@@ -66,6 +67,7 @@ const deleteDirectory = (): void => {
         class="m-1"
         color="danger"
       />
+      <NavigateToParentBookmarkDirectoryBtn />
     </div>
   </div>
 </template>

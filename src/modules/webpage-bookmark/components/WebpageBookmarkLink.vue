@@ -5,6 +5,7 @@ import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores
 import { useToastService } from "@/modules/master/MasterServiceContainer.ts";
 import { useDeleteWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import UpdateWebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/UpdateWebpageBookmarkLinkForm.vue";
+import NavigateToParentBookmarkDirectoryBtn from "@/modules/webpage-bookmark/components/NavigateToParentBookmarkDirectoryBtn.vue";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
@@ -79,6 +80,7 @@ const openUrl = (): void => {
         class="m-1"
         color="danger"
       />
+      <NavigateToParentBookmarkDirectoryBtn />
     </div>
   </div>
 </template>
