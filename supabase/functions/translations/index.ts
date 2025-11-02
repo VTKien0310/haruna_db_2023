@@ -1,15 +1,21 @@
 import { Responder } from "../_shared/responder.ts";
 import provider from "../_shared/provider.ts";
 
+interface TranslationRequest {
+  original_content: string;
+  source_lang: string;
+  target_lang: string;
+}
+
 Deno.serve(async (req) => {
   const responder: Responder = provider.responder();
 
-  // This is needed if you're planning to invoke your function from a browser.
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return responder.responseCors();
   }
 
-  const { original_content, source_lang, target_lang } = await req.json();
+  const { original_content, source_lang, target_lang }: TranslationRequest = await req.json();
 
   if (!original_content) {
     return responder.responseBadRequest(
