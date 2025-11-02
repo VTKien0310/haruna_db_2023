@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
     const arrayBuffer = await ogImage.arrayBuffer();
 
     const image = await Image.decode(new Uint8Array(arrayBuffer));
-    const resizedImage = image.resize(width, height);
+    const resizedImage = image.cover(width, height);
     const resizedBuffer = await resizedImage.encodeWEBP(75);
 
     const storageBucket = "resized";
