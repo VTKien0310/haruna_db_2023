@@ -15,7 +15,8 @@ Deno.serve(async (req) => {
     return responder.responseCors();
   }
 
-  const { original_content, source_lang, target_lang }: TranslationRequest = await req.json();
+  const { original_content, source_lang, target_lang }: TranslationRequest =
+    await req.json();
 
   if (!original_content) {
     return responder.responseBadRequest(

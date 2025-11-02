@@ -75,43 +75,43 @@ export class Responder {
   }
 
   responseMissingParameters(message?: string): Response {
-    message = message || 'Missing at least one of the required parameters.';
+    message = message || "Missing at least one of the required parameters.";
 
-    return this.responseBadRequest('missing_parameters', message);
+    return this.responseBadRequest("missing_parameters", message);
   }
 
   responseValidationFailed(message?: string): Response {
-    message = message || 'Validation for your input failed.';
+    message = message || "Validation for your input failed.";
 
-    const code = 'validation_failed';
+    const code = "validation_failed";
     const validationFailedStatus: number = 422;
 
     return new Response(
-        JSON.stringify({
-          ...this.responseCommonStructure(validationFailedStatus, false),
-          ...this.errorResponseCommonStructure(code, message),
-        }),
-        {
-          headers: this.defaultResponseHeaders,
-          status: validationFailedStatus,
-        },
+      JSON.stringify({
+        ...this.responseCommonStructure(validationFailedStatus, false),
+        ...this.errorResponseCommonStructure(code, message),
+      }),
+      {
+        headers: this.defaultResponseHeaders,
+        status: validationFailedStatus,
+      },
     );
   }
 
   responseInternalError(message?: string): Response {
-    message = message || 'An unexpected error occurred.';
-    const code = 'internal_error';
+    message = message || "An unexpected error occurred.";
+    const code = "internal_error";
     const internalErrorStatus: number = 500;
 
     return new Response(
-        JSON.stringify({
-          ...this.responseCommonStructure(internalErrorStatus, false),
-          ...this.errorResponseCommonStructure(code, message),
-        }),
-        {
-          headers: this.defaultResponseHeaders,
-          status: internalErrorStatus,
-        },
+      JSON.stringify({
+        ...this.responseCommonStructure(internalErrorStatus, false),
+        ...this.errorResponseCommonStructure(code, message),
+      }),
+      {
+        headers: this.defaultResponseHeaders,
+        status: internalErrorStatus,
+      },
     );
   }
 
