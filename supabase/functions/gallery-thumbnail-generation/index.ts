@@ -56,14 +56,14 @@ Deno.serve(async (req) => {
 
     const image = await Image.decode(new Uint8Array(arrayBuffer));
     const resizedImage = image.cover(width, height);
-    const resizedBuffer = await resizedImage.encodeWEBP(75);
+    const resizedBuffer = await resizedImage.encodeJPEG(75);
 
     const storageBucket = "resized";
-    const storagePath = `${original_id}/${width}x${height}.webp`;
+    const storagePath = `${original_id}/${width}x${height}.jpeg`;
     const { error: saveGeneratedImageError } = await supabaseAdmin.storage
       .from(storageBucket)
       .upload(storagePath, resizedBuffer, {
-        contentType: "image/webp",
+        contentType: "image/jpeg",
         upsert: true,
       });
 
