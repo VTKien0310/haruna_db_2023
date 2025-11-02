@@ -144,7 +144,7 @@ export class MediaDetailService {
     media: Media,
     width: number,
     height: number,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const mediaIsPhoto = media.type === MediaTypeEnum.PHOTO;
     const originalPath = mediaIsPhoto
       ? media.storage_path
@@ -164,11 +164,7 @@ export class MediaDetailService {
       },
     );
 
-    if (error || !data) {
-      this.toastService.error(
-        `Failed to create resized image for media with id ${media.id} because ${error?.message}`,
-      );
-    }
+    return !(error || !data);
   }
 
   private async createThumbnailUsingResizedImage(
@@ -186,7 +182,33 @@ export class MediaDetailService {
     }
 
     // create the resized image if it doesn't exist
-    await this.createResizedImage(media, width, height);
+    const resizedImageCreated = await this.createResizedImage(
+      media,
+      width,
+      height,
+    );
+    if (!resizedImageCreated) {
+      // fallback to the original image if the resized image creation failed
+      const isPhotoMedia = media.type === MediaTypeEnum.PHOTO;
+      const bucket = isPhotoMedia ? "medias" : "thumbnails";
+      const path = isPhotoMedia ? media.storage_path : media.thumbnail_path;
+
+      const { data, error } = await this.supabasePort.storage
+        .from(bucket)
+        .createSignedUrl(path!, 1800, {
+          transform: {
+            width,
+            height,
+            resize: "contain",
+          },
+        });
+
+      if (error || !data) {
+        return this.toastFailedToGenerateSignedUrl(media.storage_path);
+      }
+
+      return data.signedUrl;
+    }
 
     return this.createSignedUrlForResizedImage(media, width, height);
   }
