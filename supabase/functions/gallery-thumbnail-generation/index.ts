@@ -18,19 +18,19 @@ Deno.serve(async (req) => {
   try {
     const formData = await req.formData();
 
-    if (
-      !formData.get("original_id") ||
-      !formData.get("original_image") ||
-      !formData.get("width") ||
-      !formData.get("height")
-    ) {
+    const requiredFields = ["original_id", "original_image", "width", "height"];
+    const missingFields = requiredFields.filter(
+      (field) => !formData.get(field),
+    );
+
+    if (missingFields.length > 0) {
       return responder.responseMissingParameters();
     }
 
-    const original_id: string = formData.get("original_id");
-    const original_image: Blob = formData.get("original_image");
-    const width: number = formData.get("width");
-    const height: number = formData.get("height");
+    const original_id = formData.get("original_id") as string;
+    const original_image = formData.get("original_image") as Blob;
+    const width = Number(formData.get("width"));
+    const height = Number(formData.get("height"));
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
