@@ -173,7 +173,7 @@ export class MediaDetailService {
     media: Media,
     width: number,
     height: number,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const formData = await this.prepareResizeImageRequest(media, width, height);
 
     const { data, error } = await this.supabasePort.functions.invoke(
@@ -183,11 +183,7 @@ export class MediaDetailService {
       },
     );
 
-    if (error || !data) {
-      this.toastService.error(
-        `Failed to create resized image for media with id ${media.id} because ${error?.message}`,
-      );
-    }
+    return data && !error;
   }
 
   private async createThumbnailUsingResizedImage(
