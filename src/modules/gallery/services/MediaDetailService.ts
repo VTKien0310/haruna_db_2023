@@ -148,19 +148,30 @@ export class MediaDetailService {
     const mediaIsPhoto = media.type === MediaTypeEnum.PHOTO;
     const originalPath = mediaIsPhoto
       ? media.storage_path
-      : media.thumbnail_path;
+      : media.thumbnail_path!;
     const originalBucket = mediaIsPhoto ? "medias" : "thumbnails";
+
+    const { data: downloadFile, error: downloadFileError } =
+      await this.supabasePort.storage
+        .from(originalBucket)
+        .download(originalPath);
+
+    if (downloadFileError || !downloadFile) {
+      this.toastService.error(
+        `Failed to create resized image for media with id ${media.id} because ${downloadFileError?.message}`,
+      );
+    }
+
+    const formData = new FormData();
+    formData.append("original_id", media.id);
+    formData.append("original_image", downloadFile!);
+    formData.append("width", width.toString());
+    formData.append("height", height.toString());
 
     const { data, error } = await this.supabasePort.functions.invoke(
       "gallery-thumbnail-generation",
       {
-        body: {
-          original_bucket: originalBucket,
-          original_path: originalPath,
-          original_id: media.id,
-          width: width,
-          height: height,
-        },
+        body: formData,
       },
     );
 

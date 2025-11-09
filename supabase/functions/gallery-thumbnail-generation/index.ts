@@ -3,14 +3,6 @@ import { Responder } from "../_shared/responder.ts";
 import provider from "../_shared/provider.ts";
 import { Image } from "jsr:@matmen/imagescript";
 
-interface ResizeRequest {
-  original_bucket: string;
-  original_path: string;
-  original_id: string;
-  width: number;
-  height: number;
-}
-
 Deno.serve(async (req) => {
   const responder: Responder = provider.responder();
 
@@ -19,40 +11,33 @@ Deno.serve(async (req) => {
     return responder.responseCors();
   }
 
+  if (!req.headers.get("content-type")?.includes("multipart/form-data")) {
+    return responder.responseAllowMultipartFormDataOnly();
+  }
+
   try {
-    const {
-      original_bucket,
-      original_path,
-      original_id,
-      width,
-      height,
-    }: ResizeRequest = await req.json();
+    const formData = await req.formData();
 
     if (
-      !original_bucket ||
-      !original_path ||
-      !original_id ||
-      !width ||
-      !height
+      !formData.get("original_id") ||
+      !formData.get("original_image") ||
+      !formData.get("width") ||
+      !formData.get("height")
     ) {
       return responder.responseMissingParameters();
     }
+
+    const original_id: string = formData.get("original_id");
+    const original_image: Blob = formData.get("original_image");
+    const width: number = formData.get("width");
+    const height: number = formData.get("height");
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const { data: ogImage, error: downloadOgImageError } =
-      await supabaseAdmin.storage.from(original_bucket).download(original_path);
-
-    if (downloadOgImageError) {
-      throw new Error(
-        `Failed to download original image: ${downloadOgImageError.message}`,
-      );
-    }
-
-    const arrayBuffer = await ogImage.arrayBuffer();
+    const arrayBuffer = await original_image.arrayBuffer();
 
     const image = await Image.decode(new Uint8Array(arrayBuffer));
     const resizedImage = image.cover(width, height);

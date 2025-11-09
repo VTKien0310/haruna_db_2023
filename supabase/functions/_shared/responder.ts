@@ -74,6 +74,13 @@ export class Responder {
     );
   }
 
+  responseAllowMultipartFormDataOnly(): Response {
+    return this.responseBadRequest(
+      "invalid_content_type",
+      "Invalid content type. Expected 'multipart/form-data'.",
+    );
+  }
+
   responseMissingParameters(message?: string): Response {
     message = message || "Missing at least one of the required parameters.";
 
