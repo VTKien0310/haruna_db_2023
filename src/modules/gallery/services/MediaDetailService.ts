@@ -183,7 +183,7 @@ export class MediaDetailService {
       },
     );
 
-    return data && !error;
+    return !(error || !data);
   }
 
   private async createThumbnailUsingResizedImage(
@@ -200,8 +200,33 @@ export class MediaDetailService {
       return this.createSignedUrlForResizedImage(media, width, height);
     }
 
-    // create the resized image if it doesn't exist
-    await this.createResizedImage(media, width, height);
+    // create the resized image if it doesn't exist, fallback to the original image if the resized image creation failed
+    const resizedImageCreated = await this.createResizedImage(
+      media,
+      width,
+      height,
+    );
+    if (!resizedImageCreated) {
+      const isPhotoMedia = media.type === MediaTypeEnum.PHOTO;
+      const bucket = isPhotoMedia ? "medias" : "thumbnails";
+      const path = isPhotoMedia ? media.storage_path : media.thumbnail_path;
+
+      const { data, error } = await this.supabasePort.storage
+        .from(bucket)
+        .createSignedUrl(path!, 1800, {
+          transform: {
+            width,
+            height,
+            resize: "contain",
+          },
+        });
+
+      if (error || !data) {
+        return this.toastFailedToGenerateSignedUrl(media.storage_path);
+      }
+
+      return data.signedUrl;
+    }
 
     return this.createSignedUrlForResizedImage(media, width, height);
   }
