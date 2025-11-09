@@ -140,33 +140,41 @@ export class MediaDetailService {
     return data.signedUrl;
   }
 
-  private async createResizedImage(
+  private async prepareResizeImageRequest(
     media: Media,
     width: number,
     height: number,
-  ): Promise<void> {
+  ): Promise<FormData> {
     const mediaIsPhoto = media.type === MediaTypeEnum.PHOTO;
     const originalPath = mediaIsPhoto
       ? media.storage_path
       : media.thumbnail_path!;
     const originalBucket = mediaIsPhoto ? "medias" : "thumbnails";
 
-    const { data: downloadFile, error: downloadFileError } =
-      await this.supabasePort.storage
-        .from(originalBucket)
-        .download(originalPath);
-
-    if (downloadFileError || !downloadFile) {
+    const { data, error } = await this.supabasePort.storage
+      .from(originalBucket)
+      .download(originalPath);
+    if (error || !data) {
       this.toastService.error(
-        `Failed to create resized image for media with id ${media.id} because ${downloadFileError?.message}`,
+        `Failed to create resized image for media with id ${media.id} because ${error?.message}`,
       );
     }
 
     const formData = new FormData();
     formData.append("original_id", media.id);
-    formData.append("original_image", downloadFile!);
+    formData.append("original_image", data!);
     formData.append("width", width.toString());
     formData.append("height", height.toString());
+
+    return formData;
+  }
+
+  private async createResizedImage(
+    media: Media,
+    width: number,
+    height: number,
+  ): Promise<void> {
+    const formData = await this.prepareResizeImageRequest(media, width, height);
 
     const { data, error } = await this.supabasePort.functions.invoke(
       "gallery-thumbnail-generation",
