@@ -1,7 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ToastService } from "@/modules/master/services/ToastService.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
-import type { WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
+import {
+  type WebpageBookmark,
+  WebpageBookmarkType,
+} from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 
 export class ListWebpageBookmarkService {
   private readonly webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
@@ -66,5 +69,52 @@ export class ListWebpageBookmarkService {
     }
 
     return data;
+  }
+
+  async countWebpageBookmarkLinks(): Promise<number> {
+    const { count, error } = await this.supabasePort
+      .from("webpage_bookmarks")
+      .select("*", {
+        count: "exact",
+        head: true,
+      })
+      .eq("type", WebpageBookmarkType.LINK);
+
+    if (error || count === null) {
+      this.toastService.error(`Failed to count webpage bookmark links`);
+      return 0;
+    }
+
+    return count;
+  }
+
+  async countWebpageBookmarkDirectories(): Promise<number> {
+    const { count, error } = await this.supabasePort
+      .from("webpage_bookmarks")
+      .select("*", {
+        count: "exact",
+        head: true,
+      })
+      .eq("type", WebpageBookmarkType.DIRECTORY);
+
+    if (error || count === null) {
+      this.toastService.error(`Failed to count webpage bookmark directories`);
+      return 0;
+    }
+
+    return count;
+  }
+
+  async getDeepestLevelWebpageBookmark(): Promise<number> {
+    const { data, error } = await this.supabasePort
+      .from("webpage_bookmarks")
+      .select("deepest_level:level.max()");
+
+    if (error || !data) {
+      this.toastService.error(`Failed to fetch deepest level webpage bookmark`);
+      return 0;
+    }
+
+    return data[0]?.deepest_level ?? 0;
   }
 }

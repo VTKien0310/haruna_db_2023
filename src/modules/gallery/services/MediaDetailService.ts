@@ -4,7 +4,6 @@ import type { Profile } from "@/modules/auth/ProfileEntities";
 import { domPort } from "@/ports/dom/DomPort";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
-import type { TransformOptions } from "@supabase/storage-js/src/lib/types";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ModalService } from "@/modules/master/services/ModalService";
@@ -25,11 +24,6 @@ const thumbnailSquareRatio: DisplayRatio = {
 const thumbnailFourToThreeRatio: DisplayRatio = {
   width: 1024,
   height: 768,
-};
-
-type SignedUrlOptions = {
-  download?: string | boolean;
-  transform?: TransformOptions;
 };
 
 export class MediaDetailService {
@@ -102,76 +96,167 @@ export class MediaDetailService {
     return "";
   }
 
-  private async createSignedUrlForMedia(
+  private resizedImageName(width: number, height: number): string {
+    return `${width}x${height}.jpeg`;
+  }
+
+  private async checkIfResizedImageExists(
     media: Media,
-    options: SignedUrlOptions,
-  ): Promise<string> {
+    width: number,
+    height: number,
+  ): Promise<boolean> {
     const { data, error } = await this.supabasePort.storage
-      .from("medias")
-      .createSignedUrl(media.storage_path, 1800, options);
+      .from("resized")
+      .list(media.id);
+
+    if (error) {
+      this.toastService.error(
+        `Failed to list resized images of media with id ${media.id}`,
+      );
+
+      return false;
+    }
+
+    const resizedImageName = this.resizedImageName(width, height);
+
+    return data.filter((item) => item.name === resizedImageName).length > 0;
+  }
+
+  private async createSignedUrlForResizedImage(
+    media: Media,
+    width: number,
+    height: number,
+  ): Promise<string> {
+    const resizedImagePath = `${media.id}/${this.resizedImageName(width, height)}`;
+
+    const { data, error } = await this.supabasePort.storage
+      .from("resized")
+      .createSignedUrl(resizedImagePath, 1800);
 
     if (error || !data) {
-      return this.toastFailedToGenerateSignedUrl(media.storage_path);
+      return this.toastFailedToGenerateSignedUrl(resizedImagePath);
     }
 
     return data.signedUrl;
   }
 
-  private async createThumbnailUrlForPhotoMedia(
+  private async prepareResizeImageRequest(
     media: Media,
-    thumbnailSpecification: SignedUrlOptions,
-  ): Promise<string> {
-    return this.createSignedUrlForMedia(media, thumbnailSpecification);
-  }
-
-  private async createThumbnailUrlForVideoMedia(
-    media: Media,
-    thumbnailSpecification: SignedUrlOptions,
-  ): Promise<string> {
-    if (!media.thumbnail_path) {
-      return this.toastFailedToGenerateSignedUrl(media.thumbnail_path);
-    }
+    width: number,
+    height: number,
+  ): Promise<FormData> {
+    const mediaIsPhoto = media.type === MediaTypeEnum.PHOTO;
+    const originalPath = mediaIsPhoto
+      ? media.storage_path
+      : media.thumbnail_path!;
+    const originalBucket = mediaIsPhoto ? "medias" : "thumbnails";
 
     const { data, error } = await this.supabasePort.storage
-      .from("thumbnails")
-      .createSignedUrl(media.thumbnail_path, 1800, thumbnailSpecification);
-
+      .from(originalBucket)
+      .download(originalPath);
     if (error || !data) {
-      return this.toastFailedToGenerateSignedUrl(media.thumbnail_path);
+      this.toastService.error(
+        `Failed to create resized image for media with id ${media.id} because ${error?.message}`,
+      );
     }
 
-    return data.signedUrl;
+    const formData = new FormData();
+    formData.append("original_id", media.id);
+    formData.append("original_image", data!);
+    formData.append("width", width.toString());
+    formData.append("height", height.toString());
+
+    return formData;
+  }
+
+  private async createResizedImage(
+    media: Media,
+    width: number,
+    height: number,
+  ): Promise<boolean> {
+    const formData = await this.prepareResizeImageRequest(media, width, height);
+
+    const { data, error } = await this.supabasePort.functions.invoke(
+      "gallery-thumbnail-generation",
+      {
+        body: formData,
+      },
+    );
+
+    return !(error || !data);
+  }
+
+  private async createThumbnailUsingResizedImage(
+    media: Media,
+    width: number,
+    height: number,
+  ): Promise<string> {
+    const resizedImageExists = await this.checkIfResizedImageExists(
+      media,
+      width,
+      height,
+    );
+    if (resizedImageExists) {
+      return this.createSignedUrlForResizedImage(media, width, height);
+    }
+
+    // create the resized image if it doesn't exist, fallback to the original image if the resized image creation failed
+    const resizedImageCreated = await this.createResizedImage(
+      media,
+      width,
+      height,
+    );
+    if (!resizedImageCreated) {
+      const isPhotoMedia = media.type === MediaTypeEnum.PHOTO;
+      const bucket = isPhotoMedia ? "medias" : "thumbnails";
+      const path = isPhotoMedia ? media.storage_path : media.thumbnail_path;
+
+      const { data, error } = await this.supabasePort.storage
+        .from(bucket)
+        .createSignedUrl(path!, 1800, {
+          transform: {
+            width,
+            height,
+            resize: "contain",
+          },
+        });
+
+      if (error || !data) {
+        return this.toastFailedToGenerateSignedUrl(media.storage_path);
+      }
+
+      return data.signedUrl;
+    }
+
+    return this.createSignedUrlForResizedImage(media, width, height);
   }
 
   async createThumbnailUrlForMedia(
     media: Media,
     forGridUsage: boolean = true,
   ): Promise<string> {
-    // grid use 1:1 display ratio while list use 4:3 display ratio
+    // the grid uses 1:1 display ratio while the list use 4:3 display ratio
     const thumbnailDisplayRatio: DisplayRatio = forGridUsage
       ? thumbnailSquareRatio
       : thumbnailFourToThreeRatio;
 
-    const thumbnailSpecification: SignedUrlOptions = {
-      transform: {
-        width: thumbnailDisplayRatio.width,
-        height: thumbnailDisplayRatio.height,
-        resize: "contain",
-      },
-    };
-
-    if (media.type === MediaTypeEnum.PHOTO) {
-      return this.createThumbnailUrlForPhotoMedia(
-        media,
-        thumbnailSpecification,
-      );
-    }
-
-    return this.createThumbnailUrlForVideoMedia(media, thumbnailSpecification);
+    return this.createThumbnailUsingResizedImage(
+      media,
+      thumbnailDisplayRatio.width,
+      thumbnailDisplayRatio.height,
+    );
   }
 
   async createFullSizeViewUrlForMedia(media: Media): Promise<string> {
-    return this.createSignedUrlForMedia(media, {});
+    const { data, error } = await this.supabasePort.storage
+      .from("medias")
+      .createSignedUrl(media.storage_path, 1800);
+
+    if (error || !data) {
+      return this.toastFailedToGenerateSignedUrl(media.storage_path);
+    }
+
+    return data.signedUrl;
   }
 
   async getMediaById(id: string): Promise<Media | null> {
@@ -213,7 +298,7 @@ export class MediaDetailService {
   }
 
   private async deleteMediaFileInBucket(storagePath: string) {
-    const { data, error } = await this.supabasePort.storage
+    const { error } = await this.supabasePort.storage
       .from("medias")
       .remove([storagePath]);
 
