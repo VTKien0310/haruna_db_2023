@@ -53,7 +53,7 @@ export class MediaDetailService {
     const { data, error } = await this.backendPort.spbClient
       .from("profiles")
       .select()
-      .eq("user_id", media.uploader_id);
+      .eq("user_id", media.uploader_id!);
 
     if (error || !data) {
       this.toastService.error(
