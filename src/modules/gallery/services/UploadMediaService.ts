@@ -1,7 +1,7 @@
 import { useGalleryUploadStore } from "@/modules/gallery/stores/GalleryUploadStore";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
-import { defaultStorageFileOptions } from "@/ports/supabase/SupabasePort";
+import { defaultStorageFileOptions } from "@/ports/backend/BackendPort";
 import { uuid } from "@supabase/supabase-js/dist/main/lib/helpers";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
 import { FFmpeg } from "@ffmpeg/ffmpeg";

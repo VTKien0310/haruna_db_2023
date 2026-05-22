@@ -1,19 +1,33 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { supabasePort } from "@/ports/supabase/SupabasePort";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import type { FileOptions } from "@supabase/storage-js/src/lib/types";
+import type { Database } from "@/ports/backend/database.types";
 import type { BackendApiResponse } from "@/ports/backend/BackendPortTypes";
 import {
   isBackendApiErrorContent,
   BackendApiResult,
 } from "@/ports/backend/BackendPortTypes";
 
+const supabaseApiUrl: string = import.meta.env.VITE_SUPABASE_API_URL;
+const supabaseAnonKey: string = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+const supabaseClient: SupabaseClient<Database> = createClient<Database>(
+  supabaseApiUrl,
+  supabaseAnonKey,
+);
+
+export const defaultStorageFileOptions: FileOptions = {
+  cacheControl: "3600",
+  upsert: false,
+};
+
 const backendApiUrl: string = import.meta.env.VITE_BACKEND_API_URL;
 
 class BackendPort {
   public readonly rootEndpoint: string;
 
-  public readonly spbClient: SupabaseClient;
+  public readonly spbClient: SupabaseClient<Database>;
 
-  constructor(rootEndpoint: string, spbClient: SupabaseClient) {
+  constructor(rootEndpoint: string, spbClient: SupabaseClient<Database>) {
     this.rootEndpoint = rootEndpoint;
     this.spbClient = spbClient;
   }
@@ -100,6 +114,6 @@ class BackendPort {
   }
 }
 
-export const backendPort = new BackendPort(backendApiUrl, supabasePort);
+export const backendPort = new BackendPort(backendApiUrl, supabaseClient);
 
 export type { BackendPort };

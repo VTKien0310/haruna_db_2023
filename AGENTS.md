@@ -10,18 +10,17 @@ A multipurpose Progressive Web App (PWA) for everyday use, providing:
 
 ### Tech Stack
 
-| Layer                   | Technology                                   |
-| ----------------------- | -------------------------------------------- |
-| Framework               | Vue 3 + TypeScript                           |
-| Mobile/PWA              | Ionic Vue 8                                  |
-| UI Components           | Vuestic UI                                   |
-| Styling                 | Tailwind CSS 4                               |
-| State Management        | Pinia 3                                      |
-| Routing                 | Vue Router 4 via `@ionic/vue-router`         |
-| Backend (primary)       | Supabase (DB, Auth, Storage, Edge Functions) |
-| Backend (heavy compute) | Custom backend API via `BackendPort`         |
-| Hosting                 | Firebase Hosting                             |
-| Utilities               | VueUse, dayjs, FFmpeg WASM                   |
+| Layer            | Technology                              |
+| ---------------- | --------------------------------------- |
+| Framework        | Vue 3 + TypeScript                      |
+| Mobile/PWA       | Ionic Vue 8                             |
+| UI Components    | Vuestic UI                              |
+| Styling          | Tailwind CSS 4                          |
+| State Management | Pinia 3                                 |
+| Routing          | Vue Router 4 via `@ionic/vue-router`    |
+| Backend          | Supabase + Custom API via `BackendPort` |
+| Hosting          | Firebase Hosting                        |
+| Utilities        | VueUse, dayjs, FFmpeg WASM              |
 
 This file defines the standards and expectations that coding agents must follow when working on this project.
 
@@ -33,7 +32,7 @@ This file defines the standards and expectations that coding agents must follow 
 - Follow **Vuestic UI conventions**.
 - Prefer **simple, readable, composable solutions**.
 - Keep the UI consistent with the app's design system and theme.
-- Respect the separation of responsibilities between the frontend, Supabase, and the custom backend API.
+- Respect the separation of responsibilities between the frontend and the backend port.
 
 ## Frontend Standards
 
@@ -81,8 +80,7 @@ src/
       services/
       stores/
   ports/            # Infrastructure adapters (external services)
-    supabase/       # Supabase client + DB types
-    backend/        # HTTP client for custom backend API
+    backend/        # Supabase client + Custom backend HTTP client
     dom/            # Browser DOM utilities
 ```
 
@@ -105,31 +103,31 @@ Each module is fully self-contained with its own routing, pages, components, ser
 
 ## Backend Boundaries
 
-### Supabase (Primary Backend)
+### Unified Backend Port
 
-Use Supabase for:
+All backend access (Supabase + Custom API) is centralized through `backendPort` from `@/ports/backend/BackendPort.ts`.
+
+#### Supabase Access
+
+Use `backendPort.spbClient` for:
 
 - **Database queries** (typed with generated `Database` types)
 - **Authentication** (`signInWithPassword`, `signOut`, `getSession`, `onAuthStateChange`)
 - **Storage operations** (`upload`, `download`, `createSignedUrl`, `remove`, `list`)
 - **Edge functions** for lightweight server-side logic (translations, image resizing)
 
-Access via `supabasePort` singleton from `@/ports/supabase/SupabasePort.ts`.
-
 Pattern for Supabase calls: destructure `{ data, error }` and check `if (error || !data)`.
 
-Edge functions are invoked via `supabasePort.functions.invoke()` and are located in `supabase/functions/` (Deno
+Edge functions are invoked via `backendPort.spbClient.functions.invoke()` and are located in `supabase/functions/` (Deno
 runtime).
 
-### Custom Backend API (Heavy Compute)
+#### Custom Backend API (Heavy Compute)
 
-Use the custom backend API (via `backendPort`) for:
+Use `backendPort` directly for:
 
 - Complex business logic and orchestration
 - Heavy computation that should not run on Supabase edge functions
 - Operations requiring a dedicated server environment
-
-Access via `backendPort` singleton from `@/ports/backend/BackendPort.ts`.
 
 - Uses a custom **`BackendApiResult<T, E>` monad** for error handling (no exceptions for expected errors).
 - Supports `.isOk()`, `.isErr()`, `.map()`, `.flatMap()`, `.unwrap()`, `.unwrapOr()`, `.unwrapErr()`.

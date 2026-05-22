@@ -1,7 +1,6 @@
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 import type { ProfileDetail } from "@/modules/auth/AuthTypes";
-import { supabasePort } from "@/ports/supabase/SupabasePort";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class ProfileService {
@@ -45,7 +44,7 @@ export class ProfileService {
 
   async updateCurrentUserProfile(profileDetail: ProfileDetail): Promise<void> {
     if (profileDetail.password.length >= 8) {
-      const { error } = await supabasePort.auth.updateUser({
+      const { error } = await this.supabasePort.auth.updateUser({
         password: profileDetail.password,
       });
       if (error) {
@@ -56,7 +55,7 @@ export class ProfileService {
 
     const currentUser = await this.me();
     if (currentUser) {
-      const { error } = await supabasePort
+      const { error } = await this.supabasePort
         .from("profiles")
         .update({
           name: profileDetail.name,
