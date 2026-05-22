@@ -20,7 +20,7 @@ battleship [Haruna](https://en.wikipedia.org/wiki/Japanese_battleship_Haruna).
 
 ## System requirement
 
-- Node.js 20
+- Node.js 24.x
 - npm package manager
 - Docker
 

@@ -1,7 +1,10 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { supabasePort } from "@/ports/supabase/SupabasePort";
 import type { BackendApiResponse } from "@/ports/backend/BackendPortTypes";
-import { isBackendApiErrorContent, Result } from "@/ports/backend/BackendPortTypes";
+import {
+  isBackendApiErrorContent,
+  Result,
+} from "@/ports/backend/BackendPortTypes";
 
 const backendApiUrl: string = import.meta.env.VITE_BACKEND_API_URL;
 

@@ -18,7 +18,9 @@ type BackendApiResponse<T> = {
  *
  * @param content
  */
-function isBackendApiErrorContent(content: unknown): content is BackendApiErrorContent {
+function isBackendApiErrorContent(
+  content: unknown,
+): content is BackendApiErrorContent {
   if (typeof content !== "object" || content === null) return false;
 
   const errorContent = content as BackendApiErrorContent;
@@ -90,9 +92,6 @@ class Result<T, E> {
   }
 }
 
-export type {
-  BackendApiResponse,
-  BackendApiErrorContent,
-};
+export type { BackendApiResponse, BackendApiErrorContent };
 
 export { isBackendApiErrorContent, Result };
