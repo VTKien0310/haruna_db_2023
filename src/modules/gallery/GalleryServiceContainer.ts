@@ -12,12 +12,12 @@ import router from "@/router";
 import { GalleryNavigationService } from "@/modules/gallery/services/GalleryNavigationService";
 
 const useGalleryListService = () =>
-  new GalleryListService(backendPort.spbClient, useToastService());
+  new GalleryListService(backendPort, useToastService());
 
 const useUploadMediaService = () =>
   new UploadMediaService(
     router,
-    backendPort.spbClient,
+    backendPort,
     useToastService(),
     useModalService(),
     useGalleryListService(),
@@ -26,7 +26,7 @@ const useUploadMediaService = () =>
 const useMediaDetailService = () =>
   new MediaDetailService(
     router,
-    backendPort.spbClient,
+    backendPort,
     useToastService(),
     useModalService(),
     useMasterNavigationService(),
@@ -34,7 +34,7 @@ const useMediaDetailService = () =>
   );
 
 const useGalleryStatisticService = () =>
-  new GalleryStatisticService(backendPort.spbClient, useToastService());
+  new GalleryStatisticService(backendPort, useToastService());
 
 const useGalleryNavigationService = () => new GalleryNavigationService(router);
 
