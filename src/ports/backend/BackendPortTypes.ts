@@ -33,19 +33,19 @@ function isBackendApiErrorContent(
   );
 }
 
-class Result<T, E> {
+class BackendApiResult<T, E> {
   private constructor(
     private readonly _ok: boolean,
     private readonly _value?: T,
     private readonly _error?: E,
   ) {}
 
-  static ok<T, E = never>(value: T): Result<T, E> {
-    return new Result<T, E>(true, value);
+  static ok<T, E = never>(value: T): BackendApiResult<T, E> {
+    return new BackendApiResult<T, E>(true, value);
   }
 
-  static err<E, T = never>(error: E): Result<T, E> {
-    return new Result<T, E>(false, undefined, error);
+  static err<E, T = never>(error: E): BackendApiResult<T, E> {
+    return new BackendApiResult<T, E>(false, undefined, error);
   }
 
   isOk(): boolean {
@@ -56,18 +56,18 @@ class Result<T, E> {
     return !this._ok;
   }
 
-  map<U>(fn: (value: T) => U): Result<U, E> {
+  map<U>(fn: (value: T) => U): BackendApiResult<U, E> {
     if (this._ok) {
-      return Result.ok(fn(this._value as T));
+      return BackendApiResult.ok(fn(this._value as T));
     }
-    return Result.err(this._error as E);
+    return BackendApiResult.err(this._error as E);
   }
 
-  flatMap<U>(fn: (value: T) => Result<U, E>): Result<U, E> {
+  flatMap<U>(fn: (value: T) => BackendApiResult<U, E>): BackendApiResult<U, E> {
     if (this._ok) {
       return fn(this._value as T);
     }
-    return Result.err(this._error as E);
+    return BackendApiResult.err(this._error as E);
   }
 
   unwrap(): T {
@@ -94,4 +94,4 @@ class Result<T, E> {
 
 export type { BackendApiResponse, BackendApiErrorContent };
 
-export { isBackendApiErrorContent, Result };
+export { isBackendApiErrorContent, BackendApiResult };

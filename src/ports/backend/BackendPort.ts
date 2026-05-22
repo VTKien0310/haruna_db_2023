@@ -3,7 +3,7 @@ import { supabasePort } from "@/ports/supabase/SupabasePort";
 import type { BackendApiResponse } from "@/ports/backend/BackendPortTypes";
 import {
   isBackendApiErrorContent,
-  Result,
+  BackendApiResult,
 } from "@/ports/backend/BackendPortTypes";
 
 const backendApiUrl: string = import.meta.env.VITE_BACKEND_API_URL;
@@ -21,7 +21,7 @@ class BackendPort {
   async get<T>(
     path: string,
     params?: Record<string, string>,
-  ): Promise<Result<T, Error>> {
+  ): Promise<BackendApiResult<T, Error>> {
     return this.request<T>("GET", path, undefined, params);
   }
 
@@ -29,7 +29,7 @@ class BackendPort {
     path: string,
     body?: Record<string, unknown>,
     params?: Record<string, string>,
-  ): Promise<Result<T, Error>> {
+  ): Promise<BackendApiResult<T, Error>> {
     return this.request<T>("POST", path, body, params);
   }
 
@@ -53,7 +53,7 @@ class BackendPort {
     path: string,
     body?: Record<string, unknown>,
     params?: Record<string, string>,
-  ): Promise<Result<T, Error>> {
+  ): Promise<BackendApiResult<T, Error>> {
     let url = `${this.rootEndpoint}${path}`;
 
     if (params) {
@@ -73,7 +73,7 @@ class BackendPort {
       });
 
       if (!response.ok) {
-        return Result.err(
+        return BackendApiResult.err(
           new Error(`HTTP error ${response.status}: ${response.statusText}`),
         );
       }
@@ -83,19 +83,19 @@ class BackendPort {
       if (!apiResponse.ok) {
         if (isBackendApiErrorContent(apiResponse.content)) {
           const { code, message, path: errorPath } = apiResponse.content.error;
-          return Result.err(
+          return BackendApiResult.err(
             new Error(`[${code}] ${message} (path: ${errorPath})`),
           );
         }
-        return Result.err(new Error("Unknown API error occurred"));
+        return BackendApiResult.err(new Error("Unknown API error occurred"));
       }
 
-      return Result.ok(apiResponse.content as T);
+      return BackendApiResult.ok(apiResponse.content as T);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        return Result.err(error);
+        return BackendApiResult.err(error);
       }
-      return Result.err(new Error(String(error)));
+      return BackendApiResult.err(new Error(String(error)));
     }
   }
 }

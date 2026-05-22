@@ -11,7 +11,7 @@ A multipurpose Progressive Web App (PWA) for everyday use, providing:
 ### Tech Stack
 
 | Layer                   | Technology                                   |
-|-------------------------|----------------------------------------------|
+| ----------------------- | -------------------------------------------- |
 | Framework               | Vue 3 + TypeScript                           |
 | Mobile/PWA              | Ionic Vue 8                                  |
 | UI Components           | Vuestic UI                                   |
@@ -131,7 +131,7 @@ Use the custom backend API (via `backendPort`) for:
 
 Access via `backendPort` singleton from `@/ports/backend/BackendPort.ts`.
 
-- Uses a custom **`Result<T, E>` monad** for error handling (no exceptions for expected errors).
+- Uses a custom **`BackendApiResult<T, E>` monad** for error handling (no exceptions for expected errors).
 - Supports `.isOk()`, `.isErr()`, `.map()`, `.flatMap()`, `.unwrap()`, `.unwrapOr()`, `.unwrapErr()`.
 - Auto-injects Supabase session token as Bearer auth.
 - Methods: `get<T>()`, `post<T>()`.
@@ -149,9 +149,9 @@ Access via `backendPort` singleton from `@/ports/backend/BackendPort.ts`.
 
 - Use Tailwind utility classes in templates for layout and styling.
 - Prefer existing theme tokens from `tailwind.config.js` before adding new ones:
-    - **Colors:** `primary`, `secondary`, `success`, `info`, `danger`, `warning`, `backgroundPrimary`,
-      `backgroundSecondary`, `backgroundElement`, `backgroundBorder`, `textPrimary`, `textInverted`, `shadow`, `focus`
-    - **Breakpoints:** `xs` (0), `sm` (640), `md` (1024), `lg` (1440), `xl` (1920)
+  - **Colors:** `primary`, `secondary`, `success`, `info`, `danger`, `warning`, `backgroundPrimary`,
+    `backgroundSecondary`, `backgroundElement`, `backgroundBorder`, `textPrimary`, `textInverted`, `shadow`, `focus`
+  - **Breakpoints:** `xs` (0), `sm` (640), `md` (1024), `lg` (1440), `xl` (1920)
 - Do not introduce one-off colors or magic numbers.
 - Use custom grid templates: `grid-cols-16`, `grid-cols-20` when needed.
 
@@ -241,10 +241,10 @@ A task is only considered complete when all of the following are true:
 - Make the smallest reasonable change that fully solves the problem.
 - Do not make broad architectural changes unless explicitly requested.
 - Ask for clarification if:
-    - Requirements conflict.
-    - Security boundaries are unclear.
-    - The intended responsibility between Supabase and the backend API is ambiguous.
-    - A change could affect authentication, authorization, or data access rules.
+  - Requirements conflict.
+  - Security boundaries are unclear.
+  - The intended responsibility between Supabase and the backend API is ambiguous.
+  - A change could affect authentication, authorization, or data access rules.
 - When suggesting improvements, prefer practical recommendations over speculative refactors.
 
 ## Preferred Implementation Patterns
@@ -257,7 +257,7 @@ A task is only considered complete when all of the following are true:
 - Pinia stores as pure state containers.
 - Module-scoped routing with enum route names.
 - Lazy-loaded route components.
-- `Result` monad for `BackendPort` error handling.
+- `BackendApiResult` monad for `BackendPort` error handling.
 - Destructured `{ data, error }` pattern for Supabase calls.
 - Toast notifications for user-facing errors.
 
@@ -271,7 +271,7 @@ A task is only considered complete when all of the following are true:
 - Leaking sensitive data into logs, client storage, or frontend configuration.
 - Overengineering simple features.
 - Introducing dependencies without clear justification.
-- Exceptions for expected error flows (use `Result` or boolean returns).
+- Exceptions for expected error flows (use `BackendApiResult` or boolean returns).
 - Composables returning reactive state (use service classes instead).
 
 ## If Unsure
