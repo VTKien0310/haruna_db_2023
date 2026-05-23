@@ -1,10 +1,10 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import { LanguageCode } from "@/modules/translation/TranslationTypes";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class TranslationService {
   constructor(
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
   ) {}
 
@@ -15,7 +15,7 @@ export class TranslationService {
     const targetLang: LanguageCode =
       sourceLang === LanguageCode.JA ? LanguageCode.EN : LanguageCode.JA;
 
-    const { data, error } = await this.supabasePort.functions.invoke(
+    const { data, error } = await this.backendPort.spbClient.functions.invoke(
       "translations",
       {
         body: {

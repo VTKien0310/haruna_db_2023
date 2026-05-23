@@ -1,4 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ToastService } from "@/modules/master/services/ToastService.ts";
 import type { Router } from "vue-router";
 import {
@@ -11,7 +11,7 @@ import type { WebpageBookmarkDetailService } from "@/modules/webpage-bookmark/se
 
 export class DeleteWebpageBookmarkService {
   constructor(
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
     private readonly router: Router,
     private readonly modalService: ModalService,
@@ -21,7 +21,7 @@ export class DeleteWebpageBookmarkService {
   private async deleteWebpageBookmarkRecord(
     record: WebpageBookmark,
   ): Promise<boolean> {
-    const { error } = await this.supabasePort
+    const { error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .delete()
       .eq("id", record.id);
@@ -48,7 +48,7 @@ export class DeleteWebpageBookmarkService {
   private async checkDirectoryDeletionCondition(
     record: WebpageBookmark,
   ): Promise<boolean> {
-    const { count, error } = await this.supabasePort
+    const { count, error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .select("*", {
         count: "exact",

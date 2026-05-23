@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
-import type { SupabaseClient, User } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ProfileDetail } from "@/modules/auth/AuthTypes";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
@@ -7,14 +8,14 @@ export class ProfileService {
   private readonly authStore = useAuthStore();
 
   constructor(
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
   ) {}
 
   async me(): Promise<User | null> {
     const {
       data: { user },
-    } = await this.supabasePort.auth.getUser();
+    } = await this.backendPort.spbClient.auth.getUser();
 
     return user;
   }
@@ -26,7 +27,7 @@ export class ProfileService {
       return;
     }
 
-    const { data, error } = await this.supabasePort
+    const { data, error } = await this.backendPort.spbClient
       .from("profiles")
       .select()
       .eq("user_id", currentUser.id);
@@ -44,7 +45,7 @@ export class ProfileService {
 
   async updateCurrentUserProfile(profileDetail: ProfileDetail): Promise<void> {
     if (profileDetail.password.length >= 8) {
-      const { error } = await this.supabasePort.auth.updateUser({
+      const { error } = await this.backendPort.spbClient.auth.updateUser({
         password: profileDetail.password,
       });
       if (error) {
@@ -55,7 +56,7 @@ export class ProfileService {
 
     const currentUser = await this.me();
     if (currentUser) {
-      const { error } = await this.supabasePort
+      const { error } = await this.backendPort.spbClient
         .from("profiles")
         .update({
           name: profileDetail.name,

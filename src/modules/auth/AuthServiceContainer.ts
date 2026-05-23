@@ -6,12 +6,12 @@ import router from "@/router";
 import { useToastService } from "@/modules/master/MasterServiceContainer";
 
 const useProfileService = () =>
-  new ProfileService(backendPort.spbClient, useToastService());
+  new ProfileService(backendPort, useToastService());
 
 const useAuthenticationService = () =>
   new AuthenticationService(
     router,
-    backendPort.spbClient,
+    backendPort,
     useToastService(),
     useGalleryListService(),
     useProfileService(),
