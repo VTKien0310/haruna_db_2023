@@ -1,4 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ToastService } from "@/modules/master/services/ToastService.ts";
 import type { WebpageBookmarkDetailService } from "@/modules/webpage-bookmark/services/WebpageBookmarkDetailService.ts";
 import type { WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
@@ -9,7 +9,7 @@ import type {
 
 export class UpdateWebpageBookmarkService {
   constructor(
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
     private readonly webpageBookmarkDetailService: WebpageBookmarkDetailService,
   ) {}
@@ -18,7 +18,7 @@ export class UpdateWebpageBookmarkService {
     record: WebpageBookmark,
     updateData: Record<string, string>,
   ): Promise<boolean> {
-    const { error } = await this.supabasePort
+    const { error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .update(updateData)
       .eq("id", record.id);

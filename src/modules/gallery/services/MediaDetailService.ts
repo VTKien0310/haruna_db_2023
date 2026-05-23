@@ -5,7 +5,7 @@ import { domPort } from "@/ports/dom/DomPort";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ModalService } from "@/modules/master/services/ModalService";
 import type { ToastService } from "@/modules/master/services/ToastService";
 import type { Router } from "vue-router";
@@ -14,6 +14,10 @@ import type { MasterNavigationService } from "@/modules/master/services/MasterNa
 type DisplayRatio = {
   width: number;
   height: number;
+};
+
+type ResizedImageCreationResult = {
+  thumbnail_signed_url: string;
 };
 
 const thumbnailSquareRatio: DisplayRatio = {
@@ -29,7 +33,7 @@ const thumbnailFourToThreeRatio: DisplayRatio = {
 export class MediaDetailService {
   constructor(
     private readonly router: Router,
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
     private readonly modalService: ModalService,
     private readonly masterNavigationService: MasterNavigationService,
@@ -37,7 +41,7 @@ export class MediaDetailService {
   ) {}
 
   async downloadMedia(media: Media): Promise<void> {
-    const { data, error } = await this.supabasePort.storage
+    const { data, error } = await this.backendPort.spbClient.storage
       .from("medias")
       .download(media.storage_path);
 
@@ -50,7 +54,11 @@ export class MediaDetailService {
   }
 
   async getMediaUploader(media: Media): Promise<Profile | null> {
-    const { data, error } = await this.supabasePort
+    if (!media.uploader_id) {
+      return null;
+    }
+
+    const { data, error } = await this.backendPort.spbClient
       .from("profiles")
       .select()
       .eq("user_id", media.uploader_id);
@@ -105,7 +113,7 @@ export class MediaDetailService {
     width: number,
     height: number,
   ): Promise<boolean> {
-    const { data, error } = await this.supabasePort.storage
+    const { data, error } = await this.backendPort.spbClient.storage
       .from("resized")
       .list(media.id);
 
@@ -129,7 +137,7 @@ export class MediaDetailService {
   ): Promise<string> {
     const resizedImagePath = `${media.id}/${this.resizedImageName(width, height)}`;
 
-    const { data, error } = await this.supabasePort.storage
+    const { data, error } = await this.backendPort.spbClient.storage
       .from("resized")
       .createSignedUrl(resizedImagePath, 1800);
 
@@ -140,50 +148,29 @@ export class MediaDetailService {
     return data.signedUrl;
   }
 
-  private async prepareResizeImageRequest(
-    media: Media,
-    width: number,
-    height: number,
-  ): Promise<FormData> {
-    const mediaIsPhoto = media.type === MediaTypeEnum.PHOTO;
-    const originalPath = mediaIsPhoto
-      ? media.storage_path
-      : media.thumbnail_path!;
-    const originalBucket = mediaIsPhoto ? "medias" : "thumbnails";
-
-    const { data, error } = await this.supabasePort.storage
-      .from(originalBucket)
-      .download(originalPath);
-    if (error || !data) {
-      this.toastService.error(
-        `Failed to create resized image for media with id ${media.id} because ${error?.message}`,
-      );
-    }
-
-    const formData = new FormData();
-    formData.append("original_id", media.id);
-    formData.append("original_image", data!);
-    formData.append("width", width.toString());
-    formData.append("height", height.toString());
-
-    return formData;
-  }
-
   private async createResizedImage(
     media: Media,
     width: number,
     height: number,
-  ): Promise<boolean> {
-    const formData = await this.prepareResizeImageRequest(media, width, height);
+  ): Promise<string | null> {
+    const resizedImageResult =
+      await this.backendPort.post<ResizedImageCreationResult>(
+        `medias/${media.id}/thumbnails`,
+        {
+          width,
+          height,
+        },
+      );
 
-    const { data, error } = await this.supabasePort.functions.invoke(
-      "gallery-thumbnail-generation",
-      {
-        body: formData,
-      },
-    );
+    if (resizedImageResult.isErr()) {
+      this.toastService.error(
+        `Failed to create resized image for media with id ${media.id}`,
+      );
 
-    return !(error || !data);
+      return null;
+    }
+
+    return resizedImageResult.unwrap().thumbnail_signed_url;
   }
 
   private async createThumbnailUsingResizedImage(
@@ -201,17 +188,17 @@ export class MediaDetailService {
     }
 
     // create the resized image if it doesn't exist, fallback to the original image if the resized image creation failed
-    const resizedImageCreated = await this.createResizedImage(
+    const resizedImageCreationResult = await this.createResizedImage(
       media,
       width,
       height,
     );
-    if (!resizedImageCreated) {
+    if (!resizedImageCreationResult) {
       const isPhotoMedia = media.type === MediaTypeEnum.PHOTO;
       const bucket = isPhotoMedia ? "medias" : "thumbnails";
       const path = isPhotoMedia ? media.storage_path : media.thumbnail_path;
 
-      const { data, error } = await this.supabasePort.storage
+      const { data, error } = await this.backendPort.spbClient.storage
         .from(bucket)
         .createSignedUrl(path!, 1800, {
           transform: {
@@ -228,7 +215,7 @@ export class MediaDetailService {
       return data.signedUrl;
     }
 
-    return this.createSignedUrlForResizedImage(media, width, height);
+    return resizedImageCreationResult;
   }
 
   async createThumbnailUrlForMedia(
@@ -248,7 +235,7 @@ export class MediaDetailService {
   }
 
   async createFullSizeViewUrlForMedia(media: Media): Promise<string> {
-    const { data, error } = await this.supabasePort.storage
+    const { data, error } = await this.backendPort.spbClient.storage
       .from("medias")
       .createSignedUrl(media.storage_path, 1800);
 
@@ -260,7 +247,7 @@ export class MediaDetailService {
   }
 
   async getMediaById(id: string): Promise<Media | null> {
-    const { data, error } = await this.supabasePort
+    const { data, error } = await this.backendPort.spbClient
       .from("medias")
       .select()
       .limit(1)
@@ -282,14 +269,16 @@ export class MediaDetailService {
   }
 
   private redirectAndRefreshGallery(): void {
-    this.router.push({
-      name: GalleryRouteName.LIST,
-    });
-    this.galleryListService.refreshMedias();
+    this.router
+      .push({
+        name: GalleryRouteName.LIST,
+      })
+      .then();
+    this.galleryListService.refreshMedias().then();
   }
 
   private async deleteMediaRecordInDb(id: string): Promise<boolean> {
-    const { error } = await this.supabasePort
+    const { error } = await this.backendPort.spbClient
       .from("medias")
       .delete()
       .eq("id", id);
@@ -298,7 +287,7 @@ export class MediaDetailService {
   }
 
   private async deleteMediaFileInBucket(storagePath: string) {
-    const { error } = await this.supabasePort.storage
+    const { error } = await this.backendPort.spbClient.storage
       .from("medias")
       .remove([storagePath]);
 

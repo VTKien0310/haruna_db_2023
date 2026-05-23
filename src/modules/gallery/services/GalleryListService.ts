@@ -1,13 +1,13 @@
 import { useGalleryListStore } from "@/modules/gallery/stores/GalleryListStore";
 import type { Media } from "@/modules/gallery/GalleryEntities";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class GalleryListService {
   private readonly galleryListStore = useGalleryListStore();
 
   constructor(
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
   ) {}
 
@@ -31,7 +31,7 @@ export class GalleryListService {
 
     const range: number = 50;
 
-    const { data, error } = await this.supabasePort
+    const { data, error } = await this.backendPort.spbClient
       .from("medias")
       .select()
       .range(this.galleryListStore.offset, this.galleryListStore.offset + range)

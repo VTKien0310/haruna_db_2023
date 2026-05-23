@@ -1,12 +1,12 @@
 import { useGalleryUploadStore } from "@/modules/gallery/stores/GalleryUploadStore";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
-import { defaultStorageFileOptions } from "@/ports/supabase/SupabasePort";
+import { defaultStorageFileOptions } from "@/ports/backend/BackendPort";
 import { uuid } from "@supabase/supabase-js/dist/main/lib/helpers";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ToastService } from "@/modules/master/services/ToastService";
 import type { ModalService } from "@/modules/master/services/ModalService";
 import type { Router } from "vue-router";
@@ -24,7 +24,7 @@ export class UploadMediaService {
 
   constructor(
     private readonly router: Router,
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
     private readonly modalService: ModalService,
     private readonly galleryListService: GalleryListService,
@@ -73,7 +73,7 @@ export class UploadMediaService {
     const fileExtension: string = this.getFileExtension(file);
     const fileStorageName: string = this.generateFileStorageName(fileExtension);
 
-    const { data, error } = await this.supabasePort.storage
+    const { data, error } = await this.backendPort.spbClient.storage
       .from("medias")
       .upload(fileStorageName, file, defaultStorageFileOptions);
 
@@ -122,7 +122,7 @@ export class UploadMediaService {
       return this.toastFailedToCreateMediaRecord(originalFile);
     }
 
-    const { error } = await this.supabasePort.from("medias").insert({
+    const { error } = await this.backendPort.spbClient.from("medias").insert({
       name: originalFile.name,
       mime: originalFile.type,
       size: originalFile.size,
@@ -180,7 +180,7 @@ export class UploadMediaService {
     video: File,
   ): Promise<string> {
     // the video's signed url is needed to fetch the video to local and create the thumbnail
-    const { data, error } = await this.supabasePort.storage
+    const { data, error } = await this.backendPort.spbClient.storage
       .from("medias")
       .createSignedUrl(storageVideoFilePath, 600);
 
@@ -220,7 +220,7 @@ export class UploadMediaService {
       this.galleryUploadStore.currentProgressUploadedFileCount += 1;
 
       // upload the thumbnail to storage
-      const thumbnailUploadResult = await this.supabasePort.storage
+      const thumbnailUploadResult = await this.backendPort.spbClient.storage
         .from("thumbnails")
         .upload(
           thumbnailFileName,
@@ -251,7 +251,7 @@ export class UploadMediaService {
     storageFilePath: string,
     originalFile: File,
   ): Promise<boolean> {
-    const { error } = await this.supabasePort.from("medias").insert({
+    const { error } = await this.backendPort.spbClient.from("medias").insert({
       name: originalFile.name,
       mime: originalFile.type,
       size: originalFile.size,

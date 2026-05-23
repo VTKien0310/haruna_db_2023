@@ -1,4 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ToastService } from "@/modules/master/services/ToastService.ts";
 import { WebpageBookmarkType } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import type {
@@ -13,7 +13,7 @@ export class CreateWebpageBookmarkService {
   private readonly webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
   constructor(
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
     private readonly listWebpageBookmarkService: ListWebpageBookmarkService,
   ) {}
@@ -29,7 +29,7 @@ export class CreateWebpageBookmarkService {
       ...this.getHierarchicalDataFromParent(),
     };
 
-    const { error } = await this.supabasePort
+    const { error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .insert(directoryData);
 
@@ -52,7 +52,7 @@ export class CreateWebpageBookmarkService {
       ...this.getHierarchicalDataFromParent(),
     };
 
-    const { error } = await this.supabasePort
+    const { error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .insert(linkData);
 

@@ -5,7 +5,7 @@ export enum WebpageBookmarkType {
 
 export interface WebpageBookmark {
   id: string;
-  owner_id: string;
+  owner_id: string | null;
   url: string;
   name: string;
   description: string;

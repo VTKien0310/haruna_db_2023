@@ -1,8 +1,8 @@
 import { TranslationService } from "@/modules/translation/TranslationService";
-import { supabasePort } from "@/ports/supabase/SupabasePort";
+import { backendPort } from "@/ports/backend/BackendPort";
 import { useToastService } from "@/modules/master/MasterServiceContainer";
 
 const useTranslationService = () =>
-  new TranslationService(supabasePort, useToastService());
+  new TranslationService(backendPort, useToastService());
 
 export { useTranslationService };

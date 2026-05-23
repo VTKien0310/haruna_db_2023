@@ -1,8 +1,5 @@
-import type {
-  AuthChangeEvent,
-  Session,
-  SupabaseClient,
-} from "@supabase/supabase-js";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { AuthCredential } from "@/modules/auth/AuthTypes";
 import { MasterRouteName } from "@/modules/master/MasterRouter";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
@@ -14,7 +11,7 @@ import type { Router } from "vue-router";
 export class AuthenticationService {
   constructor(
     private readonly router: Router,
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
     private readonly galleryListService: GalleryListService,
     private readonly profileService: ProfileService,
@@ -23,14 +20,14 @@ export class AuthenticationService {
   async isCurrentlyAuthenticated(): Promise<boolean> {
     const {
       data: { session },
-    } = await this.supabasePort.auth.getSession();
+    } = await this.backendPort.spbClient.auth.getSession();
 
     return session != null;
   }
 
   async signIn(credential: AuthCredential): Promise<boolean> {
     const { error } =
-      await this.supabasePort.auth.signInWithPassword(credential);
+      await this.backendPort.spbClient.auth.signInWithPassword(credential);
 
     if (error) {
       this.toastService.error("Login failed");
@@ -45,7 +42,7 @@ export class AuthenticationService {
   }
 
   async signOut(): Promise<boolean> {
-    const { error } = await this.supabasePort.auth.signOut();
+    const { error } = await this.backendPort.spbClient.auth.signOut();
 
     if (error) {
       this.toastService.error("Logout failed");
@@ -58,7 +55,7 @@ export class AuthenticationService {
   }
 
   async registerOnAuthStateChange(): Promise<void> {
-    this.supabasePort.auth.onAuthStateChange(
+    this.backendPort.spbClient.auth.onAuthStateChange(
       (event: AuthChangeEvent, session: Session | null) => {
         this.profileService.refreshCurrentUserProfile();
 
