@@ -1,16 +1,16 @@
-import type { SupabaseClient, User } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import dayjs from "dayjs";
 import type { Media } from "@/modules/gallery/GalleryEntities";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class GalleryStatisticService {
   constructor(
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
   ) {}
 
   async countTotalMedias(): Promise<number> {
-    const { count, error } = await this.supabasePort
+    const { count, error } = await this.backendPort.spbClient
       .from("medias")
       .select("*", {
         count: "exact",
@@ -27,7 +27,7 @@ export class GalleryStatisticService {
   }
 
   async countUserUploadedMedias(userId: string): Promise<number> {
-    const { count, error } = await this.supabasePort
+    const { count, error } = await this.backendPort.spbClient
       .from("medias")
       .select("*", {
         count: "exact",
@@ -50,7 +50,7 @@ export class GalleryStatisticService {
       .utc()
       .toISOString();
 
-    const { count, error } = await this.supabasePort
+    const { count, error } = await this.backendPort.spbClient
       .from("medias")
       .select("*", {
         count: "exact",
@@ -68,7 +68,7 @@ export class GalleryStatisticService {
   }
 
   async getLatestUploadMedia(): Promise<Media | null> {
-    const { data, error } = await this.supabasePort
+    const { data, error } = await this.backendPort.spbClient
       .from("medias")
       .select()
       .limit(1)

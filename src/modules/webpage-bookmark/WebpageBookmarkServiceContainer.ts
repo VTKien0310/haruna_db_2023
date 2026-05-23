@@ -1,5 +1,5 @@
 import { CreateWebpageBookmarkService } from "@/modules/webpage-bookmark/services/CreateWebpageBookmarkService.ts";
-import { supabasePort } from "@/ports/supabase/SupabasePort.ts";
+import { backendPort } from "@/ports/backend/BackendPort";
 import {
   useMasterNavigationService,
   useModalService,
@@ -12,18 +12,18 @@ import router from "@/router";
 import { UpdateWebpageBookmarkService } from "@/modules/webpage-bookmark/services/UpdateWebpageBookmarkService.ts";
 
 const useListWebpageBookmarkService = () =>
-  new ListWebpageBookmarkService(supabasePort, useToastService());
+  new ListWebpageBookmarkService(backendPort, useToastService());
 
 const useCreateWebpageBookmarkService = () =>
   new CreateWebpageBookmarkService(
-    supabasePort,
+    backendPort,
     useToastService(),
     useListWebpageBookmarkService(),
   );
 
 const useWebpageBookmarkDetailService = () =>
   new WebpageBookmarkDetailService(
-    supabasePort,
+    backendPort,
     useToastService(),
     useMasterNavigationService(),
     useListWebpageBookmarkService(),
@@ -31,7 +31,7 @@ const useWebpageBookmarkDetailService = () =>
 
 const useDeleteWebpageBookmarkService = () =>
   new DeleteWebpageBookmarkService(
-    supabasePort,
+    backendPort,
     useToastService(),
     router,
     useModalService(),
@@ -40,7 +40,7 @@ const useDeleteWebpageBookmarkService = () =>
 
 const useUpdateWebpageBookmarkService = () =>
   new UpdateWebpageBookmarkService(
-    supabasePort,
+    backendPort,
     useToastService(),
     useWebpageBookmarkDetailService(),
   );

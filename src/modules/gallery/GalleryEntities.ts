@@ -13,5 +13,5 @@ export interface Media {
   thumbnail_path: string | null;
   created_at: string;
   updated_at: string;
-  uploader_id: string;
+  uploader_id: string | null;
 }

@@ -1,7 +1,7 @@
 import { GalleryListService } from "@/modules/gallery/services/GalleryListService";
 import { UploadMediaService } from "@/modules/gallery/services/UploadMediaService";
 import { MediaDetailService } from "@/modules/gallery/services/MediaDetailService";
-import { supabasePort } from "@/ports/supabase/SupabasePort";
+import { backendPort } from "@/ports/backend/BackendPort";
 import { GalleryStatisticService } from "@/modules/gallery/services/GalleryStatisticService";
 import {
   useMasterNavigationService,
@@ -12,12 +12,12 @@ import router from "@/router";
 import { GalleryNavigationService } from "@/modules/gallery/services/GalleryNavigationService";
 
 const useGalleryListService = () =>
-  new GalleryListService(supabasePort, useToastService());
+  new GalleryListService(backendPort, useToastService());
 
 const useUploadMediaService = () =>
   new UploadMediaService(
     router,
-    supabasePort,
+    backendPort,
     useToastService(),
     useModalService(),
     useGalleryListService(),
@@ -26,7 +26,7 @@ const useUploadMediaService = () =>
 const useMediaDetailService = () =>
   new MediaDetailService(
     router,
-    supabasePort,
+    backendPort,
     useToastService(),
     useModalService(),
     useMasterNavigationService(),
@@ -34,7 +34,7 @@ const useMediaDetailService = () =>
   );
 
 const useGalleryStatisticService = () =>
-  new GalleryStatisticService(supabasePort, useToastService());
+  new GalleryStatisticService(backendPort, useToastService());
 
 const useGalleryNavigationService = () => new GalleryNavigationService(router);
 

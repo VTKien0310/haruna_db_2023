@@ -1,4 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ToastService } from "@/modules/master/services/ToastService.ts";
 import {
   makeVirtualWebBookmarkRootDirectory,
@@ -17,7 +17,7 @@ export class WebpageBookmarkDetailService {
   private readonly authStore = useAuthStore();
 
   constructor(
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
     private readonly masterNavigationService: MasterNavigationService,
     private readonly listWebpageBookmarkService: ListWebpageBookmarkService,
@@ -26,7 +26,7 @@ export class WebpageBookmarkDetailService {
   private async getWebpageBookmarkRecord(
     id: string,
   ): Promise<WebpageBookmark | null> {
-    const { data, error } = await this.supabasePort
+    const { data, error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .select()
       .limit(1)

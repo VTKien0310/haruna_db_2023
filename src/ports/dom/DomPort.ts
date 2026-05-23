@@ -1,4 +1,4 @@
-export class DomPort {
+class DomPort {
   triggerDownloadBlob(blob: Blob, downloadFileName: string): void {
     // Convert your blob into a Blob URL (a special url that points to an object in the browser's memory)
     const blobUrl = URL.createObjectURL(blob);
@@ -29,3 +29,5 @@ export class DomPort {
 }
 
 export const domPort = new DomPort();
+
+export type { DomPort };

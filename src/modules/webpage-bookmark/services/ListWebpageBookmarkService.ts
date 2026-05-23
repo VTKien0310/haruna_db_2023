@@ -1,4 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ToastService } from "@/modules/master/services/ToastService.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import {
@@ -10,7 +10,7 @@ export class ListWebpageBookmarkService {
   private readonly webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
   constructor(
-    private readonly supabasePort: SupabaseClient,
+    private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
   ) {}
 
@@ -31,7 +31,7 @@ export class ListWebpageBookmarkService {
   }
 
   private async listLevelOneRecords(): Promise<WebpageBookmark[]> {
-    const { data, error } = await this.supabasePort
+    const { data, error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .select()
       .limit(100)
@@ -51,7 +51,7 @@ export class ListWebpageBookmarkService {
   private async listLevelChildrenRecords(): Promise<WebpageBookmark[]> {
     const currentRecord = this.webpageBookmarkDetailStore.webpageBookmark!;
 
-    const { data, error } = await this.supabasePort
+    const { data, error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .select()
       .limit(100)
@@ -72,7 +72,7 @@ export class ListWebpageBookmarkService {
   }
 
   async countWebpageBookmarkLinks(): Promise<number> {
-    const { count, error } = await this.supabasePort
+    const { count, error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .select("*", {
         count: "exact",
@@ -89,7 +89,7 @@ export class ListWebpageBookmarkService {
   }
 
   async countWebpageBookmarkDirectories(): Promise<number> {
-    const { count, error } = await this.supabasePort
+    const { count, error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .select("*", {
         count: "exact",
@@ -106,7 +106,7 @@ export class ListWebpageBookmarkService {
   }
 
   async getDeepestLevelWebpageBookmark(): Promise<number> {
-    const { data, error } = await this.supabasePort
+    const { data, error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
       .select("deepest_level:level.max()");
 
