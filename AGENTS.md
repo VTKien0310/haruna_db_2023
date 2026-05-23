@@ -11,7 +11,7 @@ A multipurpose Progressive Web App (PWA) for everyday use, providing:
 ### Tech Stack
 
 | Layer            | Technology                              |
-| ---------------- | --------------------------------------- |
+|------------------|-----------------------------------------|
 | Framework        | Vue 3 + TypeScript                      |
 | Mobile/PWA       | Ionic Vue 8                             |
 | UI Components    | Vuestic UI                              |
@@ -147,9 +147,9 @@ Use `backendPort` directly for:
 
 - Use Tailwind utility classes in templates for layout and styling.
 - Prefer existing theme tokens from `tailwind.config.js` before adding new ones:
-  - **Colors:** `primary`, `secondary`, `success`, `info`, `danger`, `warning`, `backgroundPrimary`,
-    `backgroundSecondary`, `backgroundElement`, `backgroundBorder`, `textPrimary`, `textInverted`, `shadow`, `focus`
-  - **Breakpoints:** `xs` (0), `sm` (640), `md` (1024), `lg` (1440), `xl` (1920)
+    - **Colors:** `primary`, `secondary`, `success`, `info`, `danger`, `warning`, `backgroundPrimary`,
+      `backgroundSecondary`, `backgroundElement`, `backgroundBorder`, `textPrimary`, `textInverted`, `shadow`, `focus`
+    - **Breakpoints:** `xs` (0), `sm` (640), `md` (1024), `lg` (1440), `xl` (1920)
 - Do not introduce one-off colors or magic numbers.
 - Use custom grid templates: `grid-cols-16`, `grid-cols-20` when needed.
 
@@ -239,10 +239,10 @@ A task is only considered complete when all of the following are true:
 - Make the smallest reasonable change that fully solves the problem.
 - Do not make broad architectural changes unless explicitly requested.
 - Ask for clarification if:
-  - Requirements conflict.
-  - Security boundaries are unclear.
-  - The intended responsibility between Supabase and the backend API is ambiguous.
-  - A change could affect authentication, authorization, or data access rules.
+    - Requirements conflict.
+    - Security boundaries are unclear.
+    - The intended responsibility between Supabase and the backend API is ambiguous.
+    - A change could affect authentication, authorization, or data access rules.
 - When suggesting improvements, prefer practical recommendations over speculative refactors.
 
 ## Preferred Implementation Patterns

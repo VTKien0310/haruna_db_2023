@@ -42,7 +42,7 @@ onIonViewDidEnter(async () => {
 
   uploadedMediasCount.value =
     await galleryStatisticService.countUserUploadedMedias(
-      authStore.profile!.user_id,
+      authStore.profile!.user_id!,
     );
   totalMediasCount.value = await galleryStatisticService.countTotalMedias();
   latestUploadedMedia.value =
