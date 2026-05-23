@@ -29,7 +29,7 @@ battleship [Haruna](https://en.wikipedia.org/wiki/Japanese_battleship_Haruna).
 ### Start local Supabase environment
 
 ```sh
-npx supabase start --ignore-health-check
+npx supabase start
 ```
 
 ### Install dependencies
@@ -55,7 +55,7 @@ supabase functions serve --env-file ./supabase/functions/.env.local
 ### Build for production
 
 ```sh
-vite build --mode production
+npx vite build --mode production
 ```
 
 ### Deploy to Firebase hosting
