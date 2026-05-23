@@ -28,6 +28,10 @@ class BackendPort {
   public readonly spbClient: SupabaseClient<Database>;
 
   constructor(rootEndpoint: string, spbClient: SupabaseClient<Database>) {
+    if (!rootEndpoint.endsWith("/")) {
+      rootEndpoint += "/";
+    }
+
     this.rootEndpoint = rootEndpoint;
     this.spbClient = spbClient;
   }
@@ -68,6 +72,10 @@ class BackendPort {
     body?: Record<string, unknown>,
     params?: Record<string, string>,
   ): Promise<BackendApiResult<T, Error>> {
+    if (path.startsWith("/")) {
+      path = path.slice(1);
+    }
+
     let url = `${this.rootEndpoint}${path}`;
 
     if (params) {

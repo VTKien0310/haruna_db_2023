@@ -16,6 +16,10 @@ type DisplayRatio = {
   height: number;
 };
 
+type ResizedImageCreationResult = {
+  thumbnail_signed_url: string;
+};
+
 const thumbnailSquareRatio: DisplayRatio = {
   width: 500,
   height: 500,
@@ -144,50 +148,29 @@ export class MediaDetailService {
     return data.signedUrl;
   }
 
-  private async prepareResizeImageRequest(
-    media: Media,
-    width: number,
-    height: number,
-  ): Promise<FormData> {
-    const mediaIsPhoto = media.type === MediaTypeEnum.PHOTO;
-    const originalPath = mediaIsPhoto
-      ? media.storage_path
-      : media.thumbnail_path!;
-    const originalBucket = mediaIsPhoto ? "medias" : "thumbnails";
-
-    const { data, error } = await this.backendPort.spbClient.storage
-      .from(originalBucket)
-      .download(originalPath);
-    if (error || !data) {
-      this.toastService.error(
-        `Failed to create resized image for media with id ${media.id} because ${error?.message}`,
-      );
-    }
-
-    const formData = new FormData();
-    formData.append("original_id", media.id);
-    formData.append("original_image", data!);
-    formData.append("width", width.toString());
-    formData.append("height", height.toString());
-
-    return formData;
-  }
-
   private async createResizedImage(
     media: Media,
     width: number,
     height: number,
-  ): Promise<boolean> {
-    const formData = await this.prepareResizeImageRequest(media, width, height);
+  ): Promise<string | null> {
+    const resizedImageResult =
+      await this.backendPort.post<ResizedImageCreationResult>(
+        `medias/${media.id}/thumbnails`,
+        {
+          width,
+          height,
+        },
+      );
 
-    const { data, error } = await this.backendPort.spbClient.functions.invoke(
-      "gallery-thumbnail-generation",
-      {
-        body: formData,
-      },
-    );
+    if (resizedImageResult.isErr()) {
+      this.toastService.error(
+        `Failed to create resized image for media with id ${media.id}`,
+      );
 
-    return !(error || !data);
+      return null;
+    }
+
+    return resizedImageResult.unwrap().thumbnail_signed_url;
   }
 
   private async createThumbnailUsingResizedImage(
@@ -205,12 +188,12 @@ export class MediaDetailService {
     }
 
     // create the resized image if it doesn't exist, fallback to the original image if the resized image creation failed
-    const resizedImageCreated = await this.createResizedImage(
+    const resizedImageCreationResult = await this.createResizedImage(
       media,
       width,
       height,
     );
-    if (!resizedImageCreated) {
+    if (!resizedImageCreationResult) {
       const isPhotoMedia = media.type === MediaTypeEnum.PHOTO;
       const bucket = isPhotoMedia ? "medias" : "thumbnails";
       const path = isPhotoMedia ? media.storage_path : media.thumbnail_path;
@@ -232,7 +215,7 @@ export class MediaDetailService {
       return data.signedUrl;
     }
 
-    return this.createSignedUrlForResizedImage(media, width, height);
+    return resizedImageCreationResult;
   }
 
   async createThumbnailUrlForMedia(
@@ -286,10 +269,12 @@ export class MediaDetailService {
   }
 
   private redirectAndRefreshGallery(): void {
-    this.router.push({
-      name: GalleryRouteName.LIST,
-    });
-    this.galleryListService.refreshMedias();
+    this.router
+      .push({
+        name: GalleryRouteName.LIST,
+      })
+      .then();
+    this.galleryListService.refreshMedias().then();
   }
 
   private async deleteMediaRecordInDb(id: string): Promise<boolean> {
