@@ -22,7 +22,7 @@ const deleteDirectory = (): void => {
 
 <template>
   <div class="relative w-full">
-    <div class="grid h-full grid-flow-row grid-cols-1 grid-rows-16 gap-2 pb-10">
+    <div class="grid h-full grid-flow-row grid-cols-1 grid-rows-16 gap-2">
       <WebpageBookmarkDirectoryHeader class="row-span-1 self-start" />
 
       <va-textarea
