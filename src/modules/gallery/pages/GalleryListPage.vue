@@ -27,17 +27,15 @@ const galleryListStore = useGalleryListStore();
 
 const galleryListPageContent = ref<HTMLDivElement | null>(null);
 
-interface ScrollEventDataType {
-  target: {
-    scrollTop: number;
-    clientHeight: number;
-    scrollHeight: number;
-  };
-}
+const loadMoreMedias = (event: Event): void => {
+  const target = event.currentTarget as HTMLDivElement | null;
 
-const loadMoreMedias = ({
-  target: { scrollTop, clientHeight, scrollHeight },
-}: ScrollEventDataType): void => {
+  if (!target) {
+    return;
+  }
+
+  const { scrollTop, clientHeight, scrollHeight } = target;
+
   if (scrollTop + clientHeight >= scrollHeight * 0.85) {
     galleryListService.fetchMedias();
   }
