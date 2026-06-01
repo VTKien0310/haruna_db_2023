@@ -71,7 +71,7 @@ const navItems: NavItem[] = [
 
 <template>
   <ion-app>
-    <ion-router-outlet :class="{ 'mt-12': !hideNavBar }" />
+    <ion-router-outlet :class="{ 'mt-14': !hideNavBar }" />
 
     <AppTopBar
       :visible="!hideNavBar"
