@@ -13,6 +13,14 @@
   font-family: "Pacifico", cursive;
 }
 
+.branding-color {
+  color: var(--va-primary);
+}
+
+.branding-background {
+  background-color: var(--va-primary);
+}
+
 .title-font {
   font-family: "Oxygen Mono", monospace;
 }

@@ -41,7 +41,7 @@ function handleLogin() {
       class="flex min-h-screen w-full flex-col content-center items-center justify-center"
     >
       <h1
-        class="branding-font text-primary w-full text-center text-4xl font-bold"
+        class="branding-font branding-color w-full text-center text-4xl font-bold"
       >
         HARUNA
       </h1>
