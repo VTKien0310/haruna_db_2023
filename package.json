@@ -18,7 +18,6 @@
     "@ionic/vue-router": "^8.6.0",
     "@supabase/supabase-js": "^2.50.0",
     "@tailwindcss/postcss": "^4.1.8",
-    "@vuestic/tailwind": "^0.1.5",
     "@vueuse/core": "^13.3.0",
     "dayjs": "^1.11.13",
     "firebase": "^11.9.0",
