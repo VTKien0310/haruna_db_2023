@@ -146,7 +146,7 @@ Use `backendPort` directly for:
 ### Tailwind CSS
 
 - Use Tailwind utility classes in templates for layout and styling.
-- Prefer existing theme tokens from `tailwind.config.js` before adding new ones:
+- Prefer existing theme tokens from `@theme` in `src/main.css` before adding new ones:
   - **Colors:** `primary`, `secondary`, `success`, `info`, `danger`, `warning`, `background-primary`,
     `background-secondary`, `background-element`, `background-border`, `text-primary`, `text-inverted`, `shadow`, `focus`
   - **Breakpoints:** `xs` (0), `sm` (640), `md` (1024), `lg` (1440), `xl` (1920)
@@ -160,7 +160,7 @@ Use `backendPort` directly for:
   `VaImage`, `VaFileUpload`, `VaProgressBar`, `VaProgressCircle`, `VaSkeleton`, `VaButtonToggle`, `VaIcon`, `VaAppBar`,
   `VaModal`.
 - Follow Vuestic theming and configuration.
-- Use `@vuestic/tailwind` for Tailwind-Vuestic compatibility.
+- Vuestic UI is used directly (no `@vuestic/tailwind` bridge needed).
 - **Color naming**: Vuestic uses camelCase color names (e.g., `color="backgroundElement"`), while Tailwind uses kebab-case (e.g., `bg-background-element`). These are separate systems — the `color` prop on Vuestic components uses Vuestic's internal color names, not Tailwind class names.
 
 ### Global CSS
@@ -228,7 +228,7 @@ A task is only considered complete when all of the following are true:
 
 - The implementation follows Vue, Ionic, and Vuestic best practices.
 - The UI uses Vuestic/Ionic components where appropriate.
-- Styling respects `tailwind.config.js` theme tokens.
+- Styling respects `@theme` tokens in `src/main.css`.
 - Code is consistent with the existing architecture.
 - Security implications have been considered.
 - `npm run format` has been run after the changes.
