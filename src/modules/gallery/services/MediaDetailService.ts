@@ -163,10 +163,6 @@ export class MediaDetailService {
       );
 
     if (resizedImageResult.isErr()) {
-      this.toastService.error(
-        `Failed to create resized image for media with id ${media.id}`,
-      );
-
       return null;
     }
 

@@ -4,6 +4,36 @@
 
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #154ec1;
+  --color-secondary: #767c88;
+  --color-success: #3d9209;
+  --color-info: #158de3;
+  --color-danger: #e42222;
+  --color-warning: #ffd43a;
+  --color-background-primary: #f6f6f6;
+  --color-background-secondary: #ffffff;
+  --color-background-element: #ecf0f1;
+  --color-background-border: #dee5f2;
+  --color-text-primary: #262824;
+  --color-text-inverted: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.12);
+  --color-focus: #49a8ff;
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1440px;
+  --breakpoint-xl: 1920px;
+}
+
+@utility grid-cols-16 {
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+}
+
+@utility grid-cols-20 {
+  grid-template-columns: repeat(20, minmax(0, 1fr));
+}
+
 /*font-family: 'Oxygen Mono', monospace;*/
 /*font-family: 'Pacifico', cursive;*/
 /*font-family: 'Roboto', sans-serif;*/
@@ -11,6 +41,14 @@
 
 .branding-font {
   font-family: "Pacifico", cursive;
+}
+
+.branding-color {
+  color: var(--color-primary);
+}
+
+.branding-background {
+  background-color: var(--color-primary);
 }
 
 .title-font {

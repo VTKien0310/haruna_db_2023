@@ -106,7 +106,7 @@ onIonViewWillLeave(() => {
 <template>
   <ion-page>
     <div
-      class="flex h-screen flex-col justify-start overflow-x-auto overflow-y-scroll px-3 pt-3 pb-14 sm:mb-14"
+      class="flex h-screen flex-col justify-start overflow-x-auto overflow-y-scroll px-3 pt-3"
     >
       <div class="flex w-full justify-start md:w-1/2 lg:w-1/3">
         <va-select
