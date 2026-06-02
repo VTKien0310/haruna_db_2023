@@ -2,7 +2,6 @@ import { useGalleryUploadStore } from "@/modules/gallery/stores/GalleryUploadSto
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
 import { defaultStorageFileOptions } from "@/ports/backend/BackendPort";
-import { uuid } from "@supabase/supabase-js/dist/main/lib/helpers";
 import { MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
@@ -10,6 +9,8 @@ import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ToastService } from "@/modules/master/services/ToastService";
 import type { ModalService } from "@/modules/master/services/ModalService";
 import type { Router } from "vue-router";
+
+const uuid = (): string => crypto.randomUUID();
 
 const imageFileType: string = "image";
 const videoFileType: string = "video";
@@ -90,7 +91,7 @@ export class UploadMediaService {
   }
 
   private getFileExtension(file: File): string {
-    return file.type.split("/").at(-1) ?? "";
+    return file.type.split("/").pop() ?? "";
   }
 
   private generateFileStorageName(fileExtension: string): string {
@@ -198,9 +199,9 @@ export class UploadMediaService {
 
       const storageFileName: string = storageVideoFilePath
         .split("/")
-        .at(-1)!
+        .pop()!
         .split(".")
-        .at(0)!;
+        .shift()!;
       const thumbnailFileName: string = `${storageFileName}_thumb.png`;
 
       // create video thumbnail using the frame at 1s of the video
