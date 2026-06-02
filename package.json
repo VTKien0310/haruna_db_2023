@@ -30,7 +30,7 @@
   "devDependencies": {
     "@tsconfig/node18": "^18.2.4",
     "@types/node": "^22.15.30",
-    "@vitejs/plugin-vue": "^5.2.4",
+    "@vitejs/plugin-vue": "^6.0.7",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.21",
     "npm-run-all2": "^8.0.4",
@@ -40,7 +40,7 @@
     "supabase": "^2.84.2",
     "tailwindcss": "^4.1.8",
     "typescript": "~5.8.3",
-    "vite": "^7.1.11",
+    "vite": "^7.3.5",
     "vite-plugin-pwa": "^1.0.0",
     "vue-tsc": "^2.2.10"
   }
