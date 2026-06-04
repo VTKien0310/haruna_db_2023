@@ -68,7 +68,7 @@ onIonViewDidEnter(async () => {
 <template>
   <ion-page>
     <div
-      class="flex min-h-screen w-full flex-col content-center items-center justify-start"
+      class="flex h-fit min-h-screen w-full flex-col content-center items-center justify-start overflow-scroll pb-20"
     >
       <va-progress-bar v-if="isFetchingData" class="w-full" indeterminate />
 
