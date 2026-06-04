@@ -82,7 +82,7 @@ onIonViewDidEnter(async () => {
           >
             <va-card-title>Web bookmark statistics</va-card-title>
             <va-card-content
-              class="flex flex-col content-center items-center justify-around md:items-start"
+              class="mt-2 flex w-full flex-col content-center items-center justify-around md:mt-12"
             >
               <div
                 class="flex w-1/2 content-center items-center justify-between"
