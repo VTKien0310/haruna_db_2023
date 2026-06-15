@@ -10,12 +10,12 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       devOptions: {
         enabled: false,
       },
       strategies: "generateSW",
-      injectRegister: "auto",
+      injectRegister: false,
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
       },
