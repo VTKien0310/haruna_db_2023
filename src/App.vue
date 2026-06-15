@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 import { AuthRouteName } from "@/modules/auth/AuthRouter";
 import { MasterRouteName } from "@/modules/master/MasterRouter";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
@@ -17,9 +17,14 @@ import {
 import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter";
 import { WEB_BOOKMARK_ROOT_DIR_ID } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import AppTopBar from "@/modules/master/components/AppTopBar.vue";
+import PwaUpdateNotification from "@/modules/master/components/PwaUpdateNotification.vue";
+import { usePwaUpdateService } from "@/modules/master/MasterServiceContainer";
 
 const authenticationService = useAuthenticationService();
 authenticationService.registerOnAuthStateChange();
+
+const pwaUpdateService = usePwaUpdateService();
+pwaUpdateService.startWatching();
 
 const hideNavBar = computed((): boolean => {
   return router.currentRoute.value.name === AuthRouteName.LOGIN;
@@ -67,6 +72,10 @@ const navItems: NavItem[] = [
   },
   { label: "Profile", icon: "person", routeName: AuthRouteName.PROFILE },
 ];
+
+onUnmounted((): void => {
+  pwaUpdateService.stopWatching();
+});
 </script>
 
 <template>
@@ -77,6 +86,8 @@ const navItems: NavItem[] = [
       :visible="!hideNavBar"
       @toggle-sidebar="isSidebarOpen = !isSidebarOpen"
     />
+
+    <PwaUpdateNotification />
 
     <Transition name="sidebar-fade">
       <div
