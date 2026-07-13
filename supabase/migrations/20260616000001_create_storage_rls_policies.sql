@@ -1,5 +1,3 @@
-alter table storage.objects enable row level security;
-
 drop
 policy if exists "Medias authenticated select" on storage.objects;
 create
