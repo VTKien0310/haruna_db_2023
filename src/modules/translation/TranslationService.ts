@@ -3,16 +3,27 @@ import type {
   TranslationLanguage,
   TranslationResult,
 } from "@/modules/translation/TranslationTypes";
-import type { TranslationHistory } from "@/modules/translation/TranslationEntities";
+import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class TranslationService {
+  private readonly translationStore = useTranslationStore();
+
   constructor(
     private readonly backendPort: BackendPort,
     private readonly toastService: ToastService,
   ) {}
 
-  public async fetchSupportedLanguages(): Promise<TranslationLanguage[]> {
+  public async loadSupportedLanguages(): Promise<void> {
+    if (
+      this.translationStore.supportedLanguages.length > 0 ||
+      this.translationStore.isLoadingLanguages
+    ) {
+      return;
+    }
+
+    this.translationStore.isLoadingLanguages = true;
+
     const languagesResult = await this.backendPort.get<TranslationLanguage[]>(
       "translation/languages",
     );
@@ -20,10 +31,13 @@ export class TranslationService {
     if (languagesResult.isErr()) {
       this.toastService.error("Failed to load supported languages");
 
-      return [];
+      this.translationStore.isLoadingLanguages = false;
+
+      return;
     }
 
-    return languagesResult.unwrap();
+    this.translationStore.supportedLanguages = languagesResult.unwrap();
+    this.translationStore.isLoadingLanguages = false;
   }
 
   public async translate(
@@ -51,8 +65,14 @@ export class TranslationService {
 
   public async fetchTranslationHistories(
     page: number,
-    perPage: number = 10,
-  ): Promise<{ histories: TranslationHistory[]; totalCount: number }> {
+    perPage: number = 5,
+  ): Promise<void> {
+    if (this.translationStore.isFetchingHistories) {
+      return;
+    }
+
+    this.translationStore.isFetchingHistories = true;
+
     const { data, error, count } = await this.backendPort.spbClient
       .from("translation_histories")
       .select("*", { count: "exact" })
@@ -62,9 +82,23 @@ export class TranslationService {
     if (error || data === null || count === null) {
       this.toastService.error("Failed to fetch translation histories");
 
-      return { histories: [], totalCount: 0 };
+      this.translationStore.isFetchingHistories = false;
+
+      return;
     }
 
-    return { histories: data, totalCount: count };
+    this.translationStore.histories = data;
+    this.translationStore.totalHistoriesCount = count;
+    this.translationStore.currentHistoryPage = page;
+    this.translationStore.hasLoadedHistories = true;
+    this.translationStore.isFetchingHistories = false;
+  }
+
+  public resetHistories(): void {
+    this.translationStore.histories = [];
+    this.translationStore.totalHistoriesCount = 0;
+    this.translationStore.currentHistoryPage = 1;
+    this.translationStore.isFetchingHistories = false;
+    this.translationStore.hasLoadedHistories = false;
   }
 }

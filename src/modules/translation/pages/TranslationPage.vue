@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { IonPage, onIonViewDidEnter } from "@ionic/vue";
 import { computed, ref } from "vue";
-import type { TranslationLanguage } from "@/modules/translation/TranslationTypes";
 import type { TranslationHistory } from "@/modules/translation/TranslationEntities";
 import { useTranslationService } from "@/modules/translation/TranslationServiceContainer";
+import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
 import { useToastService } from "@/modules/master/MasterServiceContainer";
 import {
   VaButton,
@@ -15,10 +15,8 @@ import {
 } from "vuestic-ui";
 
 const translationService = useTranslationService();
+const translationStore = useTranslationStore();
 const toastService = useToastService();
-
-const supportedLanguages = ref<TranslationLanguage[]>([]);
-const isLoadingLanguages = ref<boolean>(false);
 
 const sourceLanguage = ref<string>("en");
 const targetLanguage = ref<string>("vi");
@@ -36,44 +34,18 @@ type TranslationCacheKey = {
 // guards against wasting AI tokens on repeated identical translation requests
 let lastTranslationKey: TranslationCacheKey | null = null;
 
-const histories = ref<TranslationHistory[]>([]);
-const totalHistoriesCount = ref<number>(0);
-const currentHistoryPage = ref<number>(1);
-const isFetchingHistories = ref<boolean>(false);
-const historiesPerPage = 10;
+const historiesPerPage = 5;
 
 const totalHistoryPages = computed<number>(() =>
-  Math.ceil(totalHistoriesCount.value / historiesPerPage),
+  Math.ceil(translationStore.totalHistoriesCount / historiesPerPage),
 );
 
-const fetchHistories = async (page: number): Promise<void> => {
-  if (isFetchingHistories.value) {
-    return;
-  }
-
-  isFetchingHistories.value = true;
-  const { histories: fetchedHistories, totalCount } =
-    await translationService.fetchTranslationHistories(page, historiesPerPage);
-  histories.value = fetchedHistories;
-  totalHistoriesCount.value = totalCount;
-  currentHistoryPage.value = page;
-  isFetchingHistories.value = false;
-};
-
-onIonViewDidEnter(async () => {
-  if (supportedLanguages.value.length === 0) {
-    isLoadingLanguages.value = true;
-    supportedLanguages.value =
-      await translationService.fetchSupportedLanguages();
-    isLoadingLanguages.value = false;
-  }
-
-  await fetchHistories(1);
-});
+const fetchHistories = async (page: number): Promise<void> =>
+  translationService.fetchTranslationHistories(page, historiesPerPage);
 
 const canTranslate = computed<boolean>(
   () =>
-    !isLoadingLanguages.value &&
+    !translationStore.isLoadingLanguages &&
     !isTranslating.value &&
     sourceText.value.trim().length > 0 &&
     sourceLanguage.value !== targetLanguage.value,
@@ -143,8 +115,8 @@ const resetTranslation = (): void => {
 };
 
 const resolveLanguageName = (code: string): string =>
-  supportedLanguages.value.find((language) => language.code === code)?.name ??
-  code;
+  translationStore.supportedLanguages.find((language) => language.code === code)
+    ?.name ?? code;
 
 const isHistoryRecordActive = (record: TranslationHistory): boolean =>
   record.source_language === sourceLanguage.value &&
@@ -169,6 +141,14 @@ const fillFromHistory = (record: TranslationHistory): void => {
     target: record.target_language,
   };
 };
+
+onIonViewDidEnter(async () => {
+  await translationService.loadSupportedLanguages();
+
+  if (!translationStore.hasLoadedHistories) {
+    await fetchHistories(1);
+  }
+});
 </script>
 
 <template>
@@ -216,22 +196,22 @@ const fillFromHistory = (record: TranslationHistory): void => {
         >
           <va-select
             v-model="sourceLanguage"
-            :options="supportedLanguages"
+            :options="translationStore.supportedLanguages"
             value-by="code"
             text-by="name"
             label="Source language"
             searchable
-            :loading="isLoadingLanguages"
+            :loading="translationStore.isLoadingLanguages"
             class="w-full"
           />
           <va-select
             v-model="targetLanguage"
-            :options="supportedLanguages"
+            :options="translationStore.supportedLanguages"
             value-by="code"
             text-by="name"
             label="Target language"
             searchable
-            :loading="isLoadingLanguages"
+            :loading="translationStore.isLoadingLanguages"
             class="w-full"
           />
         </div>
@@ -287,10 +267,16 @@ const fillFromHistory = (record: TranslationHistory): void => {
             <span class="text-text-primary font-bold">History</span>
           </div>
 
-          <va-progress-bar v-if="isFetchingHistories" indeterminate />
+          <va-progress-bar
+            v-if="translationStore.isFetchingHistories"
+            indeterminate
+          />
 
           <div
-            v-if="!isFetchingHistories && histories.length === 0"
+            v-if="
+              !translationStore.isFetchingHistories &&
+              translationStore.histories.length === 0
+            "
             class="text-secondary border-background-border bg-background-secondary flex flex-row items-center justify-center rounded border p-6"
           >
             No translation history yet
@@ -298,7 +284,7 @@ const fillFromHistory = (record: TranslationHistory): void => {
 
           <div class="flex flex-col gap-2">
             <div
-              v-for="record in histories"
+              v-for="record in translationStore.histories"
               :key="record.id"
               @click="fillFromHistory(record)"
               class="border-background-border bg-background-secondary hover:bg-background-element flex cursor-pointer flex-col gap-1 rounded border p-3 transition-colors"
@@ -321,9 +307,9 @@ const fillFromHistory = (record: TranslationHistory): void => {
 
           <div v-if="totalHistoryPages > 1" class="mt-3 flex justify-center">
             <va-pagination
-              v-model="currentHistoryPage"
+              v-model="translationStore.currentHistoryPage"
               :pages="totalHistoryPages"
-              :disabled="isFetchingHistories"
+              :disabled="translationStore.isFetchingHistories"
               @update:model-value="fetchHistories"
             />
           </div>
