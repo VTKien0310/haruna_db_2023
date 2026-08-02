@@ -7,10 +7,30 @@ export type Json =
   | Json[];
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "12.0.1 (cd38da5)";
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json;
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+        };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
   public: {
     Tables: {
@@ -77,6 +97,36 @@ export type Database = {
           name?: string | null;
           updated_at?: string;
           user_id?: string | null;
+        };
+        Relationships: [];
+      };
+      translation_histories: {
+        Row: {
+          created_at: string;
+          id: string;
+          owner_id: string;
+          source_language: string;
+          source_text: string;
+          target_language: string;
+          translation: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          owner_id?: string;
+          source_language: string;
+          source_text: string;
+          target_language: string;
+          translation: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          owner_id?: string;
+          source_language?: string;
+          source_text?: string;
+          target_language?: string;
+          translation?: string;
         };
         Relationships: [];
       };
@@ -274,6 +324,9 @@ export type CompositeTypes<
     : never;
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

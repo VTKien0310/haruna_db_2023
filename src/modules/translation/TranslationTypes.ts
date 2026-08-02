@@ -1,14 +1,8 @@
-export enum LanguageCode {
-  JA = "JA",
-  EN = "EN",
-}
-
-export type OriginalLanguageOption = {
-  value: LanguageCode;
-  label: string;
+export type TranslationLanguage = {
+  code: string;
+  name: string;
 };
 
-export type DebounceTimeOption = {
-  value: number;
-  label: string;
+export type TranslationResult = {
+  translated_text: string;
 };

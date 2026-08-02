@@ -1,169 +1,319 @@
 <script setup lang="ts">
-import { IonPage, onIonViewWillLeave } from "@ionic/vue";
-import { ref } from "vue";
-import {
-  type DebounceTimeOption,
-  LanguageCode,
-  type OriginalLanguageOption,
-} from "@/modules/translation/TranslationTypes";
+import { IonPage, onIonViewDidEnter } from "@ionic/vue";
+import { computed, ref } from "vue";
+import type { TranslationHistory } from "@/modules/translation/TranslationEntities";
 import { useTranslationService } from "@/modules/translation/TranslationServiceContainer";
-import { VaButton, VaSelect, VaTextarea } from "vuestic-ui";
+import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
+import { useToastService } from "@/modules/master/MasterServiceContainer";
+import {
+  VaButton,
+  VaIcon,
+  VaPagination,
+  VaProgressBar,
+  VaSelect,
+  VaTextarea,
+} from "vuestic-ui";
 
-const originalLanguage = ref<LanguageCode>(LanguageCode.JA);
+const translationService = useTranslationService();
+const translationStore = useTranslationStore();
+const toastService = useToastService();
 
-const originalLanguageOptionSelections: OriginalLanguageOption[] = [
-  {
-    value: LanguageCode.JA,
-    label: "Japanese",
-  },
-  {
-    value: LanguageCode.EN,
-    label: "English",
-  },
-];
+const sourceLanguage = ref<string>("en");
+const targetLanguage = ref<string>("vi");
 
-const debounceTime = ref<number>(1500);
+const sourceText = ref<string>("");
+const translatedText = ref<string>("");
+const isTranslating = ref<boolean>(false);
 
-const debounceTimeOptionSelections: DebounceTimeOption[] = [
-  {
-    value: 1500,
-    label: "1.5s",
-  },
-  {
-    value: 2000,
-    label: "2s",
-  },
-  {
-    value: 2500,
-    label: "2.5s",
-  },
-  {
-    value: 3000,
-    label: "3s",
-  },
-  {
-    value: 4000,
-    label: "4s",
-  },
-  {
-    value: 5000,
-    label: "5s",
-  },
-];
-
-let ogContentInputTimeout: ReturnType<typeof setTimeout> | null | undefined =
-  null;
-const clearOgContentInputTimeout = (): void => {
-  if (ogContentInputTimeout) {
-    clearTimeout(ogContentInputTimeout);
-  }
-};
-const debounceOgContentInput = () => {
-  clearOgContentInputTimeout();
-  ogContentInputTimeout = setTimeout(initTranslation, debounceTime.value);
+type TranslationCacheKey = {
+  text: string;
+  source: string;
+  target: string;
 };
 
-const originalContent = ref<string>("");
-const lastOgContent = ref<string>("");
-const initTranslation = (): void => {
-  clearOgContentInputTimeout();
+// guards against wasting AI tokens on repeated identical translation requests
+let lastTranslationKey: TranslationCacheKey | null = null;
 
-  if (originalContent.value === lastOgContent.value || !originalContent.value) {
+const historiesPerPage = 5;
+
+const totalHistoryPages = computed<number>(() =>
+  Math.ceil(translationStore.totalHistoriesCount / historiesPerPage),
+);
+
+const fetchHistories = async (page: number): Promise<void> =>
+  translationService.fetchTranslationHistories(page, historiesPerPage);
+
+const canTranslate = computed<boolean>(
+  () =>
+    !translationStore.isLoadingLanguages &&
+    !isTranslating.value &&
+    sourceText.value.trim().length > 0 &&
+    sourceLanguage.value !== targetLanguage.value,
+);
+
+const translate = async (): Promise<void> => {
+  if (!canTranslate.value) {
     return;
   }
 
-  lastOgContent.value = originalContent.value;
-  translate();
-};
+  const cacheKey: TranslationCacheKey = {
+    text: sourceText.value.trim(),
+    source: sourceLanguage.value,
+    target: targetLanguage.value,
+  };
 
-const translationService = useTranslationService();
-const translatedContent = ref<string>("");
-const isTranslating = ref<boolean>(false);
-const translate = () => {
+  if (JSON.stringify(lastTranslationKey) === JSON.stringify(cacheKey)) {
+    return;
+  }
+
   isTranslating.value = true;
-  translationService
-    .translate(originalContent.value, originalLanguage.value)
-    .then((translation: string): void => {
-      translatedContent.value = translation;
-      isTranslating.value = false;
-    });
+  const translation = await translationService.translate(
+    cacheKey.text,
+    cacheKey.source,
+    cacheKey.target,
+  );
+  isTranslating.value = false;
+
+  if (translation) {
+    translatedText.value = translation;
+    lastTranslationKey = cacheKey;
+
+    // refresh from page 1 so the newly saved record appears at the top
+    await fetchHistories(1);
+  }
 };
 
-const clearOgContent = () => {
-  originalContent.value = "";
+const swapLanguages = (): void => {
+  const previousSourceLanguage = sourceLanguage.value;
+  sourceLanguage.value = targetLanguage.value;
+  targetLanguage.value = previousSourceLanguage;
+
+  const previousSourceText = sourceText.value;
+  sourceText.value = translatedText.value;
+  translatedText.value = previousSourceText;
+
+  lastTranslationKey = null;
+};
+
+const copyTranslatedText = async (): Promise<void> => {
+  if (!translatedText.value) {
+    return;
+  }
+
+  await navigator.clipboard.writeText(translatedText.value);
+  toastService.info("Copied to clipboard");
+};
+
+const clearSourceText = (): void => {
+  sourceText.value = "";
 };
 
 const resetTranslation = (): void => {
-  clearOgContent();
-  translatedContent.value = "";
+  clearSourceText();
+  translatedText.value = "";
+  lastTranslationKey = null;
 };
 
-onIonViewWillLeave(() => {
-  clearOgContentInputTimeout();
+const resolveLanguageName = (code: string): string =>
+  translationStore.supportedLanguages.find((language) => language.code === code)
+    ?.name ?? code;
+
+const isHistoryRecordActive = (record: TranslationHistory): boolean =>
+  record.source_language === sourceLanguage.value &&
+  record.target_language === targetLanguage.value &&
+  record.source_text === sourceText.value &&
+  record.translation === translatedText.value;
+
+const fillFromHistory = (record: TranslationHistory): void => {
+  if (isHistoryRecordActive(record)) {
+    return;
+  }
+
+  sourceLanguage.value = record.source_language;
+  targetLanguage.value = record.target_language;
+  sourceText.value = record.source_text;
+  translatedText.value = record.translation;
+
+  // syncing the cache key prevents wasting AI tokens on an identical request
+  lastTranslationKey = {
+    text: record.source_text.trim(),
+    source: record.source_language,
+    target: record.target_language,
+  };
+};
+
+onIonViewDidEnter(async () => {
+  await translationService.loadSupportedLanguages();
+
+  if (!translationStore.hasLoadedHistories) {
+    await fetchHistories(1);
+  }
 });
 </script>
 
 <template>
   <ion-page>
-    <div
-      class="flex h-screen flex-col justify-start overflow-x-auto overflow-y-scroll px-3 pt-3"
-    >
-      <div class="flex w-full justify-start md:w-1/2 lg:w-1/3">
-        <va-select
-          v-model="originalLanguage"
-          :options="originalLanguageOptionSelections"
-          value-by="value"
-          text-by="label"
-          label="Source language"
-          inner-label
-        />
-        <va-select
-          v-model="debounceTime"
-          :options="debounceTimeOptionSelections"
-          value-by="value"
-          text-by="label"
-          label="Translation delay"
-          inner-label
-          class="ml-3"
-        />
-        <va-button
-          @click="clearOgContent"
-          preset="secondary"
-          border-color="primary"
-          class="ml-3"
-        >
-          Clear
-        </va-button>
-        <va-button
-          @click="resetTranslation"
-          preset="secondary"
-          border-color="primary"
-          class="ml-3"
-        >
-          Reset
-        </va-button>
-      </div>
+    <div class="bg-background-primary h-screen overflow-y-auto">
+      <div class="mx-auto flex w-full max-w-6xl flex-col px-3 pt-3 pb-6">
+        <!-- header -->
+        <div class="flex flex-row flex-wrap items-center justify-end gap-2">
+          <div class="flex flex-row gap-2">
+            <va-button
+              :disabled="!canTranslate"
+              :loading="isTranslating"
+              @click="translate"
+            >
+              Translate
+            </va-button>
+            <va-button
+              preset="secondary"
+              border-color="primary"
+              :disabled="isTranslating"
+              @click="swapLanguages"
+            >
+              Swap
+            </va-button>
+            <va-button
+              preset="secondary"
+              border-color="primary"
+              @click="clearSourceText"
+            >
+              Clear
+            </va-button>
+            <va-button
+              preset="secondary"
+              border-color="primary"
+              @click="resetTranslation"
+            >
+              Reset
+            </va-button>
+          </div>
+        </div>
 
-      <div
-        class="translation-form flex h-fit flex-col justify-around pt-3 md:flex-row"
-      >
-        <va-textarea
-          v-model="originalContent"
-          @input="debounceOgContentInput"
-          :resize="false"
-          label="Original content"
-          class="translation-textarea w-full md:mr-2"
-          counter
-        />
-        <va-textarea
-          v-model="translatedContent"
-          :loading="isTranslating"
-          :resize="false"
-          label="Translated content"
-          class="translation-textarea w-full md:ml-2"
-          background="background-element"
-          readonly
-        />
+        <!-- language selection bar -->
+        <div
+          class="border-background-border bg-background-secondary mt-3 flex flex-col items-stretch gap-2 rounded border p-3 shadow-sm md:flex-row md:items-center"
+        >
+          <va-select
+            v-model="sourceLanguage"
+            :options="translationStore.supportedLanguages"
+            value-by="code"
+            text-by="name"
+            label="Source language"
+            searchable
+            :loading="translationStore.isLoadingLanguages"
+            class="w-full"
+          />
+          <va-select
+            v-model="targetLanguage"
+            :options="translationStore.supportedLanguages"
+            value-by="code"
+            text-by="name"
+            label="Target language"
+            searchable
+            :loading="translationStore.isLoadingLanguages"
+            class="w-full"
+          />
+        </div>
+
+        <!-- translation panels -->
+        <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <!-- source panel -->
+          <div
+            class="border-background-border bg-background-secondary flex flex-col rounded border p-3 shadow-sm"
+          >
+            <div class="mb-2 flex h-8 flex-row items-center justify-between">
+              <span class="text-text-primary font-bold">Source text</span>
+            </div>
+            <va-textarea
+              v-model="sourceText"
+              :resize="false"
+              counter
+              placeholder="Enter text to translate..."
+              class="translation-textarea w-full"
+            />
+          </div>
+
+          <!-- output panel -->
+          <div
+            class="border-background-border bg-background-secondary flex flex-col rounded border p-3 shadow-sm"
+          >
+            <div class="mb-2 flex h-8 flex-row items-center justify-between">
+              <span class="text-text-primary font-bold">Translation</span>
+              <va-button
+                v-if="translatedText"
+                preset="plain"
+                size="small"
+                @click="copyTranslatedText"
+              >
+                <va-icon name="content_copy" />
+              </va-button>
+            </div>
+            <va-textarea
+              v-model="translatedText"
+              :resize="false"
+              :loading="isTranslating"
+              background="background-element"
+              readonly
+              placeholder="Translation will appear here"
+              class="translation-textarea w-full"
+            />
+          </div>
+        </div>
+
+        <!-- translation histories -->
+        <div class="mt-3 flex flex-col">
+          <div class="mb-2 flex h-8 flex-row items-center justify-between">
+            <span class="text-text-primary font-bold">History</span>
+          </div>
+
+          <va-progress-bar
+            v-if="translationStore.isFetchingHistories"
+            indeterminate
+          />
+
+          <div
+            v-if="
+              !translationStore.isFetchingHistories &&
+              translationStore.histories.length === 0
+            "
+            class="text-secondary border-background-border bg-background-secondary flex flex-row items-center justify-center rounded border p-6"
+          >
+            No translation history yet
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <div
+              v-for="record in translationStore.histories"
+              :key="record.id"
+              @click="fillFromHistory(record)"
+              class="border-background-border bg-background-secondary hover:bg-background-element flex cursor-pointer flex-col gap-1 rounded border p-3 transition-colors"
+              :class="{
+                'pointer-events-none opacity-50': isHistoryRecordActive(record),
+              }"
+            >
+              <span class="text-primary text-sm font-bold">
+                {{ resolveLanguageName(record.source_language) }} →
+                {{ resolveLanguageName(record.target_language) }}
+              </span>
+              <span class="text-text-primary truncate">
+                {{ record.source_text }}
+              </span>
+              <span class="text-secondary truncate">
+                {{ record.translation }}
+              </span>
+            </div>
+          </div>
+
+          <div v-if="totalHistoryPages > 1" class="mt-3 flex justify-center">
+            <va-pagination
+              v-model="translationStore.currentHistoryPage"
+              :pages="totalHistoryPages"
+              :disabled="translationStore.isFetchingHistories"
+              @update:model-value="fetchHistories"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </ion-page>
@@ -171,17 +321,12 @@ onIonViewWillLeave(() => {
 
 <style scoped>
 .translation-textarea {
-  height: 42.5dvh;
+  height: 35dvh;
 }
 
-@media (min-width: 768px) {
-  .translation-form {
-    min-height: 50dvh;
-  }
-
+@media (min-width: 1024px) {
   .translation-textarea {
-    min-height: 100%;
-    height: 85dvh;
+    height: 60dvh;
   }
 }
 </style>
