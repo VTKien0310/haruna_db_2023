@@ -2,9 +2,17 @@
 import { IonPage, onIonViewDidEnter } from "@ionic/vue";
 import { computed, ref } from "vue";
 import type { TranslationLanguage } from "@/modules/translation/TranslationTypes";
+import type { TranslationHistory } from "@/modules/translation/TranslationEntities";
 import { useTranslationService } from "@/modules/translation/TranslationServiceContainer";
 import { useToastService } from "@/modules/master/MasterServiceContainer";
-import { VaButton, VaIcon, VaSelect, VaTextarea } from "vuestic-ui";
+import {
+  VaButton,
+  VaIcon,
+  VaPagination,
+  VaProgressBar,
+  VaSelect,
+  VaTextarea,
+} from "vuestic-ui";
 
 const translationService = useTranslationService();
 const toastService = useToastService();
@@ -28,14 +36,39 @@ type TranslationCacheKey = {
 // guards against wasting AI tokens on repeated identical translation requests
 let lastTranslationKey: TranslationCacheKey | null = null;
 
-onIonViewDidEnter(async () => {
-  if (supportedLanguages.value.length > 0) {
+const histories = ref<TranslationHistory[]>([]);
+const totalHistoriesCount = ref<number>(0);
+const currentHistoryPage = ref<number>(1);
+const isFetchingHistories = ref<boolean>(false);
+const historiesPerPage = 10;
+
+const totalHistoryPages = computed<number>(() =>
+  Math.ceil(totalHistoriesCount.value / historiesPerPage),
+);
+
+const fetchHistories = async (page: number): Promise<void> => {
+  if (isFetchingHistories.value) {
     return;
   }
 
-  isLoadingLanguages.value = true;
-  supportedLanguages.value = await translationService.fetchSupportedLanguages();
-  isLoadingLanguages.value = false;
+  isFetchingHistories.value = true;
+  const { histories: fetchedHistories, totalCount } =
+    await translationService.fetchTranslationHistories(page, historiesPerPage);
+  histories.value = fetchedHistories;
+  totalHistoriesCount.value = totalCount;
+  currentHistoryPage.value = page;
+  isFetchingHistories.value = false;
+};
+
+onIonViewDidEnter(async () => {
+  if (supportedLanguages.value.length === 0) {
+    isLoadingLanguages.value = true;
+    supportedLanguages.value =
+      await translationService.fetchSupportedLanguages();
+    isLoadingLanguages.value = false;
+  }
+
+  await fetchHistories(1);
 });
 
 const canTranslate = computed<boolean>(
@@ -72,6 +105,9 @@ const translate = async (): Promise<void> => {
   if (translation) {
     translatedText.value = translation;
     lastTranslationKey = cacheKey;
+
+    // refresh from page 1 so the newly saved record appears at the top
+    await fetchHistories(1);
   }
 };
 
@@ -104,6 +140,34 @@ const resetTranslation = (): void => {
   clearSourceText();
   translatedText.value = "";
   lastTranslationKey = null;
+};
+
+const resolveLanguageName = (code: string): string =>
+  supportedLanguages.value.find((language) => language.code === code)?.name ??
+  code;
+
+const isHistoryRecordActive = (record: TranslationHistory): boolean =>
+  record.source_language === sourceLanguage.value &&
+  record.target_language === targetLanguage.value &&
+  record.source_text === sourceText.value &&
+  record.translation === translatedText.value;
+
+const fillFromHistory = (record: TranslationHistory): void => {
+  if (isHistoryRecordActive(record)) {
+    return;
+  }
+
+  sourceLanguage.value = record.source_language;
+  targetLanguage.value = record.target_language;
+  sourceText.value = record.source_text;
+  translatedText.value = record.translation;
+
+  // syncing the cache key prevents wasting AI tokens on an identical request
+  lastTranslationKey = {
+    text: record.source_text.trim(),
+    source: record.source_language,
+    target: record.target_language,
+  };
 };
 </script>
 
@@ -213,6 +277,54 @@ const resetTranslation = (): void => {
               readonly
               placeholder="Translation will appear here"
               class="translation-textarea w-full"
+            />
+          </div>
+        </div>
+
+        <!-- translation histories -->
+        <div class="mt-3 flex flex-col">
+          <div class="mb-2 flex h-8 flex-row items-center justify-between">
+            <span class="text-text-primary font-bold">History</span>
+          </div>
+
+          <va-progress-bar v-if="isFetchingHistories" indeterminate />
+
+          <div
+            v-if="!isFetchingHistories && histories.length === 0"
+            class="text-secondary border-background-border bg-background-secondary flex flex-row items-center justify-center rounded border p-6"
+          >
+            No translation history yet
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <div
+              v-for="record in histories"
+              :key="record.id"
+              @click="fillFromHistory(record)"
+              class="border-background-border bg-background-secondary hover:bg-background-element flex cursor-pointer flex-col gap-1 rounded border p-3 transition-colors"
+              :class="{
+                'pointer-events-none opacity-50': isHistoryRecordActive(record),
+              }"
+            >
+              <span class="text-primary text-sm font-bold">
+                {{ resolveLanguageName(record.source_language) }} →
+                {{ resolveLanguageName(record.target_language) }}
+              </span>
+              <span class="text-text-primary truncate">
+                {{ record.source_text }}
+              </span>
+              <span class="text-secondary truncate">
+                {{ record.translation }}
+              </span>
+            </div>
+          </div>
+
+          <div v-if="totalHistoryPages > 1" class="mt-3 flex justify-center">
+            <va-pagination
+              v-model="currentHistoryPage"
+              :pages="totalHistoryPages"
+              :disabled="isFetchingHistories"
+              @update:model-value="fetchHistories"
             />
           </div>
         </div>

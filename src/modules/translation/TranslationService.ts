@@ -3,6 +3,7 @@ import type {
   TranslationLanguage,
   TranslationResult,
 } from "@/modules/translation/TranslationTypes";
+import type { TranslationHistory } from "@/modules/translation/TranslationEntities";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class TranslationService {
@@ -46,5 +47,24 @@ export class TranslationService {
     }
 
     return translationResult.unwrap().translated_text;
+  }
+
+  public async fetchTranslationHistories(
+    page: number,
+    perPage: number = 10,
+  ): Promise<{ histories: TranslationHistory[]; totalCount: number }> {
+    const { data, error, count } = await this.backendPort.spbClient
+      .from("translation_histories")
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .range((page - 1) * perPage, page * perPage - 1);
+
+    if (error || data === null || count === null) {
+      this.toastService.error("Failed to fetch translation histories");
+
+      return { histories: [], totalCount: 0 };
+    }
+
+    return { histories: data, totalCount: count };
   }
 }
