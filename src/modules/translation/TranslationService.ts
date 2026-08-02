@@ -1,5 +1,8 @@
 import type { BackendPort } from "@/ports/backend/BackendPort";
-import { LanguageCode } from "@/modules/translation/TranslationTypes";
+import type {
+  TranslationLanguage,
+  TranslationResult,
+} from "@/modules/translation/TranslationTypes";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class TranslationService {
@@ -8,30 +11,40 @@ export class TranslationService {
     private readonly toastService: ToastService,
   ) {}
 
-  public async translate(
-    originalContent: string,
-    sourceLang: LanguageCode,
-  ): Promise<string> {
-    const targetLang: LanguageCode =
-      sourceLang === LanguageCode.JA ? LanguageCode.EN : LanguageCode.JA;
+  public async fetchSupportedLanguages(): Promise<TranslationLanguage[]> {
+    const languagesResult = await this.backendPort.get<TranslationLanguage[]>(
+      "translation/languages",
+    );
 
-    const { data, error } = await this.backendPort.spbClient.functions.invoke(
-      "translations",
+    if (languagesResult.isErr()) {
+      this.toastService.error("Failed to load supported languages");
+
+      return [];
+    }
+
+    return languagesResult.unwrap();
+  }
+
+  public async translate(
+    sourceText: string,
+    sourceLanguage: string,
+    targetLanguage: string,
+  ): Promise<string> {
+    const translationResult = await this.backendPort.post<TranslationResult>(
+      "translation/translate",
       {
-        body: {
-          original_content: originalContent,
-          source_lang: sourceLang,
-          target_lang: targetLang,
-        },
+        source_text: sourceText,
+        source_language: sourceLanguage,
+        target_language: targetLanguage,
       },
     );
 
-    if (error || !data?.success || !data?.data?.translated_content) {
+    if (translationResult.isErr()) {
       this.toastService.error("Failed to translate content");
 
       return "";
     }
 
-    return data.data.translated_content;
+    return translationResult.unwrap().translated_text;
   }
 }
