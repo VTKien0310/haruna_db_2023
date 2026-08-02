@@ -111,7 +111,6 @@ export class ListWebpageBookmarkService {
       .select("deepest_level:level.max()");
 
     if (error || !data) {
-      this.toastService.error(`Failed to fetch deepest level webpage bookmark`);
       return 0;
     }
 

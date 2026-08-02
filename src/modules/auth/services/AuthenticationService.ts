@@ -7,6 +7,7 @@ import { AuthRouteName } from "@/modules/auth/AuthRouter";
 import type { ProfileService } from "@/modules/auth/services/ProfileService";
 import type { ToastService } from "@/modules/master/services/ToastService";
 import type { Router } from "vue-router";
+import type { TranslationService } from "@/modules/translation/TranslationService";
 
 export class AuthenticationService {
   constructor(
@@ -15,6 +16,7 @@ export class AuthenticationService {
     private readonly toastService: ToastService,
     private readonly galleryListService: GalleryListService,
     private readonly profileService: ProfileService,
+    private readonly translationService: TranslationService,
   ) {}
 
   async isCurrentlyAuthenticated(): Promise<boolean> {
@@ -50,6 +52,7 @@ export class AuthenticationService {
     }
 
     this.galleryListService.reset();
+    this.translationService.resetHistories();
 
     return true;
   }
