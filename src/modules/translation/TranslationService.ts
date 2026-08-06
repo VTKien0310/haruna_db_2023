@@ -16,7 +16,7 @@ export class TranslationService {
 
   public async loadSupportedLanguages(): Promise<void> {
     if (
-      this.translationStore.supportedLanguages.length > 0 ||
+      this.translationStore.supportedLanguages.length > 2 ||
       this.translationStore.isLoadingLanguages
     ) {
       return;

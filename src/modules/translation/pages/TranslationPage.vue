@@ -18,8 +18,8 @@ const translationService = useTranslationService();
 const translationStore = useTranslationStore();
 const toastService = useToastService();
 
-const sourceLanguage = ref<string>("en");
-const targetLanguage = ref<string>("vi");
+const sourceLanguage = ref<string>("ja");
+const targetLanguage = ref<string>("en");
 
 const sourceText = ref<string>("");
 const translatedText = ref<string>("");
