@@ -73,11 +73,10 @@ export class TranslationService {
 
     this.translationStore.isFetchingHistories = true;
 
-    const { data, error, count } = await this.backendPort.spbClient
-      .from("translation_histories")
-      .select("*", { count: "exact" })
-      .order("created_at", { ascending: false })
-      .range((page - 1) * perPage, page * perPage - 1);
+    const { data, error, count } = await this.queryTranslationHistories(
+      page,
+      perPage,
+    );
 
     if (error || data === null || count === null) {
       this.toastService.error("Failed to fetch translation histories");
@@ -94,11 +93,50 @@ export class TranslationService {
     this.translationStore.isFetchingHistories = false;
   }
 
+  public async fetchLatestTranslationHistories(): Promise<void> {
+    if (this.translationStore.isFetchingLatestHistories) {
+      return;
+    }
+
+    this.translationStore.isFetchingLatestHistories = true;
+
+    const { data, error, count } = await this.queryTranslationHistories(1, 5);
+
+    if (error || data === null || count === null) {
+      this.toastService.error("Failed to fetch translation histories");
+
+      this.translationStore.isFetchingLatestHistories = false;
+
+      return;
+    }
+
+    this.translationStore.latestHistories = data;
+    this.translationStore.hasLoadedLatestHistories = true;
+    this.translationStore.isFetchingLatestHistories = false;
+
+    // sync the paginated histories so both pages show the same latest records
+    this.translationStore.histories = data;
+    this.translationStore.totalHistoriesCount = count;
+    this.translationStore.currentHistoryPage = 1;
+    this.translationStore.hasLoadedHistories = true;
+  }
+
   public resetHistories(): void {
     this.translationStore.histories = [];
     this.translationStore.totalHistoriesCount = 0;
     this.translationStore.currentHistoryPage = 1;
     this.translationStore.isFetchingHistories = false;
     this.translationStore.hasLoadedHistories = false;
+    this.translationStore.latestHistories = [];
+    this.translationStore.isFetchingLatestHistories = false;
+    this.translationStore.hasLoadedLatestHistories = false;
+  }
+
+  private queryTranslationHistories(page: number, perPage: number) {
+    return this.backendPort.spbClient
+      .from("translation_histories")
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .range((page - 1) * perPage, page * perPage - 1);
   }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { IonPage, onIonViewDidEnter } from "@ionic/vue";
 import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import type { TranslationHistory } from "@/modules/translation/TranslationEntities";
 import { useTranslationService } from "@/modules/translation/TranslationServiceContainer";
 import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
@@ -17,6 +18,7 @@ import {
 const translationService = useTranslationService();
 const translationStore = useTranslationStore();
 const toastService = useToastService();
+const route = useRoute();
 
 const sourceLanguage = ref<string>("ja");
 const targetLanguage = ref<string>("en");
@@ -42,6 +44,12 @@ const totalHistoryPages = computed<number>(() =>
 
 const fetchHistories = async (page: number): Promise<void> =>
   translationService.fetchTranslationHistories(page, historiesPerPage);
+
+const isFetchingHistories = computed<boolean>(
+  () =>
+    translationStore.isFetchingHistories ||
+    translationStore.isFetchingLatestHistories,
+);
 
 const canTranslate = computed<boolean>(
   () =>
@@ -78,8 +86,9 @@ const translate = async (): Promise<void> => {
     translatedText.value = translation;
     lastTranslationKey = cacheKey;
 
-    // refresh from page 1 so the newly saved record appears at the top
-    await fetchHistories(1);
+    // refresh the latest histories so the newly saved record appears at the top
+    // and the data is ready to display instantly on the master page
+    await translationService.fetchLatestTranslationHistories();
   }
 };
 
@@ -144,6 +153,23 @@ const fillFromHistory = (record: TranslationHistory): void => {
 
 onIonViewDidEnter(async () => {
   await translationService.loadSupportedLanguages();
+
+  // navigated from the master page with a history record to fill into the UI
+  const historyId = route.query.history;
+  if (typeof historyId === "string" && historyId.length > 0) {
+    await translationService.fetchLatestTranslationHistories();
+
+    const record = translationStore.latestHistories.find(
+      (history) => history.id === historyId,
+    );
+
+    // if no record is found, silently render the page as a simple navigation
+    if (record) {
+      fillFromHistory(record);
+    }
+
+    return;
+  }
 
   if (!translationStore.hasLoadedHistories) {
     await fetchHistories(1);
@@ -267,15 +293,11 @@ onIonViewDidEnter(async () => {
             <span class="text-text-primary font-bold">History</span>
           </div>
 
-          <va-progress-bar
-            v-if="translationStore.isFetchingHistories"
-            indeterminate
-          />
+          <va-progress-bar v-if="isFetchingHistories" indeterminate />
 
           <div
             v-if="
-              !translationStore.isFetchingHistories &&
-              translationStore.histories.length === 0
+              !isFetchingHistories && translationStore.histories.length === 0
             "
             class="text-secondary border-background-border bg-background-secondary flex flex-row items-center justify-center rounded border p-6"
           >
@@ -309,7 +331,7 @@ onIonViewDidEnter(async () => {
             <va-pagination
               v-model="translationStore.currentHistoryPage"
               :pages="totalHistoryPages"
-              :disabled="translationStore.isFetchingHistories"
+              :disabled="isFetchingHistories"
               @update:model-value="fetchHistories"
             />
           </div>

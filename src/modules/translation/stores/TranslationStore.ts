@@ -22,6 +22,10 @@ export const useTranslationStore = defineStore("translation", () => {
   const isFetchingHistories = ref<boolean>(false);
   const hasLoadedHistories = ref<boolean>(false);
 
+  const latestHistories = ref<TranslationHistory[]>([]);
+  const isFetchingLatestHistories = ref<boolean>(false);
+  const hasLoadedLatestHistories = ref<boolean>(false);
+
   return {
     supportedLanguages,
     isLoadingLanguages,
@@ -30,5 +34,8 @@ export const useTranslationStore = defineStore("translation", () => {
     currentHistoryPage,
     isFetchingHistories,
     hasLoadedHistories,
+    latestHistories,
+    isFetchingLatestHistories,
+    hasLoadedLatestHistories,
   };
 });
