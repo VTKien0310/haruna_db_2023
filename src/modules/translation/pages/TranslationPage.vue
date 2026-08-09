@@ -88,7 +88,7 @@ const translate = async (): Promise<void> => {
 
     // refresh the latest histories so the newly saved record appears at the top
     // and the data is ready to display instantly on the master page
-    await translationService.fetchLatestTranslationHistories();
+    await translationService.syncLatestTranslationHistories();
   }
 };
 
@@ -157,7 +157,7 @@ onIonViewDidEnter(async () => {
   // navigated from the master page with a history record to fill into the UI
   const historyId = route.query.history;
   if (typeof historyId === "string" && historyId.length > 0) {
-    await translationService.fetchLatestTranslationHistories();
+    await translationService.syncLatestTranslationHistories();
 
     const record = translationStore.latestHistories.find(
       (history) => history.id === historyId,

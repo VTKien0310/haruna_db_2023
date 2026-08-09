@@ -113,6 +113,28 @@ export class TranslationService {
     this.translationStore.latestHistories = data;
     this.translationStore.hasLoadedLatestHistories = true;
     this.translationStore.isFetchingLatestHistories = false;
+  }
+
+  public async syncLatestTranslationHistories(): Promise<void> {
+    if (this.translationStore.isFetchingLatestHistories) {
+      return;
+    }
+
+    this.translationStore.isFetchingLatestHistories = true;
+
+    const { data, error, count } = await this.queryTranslationHistories(1, 5);
+
+    if (error || data === null || count === null) {
+      this.toastService.error("Failed to fetch translation histories");
+
+      this.translationStore.isFetchingLatestHistories = false;
+
+      return;
+    }
+
+    this.translationStore.latestHistories = data;
+    this.translationStore.hasLoadedLatestHistories = true;
+    this.translationStore.isFetchingLatestHistories = false;
 
     // sync the paginated histories so both pages show the same latest records
     this.translationStore.histories = data;
