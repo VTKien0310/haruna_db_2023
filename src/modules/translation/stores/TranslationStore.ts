@@ -15,6 +15,7 @@ export const useTranslationStore = defineStore("translation", () => {
     },
   ]);
   const isLoadingLanguages = ref<boolean>(false);
+  const lastTranslationKey = ref<string | null>(null);
 
   const histories = ref<TranslationHistory[]>([]);
   const totalHistoriesCount = ref<number>(0);
@@ -29,6 +30,7 @@ export const useTranslationStore = defineStore("translation", () => {
   return {
     supportedLanguages,
     isLoadingLanguages,
+    lastTranslationKey,
     histories,
     totalHistoriesCount,
     currentHistoryPage,

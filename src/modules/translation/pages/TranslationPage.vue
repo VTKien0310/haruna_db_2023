@@ -3,6 +3,7 @@ import { IonPage, onIonViewDidEnter } from "@ionic/vue";
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import type { TranslationHistory } from "@/modules/translation/TranslationEntities";
+import type { TranslationDraft } from "@/modules/translation/TranslationTypes";
 import { useTranslationService } from "@/modules/translation/TranslationServiceContainer";
 import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
 import { useToastService } from "@/modules/master/MasterServiceContainer";
@@ -27,15 +28,6 @@ const sourceText = ref<string>("");
 const translatedText = ref<string>("");
 const isTranslating = ref<boolean>(false);
 
-type TranslationCacheKey = {
-  text: string;
-  source: string;
-  target: string;
-};
-
-// guards against wasting AI tokens on repeated identical translation requests
-let lastTranslationKey: TranslationCacheKey | null = null;
-
 const historiesPerPage = 5;
 
 const totalHistoryPages = computed<number>(() =>
@@ -59,49 +51,40 @@ const canTranslate = computed<boolean>(
     sourceLanguage.value !== targetLanguage.value,
 );
 
+const getDraft = (): TranslationDraft => ({
+  sourceLanguage: sourceLanguage.value,
+  targetLanguage: targetLanguage.value,
+  sourceText: sourceText.value,
+  translatedText: translatedText.value,
+});
+
+const applyDraft = (draft: TranslationDraft): void => {
+  sourceLanguage.value = draft.sourceLanguage;
+  targetLanguage.value = draft.targetLanguage;
+  sourceText.value = draft.sourceText;
+  translatedText.value = draft.translatedText;
+};
+
 const translate = async (): Promise<void> => {
   if (!canTranslate.value) {
     return;
   }
 
-  const cacheKey: TranslationCacheKey = {
-    text: sourceText.value.trim(),
-    source: sourceLanguage.value,
-    target: targetLanguage.value,
-  };
-
-  if (JSON.stringify(lastTranslationKey) === JSON.stringify(cacheKey)) {
-    return;
-  }
-
   isTranslating.value = true;
-  const translation = await translationService.translate(
-    cacheKey.text,
-    cacheKey.source,
-    cacheKey.target,
+  const translation = await translationService.translateIfNeeded(
+    sourceText.value,
+    sourceLanguage.value,
+    targetLanguage.value,
   );
   isTranslating.value = false;
 
-  if (translation) {
+  if (translation !== null) {
     translatedText.value = translation;
-    lastTranslationKey = cacheKey;
-
-    // refresh the latest histories so the newly saved record appears at the top
-    // and the data is ready to display instantly on the master page
-    await translationService.syncLatestTranslationHistories();
   }
 };
 
 const swapLanguages = (): void => {
-  const previousSourceLanguage = sourceLanguage.value;
-  sourceLanguage.value = targetLanguage.value;
-  targetLanguage.value = previousSourceLanguage;
-
-  const previousSourceText = sourceText.value;
-  sourceText.value = translatedText.value;
-  translatedText.value = previousSourceText;
-
-  lastTranslationKey = null;
+  applyDraft(translationService.swapDraft(getDraft()));
 };
 
 const copyTranslatedText = async (): Promise<void> => {
@@ -118,61 +101,34 @@ const clearSourceText = (): void => {
 };
 
 const resetTranslation = (): void => {
-  clearSourceText();
-  translatedText.value = "";
-  lastTranslationKey = null;
+  applyDraft(translationService.resetDraft(getDraft()));
 };
 
 const resolveLanguageName = (code: string): string =>
-  translationStore.supportedLanguages.find((language) => language.code === code)
-    ?.name ?? code;
+  translationService.resolveLanguageName(code);
 
 const isHistoryRecordActive = (record: TranslationHistory): boolean =>
-  record.source_language === sourceLanguage.value &&
-  record.target_language === targetLanguage.value &&
-  record.source_text === sourceText.value &&
-  record.translation === translatedText.value;
+  translationService.isHistoryRecordActive(record, getDraft());
 
 const fillFromHistory = (record: TranslationHistory): void => {
   if (isHistoryRecordActive(record)) {
     return;
   }
 
-  sourceLanguage.value = record.source_language;
-  targetLanguage.value = record.target_language;
-  sourceText.value = record.source_text;
-  translatedText.value = record.translation;
-
-  // syncing the cache key prevents wasting AI tokens on an identical request
-  lastTranslationKey = {
-    text: record.source_text.trim(),
-    source: record.source_language,
-    target: record.target_language,
-  };
+  applyDraft(translationService.getDraftFromHistory(record));
 };
 
 onIonViewDidEnter(async () => {
-  await translationService.loadSupportedLanguages();
-
   // navigated from the master page with a history record to fill into the UI
   const historyId = route.query.history;
-  if (typeof historyId === "string" && historyId.length > 0) {
-    await translationService.syncLatestTranslationHistories();
+  const record = await translationService.initialize(
+    typeof historyId === "string" && historyId.length > 0
+      ? historyId
+      : undefined,
+  );
 
-    const record = translationStore.latestHistories.find(
-      (history) => history.id === historyId,
-    );
-
-    // if no record is found, silently render the page as a simple navigation
-    if (record) {
-      fillFromHistory(record);
-    }
-
-    return;
-  }
-
-  if (!translationStore.hasLoadedHistories) {
-    await fetchHistories(1);
+  if (record) {
+    fillFromHistory(record);
   }
 });
 </script>
