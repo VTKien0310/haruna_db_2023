@@ -6,3 +6,10 @@ export type TranslationLanguage = {
 export type TranslationResult = {
   translated_text: string;
 };
+
+export type TranslationDraft = {
+  sourceLanguage: string;
+  targetLanguage: string;
+  sourceText: string;
+  translatedText: string;
+};

@@ -4,8 +4,18 @@ import type { TranslationLanguage } from "@/modules/translation/TranslationTypes
 import type { TranslationHistory } from "@/modules/translation/TranslationEntities";
 
 export const useTranslationStore = defineStore("translation", () => {
-  const supportedLanguages = ref<TranslationLanguage[]>([]);
+  const supportedLanguages = ref<TranslationLanguage[]>([
+    {
+      code: "en",
+      name: "English",
+    },
+    {
+      code: "ja",
+      name: "Japanese",
+    },
+  ]);
   const isLoadingLanguages = ref<boolean>(false);
+  const lastTranslationKey = ref<string | null>(null);
 
   const histories = ref<TranslationHistory[]>([]);
   const totalHistoriesCount = ref<number>(0);
@@ -13,13 +23,21 @@ export const useTranslationStore = defineStore("translation", () => {
   const isFetchingHistories = ref<boolean>(false);
   const hasLoadedHistories = ref<boolean>(false);
 
+  const latestHistories = ref<TranslationHistory[]>([]);
+  const isFetchingLatestHistories = ref<boolean>(false);
+  const hasLoadedLatestHistories = ref<boolean>(false);
+
   return {
     supportedLanguages,
     isLoadingLanguages,
+    lastTranslationKey,
     histories,
     totalHistoriesCount,
     currentHistoryPage,
     isFetchingHistories,
     hasLoadedHistories,
+    latestHistories,
+    isFetchingLatestHistories,
+    hasLoadedLatestHistories,
   };
 });
