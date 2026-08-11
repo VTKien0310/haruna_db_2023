@@ -93,7 +93,7 @@ onIonViewDidEnter(async () => {
 
       <div class="w-full px-2 pt-1">
         <div
-          class="grid w-full grid-cols-3 place-content-center place-items-center gap-1"
+          class="mb-1 grid w-full grid-cols-3 place-content-center place-items-center gap-1"
         >
           <va-card
             class="col-span-3 m-1 h-full w-full md:col-span-1"
@@ -189,7 +189,7 @@ onIonViewDidEnter(async () => {
           </va-card>
         </div>
 
-        <va-card class="m-1 w-full" color="background-primary">
+        <va-card class="w-full" color="background-primary">
           <va-card-title>Latest translations</va-card-title>
           <va-card-content>
             <va-progress-bar
