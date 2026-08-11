@@ -207,53 +207,11 @@ export class TranslationService {
   }
 
   public async fetchLatestTranslationHistories(): Promise<void> {
-    if (this.translationStore.isFetchingLatestHistories) {
-      return;
-    }
-
-    this.translationStore.isFetchingLatestHistories = true;
-
-    const { data, error, count } = await this.queryTranslationHistories(1, 5);
-
-    if (error || data === null || count === null) {
-      this.toastService.error("Failed to fetch translation histories");
-
-      this.translationStore.isFetchingLatestHistories = false;
-
-      return;
-    }
-
-    this.translationStore.latestHistories = data;
-    this.translationStore.hasLoadedLatestHistories = true;
-    this.translationStore.isFetchingLatestHistories = false;
+    await this.loadLatestTranslationHistories(false);
   }
 
   public async syncLatestTranslationHistories(): Promise<void> {
-    if (this.translationStore.isFetchingLatestHistories) {
-      return;
-    }
-
-    this.translationStore.isFetchingLatestHistories = true;
-
-    const { data, error, count } = await this.queryTranslationHistories(1, 5);
-
-    if (error || data === null || count === null) {
-      this.toastService.error("Failed to fetch translation histories");
-
-      this.translationStore.isFetchingLatestHistories = false;
-
-      return;
-    }
-
-    this.translationStore.latestHistories = data;
-    this.translationStore.hasLoadedLatestHistories = true;
-    this.translationStore.isFetchingLatestHistories = false;
-
-    // sync the paginated histories so both pages show the same latest records
-    this.translationStore.histories = data;
-    this.translationStore.totalHistoriesCount = count;
-    this.translationStore.currentHistoryPage = 1;
-    this.translationStore.hasLoadedHistories = true;
+    await this.loadLatestTranslationHistories(true);
   }
 
   public resetHistories(): void {
@@ -266,6 +224,38 @@ export class TranslationService {
     this.translationStore.latestHistories = [];
     this.translationStore.isFetchingLatestHistories = false;
     this.translationStore.hasLoadedLatestHistories = false;
+  }
+
+  private async loadLatestTranslationHistories(
+    syncPaginatedHistories: boolean,
+  ): Promise<void> {
+    if (this.translationStore.isFetchingLatestHistories) {
+      return;
+    }
+
+    this.translationStore.isFetchingLatestHistories = true;
+
+    const { data, error, count } = await this.queryTranslationHistories(1, 5);
+
+    if (error || data === null || count === null) {
+      this.toastService.error("Failed to fetch translation histories");
+
+      this.translationStore.isFetchingLatestHistories = false;
+
+      return;
+    }
+
+    this.translationStore.latestHistories = data;
+    this.translationStore.hasLoadedLatestHistories = true;
+    this.translationStore.isFetchingLatestHistories = false;
+
+    if (syncPaginatedHistories) {
+      // sync the paginated histories so both pages show the same latest records
+      this.translationStore.histories = data;
+      this.translationStore.totalHistoriesCount = count;
+      this.translationStore.currentHistoryPage = 1;
+      this.translationStore.hasLoadedHistories = true;
+    }
   }
 
   private queryTranslationHistories(page: number, perPage: number) {
