@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { IonPage, onIonViewDidEnter } from "@ionic/vue";
 import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
 import type { Media } from "@/modules/gallery/GalleryEntities";
 import {
   useGalleryStatisticService,
@@ -11,6 +12,9 @@ import { useProfileService } from "@/modules/auth/AuthServiceContainer";
 import { VaCard, VaCardContent, VaCardTitle, VaProgressBar } from "vuestic-ui";
 import { useListWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import WebpageBookmarkPieChart from "@/modules/master/components/WebpageBookmarkPieChart.vue";
+import { useTranslationService } from "@/modules/translation/TranslationServiceContainer";
+import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
+import { TranslationRouteName } from "@/modules/translation/TranslationRouter";
 
 const mediaDetailService = useMediaDetailService();
 
@@ -36,6 +40,16 @@ const galleryStatisticService = useGalleryStatisticService();
 const profileService = useProfileService();
 const authStore = useAuthStore();
 const listWebpageBookmarkService = useListWebpageBookmarkService();
+const translationService = useTranslationService();
+const translationStore = useTranslationStore();
+const router = useRouter();
+
+const navigateToTranslationHistory = (historyId: string): void => {
+  router.push({
+    name: TranslationRouteName.TRANSLATION,
+    query: { history: historyId },
+  });
+};
 onIonViewDidEnter(async () => {
   isFetchingData.value = true;
 
@@ -61,6 +75,11 @@ onIonViewDidEnter(async () => {
   webpageBookmarkDirectoryCount.value =
     await listWebpageBookmarkService.countWebpageBookmarkDirectories();
 
+  // cached in the store to avoid refetching every time this page is visited
+  if (!translationStore.hasLoadedLatestHistories) {
+    await translationService.fetchLatestTranslationHistories();
+  }
+
   isFetchingData.value = false;
 });
 </script>
@@ -74,7 +93,7 @@ onIonViewDidEnter(async () => {
 
       <div class="w-full px-2 pt-1">
         <div
-          class="grid w-full grid-cols-3 place-content-center place-items-center gap-1"
+          class="mb-1 grid w-full grid-cols-3 place-content-center place-items-center gap-1"
         >
           <va-card
             class="col-span-3 m-1 h-full w-full md:col-span-1"
@@ -169,6 +188,45 @@ onIonViewDidEnter(async () => {
             </va-card-content>
           </va-card>
         </div>
+
+        <va-card class="w-full" color="background-primary">
+          <va-card-title>Latest translations</va-card-title>
+          <va-card-content>
+            <va-progress-bar
+              v-if="translationStore.isFetchingLatestHistories"
+              indeterminate
+            />
+
+            <div
+              v-else-if="
+                translationStore.hasLoadedLatestHistories &&
+                translationStore.latestHistories.length === 0
+              "
+              class="text-secondary flex flex-row items-center justify-center p-3"
+            >
+              No translation history yet
+            </div>
+
+            <div v-else class="flex flex-col gap-2">
+              <div
+                v-for="record in translationStore.latestHistories"
+                :key="record.id"
+                @click="navigateToTranslationHistory(record.id)"
+                class="border-background-border bg-background-secondary hover:bg-background-element flex cursor-pointer flex-col gap-1 rounded border p-3 transition-colors"
+              >
+                <span class="text-primary text-sm font-bold">
+                  {{ record.source_language }} → {{ record.target_language }}
+                </span>
+                <span class="text-text-primary truncate">
+                  {{ record.source_text }}
+                </span>
+                <span class="text-secondary truncate">
+                  {{ record.translation }}
+                </span>
+              </div>
+            </div>
+          </va-card-content>
+        </va-card>
       </div>
     </div>
   </ion-page>

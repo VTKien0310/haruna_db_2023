@@ -15,6 +15,7 @@ export const useTranslationStore = defineStore("translation", () => {
     },
   ]);
   const isLoadingLanguages = ref<boolean>(false);
+  const lastTranslationKey = ref<string | null>(null);
 
   const histories = ref<TranslationHistory[]>([]);
   const totalHistoriesCount = ref<number>(0);
@@ -22,13 +23,21 @@ export const useTranslationStore = defineStore("translation", () => {
   const isFetchingHistories = ref<boolean>(false);
   const hasLoadedHistories = ref<boolean>(false);
 
+  const latestHistories = ref<TranslationHistory[]>([]);
+  const isFetchingLatestHistories = ref<boolean>(false);
+  const hasLoadedLatestHistories = ref<boolean>(false);
+
   return {
     supportedLanguages,
     isLoadingLanguages,
+    lastTranslationKey,
     histories,
     totalHistoriesCount,
     currentHistoryPage,
     isFetchingHistories,
     hasLoadedHistories,
+    latestHistories,
+    isFetchingLatestHistories,
+    hasLoadedLatestHistories,
   };
 });
