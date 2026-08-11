@@ -5,7 +5,7 @@
 A multipurpose Progressive Web App (PWA) for everyday use, providing:
 
 - Image and video storage (gallery)
-- English/Japanese translation (via DeepL)
+- AI-powered translation (via the Backend API)
 - Webpage bookmark management (hierarchical directory tree)
 
 ### Tech Stack
@@ -114,7 +114,7 @@ Use `backendPort.spbClient` for:
 - **Database queries** (typed with generated `Database` types)
 - **Authentication** (`signInWithPassword`, `signOut`, `getSession`, `onAuthStateChange`)
 - **Storage operations** (`upload`, `download`, `createSignedUrl`, `remove`, `list`)
-- **Edge functions** for lightweight server-side logic (translations, image resizing)
+- **Edge functions** for lightweight server-side logic
 
 Pattern for Supabase calls: destructure `{ data, error }` and check `if (error || !data)`.
 
