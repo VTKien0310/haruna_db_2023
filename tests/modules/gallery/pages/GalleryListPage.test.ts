@@ -1,0 +1,61 @@
+import { describe, expect, it, vi } from "vitest";
+import { mount, flushPromises } from "@vue/test-utils";
+import { VaButtonToggle, VaProgressCircle } from "vuestic-ui";
+import GalleryListPage from "@/modules/gallery/pages/GalleryListPage.vue";
+import { useGalleryListStore } from "@/modules/gallery/stores/GalleryListStore";
+import { makeMedia } from "../../../factories/Records";
+import { appMountOptions } from "../../../support/mountApp";
+
+const list = vi.hoisted(() => ({
+  refreshMedias: vi.fn(),
+  fetchMedias: vi.fn(),
+}));
+vi.mock("@/modules/gallery/GalleryServiceContainer", () => ({
+  useGalleryListService: () => list,
+}));
+vi.mock("@/modules/gallery/components/GalleryToUploadPageButton.vue", () => ({
+  default: { template: "<div />" },
+}));
+vi.mock("@/modules/gallery/components/GalleryGridItem.vue", () => ({
+  default: {
+    props: ["media"],
+    template: '<div class="grid-item">{{ media.name }}</div>',
+  },
+}));
+vi.mock("@/modules/gallery/components/GalleryListItem.vue", () => ({
+  default: {
+    props: ["media"],
+    template: '<div class="list-item">{{ media.name }}</div>',
+  },
+}));
+
+describe("GalleryListPage", () => {
+  it("refreshes on mount, shows loading and switches views", async () => {
+    const store = useGalleryListStore();
+    store.medias = [makeMedia()];
+    store.isFetchingGalleryMedias = true;
+    const wrapper = mount(GalleryListPage, appMountOptions());
+    expect(list.refreshMedias).toHaveBeenCalledOnce();
+    expect(wrapper.getComponent(VaProgressCircle).isVisible()).toBe(true);
+    expect(wrapper.get(".grid-item").isVisible()).toBe(true);
+    expect(wrapper.get(".list-item").isVisible()).toBe(false);
+    wrapper.getComponent(VaButtonToggle).vm.$emit("update:modelValue", "list");
+    await flushPromises();
+    expect(wrapper.get(".list-item").isVisible()).toBe(true);
+    store.isFetchingGalleryMedias = false;
+    await flushPromises();
+    expect(wrapper.getComponent(VaProgressCircle).isVisible()).toBe(false);
+  });
+  it("loads more near the bottom and handles an empty list", async () => {
+    const wrapper = mount(GalleryListPage, appMountOptions());
+    expect(wrapper.find(".grid-item").exists()).toBe(false);
+    const scroller = wrapper.get(".overflow-scroll");
+    Object.defineProperties(scroller.element, {
+      scrollTop: { value: 760 },
+      clientHeight: { value: 100 },
+      scrollHeight: { value: 1000 },
+    });
+    await scroller.trigger("scroll");
+    expect(list.fetchMedias).toHaveBeenCalledOnce();
+  });
+});

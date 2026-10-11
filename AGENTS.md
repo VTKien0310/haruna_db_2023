@@ -24,6 +24,45 @@ A multipurpose Progressive Web App (PWA) for everyday use, providing:
 
 This file defines the standards and expectations that coding agents must follow when working on this project.
 
+## Local Development Setup and Startup
+
+Run commands from the repository root.
+
+### Setup and Startup
+
+1. Start the local Supabase environment:
+
+   ```sh
+   npx supabase start
+   ```
+
+2. Install dependencies:
+
+   ```sh
+   npm install
+   ```
+
+3. Start the frontend development server:
+
+   ```sh
+   npm run dev
+   ```
+
+4. In a separate terminal, serve Edge Functions with the local environment file:
+
+   ```sh
+   supabase functions serve --env-file ./supabase/functions/.env.local
+   ```
+
+Keep the frontend and Edge Function processes running while developing features that use them.
+
+### Test-Only Setup
+
+For application tests, install dependencies with `npm ci`, then run `npm test`.
+No environment files, credentials, Docker, Supabase, backend server, or development
+server are required. Follow the mandatory isolation rules in **Testing and Validation**;
+do not start local services for the application test suite.
+
 ## Core Principles
 
 - Prioritize **security, maintainability, and clarity** over cleverness.
@@ -198,17 +237,78 @@ Use `backendPort` directly for:
 
 ## Testing and Validation
 
+### Application Test Suite
+
+Use Vitest, Vue Test Utils, and jsdom for application tests. The separate test tree
+mirrors `src/`:
+
+- `tests/modules/{module}/`: service, page, component, and store behavior tests.
+- `tests/ports/`: pure result helpers and DOM behavior, not live integrations.
+- `tests/factories/`: deterministic typed record builders.
+- `tests/fakes/`: explicit in-memory dependencies and backend responses.
+- `tests/support/`: mounting helpers, network guards, and isolation self-tests.
+- `tests/setup.ts`: fresh Pinia, module mocks, browser compatibility, and cleanup.
+
+Name tests `*.test.ts`, group with `describe("ClassOrComponent", ...)`, and focus
+on observable behavior, including success, failure, empty, and loading states.
+Use real Vuestic controls for validation. Use `appMountOptions()` for components
+and constructor injection for services. Workflow tests connect real services and
+stores to fake backend dependencies. Do not test private implementation details
+or substitute broad snapshots for behavioral assertions.
+
+### Mandatory Isolation
+
+- Tests must never contact real or local API, Supabase, database, storage, auth,
+  or Edge Function services. Do not start Docker, Supabase, a development server,
+  or any other external service for this suite.
+- Do not read development/production environment files or credentials. Vitest
+  disables environment-file loading and supplies dummy endpoints and keys.
+- The backend singleton and Supabase client construction are guarded before app
+  imports. Do not use `vi.unmock`, `vi.importActual`, or direct SDK construction to
+  bypass those boundaries. Do not import `src/main.ts` into tests.
+- Use `makeBackendFake()` and explicitly configure responses. Unconfigured
+  operations fail teardown even when application code catches their errors.
+  `backend.query(...)` queues one response per `.from(...)` call; query chains
+  record arguments and do not implement SQL or RLS semantics.
+- Never restore real network transports or use subprocesses to access services.
+  Extend fakes for new interactions. FFmpeg, service-worker registration, browser
+  downloads, and other external side effects must remain mocked.
+- Only isolation self-tests may explicitly consume expected guard violations.
+  Other tests must allow global teardown to detect them.
+- Await asynchronous work, unmount components, and stop service-owned watchers
+  (using `finally` where appropriate). Central setup resets Pinia, DOM, browser
+  storage, timers, and mocks; keep additional side effects equally isolated.
+- Supabase migrations/RLS/functions, server contracts, and browser end-to-end
+  tests are out of scope. Do not claim mock-based tests validate server behavior.
+
+### Commands
+
+```bash
+npm test                 # One complete run, suitable for CI
+npm run test:watch        # Watch mode for local iteration
+npm run test:coverage     # Text, HTML and LCOV reports under coverage/
+npm test -- tests/modules/translation
+```
+
+Coverage includes untested app code and has no initial percentage gate. Generated
+database types, bootstrap/root routing, and the real backend adapter are excluded.
+Add regression tests for bug fixes and update this guidance when the harness
+changes. See README.md for setup and helper examples.
+
 After creating or editing code, always run:
 
 ```bash
 npm run format     # Prettier (includes Tailwind class sorting)
 npm run type-check # vue-tsc type checking
+npm test           # Application tests (fully isolated)
 ```
 
 Rules:
 
 - Fix formatting issues introduced by your changes.
 - Fix type errors introduced by your changes.
+- Fix test failures introduced by your changes; never weaken isolation to pass.
+- Run `npm run test:coverage` when changing the harness or coverage configuration.
 - Do not ignore type errors without a documented reason.
 
 ## PWA Expectations
@@ -233,6 +333,7 @@ A task is only considered complete when all of the following are true:
 - Security implications have been considered.
 - `npm run format` has been run after the changes.
 - `npm run type-check` has been run after the changes.
+- `npm test` has been run after the changes.
 - Any important assumptions or tradeoffs are clearly communicated.
 
 ## Agent Behavior Expectations

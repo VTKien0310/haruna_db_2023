@@ -39,6 +39,7 @@ export class GalleryListService {
 
     if (error || data === null) {
       this.toastService.error("Failed to fetch medias");
+      this.turnOffIsFetchingMediaState();
       return;
     }
 

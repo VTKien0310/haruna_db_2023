@@ -16,7 +16,8 @@ export class UpdateWebpageBookmarkService {
 
   private async updateRecord(
     record: WebpageBookmark,
-    updateData: Record<string, string>,
+    updateData: Pick<WebBookmarkLinkFormData, "name" | "description"> &
+      Partial<Pick<WebBookmarkLinkFormData, "url">>,
   ): Promise<boolean> {
     const { error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
