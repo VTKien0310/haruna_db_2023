@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.app.json",
+  "include": [
+    "env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": [],
+  "compilerOptions": {
+    "composite": false,
+    "types": ["node", "vite/client"]
+  }
+}
