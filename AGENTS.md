@@ -24,6 +24,45 @@ A multipurpose Progressive Web App (PWA) for everyday use, providing:
 
 This file defines the standards and expectations that coding agents must follow when working on this project.
 
+## Local Development Setup and Startup
+
+Run commands from the repository root.
+
+### Setup and Startup
+
+1. Start the local Supabase environment:
+
+   ```sh
+   npx supabase start
+   ```
+
+2. Install dependencies:
+
+   ```sh
+   npm install
+   ```
+
+3. Start the frontend development server:
+
+   ```sh
+   npm run dev
+   ```
+
+4. In a separate terminal, serve Edge Functions with the local environment file:
+
+   ```sh
+   supabase functions serve --env-file ./supabase/functions/.env.local
+   ```
+
+Keep the frontend and Edge Function processes running while developing features that use them.
+
+### Test-Only Setup
+
+For application tests, install dependencies with `npm ci`, then run `npm test`.
+No environment files, credentials, Docker, Supabase, backend server, or development
+server are required. Follow the mandatory isolation rules in **Testing and Validation**;
+do not start local services for the application test suite.
+
 ## Core Principles
 
 - Prioritize **security, maintainability, and clarity** over cleverness.
