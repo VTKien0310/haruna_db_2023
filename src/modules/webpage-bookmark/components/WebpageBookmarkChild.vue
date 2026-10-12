@@ -31,7 +31,7 @@ const navigateToWebpageBookmarkDetailPage = (): void => {
   <h-hover
     v-model="isBeingHovered"
     @click="navigateToWebpageBookmarkDetailPage"
-    class="flex flex-row content-center items-center justify-start rounded-lg"
+    class="flex flex-row content-center items-center justify-start gap-3 rounded-lg px-3"
     :class="{
       hovered: isBeingHovered,
     }"
@@ -40,9 +40,8 @@ const navigateToWebpageBookmarkDetailPage = (): void => {
       :name="isDirectory ? 'folder' : 'link'"
       size="3rem"
       color="primary"
-      class="px-3"
     />
-    <p>{{ webpageBookmark.name }}</p>
+    <p class="min-w-0 flex-1 wrap-anywhere">{{ webpageBookmark.name }}</p>
   </h-hover>
 </template>
 
