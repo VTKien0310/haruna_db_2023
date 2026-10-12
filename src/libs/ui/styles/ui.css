@@ -113,3 +113,117 @@
     animation: none;
   }
 }
+
+/* Components resolve colors at runtime, so keep even tokens without utilities. */
+@theme static {
+  --color-primary: #143441;
+  --color-secondary: #657786;
+  --color-success: #276b4c;
+  --color-info: #2276bb;
+  --color-danger: #b31e48;
+  --color-warning: #febe40;
+  --color-brand-amber: #febe40;
+  --color-brand-cyan: #2bb3cd;
+  --color-brand-raspberry: #eb305d;
+  --color-selection: #fff2ce;
+  --color-control-border: #7c8f9b;
+  --color-background-primary: #f7f9fa;
+  --color-background-secondary: #ffffff;
+  --color-background-element: #ecf1f4;
+  --color-background-border: #cbd5dc;
+  --color-text-primary: #394c5b;
+  --color-text-inverted: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.12);
+  --color-focus: #2276bb;
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1440px;
+  --breakpoint-xl: 1920px;
+}
+
+@utility grid-cols-16 {
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+}
+
+@utility grid-cols-20 {
+  grid-template-columns: repeat(20, minmax(0, 1fr));
+}
+
+/*font-family: 'Oxygen Mono', monospace;*/
+/*font-family: 'Pacifico', cursive;*/
+/*font-family: 'Roboto', sans-serif;*/
+/*font-family: 'Roboto Slab', serif;*/
+
+.branding-font {
+  font-family: "Pacifico", cursive;
+}
+
+.branding-color {
+  color: var(--color-primary);
+}
+
+.branding-background {
+  background-color: var(--color-primary);
+}
+
+.title-font {
+  font-family: "Oxygen Mono", monospace;
+}
+
+.sans-serif-font {
+  font-family: "Roboto", sans-serif;
+}
+
+.serif-font {
+  font-family: "Roboto Slab", serif;
+}
+
+@layer base {
+  html {
+    font-size: 16px;
+  }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ol,
+  ul {
+    margin: 0;
+    padding: 0;
+    font-weight: normal;
+  }
+  ol,
+  ul {
+    list-style: none;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+body {
+  font-family: var(--h-font-family);
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  background: var(--color-background-secondary);
+}
+
+.invisible-scroll-bar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.invisible-scroll-bar::-webkit-scrollbar {
+  display: none; /* Chromium */
+}

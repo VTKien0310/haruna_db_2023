@@ -32,13 +32,12 @@ application notification service constructors.
 See the [public exports](../src/libs/ui/index.ts) for available components and type surface.
 
 ```vue
-
 <script setup lang="ts">
-  import { ref } from "vue";
-  import { HButton, HForm, HInput, type HFormHandle } from "@/libs/ui";
+import { ref } from "vue";
+import { HButton, HForm, HInput, type HFormHandle } from "@/libs/ui";
 
-  const form = ref<HFormHandle>();
-  const name = ref("");
+const form = ref<HFormHandle>();
+const name = ref("");
 </script>
 
 <template>
@@ -82,16 +81,16 @@ See the [public exports](../src/libs/ui/index.ts) for available components and t
 The flat design follows the existing [folder logo](../src/assets/logo.svg): white
 surfaces, slate actions, amber selection, cyan accents, visible borders, and
 rounded controls. Use solid fills, borders, and spacing for hierarchy; do not
-add gradients or decorative shadows. Theme colors live in `src/main.css`;
-shared sizing, corners, overlay layers, and motion tokens live in
-`src/libs/ui/styles/ui.css`.
+add gradients or decorative shadows. Theme colors, shared sizing, corners,
+overlay layers, and motion tokens live in `src/libs/ui/styles/ui.css` as
+Haruna UI defaults.
 
 Component color props use camelCase (`color="backgroundElement"`), mapped to
 kebab-case CSS/Tailwind tokens (`--color-background-element`,
 `bg-background-element`). The current palette is:
 
 | Purpose                     | Component token / value                                                            |
-|-----------------------------|------------------------------------------------------------------------------------|
+| --------------------------- | ---------------------------------------------------------------------------------- |
 | Primary actions             | `primary` / `#143441`, white foreground                                            |
 | Body / muted text           | `textPrimary` / `#394c5b`, `secondary` / `#657786`                                 |
 | Canvas / panels             | `backgroundSecondary` / white, `backgroundPrimary` / `#f7f9fa`                     |
@@ -123,12 +122,20 @@ surfaces.
 
 ## CSS integration
 
-- Import Ionic CSS and global resets once into Tailwind's `base` layer in
-  `src/main.css`; do not import them unlayered from bootstrap or components.
+- Keep `src/main.css` as the import and registration point for external fonts,
+  Tailwind, Ionic CSS, and Haruna UI styles. Keep Ionic selectors and `--ion-*`
+  variable mappings there as application integration styles; define Haruna UI
+  defaults in `src/libs/ui/styles/ui.css` without external package imports or
+  framework-specific selectors and variables.
+- Import Ionic CSS once into Tailwind's `base` layer in `src/main.css` and
+  define global resets in the same layer in `src/libs/ui/styles/ui.css`;
+  do not import resets unlayered from bootstrap or components.
   Unlayered resets override utility padding, borders, and corner radii.
-- Import `src/libs/ui/styles/ui.css` after Tailwind. Component-local CSS handles
-  behavior that utilities do not express clearly; feature styling uses shared
-  tokens and utilities.
+- Import `src/libs/ui/styles/ui.css` after Tailwind and Ionic. It owns theme
+  tokens, custom grid utilities, font and branding classes, global resets,
+  body defaults, scrollbar utilities, and shared component styles.
+  Component-local CSS handles behavior that utilities do not express clearly;
+  feature styling uses shared tokens and utilities.
 - Keep `@theme static`: component color names resolve at runtime, so tokens
   must remain available even when no utility class references them, including
   white button text.

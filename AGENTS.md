@@ -186,7 +186,7 @@ Use `backendPort` directly for:
 ### Tailwind CSS
 
 - Use Tailwind utility classes in templates for layout and styling.
-- Prefer existing theme tokens from `@theme static` in `src/main.css` before adding new ones:
+- Prefer existing theme tokens from `@theme static` in `src/libs/ui/styles/ui.css` before adding new ones:
   - **Colors:** `primary`, `secondary`, `success`, `info`, `danger`, `warning`, `background-primary`,
     `background-secondary`, `background-element`, `background-border`, `text-primary`, `text-inverted`, `shadow`, `focus`,
     `control-border`, `brand-amber`, `brand-cyan`, `brand-raspberry`, `selection`
@@ -201,7 +201,10 @@ Use `backendPort` directly for:
 
 ### Global CSS
 
-- Global resets and font definitions live in `src/main.css`.
+- `src/main.css` is the import and registration point for external fonts, Tailwind, Ionic CSS, and Haruna UI styles.
+- Ionic selectors and `--ion-*` variable mappings belong in `src/main.css` as application integration styles.
+- App-owned definitions, including theme tokens, global resets, font classes, and shared utilities, live in `src/libs/ui/styles/ui.css` as Haruna UI defaults.
+- Keep Haruna UI's shared stylesheet free of external package imports and framework-specific selectors and variables.
 - Follow the [Haruna UI CSS integration rules](doc/haruna-ui-lib.md#css-integration) for Ionic/Tailwind import ordering and runtime theme tokens.
 - Font classes: `.branding-font` (Pacifico), `.title-font` (Oxygen Mono), `.sans-serif-font` (Roboto), `.serif-font` (
   Roboto Slab).
@@ -330,7 +333,7 @@ A task is only considered complete when all of the following are true:
 
 - The implementation follows Vue, Ionic, and Haruna UI conventions.
 - The UI uses Haruna/Ionic components where appropriate.
-- Styling respects `@theme` tokens in `src/main.css`.
+- Styling respects `@theme` tokens in `src/libs/ui/styles/ui.css`.
 - Code is consistent with the existing architecture.
 - Security implications have been considered.
 - `npm run format` has been run after the changes.
