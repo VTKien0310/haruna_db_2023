@@ -90,6 +90,16 @@ describe("HForm and fields", () => {
     expect(textarea.attributes("rows")).toBe("5");
     expect((textarea.element as HTMLTextAreaElement).style.resize).toBe("none");
     expect(wrapper.find('[role="progressbar"]').exists()).toBe(true);
+    expect(wrapper.get('[role="progressbar"]').attributes("aria-label")).toBe(
+      "Loading",
+    );
+    expect(wrapper.get("[aria-busy]").attributes("aria-busy")).toBe("true");
+    expect(wrapper.text()).toContain("5");
+    await wrapper.setProps({ loading: false });
+    expect(wrapper.find('[role="progressbar"]').exists()).toBe(false);
+    expect(wrapper.get("[aria-busy]").attributes("aria-busy")).toBe("false");
+    expect((textarea.element as HTMLTextAreaElement).value).toBe("Hello");
+    expect(textarea.attributes("readonly")).toBeDefined();
     expect(wrapper.text()).toContain("5");
   });
 });

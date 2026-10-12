@@ -119,6 +119,7 @@ defineExpose({
       />
       <HProgressCircle
         v-if="loading"
+        :class="{ 'mt-1 self-start': multiline }"
         size="small"
         indeterminate
         aria-label="Loading"
