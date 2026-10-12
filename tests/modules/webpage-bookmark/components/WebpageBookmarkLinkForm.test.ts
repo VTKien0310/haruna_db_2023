@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
-import { VaForm, VaInput } from "vuestic-ui";
+import { HForm, HInput } from "@/libs/ui";
 import WebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/WebpageBookmarkLinkForm.vue";
 import { appMountOptions } from "../../../support/mountApp";
 
@@ -25,10 +25,10 @@ describe("WebpageBookmarkLinkForm", () => {
       });
       await wrapper.get("button").trigger("click");
       await flushPromises();
-      const inputs = wrapper.findAllComponents(VaInput);
+      const inputs = wrapper.findAllComponents(HInput);
       await inputs[0].get("input").setValue(name);
       await inputs[1].get("input").setValue(url);
-      expect(await wrapper.getComponent(VaForm).vm.validate()).toBe(valid);
+      expect(await wrapper.getComponent(HForm).vm.validate()).toBe(valid);
       await flushPromises();
       if (!valid) {
         expect(submit).not.toHaveBeenCalled();
@@ -44,7 +44,7 @@ describe("WebpageBookmarkLinkForm", () => {
       await flushPromises();
       expect(
         (
-          wrapper.findAllComponents(VaInput)[0].get("input")
+          wrapper.findAllComponents(HInput)[0].get("input")
             .element as HTMLInputElement
         ).value,
       ).toBe("");
@@ -65,8 +65,8 @@ describe("WebpageBookmarkLinkForm", () => {
     });
     await wrapper.get("button").trigger("click");
     await flushPromises();
-    await wrapper.findAllComponents(VaInput)[0].get("input").setValue("Edited");
-    await wrapper.getComponent(VaForm).vm.validate();
+    await wrapper.findAllComponents(HInput)[0].get("input").setValue("Edited");
+    await wrapper.getComponent(HForm).vm.validate();
     await flushPromises();
     await wrapper
       .findAll("button")
@@ -77,7 +77,7 @@ describe("WebpageBookmarkLinkForm", () => {
     await flushPromises();
     expect(
       (
-        wrapper.findAllComponents(VaInput)[0].get("input")
+        wrapper.findAllComponents(HInput)[0].get("input")
           .element as HTMLInputElement
       ).value,
     ).toBe("Edited");

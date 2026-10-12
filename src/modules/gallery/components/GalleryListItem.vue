@@ -5,7 +5,7 @@ import {
   useGalleryNavigationService,
   useMediaDetailService,
 } from "@/modules/gallery/GalleryServiceContainer";
-import { VaIcon } from "vuestic-ui";
+import { HIcon } from "@/libs/ui";
 
 const props = defineProps<{
   media: Media;
@@ -44,11 +44,11 @@ onMounted(() => {
       class="m-auto max-h-screen max-w-full"
     />
 
-    <va-icon
+    <h-icon
       v-if="mediaIsVideo"
       name="videocam"
       class="absolute right-1 bottom-1"
-      color="background-element"
+      color="backgroundElement"
     />
   </div>
 </template>

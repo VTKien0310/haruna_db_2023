@@ -2,7 +2,7 @@
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import router from "@/router.ts";
 import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter.ts";
-import { VaButton } from "vuestic-ui";
+import { HButton } from "@/libs/ui";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
@@ -15,7 +15,7 @@ const navigateToParentDirectory = (): void => {
 </script>
 
 <template>
-  <va-button
+  <h-button
     @click="navigateToParentDirectory"
     :disabled="webpageBookmarkDetailStore.currentIsRoot"
     round

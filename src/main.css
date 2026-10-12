@@ -1,113 +1,30 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
-@import "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;1,700&display=swap";
-@import "https://fonts.googleapis.com/css2?family=Oxygen+Mono&family=Pacifico&family=Roboto&family=Roboto+Slab&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Oxygen+Mono&family=Pacifico&family=Roboto:wght@400;500;600;700&family=Roboto+Slab&display=swap";
 
 @import "tailwindcss";
+/* Ionic provides the baseline; Haruna/Tailwind utilities own app styling. */
+@import "@ionic/vue/css/core.css" layer(base);
+@import "@ionic/vue/css/normalize.css" layer(base);
+@import "@ionic/vue/css/structure.css" layer(base);
+@import "@ionic/vue/css/typography.css" layer(base);
+@import "@ionic/vue/css/padding.css" layer(base);
+@import "@ionic/vue/css/text-alignment.css" layer(base);
+@import "@ionic/vue/css/text-transformation.css" layer(base);
+@import "@ionic/vue/css/flex-utils.css" layer(base);
+@import "@ionic/vue/css/display.css" layer(base);
+@import "./libs/ui/styles/ui.css";
 
-@theme {
-  --color-primary: #154ec1;
-  --color-secondary: #767c88;
-  --color-success: #3d9209;
-  --color-info: #158de3;
-  --color-danger: #e42222;
-  --color-warning: #ffd43a;
-  --color-background-primary: #f6f6f6;
-  --color-background-secondary: #ffffff;
-  --color-background-element: #ecf0f1;
-  --color-background-border: #dee5f2;
-  --color-text-primary: #262824;
-  --color-text-inverted: #ffffff;
-  --color-shadow: rgba(0, 0, 0, 0.12);
-  --color-focus: #49a8ff;
-
-  --breakpoint-sm: 640px;
-  --breakpoint-md: 1024px;
-  --breakpoint-lg: 1440px;
-  --breakpoint-xl: 1920px;
-}
-
-@utility grid-cols-16 {
-  grid-template-columns: repeat(16, minmax(0, 1fr));
-}
-
-@utility grid-cols-20 {
-  grid-template-columns: repeat(20, minmax(0, 1fr));
-}
-
-/*font-family: 'Oxygen Mono', monospace;*/
-/*font-family: 'Pacifico', cursive;*/
-/*font-family: 'Roboto', sans-serif;*/
-/*font-family: 'Roboto Slab', serif;*/
-
-.branding-font {
-  font-family: "Pacifico", cursive;
-}
-
-.branding-color {
-  color: var(--color-primary);
-}
-
-.branding-background {
-  background-color: var(--color-primary);
-}
-
-.title-font {
-  font-family: "Oxygen Mono", monospace;
-}
-
-.sans-serif-font {
-  font-family: "Roboto", sans-serif;
-}
-
-.serif-font {
-  font-family: "Roboto Slab", serif;
-}
-
-html {
-  box-sizing: border-box;
-  font-size: 16px;
-}
-
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
-}
-
+/* Adapt Ionic to Haruna's defaults at the application integration boundary. */
 body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-ol,
-ul {
-  margin: 0;
-  padding: 0;
-  font-weight: normal;
+ion-app {
+  --ion-font-family: var(--h-font-family);
+  --ion-background-color: var(--color-background-secondary);
+  --ion-text-color: var(--color-text-primary);
 }
 
-ol,
-ul {
-  list-style: none;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-.va-modal {
-  --va-modal-z-index: 20;
-}
-
-.invisible-scroll-bar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-.invisible-scroll-bar::-webkit-scrollbar {
-  display: none; /* Chromium */
+ion-app {
+  font-family: var(--h-font-family);
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  background: var(--color-background-secondary);
 }

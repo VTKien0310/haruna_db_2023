@@ -8,7 +8,7 @@ import {
   useAuthenticationService,
   useProfileService,
 } from "@/modules/auth/AuthServiceContainer";
-import { VaButton, VaForm, VaInput } from "vuestic-ui";
+import { HButton, HForm, HInput } from "@/libs/ui";
 
 const authenticationService = useAuthenticationService();
 const profileService = useProfileService();
@@ -65,33 +65,33 @@ onMounted(() => {
 <template>
   <ion-page>
     <div
-      class="flex min-h-screen w-full flex-col content-center items-center justify-start p-3 sm:justify-center"
+      class="flex h-full w-full flex-col items-center justify-start overflow-y-auto p-4 sm:justify-center"
     >
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 xl:w-1/5">
-        <va-form
+        <h-form
           @submit.prevent="handleUpdateProfile"
           ref="profileForm"
           tag="form"
           class="!mb-2 flex w-full flex-col content-center items-center justify-center"
         >
-          <va-input
+          <h-input
             v-model="profileFormContent.name"
             label="Name"
             name="name"
             class="w-full"
           />
 
-          <va-input
+          <h-input
             v-model="profileFormContent.password"
             label="Password"
             name="password"
             type="password"
             placeholder="Minimum length of 8 characters"
-            class="mt-2 w-full"
+            class="mt-4 w-full"
           />
 
           <div class="mt-6 flex w-full flex-row justify-between">
-            <va-button
+            <h-button
               :disabled="!enableUpdateProfileButton"
               :loading="isUpdatingProfile"
               icon="save"
@@ -99,7 +99,7 @@ onMounted(() => {
               class="mr-1 w-full"
             />
 
-            <va-button
+            <h-button
               @click="reloadProfileFormContent"
               icon="replay"
               preset="secondary"
@@ -107,9 +107,9 @@ onMounted(() => {
               class="ml-1 w-full"
             />
           </div>
-        </va-form>
+        </h-form>
 
-        <va-button
+        <h-button
           @click="handleLogout"
           icon="logout"
           class="w-full"

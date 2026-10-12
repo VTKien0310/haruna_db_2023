@@ -1,21 +1,17 @@
-import { type ToastOptions, useToast } from "vuestic-ui";
+import { type HNotifications } from "@/libs/ui";
 
 export class ToastService {
-  private readonly toastInit: (options: string | ToastOptions) => string | null;
-
-  constructor() {
-    this.toastInit = useToast().init;
-  }
+  constructor(private readonly notifications: Pick<HNotifications, "toast">) {}
 
   error(message: string): void {
-    this.toastInit({
+    this.notifications.toast({
       message: message,
       color: "danger",
     });
   }
 
   info(message: string): void {
-    this.toastInit({
+    this.notifications.toast({
       message: message,
       color: "primary",
     });

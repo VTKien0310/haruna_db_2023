@@ -22,7 +22,7 @@ export default defineConfig({
       manifest: {
         name: "Haruna Digital Book",
         short_name: "HarunaDB",
-        theme_color: "#154EC1",
+        theme_color: "#ffffff",
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",

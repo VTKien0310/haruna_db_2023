@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref } from "vue";
+import { computed, onUnmounted, ref, watch } from "vue";
 import { AuthRouteName } from "@/modules/auth/AuthRouter";
 import { MasterRouteName } from "@/modules/master/MasterRouter";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
@@ -8,12 +8,13 @@ import router from "@/router";
 import { TranslationRouteName } from "@/modules/translation/TranslationRouter";
 import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
 import {
-  VaIcon,
-  VaSidebar,
-  VaSidebarItem,
-  VaSidebarItemContent,
-  VaSidebarItemTitle,
-} from "vuestic-ui";
+  HIcon,
+  HDrawer,
+  HSidebar,
+  HSidebarItem,
+  HSidebarItemContent,
+  HSidebarItemTitle,
+} from "@/libs/ui";
 import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter";
 import { WEB_BOOKMARK_ROOT_DIR_ID } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import AppTopBar from "@/modules/master/components/AppTopBar.vue";
@@ -48,6 +49,7 @@ const navigateTo = (
 };
 
 const currentRouteName = computed(() => router.currentRoute.value.name);
+watch(() => router.currentRoute.value.fullPath, closeSidebar);
 
 interface NavItem {
   label: string;
@@ -80,53 +82,41 @@ onUnmounted((): void => {
 
 <template>
   <ion-app>
-    <ion-router-outlet :class="{ 'mt-14': !hideNavBar }" />
+    <ion-router-outlet
+      :class="{ 'mt-(--h-app-header-height)': !hideNavBar }"
+      :inert="isSidebarOpen || undefined"
+    />
 
     <AppTopBar
       :visible="!hideNavBar"
+      :sidebar-open="isSidebarOpen"
+      :inert="isSidebarOpen || undefined"
+      @navigate-home="navigateTo(MasterRouteName.MASTER)"
       @toggle-sidebar="isSidebarOpen = !isSidebarOpen"
     />
 
     <PwaUpdateNotification />
 
-    <Transition name="sidebar-fade">
-      <div
-        v-if="isSidebarOpen"
-        class="fixed inset-0 z-50 flex"
-        @click.self="closeSidebar"
-      >
-        <div class="h-full w-full bg-black/50" @click="closeSidebar" />
-        <va-sidebar
-          class="absolute top-0 left-0 h-full"
-          color="backgroundElement"
-        >
-          <div class="flex flex-col gap-1 p-2">
-            <va-sidebar-item
-              v-for="item in navItems"
-              :key="item.routeName"
-              @click="navigateTo(item.routeName, item.routeParams)"
-              :active="currentRouteName === item.routeName"
-            >
-              <va-sidebar-item-content>
-                <va-icon :name="item.icon" />
-                <va-sidebar-item-title>{{ item.label }}</va-sidebar-item-title>
-              </va-sidebar-item-content>
-            </va-sidebar-item>
-          </div>
-        </va-sidebar>
-      </div>
-    </Transition>
+    <HDrawer
+      id="app-navigation"
+      v-model="isSidebarOpen"
+      :top-offset="hideNavBar ? '0' : 'var(--h-app-header-height)'"
+    >
+      <h-sidebar color="backgroundPrimary">
+        <div class="flex flex-col gap-1">
+          <h-sidebar-item
+            v-for="item in navItems"
+            :key="item.routeName"
+            @click="navigateTo(item.routeName, item.routeParams)"
+            :active="currentRouteName === item.routeName"
+          >
+            <h-sidebar-item-content>
+              <h-icon :name="item.icon" />
+              <h-sidebar-item-title>{{ item.label }}</h-sidebar-item-title>
+            </h-sidebar-item-content>
+          </h-sidebar-item>
+        </div>
+      </h-sidebar>
+    </HDrawer>
   </ion-app>
 </template>
-
-<style scoped>
-.sidebar-fade-enter-active,
-.sidebar-fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.sidebar-fade-enter-from,
-.sidebar-fade-leave-to {
-  opacity: 0;
-}
-</style>

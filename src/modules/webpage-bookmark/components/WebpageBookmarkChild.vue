@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
-import { VaHover, VaIcon } from "vuestic-ui";
+import { HHover, HIcon } from "@/libs/ui";
 import router from "@/router";
 import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter.ts";
 import { ref } from "vue";
@@ -28,27 +28,26 @@ const navigateToWebpageBookmarkDetailPage = (): void => {
 </script>
 
 <template>
-  <va-hover
+  <h-hover
     v-model="isBeingHovered"
     @click="navigateToWebpageBookmarkDetailPage"
-    class="flex flex-row content-center items-center justify-start rounded-lg"
+    class="flex flex-row content-center items-center justify-start gap-3 rounded-lg px-3"
     :class="{
       hovered: isBeingHovered,
     }"
   >
-    <va-icon
+    <h-icon
       :name="isDirectory ? 'folder' : 'link'"
       size="3rem"
       color="primary"
-      class="px-3"
     />
-    <p>{{ webpageBookmark.name }}</p>
-  </va-hover>
+    <p class="min-w-0 flex-1 wrap-anywhere">{{ webpageBookmark.name }}</p>
+  </h-hover>
 </template>
 
 <style scoped>
 .hovered {
-  background-color: var(--va-background-element);
+  background-color: var(--color-background-element);
   cursor: pointer;
 }
 </style>

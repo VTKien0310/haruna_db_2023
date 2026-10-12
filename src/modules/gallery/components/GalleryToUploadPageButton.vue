@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import router from "@/router";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";
-import { VaButton } from "vuestic-ui";
+import { HButton } from "@/libs/ui";
 
 function goToGalleryUploadPage(): void {
   router.push({ name: GalleryRouteName.UPLOAD });
@@ -9,7 +9,7 @@ function goToGalleryUploadPage(): void {
 </script>
 
 <template>
-  <va-button @click="goToGalleryUploadPage" round size="large" icon="upload" />
+  <h-button @click="goToGalleryUploadPage" round size="large" icon="upload" />
 </template>
 
 <style scoped></style>
