@@ -91,6 +91,7 @@ onUnmounted((): void => {
       :visible="!hideNavBar"
       :sidebar-open="isSidebarOpen"
       :inert="isSidebarOpen || undefined"
+      @navigate-home="navigateTo(MasterRouteName.MASTER)"
       @toggle-sidebar="isSidebarOpen = !isSidebarOpen"
     />
 

@@ -57,6 +57,32 @@ async function mountShell() {
 }
 
 describe("App shell", () => {
+  it("navigates home from the branding and safely handles repeated activation", async () => {
+    const wrapper = await mountShell();
+    try {
+      const branding = wrapper.get('button[aria-label="Go to home"]');
+      expect(branding.attributes("type")).toBe("button");
+      expect(branding.text()).toBe("Haruna");
+      expect(branding.get("img").attributes("alt")).toBe("");
+
+      await branding.get("img").trigger("click");
+      await flushPromises();
+      expect(router.currentRoute.value.name).toBe("master");
+      expect(router.currentRoute.value.path).toBe("/");
+
+      await branding.get("span.font-semibold").trigger("click");
+      await flushPromises();
+      expect(router.currentRoute.value.name).toBe("master");
+      expect(
+        wrapper
+          .get('[aria-label="Open navigation"]')
+          .attributes("aria-expanded"),
+      ).toBe("false");
+    } finally {
+      wrapper.unmount();
+    }
+  });
+
   it("exposes menu state, active navigation and closes after a destination is selected", async () => {
     const wrapper = await mountShell();
     const menu = wrapper.get('[aria-label="Open navigation"]');
