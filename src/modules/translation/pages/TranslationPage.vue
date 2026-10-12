@@ -8,13 +8,13 @@ import { useTranslationService } from "@/modules/translation/TranslationServiceC
 import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
 import { useToastService } from "@/modules/master/MasterServiceContainer";
 import {
-  VaButton,
-  VaIcon,
-  VaPagination,
-  VaProgressBar,
-  VaSelect,
-  VaTextarea,
-} from "vuestic-ui";
+  HButton,
+  HIcon,
+  HPagination,
+  HProgressBar,
+  HSelect,
+  HTextarea,
+} from "@/libs/ui";
 
 const translationService = useTranslationService();
 const translationStore = useTranslationStore();
@@ -135,48 +135,48 @@ onIonViewDidEnter(async () => {
 
 <template>
   <ion-page>
-    <div class="bg-background-primary h-screen overflow-y-auto">
+    <div class="bg-background-primary h-full overflow-y-auto">
       <div class="mx-auto flex w-full max-w-6xl flex-col px-3 pt-3 pb-6">
         <!-- header -->
         <div class="flex flex-row flex-wrap items-center justify-end gap-2">
           <div class="flex flex-row gap-2">
-            <va-button
+            <h-button
               :disabled="!canTranslate"
               :loading="isTranslating"
               @click="translate"
             >
               Translate
-            </va-button>
-            <va-button
+            </h-button>
+            <h-button
               preset="secondary"
               border-color="primary"
               :disabled="isTranslating"
               @click="swapLanguages"
             >
               Swap
-            </va-button>
-            <va-button
+            </h-button>
+            <h-button
               preset="secondary"
               border-color="primary"
               @click="clearSourceText"
             >
               Clear
-            </va-button>
-            <va-button
+            </h-button>
+            <h-button
               preset="secondary"
               border-color="primary"
               @click="resetTranslation"
             >
               Reset
-            </va-button>
+            </h-button>
           </div>
         </div>
 
         <!-- language selection bar -->
         <div
-          class="border-background-border bg-background-secondary mt-3 flex flex-col items-stretch gap-2 rounded border p-3 shadow-sm md:flex-row md:items-center"
+          class="border-background-border bg-background-secondary mt-4 flex flex-col items-stretch gap-4 rounded-(--h-panel-radius) border p-4 md:flex-row md:items-center"
         >
-          <va-select
+          <h-select
             v-model="sourceLanguage"
             :options="translationStore.supportedLanguages"
             value-by="code"
@@ -186,7 +186,7 @@ onIonViewDidEnter(async () => {
             :loading="translationStore.isLoadingLanguages"
             class="w-full"
           />
-          <va-select
+          <h-select
             v-model="targetLanguage"
             :options="translationStore.supportedLanguages"
             value-by="code"
@@ -202,12 +202,12 @@ onIonViewDidEnter(async () => {
         <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
           <!-- source panel -->
           <div
-            class="border-background-border bg-background-secondary flex flex-col rounded border p-3 shadow-sm"
+            class="border-background-border bg-background-secondary flex flex-col rounded-(--h-panel-radius) border p-4"
           >
             <div class="mb-2 flex h-8 flex-row items-center justify-between">
               <span class="text-text-primary font-bold">Source text</span>
             </div>
-            <va-textarea
+            <h-textarea
               v-model="sourceText"
               :resize="false"
               counter
@@ -218,24 +218,24 @@ onIonViewDidEnter(async () => {
 
           <!-- output panel -->
           <div
-            class="border-background-border bg-background-secondary flex flex-col rounded border p-3 shadow-sm"
+            class="border-background-border bg-background-secondary flex flex-col rounded-(--h-panel-radius) border p-4"
           >
             <div class="mb-2 flex h-8 flex-row items-center justify-between">
               <span class="text-text-primary font-bold">Translation</span>
-              <va-button
+              <h-button
                 v-if="translatedText"
                 preset="plain"
                 size="small"
                 @click="copyTranslatedText"
               >
-                <va-icon name="content_copy" />
-              </va-button>
+                <h-icon name="content_copy" />
+              </h-button>
             </div>
-            <va-textarea
+            <h-textarea
               v-model="translatedText"
               :resize="false"
               :loading="isTranslating"
-              background="background-element"
+              background="backgroundElement"
               readonly
               placeholder="Translation will appear here"
               class="translation-textarea w-full"
@@ -249,13 +249,13 @@ onIonViewDidEnter(async () => {
             <span class="text-text-primary font-bold">History</span>
           </div>
 
-          <va-progress-bar v-if="isFetchingHistories" indeterminate />
+          <h-progress-bar v-if="isFetchingHistories" indeterminate />
 
           <div
             v-if="
               !isFetchingHistories && translationStore.histories.length === 0
             "
-            class="text-secondary border-background-border bg-background-secondary flex flex-row items-center justify-center rounded border p-6"
+            class="text-secondary border-background-border bg-background-secondary flex flex-row items-center justify-center rounded-(--h-panel-radius) border p-6"
           >
             No translation history yet
           </div>
@@ -265,7 +265,7 @@ onIonViewDidEnter(async () => {
               v-for="record in translationStore.histories"
               :key="record.id"
               @click="fillFromHistory(record)"
-              class="border-background-border bg-background-secondary hover:bg-background-element flex cursor-pointer flex-col gap-1 rounded border p-3 transition-colors"
+              class="border-background-border bg-background-secondary hover:bg-background-element flex cursor-pointer flex-col gap-1 rounded-(--h-control-radius) border p-3 transition-colors"
               :class="{
                 'pointer-events-none opacity-50': isHistoryRecordActive(record),
               }"
@@ -284,7 +284,7 @@ onIonViewDidEnter(async () => {
           </div>
 
           <div v-if="totalHistoryPages > 1" class="mt-3 flex justify-center">
-            <va-pagination
+            <h-pagination
               v-model="translationStore.currentHistoryPage"
               :pages="totalHistoryPages"
               :disabled="isFetchingHistories"

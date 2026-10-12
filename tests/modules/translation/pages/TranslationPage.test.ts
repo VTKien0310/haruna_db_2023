@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises, mount } from "@vue/test-utils";
-import { VaPagination, VaProgressBar } from "vuestic-ui";
+import { HPagination, HProgressBar } from "@/libs/ui";
 import TranslationPage from "@/modules/translation/pages/TranslationPage.vue";
 import { TranslationService } from "@/modules/translation/TranslationService";
 import { useTranslationService } from "@/modules/translation/TranslationServiceContainer";
@@ -96,17 +96,20 @@ describe("TranslationPage workflow", () => {
     store.histories = [makeHistory()];
     store.totalHistoriesCount = 12;
     await flushPromises();
-    await wrapper.get(".cursor-pointer").trigger("click");
+    await wrapper
+      .findAll(".cursor-pointer")
+      .find((item) => item.text().includes("こんにちは"))!
+      .trigger("click");
     expect(
       (wrapper.findAll("textarea")[0].element as HTMLTextAreaElement).value,
     ).toBe("こんにちは");
-    expect(wrapper.findComponent(VaPagination).exists()).toBe(true);
+    expect(wrapper.findComponent(HPagination).exists()).toBe(true);
     backend.query(queryResult([], 12));
-    wrapper.getComponent(VaPagination).vm.$emit("update:modelValue", 2);
+    wrapper.getComponent(HPagination).vm.$emit("update:modelValue", 2);
     await flushPromises();
     expect(store.currentHistoryPage).toBe(2);
     store.isFetchingHistories = true;
     await flushPromises();
-    expect(wrapper.findComponent(VaProgressBar).exists()).toBe(true);
+    expect(wrapper.findComponent(HProgressBar).exists()).toBe(true);
   });
 });

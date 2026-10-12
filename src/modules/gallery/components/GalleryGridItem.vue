@@ -5,7 +5,7 @@ import {
   useGalleryNavigationService,
   useMediaDetailService,
 } from "@/modules/gallery/GalleryServiceContainer";
-import { VaIcon, VaImage, VaSkeleton } from "vuestic-ui";
+import { HIcon, HImage, HSkeleton } from "@/libs/ui";
 
 const props = defineProps<{
   media: Media;
@@ -34,7 +34,7 @@ onMounted(() => {
 
 <template>
   <div class="relative h-full w-full">
-    <va-image
+    <h-image
       v-if="mediaThumbnailSignedUrlCreated"
       :src="mediaThumbnailSignedUrl"
       @click="galleryNavigationService.navigateToMediaDetailPage(media.id)"
@@ -43,20 +43,20 @@ onMounted(() => {
       class="h-full w-full"
     >
       <template #loader>
-        <va-skeleton
+        <h-skeleton
           animation="pulse"
           variant="squared"
           width="100%"
           height="100%"
         />
       </template>
-    </va-image>
+    </h-image>
 
-    <va-icon
+    <h-icon
       v-if="mediaIsVideo"
       name="videocam"
       class="absolute right-1 bottom-1"
-      color="background-element"
+      color="backgroundElement"
     />
   </div>
 </template>

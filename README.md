@@ -18,6 +18,13 @@ battleship [Haruna](https://en.wikipedia.org/wiki/Japanese_battleship_Haruna).
 - Firebase hosting
 - PWA
 
+## UI library
+
+Haruna UI is the app-owned component library in [src/libs/ui](src/libs/ui),
+with a flat design derived from the existing folder logo and no Vuestic runtime
+dependency. See the [Haruna UI guide](doc/haruna-ui-lib.md) for setup, component APIs,
+theme tokens, design conventions, CSS integration, and maintenance.
+
 ## System requirement
 
 - Node.js 24.x
@@ -54,8 +61,8 @@ supabase functions serve --env-file ./supabase/functions/.env.local
 
 Tests run entirely in memory with Vitest, Vue Test Utils, and jsdom. They cover
 Vue components, application services, Pinia state, and workflows across auth,
-gallery, translation, bookmarks, and shared services. The separate test tree and
-shared fixture/fake conventions.
+gallery, translation, bookmarks, and shared services, including Haruna UI.
+The separate test tree follows shared fixture/fake conventions.
 
 ### Setup and commands
 
@@ -91,6 +98,7 @@ tests/
   setup.ts             # Isolation, fresh Pinia, browser compatibility, cleanup
   modules/             # Mirrors src/modules/, including services/pages/components
   ports/               # Pure backend result helpers and browser DOM behavior
+  libs/ui/             # UI controls, real modal/drawer focus, notification lifecycle
   factories/           # Deterministic typed records; no database factories/seeders
   fakes/               # Backend, router, notifications, PWA and other doubles
   support/             # Mount helpers, network guards and isolation self-tests
@@ -98,10 +106,13 @@ tests/
 
 Name files `*.test.ts` and group cases with `describe("ClassOrComponent", ...)`.
 Assert behavior (rendered state, navigation, payloads, errors, loading cleanup),
-not private methods or broad snapshots. Mount real Vuestic form controls when
+not private methods or broad snapshots. Mount real Haruna form controls when
 testing validation. Use targeted Ionic/modal/browser stubs when their native
 environment is irrelevant; these tests do not prove browser layout or PWA
 installability.
+
+For UI overlay and visual checks, follow the
+[Haruna UI verification guide](doc/haruna-ui-lib.md#verification).
 
 Service tests inject dependencies and use the fresh active Pinia provided by
 setup. For example:
@@ -127,7 +138,7 @@ database behavior. Configure `backend.get/post`, `backend.auth`, and
 for custom API results and `queryResult/queryError` for Supabase-shaped results.
 
 For component tests, use `appMountOptions()` from `tests/support/mountApp.ts`,
-which supplies the active Pinia, Vuestic plugin, and targeted stubs. Mock service
+which supplies the active Pinia, Haruna UI plugin, and targeted stubs. Mock service
 container factories to inject real services with fake dependencies for workflow
 tests, or focused service doubles for isolated UI tests. Stop service-owned
 watchers explicitly in `finally` blocks and await asynchronous work before a test

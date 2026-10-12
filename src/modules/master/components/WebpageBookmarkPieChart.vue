@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { Doughnut } from "vue-chartjs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -10,12 +10,21 @@ const props = defineProps<{
   directoryCount: number;
 }>();
 
+// Canvas colors cannot resolve CSS variables; read the shared theme after mount.
+const colors = ref<string[]>([]);
+onMounted(() => {
+  const theme = getComputedStyle(document.documentElement);
+  colors.value = ["--color-brand-cyan", "--color-brand-amber"].map((token) =>
+    theme.getPropertyValue(token).trim(),
+  );
+});
+
 const chartData = computed(() => ({
   labels: ["Links", "Directories"],
   datasets: [
     {
       data: [props.linkCount, props.directoryCount],
-      backgroundColor: ["#154ec1", "#767c88"],
+      backgroundColor: colors.value,
       borderWidth: 0,
     },
   ],
@@ -34,7 +43,7 @@ const chartOptions = {
 
 <template>
   <div class="flex h-44 items-center justify-center">
-    <Doughnut :data="chartData" :options="chartOptions" />
+    <Doughnut v-if="colors.length" :data="chartData" :options="chartOptions" />
   </div>
 </template>
 

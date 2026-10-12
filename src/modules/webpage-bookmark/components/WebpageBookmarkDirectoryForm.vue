@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {
-  useForm,
-  VaButton,
-  VaForm,
-  VaInput,
-  VaModal,
-  VaTextarea,
-} from "vuestic-ui";
-import { reactive, ref } from "vue";
+  type HFormHandle,
+  HButton,
+  HForm,
+  HInput,
+  HModal,
+  HTextarea,
+} from "@/libs/ui";
+import { computed, reactive, ref } from "vue";
 import type { WebBookmarkDirectoryFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 
 interface Props {
@@ -30,11 +30,10 @@ const {
   submitBtnLabel = "Submit",
 } = defineProps<Props>();
 
-const {
-  isValid: validCreationData,
-  validate,
-  resetValidation,
-} = useForm("formRef");
+const formRef = ref<HFormHandle>();
+const validCreationData = computed(() => formRef.value?.isValid ?? false);
+const validate = () => formRef.value?.validate() ?? false;
+const resetValidation = () => formRef.value?.resetValidation();
 
 const showForm = ref<boolean>(false);
 
@@ -69,7 +68,7 @@ const submitForm = async (): Promise<void> => {
 </script>
 
 <template>
-  <va-button
+  <h-button
     @click="triggerShowForm"
     :icon="formIcon"
     round
@@ -78,18 +77,18 @@ const submitForm = async (): Promise<void> => {
     :border-color="formStyleIsPrimary ? '' : 'primary'"
   />
 
-  <va-modal
+  <h-modal
     v-model="showForm"
     :title="formTitle"
     hide-default-actions
     no-dismiss
   >
     <!--    form content-->
-    <va-form
+    <h-form
       ref="formRef"
       class="flex w-full flex-col content-center justify-center"
     >
-      <va-input
+      <h-input
         v-model="formData.name"
         :rules="[
           (value) =>
@@ -100,7 +99,7 @@ const submitForm = async (): Promise<void> => {
         label="Name"
         class="mb-2 w-full"
       />
-      <va-textarea
+      <h-textarea
         v-model="formData.description"
         label="Description"
         :min-rows="5"
@@ -111,24 +110,24 @@ const submitForm = async (): Promise<void> => {
 
       <!--      form action-->
       <div class="flex w-full flex-row content-center justify-end">
-        <va-button
+        <h-button
           @click="triggerShowForm"
           preset="secondary"
           color="secondary"
           class="mr-2"
         >
           Cancel
-        </va-button>
-        <va-button
+        </h-button>
+        <h-button
           @click="validate() && submitForm()"
           :disabled="!validCreationData"
           type="submit"
         >
           {{ submitBtnLabel }}
-        </va-button>
+        </h-button>
       </div>
-    </va-form>
-  </va-modal>
+    </h-form>
+  </h-modal>
 </template>
 
 <style scoped></style>

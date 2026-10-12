@@ -14,7 +14,7 @@ A multipurpose Progressive Web App (PWA) for everyday use, providing:
 | ---------------- | --------------------------------------- |
 | Framework        | Vue 3 + TypeScript                      |
 | Mobile/PWA       | Ionic Vue 8                             |
-| UI Components    | Vuestic UI                              |
+| UI Components    | Haruna UI (`src/libs/ui`)               |
 | Styling          | Tailwind CSS 4                          |
 | State Management | Pinia 3                                 |
 | Routing          | Vue Router 4 via `@ionic/vue-router`    |
@@ -68,7 +68,7 @@ do not start local services for the application test suite.
 - Prioritize **security, maintainability, and clarity** over cleverness.
 - Follow **Vue best practices**.
 - Follow **Ionic best practices**.
-- Follow **Vuestic UI conventions**.
+- Read and follow the [Haruna UI guide](doc/haruna-ui-lib.md) when working on UI components or styling.
 - Prefer **simple, readable, composable solutions**.
 - Keep the UI consistent with the app's design system and theme.
 - Respect the separation of responsibilities between the frontend and the backend port.
@@ -84,7 +84,7 @@ do not start local services for the application test suite.
 - Use `ref<T>()`, `reactive<T>()`, `computed()` for local state.
 - Clean up side effects and watchers appropriately.
 - Use Ionic lifecycle hooks (`onIonViewDidEnter`, `onIonViewWillLeave`) for page-level concerns.
-- Use **Vuestic UI components** (`VaButton`, `VaInput`, `VaForm`, `VaSelect`, etc.) instead of raw HTML controls.
+- Use **Haruna UI components** (`HButton`, `HInput`, `HForm`, `HSelect`, etc.) from `@/libs/ui` instead of raw HTML controls in application code. Library primitives may use native elements for semantics and accessibility.
 
 ### Naming Conventions
 
@@ -108,6 +108,7 @@ The project uses a modular, port-based architecture (hexagonal/ports-and-adapter
 
 ```
 src/
+  libs/ui/          # App-owned reusable components, types, styles, UI services
   modules/          # Self-contained feature modules
     <module>/
       <Module>Router.ts
@@ -185,26 +186,23 @@ Use `backendPort` directly for:
 ### Tailwind CSS
 
 - Use Tailwind utility classes in templates for layout and styling.
-- Prefer existing theme tokens from `@theme` in `src/main.css` before adding new ones:
+- Prefer existing theme tokens from `@theme static` in `src/main.css` before adding new ones:
   - **Colors:** `primary`, `secondary`, `success`, `info`, `danger`, `warning`, `background-primary`,
-    `background-secondary`, `background-element`, `background-border`, `text-primary`, `text-inverted`, `shadow`, `focus`
+    `background-secondary`, `background-element`, `background-border`, `text-primary`, `text-inverted`, `shadow`, `focus`,
+    `control-border`, `brand-amber`, `brand-cyan`, `brand-raspberry`, `selection`
   - **Breakpoints:** `xs` (0), `sm` (640), `md` (1024), `lg` (1440), `xl` (1920)
 - Do not introduce one-off colors or magic numbers.
 - Use custom grid templates: `grid-cols-16`, `grid-cols-20` when needed.
 
-### Vuestic UI
+### Haruna UI
 
-- Official documentation: https://ui.vuestic.dev/introduction/overview
-- Use Vuestic components for interactive UI: `VaButton`, `VaInput`, `VaForm`, `VaSelect`, `VaTextarea`, `VaCard`,
-  `VaImage`, `VaFileUpload`, `VaProgressBar`, `VaProgressCircle`, `VaSkeleton`, `VaButtonToggle`, `VaIcon`, `VaAppBar`,
-  `VaModal`.
-- Follow Vuestic theming and configuration.
-- Vuestic UI is used directly (no `@vuestic/tailwind` bridge needed).
-- **Color naming**: Vuestic uses camelCase color names (e.g., `color="backgroundElement"`), while Tailwind uses kebab-case (e.g., `bg-background-element`). These are separate systems — the `color` prop on Vuestic components uses Vuestic's internal color names, not Tailwind class names.
+- Use the app-owned library at `src/libs/ui` and follow the [Haruna UI guide](doc/haruna-ui-lib.md). It defines supported APIs, design conventions, implementation boundaries, CSS integration, source provenance, and maintenance.
+- Keep library-specific documentation in that guide so application contributors and coding agents share one reference.
 
 ### Global CSS
 
 - Global resets and font definitions live in `src/main.css`.
+- Follow the [Haruna UI CSS integration rules](doc/haruna-ui-lib.md#css-integration) for Ionic/Tailwind import ordering and runtime theme tokens.
 - Font classes: `.branding-font` (Pacifico), `.title-font` (Oxygen Mono), `.sans-serif-font` (Roboto), `.serif-font` (
   Roboto Slab).
 - `.invisible-scroll-bar` utility for hidden scrollbars.
@@ -244,6 +242,7 @@ mirrors `src/`:
 
 - `tests/modules/{module}/`: service, page, component, and store behavior tests.
 - `tests/ports/`: pure result helpers and DOM behavior, not live integrations.
+- `tests/libs/ui/`: component and UI service behavior, including real modal/drawer focus and notification cleanup.
 - `tests/factories/`: deterministic typed record builders.
 - `tests/fakes/`: explicit in-memory dependencies and backend responses.
 - `tests/support/`: mounting helpers, network guards, and isolation self-tests.
@@ -251,10 +250,13 @@ mirrors `src/`:
 
 Name tests `*.test.ts`, group with `describe("ClassOrComponent", ...)`, and focus
 on observable behavior, including success, failure, empty, and loading states.
-Use real Vuestic controls for validation. Use `appMountOptions()` for components
+Use real Haruna controls for validation. Use `appMountOptions()` for components
 and constructor injection for services. Workflow tests connect real services and
 stores to fake backend dependencies. Do not test private implementation details
 or substitute broad snapshots for behavioral assertions.
+
+For UI overlay and visual checks, follow the
+[Haruna UI verification guide](doc/haruna-ui-lib.md#verification).
 
 ### Mandatory Isolation
 
@@ -326,8 +328,8 @@ This is a Progressive Web App (configured via `vite-plugin-pwa` with `generateSW
 
 A task is only considered complete when all of the following are true:
 
-- The implementation follows Vue, Ionic, and Vuestic best practices.
-- The UI uses Vuestic/Ionic components where appropriate.
+- The implementation follows Vue, Ionic, and Haruna UI conventions.
+- The UI uses Haruna/Ionic components where appropriate.
 - Styling respects `@theme` tokens in `src/main.css`.
 - Code is consistent with the existing architecture.
 - Security implications have been considered.
@@ -352,7 +354,7 @@ A task is only considered complete when all of the following are true:
 - `<script setup lang="ts">` for all Vue components.
 - Typed service classes with constructor DI.
 - Factory functions in `*ServiceContainer.ts` for dependency wiring.
-- Vuestic UI components for interactive elements.
+- Haruna UI components for interactive elements.
 - Tailwind utility classes for layout and styling.
 - Pinia stores as pure state containers.
 - Module-scoped routing with enum route names.
@@ -364,7 +366,7 @@ A task is only considered complete when all of the following are true:
 ## Avoid
 
 - Options API or regular `<script>` blocks.
-- Raw HTML controls when Vuestic components are appropriate.
+- Raw HTML controls in application code when Haruna components are appropriate; native elements are permitted inside library primitives.
 - Business logic embedded directly in page components.
 - Hardcoded theme values when existing tokens can be used.
 - Unstructured state management.

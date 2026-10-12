@@ -6,13 +6,9 @@ import { IonPage } from "@ionic/vue";
 import { useGalleryListService } from "@/modules/gallery/GalleryServiceContainer";
 import GalleryGridItem from "@/modules/gallery/components/GalleryGridItem.vue";
 import GalleryListItem from "@/modules/gallery/components/GalleryListItem.vue";
-import {
-  type ButtonOption,
-  VaButtonToggle,
-  VaProgressCircle,
-} from "vuestic-ui";
+import { type HButtonOption, HButtonToggle, HProgressCircle } from "@/libs/ui";
 
-const viewModeOptions: ButtonOption[] = [
+const viewModeOptions: HButtonOption[] = [
   { value: "grid", icon: "grid_view" },
   { value: "list", icon: "splitscreen" },
 ];
@@ -48,9 +44,9 @@ onMounted(() => {
 
 <template>
   <ion-page>
-    <div class="m-1 flex flex-row content-center items-center justify-end">
+    <div class="flex shrink-0 flex-row items-center justify-end p-3">
       <!-- view mode selection -->
-      <va-button-toggle
+      <h-button-toggle
         v-model="currentViewMode"
         :options="viewModeOptions"
         preset="secondary"
@@ -61,7 +57,9 @@ onMounted(() => {
     <div
       @scroll="loadMoreMedias"
       ref="galleryListPageContent"
-      class="invisible-scroll-bar h-screen overflow-scroll"
+      role="region"
+      aria-label="Gallery media"
+      class="invisible-scroll-bar min-h-0 flex-1 overflow-y-auto"
     >
       <!-- grid view -->
       <div
@@ -95,10 +93,10 @@ onMounted(() => {
         "
         class="flex w-full flex-row content-center items-center justify-center"
       >
-        <va-progress-circle indeterminate />
+        <h-progress-circle indeterminate />
       </div>
 
-      <div class="fixed right-3 bottom-12">
+      <div class="fixed right-4 bottom-6">
         <GalleryToUploadPageButton />
       </div>
 

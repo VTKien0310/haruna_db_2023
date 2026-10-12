@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
-import { VaForm, VaInput } from "vuestic-ui";
+import { HForm, HInput } from "@/libs/ui";
 import WebpageBookmarkDirectoryForm from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectoryForm.vue";
 import { CreateWebpageBookmarkService } from "@/modules/webpage-bookmark/services/CreateWebpageBookmarkService";
 import { ListWebpageBookmarkService } from "@/modules/webpage-bookmark/services/ListWebpageBookmarkService";
@@ -26,8 +26,8 @@ describe("WebpageBookmarkDirectoryForm", () => {
       });
       await wrapper.get("button").trigger("click");
       await flushPromises();
-      await wrapper.getComponent(VaInput).get("input").setValue(name);
-      expect(await wrapper.getComponent(VaForm).vm.validate()).toBe(false);
+      await wrapper.getComponent(HInput).get("input").setValue(name);
+      expect(await wrapper.getComponent(HForm).vm.validate()).toBe(false);
       expect(submit).not.toHaveBeenCalled();
     },
   );
@@ -55,8 +55,8 @@ describe("WebpageBookmarkDirectoryForm", () => {
     });
     await wrapper.get("button").trigger("click");
     await flushPromises();
-    await wrapper.getComponent(VaInput).get("input").setValue("New directory");
-    await wrapper.getComponent(VaForm).vm.validate();
+    await wrapper.getComponent(HInput).get("input").setValue("New directory");
+    await wrapper.getComponent(HForm).vm.validate();
     await flushPromises();
     await wrapper
       .findAll("button")

@@ -1,0 +1,115 @@
+/* Haruna's flat, logo-derived design tokens. Source provenance: ../LICENSE. */
+:root {
+  --h-font-family: "Roboto", sans-serif;
+  --h-control-height: 2.75rem;
+  --h-control-radius: 0.5rem;
+  --h-panel-radius: 0.75rem;
+  --h-input-border-width: 1px;
+  --h-input-radius: var(--h-control-radius);
+  --h-card-title-size: 1rem;
+  --h-wordmark-size: 1.375rem;
+  --h-button-small-height: 2.25rem;
+  --h-button-large-height: 3rem;
+  --h-touch-target: 2.75rem;
+  --h-input-line-height: 1.5rem;
+  --h-app-header-height: 4rem;
+  --h-header-z-index: 40;
+  --h-drawer-z-index: 60;
+  --h-modal-z-index: 80;
+  --h-modal-width: 37.5rem;
+  --h-overlay-color: rgb(20 52 65 / 24%);
+  --h-dropdown-z-index: 90;
+  --h-toast-z-index: 100;
+  --h-sidebar-width: 18rem;
+  --h-motion-duration: 0.2s;
+  --h-loader-duration: 1s;
+  --h-pulse-duration: 1.5s;
+}
+.h-ui {
+  font-family: var(--h-font-family);
+}
+.h-focus:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.h-field-control {
+  min-height: var(--h-control-height);
+  border-radius: var(--h-input-radius);
+  background: var(--h-field-background, var(--color-background-secondary));
+  border: var(--h-input-border-width) solid var(--color-control-border);
+  transition: border-color var(--h-motion-duration) ease;
+}
+.h-field-control:focus-within {
+  border-color: var(--color-focus);
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.h-field-control[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+.h-control-label {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+.h-select-input {
+  min-height: calc(var(--h-control-height) - 2 * var(--h-input-border-width));
+}
+.h-segmented .h-button {
+  border: 0;
+  border-radius: 0;
+}
+.h-segmented .h-button + .h-button {
+  border-left: 1px solid var(--color-background-border);
+}
+.h-button:not(:disabled) {
+  transition:
+    background-color var(--h-motion-duration) ease,
+    border-color var(--h-motion-duration) ease;
+}
+@media (pointer: coarse) {
+  .h-button {
+    min-height: var(--h-touch-target);
+    min-width: var(--h-touch-target);
+  }
+}
+.h-spinner {
+  animation: h-spin var(--h-loader-duration) linear infinite;
+}
+.h-pulse {
+  animation: h-pulse var(--h-pulse-duration) ease-in-out infinite;
+}
+.h-progress-indeterminate {
+  animation: h-progress var(--h-pulse-duration) ease-in-out infinite;
+}
+@keyframes h-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes h-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+@keyframes h-progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(350%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .h-ui,
+  .h-ui *,
+  .h-ui *::after {
+    transition-duration: 0s !important;
+  }
+  .h-spinner,
+  .h-pulse,
+  .h-progress-indeterminate {
+    animation: none;
+  }
+}

@@ -1,5 +1,5 @@
 import { getActivePinia } from "pinia";
-import { createVuestic } from "vuestic-ui";
+import { createHarunaUI } from "@/libs/ui";
 import { defineComponent, h } from "vue";
 
 export const SlotStub = defineComponent({
@@ -20,8 +20,8 @@ export function appMountOptions() {
   return {
     attachTo: document.body,
     global: {
-      plugins: [getActivePinia()!, createVuestic()],
-      stubs: { IonPage: SlotStub, VaModal: ModalStub },
+      plugins: [getActivePinia()!, createHarunaUI()],
+      stubs: { IonPage: SlotStub, HModal: ModalStub },
     },
   };
 }

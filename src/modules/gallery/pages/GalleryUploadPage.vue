@@ -2,7 +2,7 @@
 import { useGalleryUploadStore } from "@/modules/gallery/stores/GalleryUploadStore";
 import { IonPage } from "@ionic/vue";
 import { useUploadMediaService } from "@/modules/gallery/GalleryServiceContainer";
-import { VaButton, VaFileUpload, VaProgressBar } from "vuestic-ui";
+import { HButton, HFileUpload, HProgressBar } from "@/libs/ui";
 
 const uploadMediaService = useUploadMediaService();
 
@@ -19,17 +19,15 @@ const uploadPendingMedia = () => {
 
 <template>
   <ion-page>
-    <div class="h-screen overflow-scroll">
-      <va-progress-bar
+    <div class="h-full overflow-y-auto p-4">
+      <h-progress-bar
         v-show="galleryUploadStore.isHandlingCreateNewMedia"
         :model-value="galleryUploadStore.currentProgressUploadedFileCount"
         :max="galleryUploadStore.currentProgressTotalFileCount"
       />
 
-      <div
-        class="mt-3 flex w-full flex-row content-center items-center justify-center px-1"
-      >
-        <va-button
+      <div class="mb-4 flex w-full flex-row items-center justify-center">
+        <h-button
           @click="uploadPendingMedia"
           :loading="galleryUploadStore.isHandlingCreateNewMedia"
           :disabled="
@@ -38,10 +36,10 @@ const uploadPendingMedia = () => {
           "
         >
           Upload
-        </va-button>
+        </h-button>
       </div>
 
-      <va-file-upload
+      <h-file-upload
         :disabled="galleryUploadStore.isHandlingCreateNewMedia"
         v-model="galleryUploadStore.pendingNewMediaFiles"
         file-types="image/*,video/*"

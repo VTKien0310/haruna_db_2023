@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VaButton, VaModal } from "vuestic-ui";
+import { HButton, HModal } from "@/libs/ui";
 
 import { usePwaUpdateStore } from "@/modules/master/stores/PwaUpdateStore";
 
@@ -11,7 +11,7 @@ const handleUpdate = async (): Promise<void> => {
 </script>
 
 <template>
-  <va-modal
+  <h-modal
     :model-value="pwaUpdateStore.needRefresh"
     title="Update Available"
     hide-default-actions
@@ -25,7 +25,7 @@ const handleUpdate = async (): Promise<void> => {
     </p>
 
     <div class="mt-4 flex justify-end">
-      <va-button color="primary" @click="handleUpdate">Restart App</va-button>
+      <h-button color="primary" @click="handleUpdate">Restart App</h-button>
     </div>
-  </va-modal>
+  </h-modal>
 </template>

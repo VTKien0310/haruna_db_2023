@@ -16,7 +16,7 @@ import {
 } from "@vueuse/core";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
 import { createAnimation, type Animation } from "@ionic/vue";
-import { VaButton, VaProgressBar } from "vuestic-ui";
+import { HButton, HProgressBar } from "@/libs/ui";
 
 const media = ref<Media | null>(null);
 const mediaSignedUrl = ref<string>("");
@@ -186,9 +186,9 @@ watch(
     <div
       ref="mediaDisplayArea"
       :style="pageBackground"
-      class="h-screen bg-contain bg-scroll bg-center bg-no-repeat transition-colors duration-300"
+      class="h-full bg-contain bg-scroll bg-center bg-no-repeat transition-colors duration-300"
     >
-      <va-progress-bar v-show="showProgressBar" indeterminate />
+      <h-progress-bar v-show="showProgressBar" indeterminate />
 
       <div
         v-if="mediaIsVideo"
@@ -234,19 +234,14 @@ watch(
         <div
           class="flex w-full flex-row content-center items-center justify-end"
         >
-          <va-button
+          <h-button
             @click="triggerShowMediaDetail"
             round
             icon="info"
             class="mr-1"
           />
-          <va-button
-            @click="downloadMedia"
-            round
-            icon="download"
-            class="mr-1"
-          />
-          <va-button
+          <h-button @click="downloadMedia" round icon="download" class="mr-1" />
+          <h-button
             v-if="uploaderIsMe"
             @click="deleteMedia"
             round
@@ -265,7 +260,7 @@ watch(
 }
 
 .detail-area {
-  background-color: var(--va-background-border);
+  background-color: var(--color-background-border);
   border-radius: 20px;
 }
 </style>

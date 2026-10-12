@@ -9,7 +9,7 @@ import {
 } from "@/modules/gallery/GalleryServiceContainer";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
 import { useProfileService } from "@/modules/auth/AuthServiceContainer";
-import { VaCard, VaCardContent, VaCardTitle, VaProgressBar } from "vuestic-ui";
+import { HCard, HCardContent, HCardTitle, HProgressBar } from "@/libs/ui";
 import { useListWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import WebpageBookmarkPieChart from "@/modules/master/components/WebpageBookmarkPieChart.vue";
 import { useTranslationService } from "@/modules/translation/TranslationServiceContainer";
@@ -87,20 +87,20 @@ onIonViewDidEnter(async () => {
 <template>
   <ion-page>
     <div
-      class="flex h-fit min-h-screen w-full flex-col content-center items-center justify-start overflow-scroll pb-20"
+      class="flex h-full w-full flex-col items-center justify-start overflow-y-auto pb-6"
     >
-      <va-progress-bar v-if="isFetchingData" class="w-full" indeterminate />
+      <h-progress-bar v-if="isFetchingData" class="w-full" indeterminate />
 
       <div class="w-full px-2 pt-1">
         <div
           class="mb-1 grid w-full grid-cols-3 place-content-center place-items-center gap-1"
         >
-          <va-card
+          <h-card
             class="col-span-3 m-1 h-full w-full md:col-span-1"
-            color="background-primary"
+            color="backgroundPrimary"
           >
-            <va-card-title>Web bookmark statistics</va-card-title>
-            <va-card-content
+            <h-card-title>Web bookmark statistics</h-card-title>
+            <h-card-content
               class="mt-2 flex w-full flex-col content-center items-center justify-around md:mt-12"
             >
               <div
@@ -123,25 +123,25 @@ onIonViewDidEnter(async () => {
                 <span>Deepest level:</span>
                 <span class="font-bold">{{ deepestLevelWebpageBookmark }}</span>
               </div>
-            </va-card-content>
-          </va-card>
+            </h-card-content>
+          </h-card>
 
-          <va-card
+          <h-card
             class="col-span-3 m-1 h-full w-full md:col-start-2"
-            color="background-primary"
+            color="backgroundPrimary"
           >
-            <va-card-title>Web bookmarks breakdown</va-card-title>
-            <va-card-content>
+            <h-card-title>Web bookmarks breakdown</h-card-title>
+            <h-card-content>
               <WebpageBookmarkPieChart
                 :link-count="webpageBookmarkLinkCount"
                 :directory-count="webpageBookmarkDirectoryCount"
               />
-            </va-card-content>
-          </va-card>
+            </h-card-content>
+          </h-card>
 
-          <va-card class="m-1 h-full w-full" color="background-primary">
-            <va-card-title>Latest media uploaded at</va-card-title>
-            <va-card-content>
+          <h-card class="m-1 h-full w-full" color="backgroundPrimary">
+            <h-card-title>Latest media uploaded at</h-card-title>
+            <h-card-content>
               {{
                 latestUploadedMedia
                   ? mediaDetailService.transformMediaCreatedAtToHumanReadableFormat(
@@ -149,34 +149,34 @@ onIonViewDidEnter(async () => {
                     )
                   : "--/--/----"
               }}
-            </va-card-content>
-          </va-card>
+            </h-card-content>
+          </h-card>
 
-          <va-card class="m-1 h-full w-full" color="background-primary">
-            <va-card-title>Newly uploaded count</va-card-title>
-            <va-card-content>{{ newlyUploadedMedia }}</va-card-content>
-          </va-card>
+          <h-card class="m-1 h-full w-full" color="backgroundPrimary">
+            <h-card-title>Newly uploaded count</h-card-title>
+            <h-card-content>{{ newlyUploadedMedia }}</h-card-content>
+          </h-card>
 
-          <va-card class="m-1 h-full w-full" color="background-primary">
-            <va-card-title>Total media count</va-card-title>
-            <va-card-content>{{ totalMediasCount }}</va-card-content>
-          </va-card>
+          <h-card class="m-1 h-full w-full" color="backgroundPrimary">
+            <h-card-title>Total media count</h-card-title>
+            <h-card-content>{{ totalMediasCount }}</h-card-content>
+          </h-card>
 
-          <va-card
+          <h-card
             class="m-1 h-full w-full md:col-start-1"
-            color="background-primary"
+            color="backgroundPrimary"
           >
-            <va-card-title>Uploaded by you count</va-card-title>
-            <va-card-content>{{ uploadedMediasCount }}</va-card-content>
-          </va-card>
+            <h-card-title>Uploaded by you count</h-card-title>
+            <h-card-content>{{ uploadedMediasCount }}</h-card-content>
+          </h-card>
 
-          <va-card
+          <h-card
             class="col-span-2 m-1 h-full w-full md:col-start-2"
-            color="background-primary"
+            color="backgroundPrimary"
           >
-            <va-card-title>Upload contribution percentage</va-card-title>
-            <va-card-content>
-              <va-progress-bar
+            <h-card-title>Upload contribution percentage</h-card-title>
+            <h-card-content>
+              <h-progress-bar
                 :model-value="uploadContributionPercentage"
                 :max="100"
                 size="large"
@@ -184,15 +184,15 @@ onIonViewDidEnter(async () => {
                 show-percent
               >
                 {{ uploadContributionPercentage }}
-              </va-progress-bar>
-            </va-card-content>
-          </va-card>
+              </h-progress-bar>
+            </h-card-content>
+          </h-card>
         </div>
 
-        <va-card class="w-full" color="background-primary">
-          <va-card-title>Latest translations</va-card-title>
-          <va-card-content>
-            <va-progress-bar
+        <h-card class="w-full" color="backgroundPrimary">
+          <h-card-title>Latest translations</h-card-title>
+          <h-card-content>
+            <h-progress-bar
               v-if="translationStore.isFetchingLatestHistories"
               indeterminate
             />
@@ -212,7 +212,7 @@ onIonViewDidEnter(async () => {
                 v-for="record in translationStore.latestHistories"
                 :key="record.id"
                 @click="navigateToTranslationHistory(record.id)"
-                class="border-background-border bg-background-secondary hover:bg-background-element flex cursor-pointer flex-col gap-1 rounded border p-3 transition-colors"
+                class="border-background-border bg-background-secondary hover:bg-background-element flex cursor-pointer flex-col gap-1 rounded-(--h-control-radius) border p-3 transition-colors"
               >
                 <span class="text-primary text-sm font-bold">
                   {{ record.source_language }} → {{ record.target_language }}
@@ -225,8 +225,8 @@ onIonViewDidEnter(async () => {
                 </span>
               </div>
             </div>
-          </va-card-content>
-        </va-card>
+          </h-card-content>
+        </h-card>
       </div>
     </div>
   </ion-page>

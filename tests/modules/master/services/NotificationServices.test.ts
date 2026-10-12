@@ -6,14 +6,9 @@ const ui = vi.hoisted(() => ({
   init: vi.fn(),
   confirm: vi.fn(async () => true),
 }));
-vi.mock("vuestic-ui", () => ({
-  useToast: () => ({ init: ui.init }),
-  useModal: () => ({ confirm: ui.confirm }),
-}));
-
 describe("Notification services", () => {
   it("uses theme colors for errors and information", () => {
-    const service = new ToastService();
+    const service = new ToastService({ toast: ui.init });
     service.error("Failed");
     service.info("Done");
     expect(ui.init).toHaveBeenNthCalledWith(1, {
@@ -26,7 +21,9 @@ describe("Notification services", () => {
     });
   });
   it("returns confirmation without opening a real dialog", async () => {
-    expect(await new ModalService().confirm("Proceed?")).toBe(true);
+    expect(
+      await new ModalService({ confirm: ui.confirm }).confirm("Proceed?"),
+    ).toBe(true);
     expect(ui.confirm).toHaveBeenCalledWith("Proceed?");
   });
 });

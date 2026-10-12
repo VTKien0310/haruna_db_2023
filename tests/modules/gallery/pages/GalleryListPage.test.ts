@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
-import { VaButtonToggle, VaProgressCircle } from "vuestic-ui";
+import { HButtonToggle, HProgressCircle } from "@/libs/ui";
 import GalleryListPage from "@/modules/gallery/pages/GalleryListPage.vue";
 import { useGalleryListStore } from "@/modules/gallery/stores/GalleryListStore";
 import { makeMedia } from "../../../factories/Records";
@@ -36,20 +36,20 @@ describe("GalleryListPage", () => {
     store.isFetchingGalleryMedias = true;
     const wrapper = mount(GalleryListPage, appMountOptions());
     expect(list.refreshMedias).toHaveBeenCalledOnce();
-    expect(wrapper.getComponent(VaProgressCircle).isVisible()).toBe(true);
+    expect(wrapper.getComponent(HProgressCircle).isVisible()).toBe(true);
     expect(wrapper.get(".grid-item").isVisible()).toBe(true);
     expect(wrapper.get(".list-item").isVisible()).toBe(false);
-    wrapper.getComponent(VaButtonToggle).vm.$emit("update:modelValue", "list");
+    wrapper.getComponent(HButtonToggle).vm.$emit("update:modelValue", "list");
     await flushPromises();
     expect(wrapper.get(".list-item").isVisible()).toBe(true);
     store.isFetchingGalleryMedias = false;
     await flushPromises();
-    expect(wrapper.getComponent(VaProgressCircle).isVisible()).toBe(false);
+    expect(wrapper.getComponent(HProgressCircle).isVisible()).toBe(false);
   });
   it("loads more near the bottom and handles an empty list", async () => {
     const wrapper = mount(GalleryListPage, appMountOptions());
     expect(wrapper.find(".grid-item").exists()).toBe(false);
-    const scroller = wrapper.get(".overflow-scroll");
+    const scroller = wrapper.get('[aria-label="Gallery media"]');
     Object.defineProperties(scroller.element, {
       scrollTop: { value: 760 },
       clientHeight: { value: 100 },
