@@ -83,7 +83,7 @@ onUnmounted(() => {
         <div v-if="!noDismiss" class="absolute top-2 right-2">
           <HButton
             icon="close"
-            preset="plain"
+            variant="quiet"
             color="secondary"
             aria-label="Close dialog"
             @click="cancel"
@@ -99,7 +99,7 @@ onUnmounted(() => {
         <p v-if="message" :id="`${id}-message`">{{ message }}</p>
         <slot />
         <div v-if="!hideDefaultActions" class="mt-6 flex justify-end gap-2">
-          <HButton preset="secondary" @click="cancel">{{ cancelText }}</HButton
+          <HButton variant="outlined" @click="cancel">{{ cancelText }}</HButton
           ><HButton @click="confirm">{{ okText }}</HButton>
         </div>
       </section>

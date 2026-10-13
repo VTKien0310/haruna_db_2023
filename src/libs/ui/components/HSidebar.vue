@@ -1,14 +1,8 @@
-<script setup lang="ts">
-import { colorVariable, type HColor } from "../types/UiTypes";
-withDefaults(defineProps<{ color?: HColor }>(), {
-  color: "backgroundSecondary",
-});
-</script>
+<script setup lang="ts"></script>
 <template>
   <nav
-    class="h-ui text-text-primary w-full max-w-full overflow-y-auto"
+    class="h-ui bg-background-primary text-text-primary w-full max-w-full overflow-y-auto"
     aria-label="Main navigation"
-    :style="{ backgroundColor: colorVariable(color) }"
   >
     <slot />
   </nav>

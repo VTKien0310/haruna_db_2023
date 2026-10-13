@@ -46,12 +46,7 @@ onMounted(() => {
   <ion-page>
     <div class="flex shrink-0 flex-row items-center justify-end p-3">
       <!-- view mode selection -->
-      <h-button-toggle
-        v-model="currentViewMode"
-        :options="viewModeOptions"
-        preset="secondary"
-        border-color="primary"
-      />
+      <h-button-toggle v-model="currentViewMode" :options="viewModeOptions" />
     </div>
 
     <div

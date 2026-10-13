@@ -95,10 +95,7 @@ onIonViewDidEnter(async () => {
         <div
           class="mb-1 grid w-full grid-cols-3 place-content-center place-items-center gap-1"
         >
-          <h-card
-            class="col-span-3 m-1 h-full w-full md:col-span-1"
-            color="backgroundPrimary"
-          >
+          <h-card class="col-span-3 m-1 h-full w-full md:col-span-1">
             <h-card-title>Web bookmark statistics</h-card-title>
             <h-card-content
               class="mt-2 flex w-full flex-col content-center items-center justify-around md:mt-12"
@@ -128,7 +125,6 @@ onIonViewDidEnter(async () => {
 
           <h-card
             class="col-span-3 m-1 h-full w-full md:col-span-2 md:col-start-2"
-            color="backgroundPrimary"
           >
             <h-card-title>Web bookmarks breakdown</h-card-title>
             <h-card-content>
@@ -139,7 +135,7 @@ onIonViewDidEnter(async () => {
             </h-card-content>
           </h-card>
 
-          <h-card class="m-1 h-full w-full" color="backgroundPrimary">
+          <h-card class="m-1 h-full w-full">
             <h-card-title>Latest media uploaded at</h-card-title>
             <h-card-content>
               {{
@@ -152,44 +148,34 @@ onIonViewDidEnter(async () => {
             </h-card-content>
           </h-card>
 
-          <h-card class="m-1 h-full w-full" color="backgroundPrimary">
+          <h-card class="m-1 h-full w-full">
             <h-card-title>Newly uploaded count</h-card-title>
             <h-card-content>{{ newlyUploadedMedia }}</h-card-content>
           </h-card>
 
-          <h-card class="m-1 h-full w-full" color="backgroundPrimary">
+          <h-card class="m-1 h-full w-full">
             <h-card-title>Total media count</h-card-title>
             <h-card-content>{{ totalMediasCount }}</h-card-content>
           </h-card>
 
-          <h-card
-            class="m-1 h-full w-full md:col-start-1"
-            color="backgroundPrimary"
-          >
+          <h-card class="m-1 h-full w-full md:col-start-1">
             <h-card-title>Uploaded by you count</h-card-title>
             <h-card-content>{{ uploadedMediasCount }}</h-card-content>
           </h-card>
 
-          <h-card
-            class="col-span-2 m-1 h-full w-full md:col-start-2"
-            color="backgroundPrimary"
-          >
+          <h-card class="col-span-2 m-1 h-full w-full md:col-start-2">
             <h-card-title>Upload contribution percentage</h-card-title>
             <h-card-content>
               <h-progress-bar
                 :model-value="uploadContributionPercentage"
                 :max="100"
-                size="large"
-                content-inside
                 show-percent
-              >
-                {{ uploadContributionPercentage }}
-              </h-progress-bar>
+              />
             </h-card-content>
           </h-card>
         </div>
 
-        <h-card class="w-full" color="backgroundPrimary">
+        <h-card class="w-full">
           <h-card-title>Latest translations</h-card-title>
           <h-card-content>
             <h-progress-bar

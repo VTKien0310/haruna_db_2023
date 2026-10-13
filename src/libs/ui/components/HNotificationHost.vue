@@ -36,7 +36,7 @@ const confirmations = props.service.confirmations;
       <span class="min-w-0 flex-1 break-words">{{ toast.message }}</span
       ><HButton
         icon="close"
-        preset="plain"
+        variant="quiet"
         color="primary"
         aria-label="Dismiss notification"
         @click="service.dismissToast(toast.id)"

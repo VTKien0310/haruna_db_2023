@@ -43,12 +43,7 @@ onMounted(() => {
       class="h-full w-full"
     >
       <template #loader>
-        <h-skeleton
-          animation="pulse"
-          variant="squared"
-          width="100%"
-          height="100%"
-        />
+        <h-skeleton width="100%" height="100%" />
       </template>
     </h-image>
 

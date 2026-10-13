@@ -12,7 +12,7 @@ describe("WebpageBookmarkLinkForm", () => {
     ["Docs", "invalid", false],
     ["Docs", "https://example.test", true],
   ])(
-    "validates name=%s url=%s with real Vuestic controls",
+    "validates name=%s url=%s with real Haruna controls",
     async (name, url, valid) => {
       const submit = vi.fn(async () => true);
       const wrapper = mount(WebpageBookmarkLinkForm, {

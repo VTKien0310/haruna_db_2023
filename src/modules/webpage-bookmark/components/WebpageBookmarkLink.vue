@@ -45,7 +45,6 @@ const openUrl = (): void => {
           webpageBookmarkDetailStore.webpageBookmark?.description ?? ''
         "
         readonly
-        :resize="false"
         class="row-span-3 h-full w-full self-center px-2"
       />
 
@@ -55,15 +54,13 @@ const openUrl = (): void => {
         <h-button
           @click="copyUrl"
           icon="content_copy"
-          preset="secondary"
-          border-color="primary"
+          variant="outlined"
           class="mr-1 w-full md:w-1/4 lg:w-1/6 xl:w-1/6"
         />
         <h-button
           @click="openUrl"
           icon="open_in_new"
-          preset="secondary"
-          border-color="primary"
+          variant="outlined"
           class="ml-1 w-full md:w-1/4 lg:w-1/6 xl:w-1/6"
         />
       </div>
@@ -73,13 +70,7 @@ const openUrl = (): void => {
       class="absolute right-1 bottom-10 flex flex-col content-center items-center justify-around"
     >
       <UpdateWebpageBookmarkLinkForm />
-      <h-button
-        @click="deleteLink"
-        icon="delete"
-        round
-        class="m-1"
-        color="danger"
-      />
+      <h-button @click="deleteLink" icon="delete" class="m-1" color="danger" />
       <NavigateToParentBookmarkDirectoryBtn />
     </div>
   </div>

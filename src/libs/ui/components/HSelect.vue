@@ -1,9 +1,9 @@
 <script setup lang="ts" generic="T extends object">
-// Adapted from VaSelect's value/text mapping, search and keyboard selection.
 import { computed, nextTick, onUnmounted, ref, useId, watch } from "vue";
 import { DropdownService } from "../services/DropdownService";
 import HIcon from "./HIcon.vue";
 import HProgressCircle from "./HProgressCircle.vue";
+
 const props = withDefaults(
   defineProps<{
     modelValue: string;
@@ -19,207 +19,235 @@ const props = withDefaults(
 );
 const emit = defineEmits<{ "update:modelValue": [value: string] }>();
 const id = `h-select-${useId()}`;
-const root = ref<HTMLElement>();
-const control = ref<HTMLInputElement>();
-const popup = ref<HTMLElement>();
-const open = ref(false);
-const query = ref("");
-const active = ref(-1);
-const dropdown = new DropdownService();
-const text = (option: T) => String(option[props.textBy] ?? "");
-const value = (option: T) => String(option[props.valueBy] ?? "");
-const selectedText = computed(() => {
-  const option = props.options.find((item) => value(item) === props.modelValue);
-  return option ? text(option) : "";
-});
-const filtered = computed(() =>
-  props.options.filter((option) =>
-    text(option).toLocaleLowerCase().includes(query.value.toLocaleLowerCase()),
+const anchor = ref<HTMLElement>();
+const list = ref<HTMLElement>();
+const input = ref<HTMLInputElement>();
+const expanded = ref(false);
+const search = ref("");
+const highlighted = ref(-1);
+const placement = new DropdownService();
+let revision = 0;
+const unavailable = computed(() => Boolean(props.disabled || props.loading));
+const choices = computed(() =>
+  props.options.map((option) => ({
+    value: String(option[props.valueBy] ?? ""),
+    text: String(option[props.textBy] ?? ""),
+  })),
+);
+const selected = computed(
+  () =>
+    choices.value.find((choice) => choice.value === props.modelValue)?.text ??
+    "",
+);
+const visible = computed(() =>
+  choices.value.filter((choice) =>
+    choice.text.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()),
   ),
 );
-function close() {
-  open.value = false;
-  query.value = "";
-  active.value = -1;
+
+function dismiss(): void {
+  expanded.value = false;
+  search.value = "";
+  highlighted.value = -1;
 }
-function show() {
-  if (props.disabled || props.loading || open.value) return;
-  open.value = true;
-  active.value = Math.max(
-    0,
-    filtered.value.findIndex((option) => value(option) === props.modelValue),
+function open(): void {
+  if (unavailable.value || expanded.value) return;
+  expanded.value = true;
+  const selectedIndex = visible.value.findIndex(
+    (choice) => choice.value === props.modelValue,
+  );
+  highlighted.value = visible.value.length ? Math.max(0, selectedIndex) : -1;
+}
+function choose(value: string): void {
+  if (unavailable.value) return;
+  emit("update:modelValue", value);
+  dismiss();
+  input.value?.focus();
+}
+function query(event: Event): void {
+  if (unavailable.value || !props.searchable) return;
+  open();
+  search.value = (event.target as HTMLInputElement).value;
+  highlighted.value = visible.value.length ? 0 : -1;
+}
+function reveal(): void {
+  void nextTick(() =>
+    list.value?.children[highlighted.value]?.scrollIntoView?.({
+      block: "nearest",
+    }),
   );
 }
-function select(option: T) {
-  if (props.disabled || props.loading) return;
-  emit("update:modelValue", value(option));
-  close();
-  control.value?.focus();
-}
-function keydown(event: KeyboardEvent) {
-  if (props.disabled || props.loading) return;
-  if (event.key === "Tab") {
-    close();
-    return;
-  }
-  if (event.key === "Escape" && open.value) {
-    event.preventDefault();
-    event.stopPropagation();
-    close();
-    return;
-  }
-  if (["ArrowDown", "ArrowUp", "Home", "End", "Enter"].includes(event.key)) {
-    if (!open.value && !["ArrowDown", "ArrowUp", "Enter"].includes(event.key))
+function keydown(event: KeyboardEvent): void {
+  if (unavailable.value) return;
+  switch (event.key) {
+    case "Tab":
+      dismiss();
       return;
-    event.preventDefault();
-    if (!open.value) {
-      show();
+    case "Escape":
+      if (expanded.value) {
+        event.preventDefault();
+        event.stopPropagation();
+        dismiss();
+      }
       return;
-    }
-    if (event.key === "Enter") {
-      const option = filtered.value[active.value];
-      if (option) select(option);
+    case "Enter":
+      event.preventDefault();
+      if (!expanded.value) open();
+      else {
+        const choice = visible.value[highlighted.value];
+        if (choice) choose(choice.value);
+      }
       return;
-    }
-    if (event.key === "Home") active.value = 0;
-    else if (event.key === "End") active.value = filtered.value.length - 1;
-    else
-      active.value = Math.max(
-        0,
-        Math.min(
-          filtered.value.length - 1,
-          active.value + (event.key === "ArrowDown" ? 1 : -1),
-        ),
-      );
-    void nextTick(() =>
-      popup.value
-        ?.querySelector(`#${id}-option-${active.value}`)
-        ?.scrollIntoView?.({ block: "nearest" }),
-    );
+    case "ArrowUp":
+    case "ArrowDown":
+      event.preventDefault();
+      if (!expanded.value) open();
+      else
+        highlighted.value = Math.max(
+          0,
+          Math.min(
+            visible.value.length - 1,
+            highlighted.value + (event.key === "ArrowDown" ? 1 : -1),
+          ),
+        );
+      break;
+    case "Home":
+    case "End":
+      if (!expanded.value) return;
+      event.preventDefault();
+      highlighted.value = event.key === "Home" ? 0 : visible.value.length - 1;
+      break;
+    default:
+      return;
   }
+  if (!visible.value.length) highlighted.value = -1;
+  reveal();
 }
-function input(event: Event) {
-  show();
-  query.value = (event.target as HTMLInputElement).value;
-  active.value = 0;
+function outside(event: PointerEvent): void {
+  const target = event.target as Node;
+  if (!anchor.value?.contains(target) && !list.value?.contains(target))
+    dismiss();
 }
-function outside(event: PointerEvent) {
-  if (
-    !root.value?.contains(event.target as Node) &&
-    !popup.value?.contains(event.target as Node)
-  )
-    close();
+function cleanup(): void {
+  placement.close();
+  document.removeEventListener("pointerdown", outside);
 }
 watch(
-  open,
-  async (isOpen) => {
-    dropdown.close();
-    document.removeEventListener("pointerdown", outside);
-    if (!isOpen) return;
+  expanded,
+  async (opened) => {
+    const current = ++revision;
+    cleanup();
+    if (!opened) return;
     await nextTick();
-    if (!open.value || !root.value || !popup.value) return;
-    dropdown.open(root.value, popup.value);
+    if (current !== revision || !expanded.value || !anchor.value || !list.value)
+      return;
+    placement.open(anchor.value, list.value);
     document.addEventListener("pointerdown", outside);
   },
   { flush: "post" },
 );
-watch(
-  () => [props.disabled, props.loading],
-  () => {
-    if (props.disabled || props.loading) close();
-  },
-);
-watch(filtered, () => {
-  active.value = Math.min(Math.max(0, active.value), filtered.value.length - 1);
+watch(unavailable, (blocked) => {
+  if (blocked) dismiss();
+});
+watch(visible, (options) => {
+  highlighted.value = options.length
+    ? Math.max(0, Math.min(highlighted.value, options.length - 1))
+    : -1;
 });
 onUnmounted(() => {
-  open.value = false;
-  dropdown.close();
-  document.removeEventListener("pointerdown", outside);
+  revision++;
+  cleanup();
 });
 </script>
+
 <template>
-  <div
-    ref="root"
-    class="h-ui text-text-primary relative min-w-0"
-    :class="{ 'opacity-50': disabled }"
-  >
-    <label
-      v-if="label"
-      :for="id"
-      class="h-control-label text-text-primary block"
-      >{{ label }}</label
-    >
+  <div ref="anchor" class="h-ui text-text-primary relative min-w-0">
+    <label v-if="label" :for="id" class="h-control-label block">{{
+      label
+    }}</label>
     <div
       class="h-field-control flex items-center gap-2 px-3"
+      :class="{ 'h-field-disabled': disabled }"
       :aria-busy="loading"
     >
       <input
         :id="id"
-        ref="control"
+        ref="input"
         class="h-select-input w-full min-w-0 bg-transparent outline-none"
         role="combobox"
         :aria-label="label"
-        :aria-expanded="open"
-        :aria-controls="open ? `${id}-list` : undefined"
+        :aria-expanded="expanded"
+        :aria-controls="expanded ? `${id}-list` : undefined"
         :aria-activedescendant="
-          open && active >= 0 ? `${id}-option-${active}` : undefined
+          expanded && highlighted >= 0
+            ? `${id}-option-${highlighted}`
+            : undefined
         "
         :aria-autocomplete="searchable ? 'list' : 'none'"
         aria-haspopup="listbox"
         autocomplete="off"
         :disabled="disabled"
         :readonly="!searchable || loading"
-        :value="open && searchable ? query : selectedText"
-        :placeholder="open ? selectedText : undefined"
-        @click="show"
-        @input="input"
+        :value="expanded && searchable ? search : selected"
+        :placeholder="expanded ? selected : undefined"
+        @click="open"
+        @input="query"
         @keydown="keydown"
-        @blur="close"
+        @blur="dismiss"
       />
-      <HProgressCircle v-if="loading" size="small" indeterminate /><HIcon
-        v-else
-        name="expand_more"
-        class="pointer-events-none"
+      <HProgressCircle
+        v-if="loading"
+        size="small"
+        indeterminate
+        aria-label="Loading"
       />
+      <HIcon v-else name="expand_more" class="pointer-events-none" />
     </div>
-    <Teleport to="body"
-      ><div
-        v-if="open"
+    <Teleport to="body">
+      <div
+        v-if="expanded"
         :id="`${id}-list`"
-        ref="popup"
+        ref="list"
         role="listbox"
         :aria-label="label"
         class="h-ui text-text-primary border-control-border bg-background-secondary fixed z-(--h-dropdown-z-index) overflow-y-auto rounded-(--h-control-radius) border p-1"
         @pointerdown.prevent
       >
         <div
-          v-for="(option, index) in filtered"
+          v-for="(choice, index) in visible"
           :id="`${id}-option-${index}`"
-          :key="value(option)"
+          :key="choice.value"
           role="option"
-          :aria-selected="value(option) === modelValue"
+          :aria-selected="choice.value === modelValue"
           class="flex min-h-(--h-control-height) cursor-pointer items-center rounded-(--h-control-radius) px-3 py-2"
-          :class="[
-            value(option) === modelValue
-              ? 'bg-selection text-primary font-medium'
-              : index === active
-                ? 'bg-background-element'
-                : '',
-          ]"
-          @mousemove="active = index"
-          @click="select(option)"
+          :class="{
+            'h-select-selected': choice.value === modelValue,
+            'h-select-highlighted': index === highlighted,
+          }"
+          @mousemove="highlighted = index"
+          @click="choose(choice.value)"
         >
-          {{ text(option) }}
+          {{ choice.text }}
         </div>
         <div
-          v-if="!filtered.length"
+          v-if="!visible.length"
           role="status"
           class="text-secondary px-3 py-2"
         >
           {{ options.length ? "No options found" : "No options" }}
         </div>
-      </div></Teleport
-    >
+      </div>
+    </Teleport>
   </div>
 </template>
+
+<style scoped>
+.h-select-highlighted {
+  background: var(--color-background-element);
+}
+.h-select-selected {
+  background: var(--color-selection);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+</style>

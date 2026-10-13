@@ -71,7 +71,6 @@ onMounted(() => {
         <h-form
           @submit.prevent="handleUpdateProfile"
           ref="profileForm"
-          tag="form"
           class="!mb-2 flex w-full flex-col content-center items-center justify-center"
         >
           <h-input
@@ -102,8 +101,7 @@ onMounted(() => {
             <h-button
               @click="reloadProfileFormContent"
               icon="replay"
-              preset="secondary"
-              border-color="primary"
+              variant="outlined"
               class="ml-1 w-full"
             />
           </div>

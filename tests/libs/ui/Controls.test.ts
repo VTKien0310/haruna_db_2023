@@ -43,11 +43,11 @@ describe("HButton", () => {
           { value: "grid", icon: "grid_view" },
           { value: "list", icon: "splitscreen" },
         ],
-        preset: "secondary",
       },
     });
     const buttons = wrapper.findAll("button");
     expect(buttons[0].attributes("aria-label")).toBe("grid view");
+    expect(buttons[0].classes()).toContain("h-button-icon-only");
     expect(buttons[0].attributes("aria-pressed")).toBe("true");
     await buttons[1].trigger("click");
     expect(wrapper.emitted("update:modelValue")).toEqual([["list"]]);
@@ -74,6 +74,33 @@ describe("HSelect", () => {
       props: { ...props, options: [...props.options], ...extra },
     });
   }
+  it("navigates Home/End and closes immediately when loading starts", async () => {
+    const wrapper = mountSelect();
+    const input = wrapper.get("input");
+    await input.trigger("keydown", { key: "Enter" });
+    await input.trigger("keydown", { key: "End" });
+    await input.trigger("keydown", { key: "Enter" });
+    expect(wrapper.emitted("update:modelValue")).toEqual([["en"]]);
+    await input.trigger("keydown", { key: "ArrowUp" });
+    await input.trigger("keydown", { key: "Home" });
+    await input.trigger("keydown", { key: "Enter" });
+    expect(wrapper.emitted("update:modelValue")?.[1]).toEqual(["ja"]);
+    await input.trigger("click");
+    await wrapper.setProps({ loading: true });
+    expect(input.attributes("aria-expanded")).toBe("false");
+    expect(popup().find('[role="listbox"]').exists()).toBe(false);
+  });
+  it("does not reference nonexistent options and cleans up a pending open", async () => {
+    const wrapper = mountSelect({ options: [] });
+    await wrapper.get("input").trigger("keydown", { key: "ArrowDown" });
+    expect(
+      wrapper.get("input").attributes("aria-activedescendant"),
+    ).toBeUndefined();
+    expect(popup().get('[role="status"]').text()).toBe("No options");
+    wrapper.unmount();
+    await flushPromises();
+    expect(popup().find('[role="listbox"]').exists()).toBe(false);
+  });
   it("searches, navigates and emits mapped values through keyboard selection", async () => {
     const wrapper = mountSelect();
     const input = wrapper.get("input");
@@ -128,6 +155,24 @@ describe("HSelect", () => {
 });
 
 describe("HFileUpload", () => {
+  it("always offers dropping and blocks drops while disabled", async () => {
+    const file = new File(["data"], "PHOTO.PNG", { type: "image/png" });
+    const events: string[] = [];
+    const wrapper = mount(HFileUpload, {
+      ...appMountOptions(),
+      props: {
+        modelValue: [],
+        "onUpdate:modelValue": () => events.push("update"),
+        onFileAdded: () => events.push("added"),
+      },
+    });
+    expect(wrapper.text()).toContain("Drop files here");
+    await wrapper.trigger("drop", { dataTransfer: { files: [file] } });
+    expect(events).toEqual(["update", "added"]);
+    await wrapper.setProps({ disabled: true });
+    await wrapper.trigger("drop", { dataTransfer: { files: [file] } });
+    expect(events).toHaveLength(2);
+  });
   it("appends accepted files before notifying, removes files, and respects disabled state", async () => {
     const old = new File(["old"], "old.png", { type: "image/png" });
     const added = new File(["new"], "new.mp4", { type: "video/mp4" });
@@ -137,7 +182,6 @@ describe("HFileUpload", () => {
       props: {
         modelValue: [old],
         fileTypes: "image/*,video/*",
-        dropzone: true,
       },
     });
     const input = wrapper.get("input");
@@ -162,7 +206,7 @@ describe("HFileUpload", () => {
     const file = new File(["data"], "PHOTO.PNG");
     const wrapper = mount(HFileUpload, {
       ...appMountOptions(),
-      props: { modelValue: [], fileTypes: ".png", dropzone: true },
+      props: { modelValue: [], fileTypes: ".png" },
     });
     await wrapper.trigger("drop", { dataTransfer: { files: [file] } });
     expect(wrapper.emitted("update:modelValue")).toEqual([[[file]]]);

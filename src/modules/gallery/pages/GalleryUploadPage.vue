@@ -44,7 +44,6 @@ const uploadPendingMedia = () => {
         v-model="galleryUploadStore.pendingNewMediaFiles"
         file-types="image/*,video/*"
         @file-added="newPendingFileAdded"
-        dropzone
         upload-button-text="Add"
         dropZoneText="Add files or drop them here"
       />

@@ -48,7 +48,6 @@ function handleLogin() {
 
       <h-form
         ref="loginForm"
-        tag="form"
         @submit.prevent="handleLogin"
         class="bg-background-secondary border-background-border mt-8 flex w-full max-w-sm flex-col items-center justify-center rounded-(--h-panel-radius) border p-6"
       >

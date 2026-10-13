@@ -1,4 +1,4 @@
-/* Haruna's flat, logo-derived design tokens. Source provenance: ../LICENSE. */
+/* Haruna's flat design, based on the application's folder logo. */
 :root {
   --h-font-family: "Roboto", sans-serif;
   --h-control-height: 2.75rem;
@@ -35,7 +35,7 @@
 .h-field-control {
   min-height: var(--h-control-height);
   border-radius: var(--h-input-radius);
-  background: var(--h-field-background, var(--color-background-secondary));
+  background: var(--color-background-secondary);
   border: var(--h-input-border-width) solid var(--color-control-border);
   transition: border-color var(--h-motion-duration) ease;
 }
@@ -46,6 +46,19 @@
 }
 .h-field-control[aria-invalid="true"] {
   border-color: var(--color-danger);
+}
+.h-field-readonly,
+.h-field-disabled {
+  background: var(--color-background-element);
+}
+.h-field-disabled {
+  color: var(--color-secondary);
+}
+.h-field-control:has(textarea) {
+  min-height: 0;
+}
+.h-field-input {
+  line-height: var(--h-input-line-height);
 }
 .h-control-label {
   font-size: 0.875rem;

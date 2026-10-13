@@ -71,10 +71,8 @@ const submitForm = async (): Promise<void> => {
   <h-button
     @click="triggerShowForm"
     :icon="formIcon"
-    round
     class="m-1"
-    :preset="formStyleIsPrimary ? '' : 'secondary'"
-    :border-color="formStyleIsPrimary ? '' : 'primary'"
+    :variant="formStyleIsPrimary ? 'solid' : 'outlined'"
   />
 
   <h-modal
@@ -102,9 +100,7 @@ const submitForm = async (): Promise<void> => {
       <h-textarea
         v-model="formData.description"
         label="Description"
-        :min-rows="5"
-        :max-rows="5"
-        :resize="false"
+        :rows="5"
         class="mb-2 w-full"
       />
 
@@ -112,7 +108,7 @@ const submitForm = async (): Promise<void> => {
       <div class="flex w-full flex-row content-center justify-end">
         <h-button
           @click="triggerShowForm"
-          preset="secondary"
+          variant="outlined"
           color="secondary"
           class="mr-2"
         >

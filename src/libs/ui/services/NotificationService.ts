@@ -4,6 +4,7 @@ import type {
   HNotifications,
   HToastOptions,
 } from "../types/UiTypes";
+import { statusColor } from "../types/UiTypes";
 
 export interface ToastEntry extends HToastOptions {
   id: string;
@@ -32,7 +33,7 @@ export class NotificationService implements HNotifications {
       typeof options === "string" ? { message: options } : options;
     this.toasts.value = [
       ...this.toasts.value,
-      { color: "primary", ...normalized, id },
+      { ...normalized, color: statusColor(normalized.color), id },
     ];
     const duration = normalized.duration ?? 5000;
     if (duration > 0)
