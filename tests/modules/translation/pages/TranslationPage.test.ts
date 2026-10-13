@@ -77,6 +77,9 @@ describe("TranslationPage workflow", () => {
       (wrapper.findAll("textarea")[1].element as HTMLTextAreaElement).value,
     ).toBe("Hello");
     expect(wrapper.text()).toContain("Japanese → English");
+    expect(
+      wrapper.get('button[aria-label="Copy translation"]').classes(),
+    ).toContain("h-button-icon-only");
     await button("Swap").trigger("click");
     expect(
       (wrapper.findAll("textarea")[0].element as HTMLTextAreaElement).value,
@@ -88,6 +91,9 @@ describe("TranslationPage workflow", () => {
     expect(
       (wrapper.findAll("textarea")[1].element as HTMLTextAreaElement).value,
     ).toBe("");
+    expect(wrapper.find('button[aria-label="Copy translation"]').exists()).toBe(
+      false,
+    );
   });
   it("selects a history record and shows loading/pagination", async () => {
     const wrapper = mount(TranslationPage, appMountOptions());

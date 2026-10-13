@@ -9,7 +9,6 @@ import { useTranslationStore } from "@/modules/translation/stores/TranslationSto
 import { useToastService } from "@/modules/master/MasterServiceContainer";
 import {
   HButton,
-  HIcon,
   HPagination,
   HProgressBar,
   HSelect,
@@ -148,25 +147,16 @@ onIonViewDidEnter(async () => {
               Translate
             </h-button>
             <h-button
-              preset="secondary"
-              border-color="primary"
+              variant="outlined"
               :disabled="isTranslating"
               @click="swapLanguages"
             >
               Swap
             </h-button>
-            <h-button
-              preset="secondary"
-              border-color="primary"
-              @click="clearSourceText"
-            >
+            <h-button variant="outlined" @click="clearSourceText">
               Clear
             </h-button>
-            <h-button
-              preset="secondary"
-              border-color="primary"
-              @click="resetTranslation"
-            >
+            <h-button variant="outlined" @click="resetTranslation">
               Reset
             </h-button>
           </div>
@@ -209,7 +199,6 @@ onIonViewDidEnter(async () => {
             </div>
             <h-textarea
               v-model="sourceText"
-              :resize="false"
               counter
               placeholder="Enter text to translate..."
               class="translation-textarea w-full"
@@ -224,18 +213,16 @@ onIonViewDidEnter(async () => {
               <span class="text-text-primary font-bold">Translation</span>
               <h-button
                 v-if="translatedText"
-                preset="plain"
+                variant="quiet"
                 size="small"
+                icon="content_copy"
+                aria-label="Copy translation"
                 @click="copyTranslatedText"
-              >
-                <h-icon name="content_copy" />
-              </h-button>
+              />
             </div>
             <h-textarea
               v-model="translatedText"
-              :resize="false"
               :loading="isTranslating"
-              background="backgroundElement"
               readonly
               placeholder="Translation will appear here"
               class="translation-textarea w-full"

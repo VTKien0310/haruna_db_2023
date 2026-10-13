@@ -1,13 +1,7 @@
-<script setup lang="ts">
-import { colorVariable, type HColor } from "../types/UiTypes";
-withDefaults(defineProps<{ color?: HColor }>(), {
-  color: "backgroundSecondary",
-});
-</script>
+<script setup lang="ts"></script>
 <template>
   <div
-    class="h-ui text-text-primary border-background-border rounded-(--h-panel-radius) border"
-    :style="{ backgroundColor: colorVariable(color) }"
+    class="h-ui bg-background-secondary text-text-primary border-background-border rounded-(--h-panel-radius) border"
   >
     <slot />
   </div>

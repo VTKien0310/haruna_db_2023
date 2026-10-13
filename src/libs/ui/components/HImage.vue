@@ -4,7 +4,7 @@ const props = withDefaults(
   defineProps<{
     src: string;
     alt?: string;
-    fit?: "cover" | "contain" | "fill";
+    fit?: "cover" | "contain";
     ratio?: number;
   }>(),
   { alt: "", fit: "cover" },

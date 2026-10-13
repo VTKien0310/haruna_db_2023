@@ -1,68 +1,85 @@
-// Adapted from Vuestic 1.10.3 form context and validation. See ../LICENSE.
-import type { Ref, ShallowRef } from "vue";
-import type { HRule } from "../types/UiTypes";
+import { ref, shallowReactive } from "vue";
+import type { HFieldHandle, HRule } from "../types/UiTypes";
 
-export class FieldService {
-  constructor(
-    private readonly value: () => string,
-    private readonly rules: () => readonly HRule[],
-    private readonly disabled: () => boolean,
-    private readonly touched: Ref<boolean>,
-    private readonly setValue: (value: string) => void,
-    readonly focus: () => void,
-  ) {}
+interface FieldBindings {
+  value: () => string;
+  rules: () => readonly HRule[];
+  disabled: () => boolean;
+  update: (value: string) => void;
+  control: () => HTMLInputElement | HTMLTextAreaElement | undefined;
+}
+
+/** Synchronous validation and native control behavior for one text field. */
+export class FieldService implements HFieldHandle {
+  private readonly validated = ref(false);
+  constructor(private readonly bindings: FieldBindings) {}
 
   get errors(): string[] {
-    if (this.disabled()) return [];
-    return this.rules()
-      .map((rule) => rule(this.value()))
-      .filter((result) => result !== true)
-      .map((result) =>
-        typeof result === "string" && result ? result : "Invalid value",
-      );
+    const messages: string[] = [];
+    if (!this.bindings.disabled()) {
+      for (const rule of this.bindings.rules()) {
+        const result = rule(this.bindings.value());
+        if (result !== true)
+          messages.push(
+            typeof result === "string" && result.length > 0
+              ? result
+              : "Invalid value",
+          );
+      }
+    }
+    return messages;
   }
-
   get isValid(): boolean {
     return this.errors.length === 0;
   }
   get visibleErrors(): string[] {
-    return this.touched.value ? this.errors : [];
+    return this.validated.value ? this.errors : [];
   }
   validate(): boolean {
-    this.touched.value = true;
+    this.validated.value = true;
     return this.isValid;
   }
   resetValidation(): void {
-    this.touched.value = false;
+    this.validated.value = false;
   }
   reset(): void {
-    this.setValue("");
+    this.bindings.update("");
     this.resetValidation();
+  }
+  focus(): void {
+    this.bindings.control()?.focus();
+  }
+  blur(): void {
+    this.bindings.control()?.blur();
   }
 }
 
+/** Registration order determines focus order; removed fields stop contributing. */
 export class FormService {
-  constructor(private readonly fields: ShallowRef<readonly FieldService[]>) {}
+  private readonly fields = shallowReactive(new Set<FieldService>());
+
   register(field: FieldService): () => void {
-    this.fields.value = [...this.fields.value, field];
+    this.fields.add(field);
     return () => {
-      this.fields.value = this.fields.value.filter((item) => item !== field);
+      this.fields.delete(field);
     };
   }
   get isValid(): boolean {
-    return this.fields.value.every((field) => field.isValid);
+    for (const field of this.fields) if (!field.isValid) return false;
+    return true;
   }
   validate(): boolean {
-    const results = this.fields.value.map((field) => field.validate());
-    return results.every(Boolean);
+    let valid = true;
+    for (const field of this.fields) if (!field.validate()) valid = false;
+    return valid;
   }
   reset(): void {
-    this.fields.value.forEach((field) => field.reset());
+    for (const field of this.fields) field.reset();
   }
   resetValidation(): void {
-    this.fields.value.forEach((field) => field.resetValidation());
+    for (const field of this.fields) field.resetValidation();
   }
   focus(): void {
-    this.fields.value[0]?.focus();
+    this.fields.values().next().value?.focus();
   }
 }

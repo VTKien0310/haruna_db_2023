@@ -9,7 +9,7 @@ function goToGalleryUploadPage(): void {
 </script>
 
 <template>
-  <h-button @click="goToGalleryUploadPage" round size="large" icon="upload" />
+  <h-button @click="goToGalleryUploadPage" size="large" icon="upload" />
 </template>
 
 <style scoped></style>

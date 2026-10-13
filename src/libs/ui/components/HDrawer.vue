@@ -64,8 +64,7 @@ onUnmounted(() => {
           <div class="mb-3 flex shrink-0 justify-end">
             <HButton
               icon="close"
-              preset="secondary"
-              border-color="backgroundBorder"
+              variant="outlined"
               aria-label="Close navigation"
               @click="close"
             />

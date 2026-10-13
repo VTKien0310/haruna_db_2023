@@ -4,22 +4,18 @@ The reusable, app-owned UI library in [src/libs/ui](../src/libs/ui). This guide
 is the shared reference for component usage, design, implementation, and
 maintenance.
 
-## Source and supported scope
+## Ownership and supported scope
 
-Adapted
-from [Vuestic UI 1.10.3](https://github.com/epicmaxco/vuestic-ui/tree/9ba04aab42f9c6c6b35b4570333293c760b62786/packages/ui/src),
-commit `9ba04aab42f9c6c6b35b4570333293c760b62786`. The upstream copyright and MIT
-permission notice are retained in [src/libs/ui/LICENSE](../src/libs/ui/LICENSE).
-This is a selective, substantially adapted source fork with Haruna's own visual
-design, rather than an upstream-compatible distribution.
+Haruna UI is maintained directly from the app's design and behavior requirements.
+Components use ordinary Vue script setup, native semantic elements, Tailwind/theme
+tokens, and small typed services. There is no external UI implementation or
+compatibility layer behind the public `H*` components.
 
-The public surface contains the components used by the app. Components are renamed
-from `Va*` to `H*`. Haruna UI also includes components not existing in Vuestic UI (e.g., `HDrawer`). App-used props,
-models, slots, and events are
-supported. Unused upstream features such as configuration transport, arbitrary
-presets, icon packs, input masks, asynchronous rules, web components, and unused
-components are outside the supported API. Inherited behavior has been adapted
-into script-setup components, Tailwind/CSS tokens, and typed service classes.
+The public surface supports the app's models, slots, events, and accessibility
+requirements. Styling is intentionally constrained: component surfaces, corners,
+and visual states are fixed. Layout classes, native attributes, media dimensions,
+and documented size presets remain available. Application classes and styles
+should control layout, not override component colors, borders, or corner radii.
 
 ## Setup and component APIs
 
@@ -52,10 +48,15 @@ const name = ref("");
 </template>
 ```
 
-- `HFormHandle` exposes reactive `isValid`, `validate()`, `reset()`,
+- `HForm` always renders a native form. `HFormHandle` exposes reactive `isValid`, `validate()`, `reset()`,
   `resetValidation()`, and `focus()`. Rules are synchronous string validators.
   Errors appear on blur or explicit validation; validity tracks field values.
   Reset clears values and validation feedback, and fields unregister on unmount.
+- `HInput` and `HTextarea` render native input and textarea controls through a
+  shared presentation frame. Native IDs, descriptions, attributes, and focus/blur
+  events are forwarded to the control; layout classes/styles apply to the frame.
+  Textareas use `rows` (default two, minimum one), do not resize manually, and
+  retain counters and field handles. Readonly fields use the fixed muted surface.
 - `HSelect` supports string models, typed object options, `textBy`, `valueBy`,
   search, loading, and disabled states. Enter/arrow keys open the list,
   arrows/Home/End navigate, Enter selects, and Escape/Tab dismiss.
@@ -72,9 +73,16 @@ const name = ref("");
   and accepts duration zero for manual dismissal. `confirm()` resolves a boolean.
   App unmount clears timers and settles pending confirmations as false; state is
   isolated per Vue app.
-- `HFileUpload` emits the updated `File[]` before `file-added`, resets the native
+- `HFileUpload` always displays the drop area and picker action. It emits the updated `File[]` before `file-added`, resets the native
   input so the same file can be selected again, and supports removal. MIME and
   extension filtering do not replace upload service or server validation.
+- `HProgressBar` uses a fixed 8px cyan track. An optional default slot (receiving
+  `value`) or `showPercent` label appears below the track. Unknown percentages
+  are hidden during indeterminate progress. Circular progress retains size
+  presets, uses primary by default, and inherits the foreground inside buttons.
+- `HSkeleton` uses the shared control radius and pulse animation, respecting
+  reduced motion; only width and height are configurable. `HImage` supports
+  `cover` (default) or `contain`, aspect ratio, and loader/error slots.
 
 ## Design language
 
@@ -85,9 +93,16 @@ add gradients or decorative shadows. Theme colors, shared sizing, corners,
 overlay layers, and motion tokens live in `src/libs/ui/styles/ui.css` as
 Haruna UI defaults.
 
-Component color props use camelCase (`color="backgroundElement"`), mapped to
-kebab-case CSS/Tailwind tokens (`--color-background-element`,
-`bg-background-element`). The current palette is:
+Color props use explicit theme-token mappings; arbitrary CSS colors are not
+accepted, and unsupported runtime values fall back to primary.
+`HActionColor` restricts buttons to primary, secondary, success, info, danger,
+and warning. `HStatusColor` restricts notifications to primary, success, info,
+danger, and warning. Icons accept the documented `HColor` palette and inherit
+their foreground when no color is supplied.
+
+Theme names use camelCase in component APIs (`color="backgroundElement"` on
+an icon), and kebab-case in CSS/Tailwind (`--color-background-element`,
+`bg-background-element`). The palette is:
 
 | Purpose                     | Component token / value                                                            |
 | --------------------------- | ---------------------------------------------------------------------------------- |
@@ -99,13 +114,14 @@ kebab-case CSS/Tailwind tokens (`--color-background-element`,
 | Selected navigation/options | `selection` / `#fff2ce`, slate text and amber marker                               |
 | Semantic feedback           | `success` / `#276b4c`, `info` / `#2276bb`, `danger` / `#b31e48`, `warning` / amber |
 
-`HButton` presets are default solid, `secondary` outlined, `primary` tinted, and
-`plain` quiet text/icon. `round` explicitly requests a circle; other controls use
-the shared corner radius. The former `gradient` prop is unsupported. Amber/cyan
-filled buttons use dark foregrounds. Brand raspberry is a decorative CSS token (`--color-brand-raspberry`), not a
-component color prop; use `danger` for errors.
-Segmented controls share one frame; dialogs and notifications use flat bordered
-surfaces.
+`HButton` has `variant="solid"` (default), `outlined`, or `quiet`. Every
+button uses the shared control radius, including icon actions. Borders and
+foregrounds follow the selected action color; warning fills use dark foregrounds.
+There are no round buttons, border overrides, or tinted/gradient variants.
+Segmented controls use one fixed frame with solid selected and quiet unselected
+actions. Cards/dialogs have white surfaces; navigation uses backgroundPrimary.
+Readonly fields use backgroundElement. Brand raspberry remains a decorative CSS
+token, not a component color; use danger for errors.
 
 ### Layout, typography, and accessibility
 
@@ -147,11 +163,10 @@ surfaces.
 - Do not import feature modules, application routing, backend adapters, or
   credentials into the library.
 - Follow the [project frontend standards](../AGENTS.md#frontend-standards),
-  including script setup, TypeScript, and Tailwind. Inherited upstream code has
-  no blanket exception. Native elements are allowed inside library primitives
+  including script setup, TypeScript, and Tailwind. Native elements are allowed inside library primitives
   for semantics and accessibility; application code uses Haruna controls.
-- Do not restore the Vuestic runtime, upstream build tooling, or state-returning
-  composables.
+- Do not introduce generic UI configuration transport, appearance compatibility
+  aliases, or composables returning reactive state.
 - Preserve validation/reset behavior, field unregistration, keyboard navigation,
   focus restoration, overlay stacking, scroll locking, and notification cleanup.
   File-type filtering is a UI convenience, not a security boundary; upload
@@ -159,9 +174,10 @@ surfaces.
 
 ## Customization and maintenance
 
-Customize the owned source directly. Review upstream fixes against the pinned
-revision, adapt them manually, and record the source revision in this section.
-There is no automatic upstream synchronization or package publication.
+Maintain the owned source directly against this guide and observable behavior
+tests. Changes to appearance must update the design contract and migrate all
+consumers together, rather than introduce alternate styling modes.
+There is no external source synchronization or package publication.
 Apply the implementation boundaries above and the [project coding standards](../AGENTS.md).
 
 ## Verification

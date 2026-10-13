@@ -31,7 +31,6 @@ const deleteDirectory = (): void => {
           webpageBookmarkDetailStore.webpageBookmark?.description ?? ''
         "
         readonly
-        :resize="false"
         class="row-span-3 h-full w-full self-center px-2"
       />
 
@@ -63,7 +62,6 @@ const deleteDirectory = (): void => {
         v-if="!webpageBookmarkDetailStore.currentIsRoot"
         @click="deleteDirectory"
         icon="delete"
-        round
         class="m-1"
         color="danger"
       />

@@ -18,11 +18,9 @@ const navigateToParentDirectory = (): void => {
   <h-button
     @click="navigateToParentDirectory"
     :disabled="webpageBookmarkDetailStore.currentIsRoot"
-    round
     icon="move_up"
     class="m-1"
-    preset="secondary"
-    border-color="primary"
+    variant="outlined"
   />
 </template>
 

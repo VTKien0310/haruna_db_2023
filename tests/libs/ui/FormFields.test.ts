@@ -5,6 +5,53 @@ import { HForm, HInput, HTextarea } from "@/libs/ui";
 import { appMountOptions } from "../../support/mountApp";
 
 describe("HForm and fields", () => {
+  it("renders a native form and validates every field before reporting failure", async () => {
+    const wrapper = mount(
+      defineComponent({
+        components: { HForm, HInput },
+        template:
+          '<HForm><HInput label="First" :rules="[() => false]" /><HInput label="Second" :rules="[() => \'Required\']" /></HForm>',
+      }),
+      appMountOptions(),
+    );
+    const form = wrapper.getComponent(HForm);
+    expect(form.element.tagName).toBe("FORM");
+    expect(form.vm.validate()).toBe(false);
+    await flushPromises();
+    expect(
+      wrapper.findAll('[role="alert"]').map((error) => error.text()),
+    ).toEqual(["Invalid value", "Required"]);
+  });
+  it("updates native IDs and descriptions and ignores disabled validation rules", async () => {
+    const wrapper = mount(
+      defineComponent({
+        components: { HInput },
+        props: {
+          inputId: { type: String, default: "name" },
+          disabled: Boolean,
+        },
+        template:
+          '<HInput :id="inputId" :disabled="disabled" label="Name" :rules="[() => \'Required\']" aria-describedby="help" />',
+      }),
+      appMountOptions(),
+    );
+    const field = wrapper.getComponent(HInput);
+    field.vm.validate();
+    await flushPromises();
+    expect(wrapper.get("input").attributes("aria-describedby")).toBe(
+      "help name-errors",
+    );
+    await wrapper.setProps({ disabled: true });
+    expect(field.vm.validate()).toBe(true);
+    await flushPromises();
+    expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+    expect(wrapper.get("input").attributes("aria-describedby")).toBe("help");
+    await wrapper.setProps({ disabled: false, inputId: "updated-name" });
+    expect(wrapper.get("label").attributes("for")).toBe("updated-name");
+    expect(wrapper.get("input").attributes("aria-describedby")).toBe(
+      "help updated-name-errors",
+    );
+  });
   const Form = defineComponent({
     components: { HForm, HInput, HTextarea },
     setup() {
@@ -79,16 +126,14 @@ describe("HForm and fields", () => {
         disabled: true,
         loading: true,
         counter: true,
-        minRows: 5,
-        maxRows: 5,
-        resize: false,
+        rows: 5,
       },
     });
     const textarea = wrapper.get("textarea");
     expect(textarea.attributes("readonly")).toBeDefined();
     expect(textarea.attributes("disabled")).toBeDefined();
     expect(textarea.attributes("rows")).toBe("5");
-    expect((textarea.element as HTMLTextAreaElement).style.resize).toBe("none");
+    expect(textarea.classes()).toContain("resize-none");
     expect(wrapper.find('[role="progressbar"]').exists()).toBe(true);
     expect(wrapper.get('[role="progressbar"]').attributes("aria-label")).toBe(
       "Loading",

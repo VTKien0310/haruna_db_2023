@@ -21,6 +21,58 @@ function click(selector: string) {
 }
 
 describe("HModal", () => {
+  it("restores the original trigger when a lower overlay closes first", async () => {
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    trigger.focus();
+    document.body.style.overflow = "auto";
+    const first = mount(HModal, {
+      ...realModalOptions(),
+      props: { modelValue: true, title: "First" },
+    });
+    await flushPromises();
+    const second = mount(HModal, {
+      ...realModalOptions(),
+      props: { modelValue: true, title: "Second" },
+    });
+    await flushPromises();
+    first.unmount();
+    expect(document.body.style.overflow).toBe("hidden");
+    second.unmount();
+    expect(document.activeElement).toBe(trigger);
+    expect(document.body.style.overflow).toBe("auto");
+  });
+  it("focuses an empty dialog and ignores hidden controls and handled Escape events", async () => {
+    const wrapper = mount(HModal, {
+      ...realModalOptions(),
+      props: { modelValue: true, noDismiss: true, hideDefaultActions: true },
+      slots: {
+        default:
+          "<div hidden><button>Hidden</button></div><button disabled>Unavailable</button>",
+      },
+    });
+    await flushPromises();
+    const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
+    expect(document.activeElement).toBe(dialog);
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Tab",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    expect(document.activeElement).toBe(dialog);
+    const escape = new KeyboardEvent("keydown", {
+      key: "Escape",
+      bubbles: true,
+      cancelable: true,
+    });
+    escape.preventDefault();
+    document.dispatchEvent(escape);
+    expect(wrapper.emitted("cancel")).toBeUndefined();
+    wrapper.unmount();
+    expect(document.body.style.overflow).not.toBe("hidden");
+  });
   const Fixture = defineComponent({
     components: { HModal, HButton },
     setup() {

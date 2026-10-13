@@ -21,8 +21,8 @@ battleship [Haruna](https://en.wikipedia.org/wiki/Japanese_battleship_Haruna).
 ## UI library
 
 Haruna UI is the app-owned component library in [src/libs/ui](src/libs/ui),
-with a flat design derived from the existing folder logo and no Vuestic runtime
-dependency. See the [Haruna UI guide](doc/haruna-ui-lib.md) for setup, component APIs,
+with a flat design derived from the existing folder logo and a constrained Vue
+component API. See the [Haruna UI guide](doc/haruna-ui-lib.md) for setup, component APIs,
 theme tokens, design conventions, CSS integration, and maintenance.
 
 ## System requirement

@@ -25,6 +25,9 @@ export { createHarunaUI, useHarunaUiService } from "./UiPlugin";
 export type {
   HButtonOption,
   HColor,
+  HActionColor,
+  HStatusColor,
+  HButtonVariant,
   HSize,
   HRule,
   HInputProps,

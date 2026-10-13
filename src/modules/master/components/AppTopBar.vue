@@ -23,7 +23,7 @@ const emit = defineEmits<{
     class="h-ui bg-background-secondary border-background-border text-primary fixed top-0 right-0 left-0 z-(--h-header-z-index) flex h-(--h-app-header-height) w-full items-center justify-between border-b px-4"
   >
     <h-button
-      preset="plain"
+      variant="quiet"
       class="p-0"
       aria-label="Go to home"
       @click="emit('navigate-home')"
@@ -38,8 +38,7 @@ const emit = defineEmits<{
     <h-button
       @click="emit('toggle-sidebar')"
       icon="menu"
-      preset="secondary"
-      border-color="backgroundBorder"
+      variant="outlined"
       aria-label="Open navigation"
       :aria-expanded="sidebarOpen"
       :aria-controls="sidebarId"

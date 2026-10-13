@@ -234,17 +234,11 @@ watch(
         <div
           class="flex w-full flex-row content-center items-center justify-end"
         >
-          <h-button
-            @click="triggerShowMediaDetail"
-            round
-            icon="info"
-            class="mr-1"
-          />
-          <h-button @click="downloadMedia" round icon="download" class="mr-1" />
+          <h-button @click="triggerShowMediaDetail" icon="info" class="mr-1" />
+          <h-button @click="downloadMedia" icon="download" class="mr-1" />
           <h-button
             v-if="uploaderIsMe"
             @click="deleteMedia"
-            round
             icon="delete"
             color="danger"
           />

@@ -102,7 +102,7 @@ onUnmounted((): void => {
       v-model="isSidebarOpen"
       :top-offset="hideNavBar ? '0' : 'var(--h-app-header-height)'"
     >
-      <h-sidebar color="backgroundPrimary">
+      <h-sidebar>
         <div class="flex flex-col gap-1">
           <h-sidebar-item
             v-for="item in navItems"
