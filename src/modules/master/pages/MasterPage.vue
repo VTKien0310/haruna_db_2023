@@ -127,7 +127,7 @@ onIonViewDidEnter(async () => {
           </h-card>
 
           <h-card
-            class="col-span-3 m-1 h-full w-full md:col-start-2"
+            class="col-span-3 m-1 h-full w-full md:col-span-2 md:col-start-2"
             color="backgroundPrimary"
           >
             <h-card-title>Web bookmarks breakdown</h-card-title>
