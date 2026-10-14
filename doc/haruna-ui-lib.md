@@ -86,9 +86,12 @@ const name = ref("");
 
 ## Design language
 
-The flat design follows the existing [folder logo](../src/assets/logo.svg): white
-surfaces, slate actions, amber selection, cyan accents, visible borders, and
-rounded controls. Use solid fills, borders, and spacing for hierarchy; do not
+The flat design offers Classic (the original slate/cyan/amber palette) and Haruna
+(indigo/blue, teal, and amber from the [logo](../src/assets/logo.svg)), each with
+light and dark variants. Additional palettes are Legacy (Vuestic UI light),
+Catppuccin Latte, Catppuccin Frappé, Catppuccin Macchiato, Catppuccin Mocha,
+and Tokyo Night.
+Use solid fills, borders, and spacing for hierarchy; do not
 add gradients or decorative shadows. Theme colors, shared sizing, corners,
 overlay layers, and motion tokens live in `src/libs/ui/styles/ui.css` as
 Haruna UI defaults.
@@ -102,7 +105,7 @@ their foreground when no color is supplied.
 
 Theme names use camelCase in component APIs (`color="backgroundElement"` on
 an icon), and kebab-case in CSS/Tailwind (`--color-background-element`,
-`bg-background-element`). The palette is:
+`bg-background-element`). The original **Classic Light** palette is:
 
 | Purpose                     | Component token / value                                                            |
 | --------------------------- | ---------------------------------------------------------------------------------- |
@@ -114,12 +117,57 @@ an icon), and kebab-case in CSS/Tailwind (`--color-background-element`,
 | Selected navigation/options | `selection` / `#fff2ce`, slate text and amber marker                               |
 | Semantic feedback           | `success` / `#276b4c`, `info` / `#2276bb`, `danger` / `#b31e48`, `warning` / amber |
 
+The root `data-theme` attribute selects one of ten palettes. With no attribute,
+the CSS defaults to Haruna Light. Existing utilities and component color props
+resolve the same runtime tokens in every palette:
+
+| Theme ID               | Main action      | Accent         | Panel            | Body text             |
+| ---------------------- | ---------------- | -------------- | ---------------- | --------------------- |
+| `haruna-light`         | Indigo `#1e1b4b` | Teal `#0d9488` | White `#ffffff`  | Slate `#334155`       |
+| `haruna-dark`          | Blue `#bfdbfe`   | Teal `#5eead4` | Indigo `#1e1b4b` | Light slate `#e2e8f0` |
+| `classic-light`        | Slate `#143441`  | Cyan `#2bb3cd` | White `#ffffff`  | Slate `#394c5b`       |
+| `classic-dark`         | Slate `#b8d9e6`  | Cyan `#67d4e8` | Slate `#1e293b`  | Light slate `#e2e8f0` |
+| `legacy`               | Blue `#154ec1`   | Blue `#158de3` | White `#ffffff`  | `#262824`             |
+| `catppuccin-latte`     | Mauve `#8839ef`  | Teal `#179299` | Base `#eff1f5`   | `#4c4f69`             |
+| `catppuccin-frappe`    | Mauve `#ca9ee6`  | Teal `#81c8be` | Base `#303446`   | `#c6d0f5`             |
+| `catppuccin-macchiato` | Mauve `#c6a0f6`  | Teal `#8bd5ca` | Base `#24273a`   | `#cad3f5`             |
+| `catppuccin-mocha`     | Mauve `#cba6f7`  | Teal `#94e2d5` | Base `#1e1e2e`   | `#cdd6f4`             |
+| `tokyo-night`          | Blue `#7aa2f7`   | Teal `#73daca` | `#1a1b26`        | `#c0caf5`             |
+
+Palette sources: [Vuestic UI colors](https://ui.vuestic.dev/styles/colors/),
+[Catppuccin palette](https://catppuccin.com/palette/), and
+[Tokyo Night palette](https://wixdaq.github.io/Tokyo-Night-Website/).
+Catppuccin uses Mantle for the canvas, Base for panels, Surface 0 for selections
+and readonly controls, and Mauve for primary actions. Legacy has only a light
+variant; Latte is light, while the other new palettes are dark.
+Optional `--color-<action>-foreground` and `--color-<action>-text` tokens override
+solid foregrounds and quiet/outlined text, respectively. Legacy and Latte use
+black text on green fills and darker success text mixed with black for contrast;
+Legacy also uses black text on info fills.
+Latte darkens quiet/outlined info text with black for contrast against Base.
+Legacy uses its primary blue for quiet/outlined info actions. Other actions fall
+back to the shared action foreground and their semantic color.
+
+Dark palettes use light semantic colors with dark solid-action text. Separate
+`--color-action-foreground`, `--color-warning-foreground`, and
+`--color-warning-text` tokens keep button fills and quiet/outlined text readable.
+`--color-text-inverted` remains available for content requiring white text.
+Amber selection, visible field boundaries, focus outlines, and overlay backdrops
+also adapt to the selected variant. Keep all color values in the shared palette;
+feature code must not override colors to implement dark mode.
+
+The application's theme service owns device-local persistence and root attributes.
+Initialize it before mounting, independently of authentication. Profile's
+Appearance selector applies changes immediately; canvas consumers must re-read
+computed CSS colors when the theme store changes. Ionic variable mappings remain
+in `src/main.css`, outside this library.
+
 `HButton` has `variant="solid"` (default), `outlined`, or `quiet`. Every
 button uses the shared control radius, including icon actions. Borders and
-foregrounds follow the selected action color; warning fills use dark foregrounds.
+foregrounds follow the selected palette; warning fills use dark foregrounds.
 There are no round buttons, border overrides, or tinted/gradient variants.
 Segmented controls use one fixed frame with solid selected and quiet unselected
-actions. Cards/dialogs have white surfaces; navigation uses backgroundPrimary.
+actions. Cards/dialogs use backgroundSecondary; navigation uses backgroundPrimary.
 Readonly fields use backgroundElement. Brand raspberry remains a decorative CSS
 token, not a component color; use danger for errors.
 
@@ -176,7 +224,8 @@ token, not a component color; use danger for errors.
 
 Maintain the owned source directly against this guide and observable behavior
 tests. Changes to appearance must update the design contract and migrate all
-consumers together, rather than introduce alternate styling modes.
+consumers together. The documented palettes share the same geometry and
+component APIs; do not add component-specific alternate styling modes.
 There is no external source synchronization or package publication.
 Apply the implementation boundaries above and the [project coding standards](../AGENTS.md).
 

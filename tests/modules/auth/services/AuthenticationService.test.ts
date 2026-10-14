@@ -8,6 +8,9 @@ import { useTranslationStore } from "@/modules/translation/stores/TranslationSto
 import { makeBackendFake } from "../../../fakes/BackendFake";
 import { makeRouter, makeToast } from "../../../fakes/Collaborators";
 import { makeHistory, makeMedia } from "../../../factories/Records";
+import { ThemeService } from "@/modules/master/services/ThemeService";
+import { useThemeStore } from "@/modules/master/stores/ThemeStore";
+import { THEME_STORAGE_KEY } from "@/modules/master/ThemeEntities";
 
 describe("AuthenticationService", () => {
   let backend: ReturnType<typeof makeBackendFake>;
@@ -69,6 +72,19 @@ describe("AuthenticationService", () => {
     expect(await service.signOut()).toBe(false);
     expect(useGalleryListStore().medias).toHaveLength(1);
     expect(toast.error).toHaveBeenCalled();
+  });
+  it("preserves the device theme through successful sign-out", async () => {
+    try {
+      new ThemeService(document, () => localStorage).select("classic-dark");
+      backend.auth.signOut.mockResolvedValue({ error: null });
+      expect(await service.signOut()).toBe(true);
+      expect(useThemeStore().themeId).toBe("classic-dark");
+      expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("classic-dark");
+      expect(document.documentElement.dataset.theme).toBe("classic-dark");
+    } finally {
+      document.documentElement.removeAttribute("data-theme");
+      document.documentElement.style.removeProperty("color-scheme");
+    }
   });
   it("refreshes profile on auth changes and redirects when signed out", async () => {
     backend.auth.onAuthStateChange.mockReturnValue({});

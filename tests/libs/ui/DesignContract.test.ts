@@ -49,7 +49,7 @@ describe("HButton design contract", () => {
     expect(wrapper.attributes("aria-label")).toBe("file upload");
     expect(
       wrapper.element.style.getPropertyValue("--h-action-foreground"),
-    ).toBe("var(--color-primary)");
+    ).toBe("var(--color-warning-foreground)");
     await wrapper.setProps({ loading: true });
     expect(wrapper.find('[aria-label="Loading"]').exists()).toBe(true);
     expect(wrapper.find(".h-icon").text()).toBe("file_upload");

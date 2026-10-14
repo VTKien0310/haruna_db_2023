@@ -20,6 +20,15 @@ ion-app {
   --ion-font-family: var(--h-font-family);
   --ion-background-color: var(--color-background-secondary);
   --ion-text-color: var(--color-text-primary);
+  --ion-border-color: var(--color-background-border);
+  --ion-color-primary: var(--color-primary);
+  --ion-color-primary-contrast: var(--color-action-foreground);
+  --ion-color-success: var(--color-success);
+  --ion-color-success-contrast: var(--color-action-foreground);
+  --ion-color-danger: var(--color-danger);
+  --ion-color-danger-contrast: var(--color-action-foreground);
+  --ion-color-warning: var(--color-warning);
+  --ion-color-warning-contrast: var(--color-warning-foreground);
 }
 
 ion-app {
