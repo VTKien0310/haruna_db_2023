@@ -216,6 +216,9 @@ export class UploadMediaService {
         thumbnailFileName,
       ]);
       const thumbnail = await ffmpeg.readFile(thumbnailFileName);
+      // Blob requires a non-shared buffer; FFmpeg's bytes can be shared.
+      const thumbnailData =
+        typeof thumbnail === "string" ? thumbnail : new Uint8Array(thumbnail);
 
       // create thumbnail progress count for video
       this.galleryUploadStore.currentProgressUploadedFileCount += 1;
@@ -225,7 +228,7 @@ export class UploadMediaService {
         .from("thumbnails")
         .upload(
           thumbnailFileName,
-          new Blob([thumbnail], { type: "image/png" }),
+          new Blob([thumbnailData], { type: "image/png" }),
           defaultStorageFileOptions,
         );
 

@@ -13,11 +13,11 @@ A multipurpose Progressive Web App (PWA) for everyday use, providing:
 | Layer            | Technology                              |
 | ---------------- | --------------------------------------- |
 | Framework        | Vue 3 + TypeScript                      |
-| Mobile/PWA       | Ionic Vue 8                             |
+| Mobile/PWA       | Ionic Vue 9                             |
 | UI Components    | Haruna UI (`src/libs/ui`)               |
 | Styling          | Tailwind CSS 4                          |
-| State Management | Pinia 3                                 |
-| Routing          | Vue Router 4 via `@ionic/vue-router`    |
+| State Management | Pinia 4                                 |
+| Routing          | Vue Router 5 via `@ionic/vue-router`    |
 | Backend          | Supabase + Custom API via `BackendPort` |
 | Hosting          | Firebase Hosting                        |
 | Utilities        | VueUse, dayjs, FFmpeg WASM              |

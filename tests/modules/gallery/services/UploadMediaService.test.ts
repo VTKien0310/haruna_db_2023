@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
+import { Blob as NodeBlob } from "node:buffer";
+import type { FileData } from "@ffmpeg/ffmpeg";
 import { UploadMediaService } from "@/modules/gallery/services/UploadMediaService";
 import { GalleryListService } from "@/modules/gallery/services/GalleryListService";
 import { useGalleryUploadStore } from "@/modules/gallery/stores/GalleryUploadStore";
@@ -14,7 +16,7 @@ const ffmpeg = vi.hoisted(() => ({
   load: vi.fn(async () => true),
   writeFile: vi.fn(async () => true),
   exec: vi.fn(async () => 0),
-  readFile: vi.fn(async () => new Uint8Array([1, 2])),
+  readFile: vi.fn<() => Promise<FileData>>(async () => new Uint8Array([1, 2])),
 }));
 vi.mock("@ffmpeg/ffmpeg", () => ({
   FFmpeg: class {
@@ -104,6 +106,38 @@ describe("UploadMediaService", () => {
       );
     },
   );
+  it("uploads only the thumbnail bytes from a shared buffer view", async () => {
+    // Node's Blob, like browser Blob, rejects SharedArrayBuffer-backed views.
+    vi.stubGlobal("Blob", NodeBlob);
+    const bytes = new Uint8Array(new SharedArrayBuffer(4));
+    bytes.set([9, 1, 2, 9]);
+    ffmpeg.readFile.mockResolvedValueOnce(bytes.subarray(1, 3));
+    const file = new File(["dummy"], "a.mp4", { type: "video/mp4" });
+    useGalleryUploadStore().pendingNewMediaFiles = [file];
+    modal.confirm.mockResolvedValue(true);
+    backend.storage.upload
+      .mockResolvedValueOnce(queryResult({ path: "a.mp4" }))
+      .mockResolvedValueOnce(queryResult({ path: "thumb.png" }));
+    backend.storage.createSignedUrl.mockResolvedValue(
+      queryResult({ signedUrl: "https://media.invalid/dummy" }),
+    );
+    backend.query(queryResult());
+
+    service.uploadPendingNewMediaFiles();
+    await flushPromises();
+
+    const thumbnail = backend.storage.upload.mock.calls[1]?.[1];
+    expect(thumbnail).toBeInstanceOf(NodeBlob);
+    if (!(thumbnail instanceof NodeBlob)) {
+      throw new Error("Expected a PNG thumbnail upload");
+    }
+    expect(thumbnail.type).toBe("image/png");
+    expect(new Uint8Array(await thumbnail.arrayBuffer())).toEqual(
+      new Uint8Array([1, 2]),
+    );
+    expect(useGalleryUploadStore().pendingNewMediaFiles).toEqual([]);
+    expect(toast.error).not.toHaveBeenCalled();
+  });
   it.each(["storage", "record"])(
     "retains failed uploads after %s failure",
     async (stage) => {

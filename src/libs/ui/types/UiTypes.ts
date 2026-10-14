@@ -4,11 +4,7 @@ import type { FormService } from "../services/FormService";
 export type HSize = "small" | "medium" | "large";
 export type HButtonVariant = "solid" | "outlined" | "quiet";
 export type HStatusColor =
-  | "primary"
-  | "success"
-  | "info"
-  | "danger"
-  | "warning";
+  "primary" | "success" | "info" | "danger" | "warning";
 export type HActionColor = HStatusColor | "secondary";
 export type HColor =
   | "primary"
