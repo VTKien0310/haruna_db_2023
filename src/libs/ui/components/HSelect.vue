@@ -176,6 +176,11 @@ onUnmounted(() => {
         class="h-select-input w-full min-w-0 bg-transparent outline-none"
         role="combobox"
         :aria-label="label"
+        :aria-describedby="
+          typeof $attrs['aria-describedby'] === 'string'
+            ? $attrs['aria-describedby']
+            : undefined
+        "
         :aria-expanded="expanded"
         :aria-controls="expanded ? `${id}-list` : undefined"
         :aria-activedescendant="

@@ -1,5 +1,6 @@
-/* Haruna's flat design, based on the application's folder logo. */
+/* Shared geometry and motion; palettes follow the root data-theme attribute. */
 :root {
+  color-scheme: light;
   --h-font-family: "Roboto", sans-serif;
   --h-control-height: 2.75rem;
   --h-control-radius: 0.5rem;
@@ -129,6 +130,37 @@
 
 /* Components resolve colors at runtime, so keep even tokens without utilities. */
 @theme static {
+  /* Haruna Light is also the CSS fallback before application initialization. */
+  --color-primary: #1e1b4b;
+  --color-secondary: #64748b;
+  --color-success: #0f766e;
+  --color-info: #2563eb;
+  --color-danger: #be123c;
+  --color-warning: #f59e0b;
+  --color-brand-amber: #f59e0b;
+  --color-brand-cyan: #0d9488;
+  --color-brand-raspberry: #eb305d;
+  --color-selection: #fef3c7;
+  --color-control-border: #64748b;
+  --color-background-primary: #f8fafc;
+  --color-background-secondary: #ffffff;
+  --color-background-element: #eef2f6;
+  --color-background-border: #cbd5e1;
+  --color-text-primary: #334155;
+  --color-text-inverted: #ffffff;
+  --color-action-foreground: #ffffff;
+  --color-warning-foreground: #1e1b4b;
+  --color-warning-text: #92400e;
+  --color-shadow: rgba(0, 0, 0, 0.12);
+  --color-focus: #2563eb;
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1440px;
+  --breakpoint-xl: 1920px;
+}
+
+:root[data-theme="classic-light"] {
   --color-primary: #143441;
   --color-secondary: #657786;
   --color-success: #276b4c;
@@ -137,22 +169,51 @@
   --color-warning: #febe40;
   --color-brand-amber: #febe40;
   --color-brand-cyan: #2bb3cd;
-  --color-brand-raspberry: #eb305d;
   --color-selection: #fff2ce;
   --color-control-border: #7c8f9b;
   --color-background-primary: #f7f9fa;
-  --color-background-secondary: #ffffff;
   --color-background-element: #ecf1f4;
   --color-background-border: #cbd5dc;
   --color-text-primary: #394c5b;
-  --color-text-inverted: #ffffff;
-  --color-shadow: rgba(0, 0, 0, 0.12);
+  --color-warning-foreground: #143441;
+  --color-warning-text: #143441;
   --color-focus: #2276bb;
+}
 
-  --breakpoint-sm: 640px;
-  --breakpoint-md: 1024px;
-  --breakpoint-lg: 1440px;
-  --breakpoint-xl: 1920px;
+:root[data-theme$="-dark"] {
+  color-scheme: dark;
+  --color-secondary: #cbd5e1;
+  --color-success: #6ee7b7;
+  --color-info: #93c5fd;
+  --color-danger: #fda4af;
+  --color-warning: #fbbf24;
+  --color-brand-amber: #fbbf24;
+  --color-brand-raspberry: #fb7185;
+  --color-control-border: #94a3b8;
+  --color-background-primary: #0f172a;
+  --color-background-element: #334155;
+  --color-background-border: #64748b;
+  --color-text-primary: #e2e8f0;
+  --color-action-foreground: #0f172a;
+  --color-warning-foreground: #0f172a;
+  --color-warning-text: #fbbf24;
+  --color-shadow: rgba(0, 0, 0, 0.4);
+  --color-focus: #93c5fd;
+  --h-overlay-color: rgb(0 0 0 / 64%);
+}
+
+:root[data-theme="haruna-dark"] {
+  --color-primary: #bfdbfe;
+  --color-brand-cyan: #5eead4;
+  --color-selection: #3b3156;
+  --color-background-secondary: #1e1b4b;
+}
+
+:root[data-theme="classic-dark"] {
+  --color-primary: #b8d9e6;
+  --color-brand-cyan: #67d4e8;
+  --color-selection: #46391f;
+  --color-background-secondary: #1e293b;
 }
 
 @utility grid-cols-16 {

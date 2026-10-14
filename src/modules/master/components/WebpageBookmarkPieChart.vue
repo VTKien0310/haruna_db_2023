@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { Doughnut } from "vue-chartjs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { useThemeStore } from "../stores/ThemeStore";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -10,14 +11,19 @@ const props = defineProps<{
   directoryCount: number;
 }>();
 
-// Canvas colors cannot resolve CSS variables; read the shared theme after mount.
+// Canvas colors cannot resolve CSS variables; refresh them after palette changes.
+const themeStore = useThemeStore();
 const colors = ref<string[]>([]);
-onMounted(() => {
+const legendColor = ref("");
+function refreshColors(): void {
   const theme = getComputedStyle(document.documentElement);
   colors.value = ["--color-brand-cyan", "--color-brand-amber"].map((token) =>
     theme.getPropertyValue(token).trim(),
   );
-});
+  legendColor.value = theme.getPropertyValue("--color-text-primary").trim();
+}
+onMounted(refreshColors);
+watch(() => themeStore.themeId, refreshColors, { flush: "post" });
 
 const chartData = computed(() => ({
   labels: ["Links", "Directories"],
@@ -30,15 +36,16 @@ const chartData = computed(() => ({
   ],
 }));
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
       position: "bottom" as const,
+      labels: { color: legendColor.value },
     },
   },
-};
+}));
 </script>
 
 <template>

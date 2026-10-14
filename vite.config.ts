@@ -4,6 +4,9 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 
 import { VitePWA } from "vite-plugin-pwa";
+import { THEME_OPTIONS } from "./src/modules/master/ThemeEntities.ts";
+
+const defaultThemeColor = THEME_OPTIONS[0].themeColor;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,36 +20,36 @@ export default defineConfig({
       strategies: "generateSW",
       injectRegister: false,
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+        globPatterns: ["**/*.{js,css,html,ico,png,jpg,svg}"],
       },
       manifest: {
         name: "Haruna Digital Book",
         short_name: "HarunaDB",
-        theme_color: "#ffffff",
+        theme_color: defaultThemeColor,
         start_url: "/",
         display: "standalone",
-        background_color: "#ffffff",
+        background_color: defaultThemeColor,
         icons: [
           {
-            src: "manifest-icon-192.maskable.png",
+            src: "pwa/manifest-icon-192.maskable.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "manifest-icon-192.maskable.png",
+            src: "pwa/manifest-icon-192.maskable.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "maskable",
           },
           {
-            src: "manifest-icon-512.maskable.png",
+            src: "pwa/manifest-icon-512.maskable.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "manifest-icon-512.maskable.png",
+            src: "pwa/manifest-icon-512.maskable.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",

@@ -9,6 +9,7 @@ import {
   useProfileService,
 } from "@/modules/auth/AuthServiceContainer";
 import { HButton, HForm, HInput } from "@/libs/ui";
+import ThemeSelector from "@/modules/master/components/ThemeSelector.vue";
 
 const authenticationService = useAuthenticationService();
 const profileService = useProfileService();
@@ -89,20 +90,20 @@ onMounted(() => {
             class="mt-4 w-full"
           />
 
-          <div class="mt-6 flex w-full flex-row justify-between">
+          <div class="mt-6 flex w-full flex-row gap-2">
             <h-button
               :disabled="!enableUpdateProfileButton"
               :loading="isUpdatingProfile"
               icon="save"
               type="submit"
-              class="mr-1 w-full"
+              class="min-w-0 flex-1"
             />
 
             <h-button
               @click="reloadProfileFormContent"
               icon="replay"
               variant="outlined"
-              class="ml-1 w-full"
+              class="min-w-0 flex-1"
             />
           </div>
         </h-form>
@@ -113,6 +114,7 @@ onMounted(() => {
           class="w-full"
           color="danger"
         />
+        <ThemeSelector />
       </div>
     </div>
   </ion-page>

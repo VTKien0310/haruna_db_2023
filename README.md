@@ -21,9 +21,37 @@ battleship [Haruna](https://en.wikipedia.org/wiki/Japanese_battleship_Haruna).
 ## UI library
 
 Haruna UI is the app-owned component library in [src/libs/ui](src/libs/ui),
-with a flat design derived from the existing folder logo and a constrained Vue
+with a flat design, four color palettes, and a constrained Vue
 component API. See the [Haruna UI guide](doc/haruna-ui-lib.md) for setup, component APIs,
 theme tokens, design conventions, CSS integration, and maintenance.
+
+### Appearance
+
+Supported themes: Haruna Light, Haruna Dark, Classic Light, and Classic Dark.
+The selected theme is stored locally on the device.
+
+### Regenerate PWA assets
+
+After updating [the logo](src/assets/logo.svg), run:
+
+```sh
+npm run generate:pwa-assets
+npm run format
+```
+
+The installed [pwa-asset-generator](https://github.com/elegantapp/pwa-asset-generator)
+creates maskable 192px/512px manifest icons, an Apple touch icon, a PNG favicon,
+and light/dark portrait/landscape Apple launch images under `public/pwa/`.
+It updates the image declarations in `index.html`; the manifest stays configured
+in `vite.config.ts`. Commit the generated images along with those declarations.
+The tool uses a local Chrome browser or downloads its compatible Chromium version
+when needed. On Linux environments that cannot sandbox Chromium, explicitly use
+`PWA_ASSETS_NO_SANDBOX=1 npm run generate:pwa-assets` with the trusted local SVG.
+
+Launch screens use static Haruna branding and the device's light/dark preference;
+the locally selected application theme applies after startup. iOS may cache launch
+images and require removing and re-adding the home-screen installation to refresh
+them. The service worker precaches the generated PNG and JPEG assets.
 
 ## System requirement
 

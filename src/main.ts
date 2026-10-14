@@ -7,6 +7,7 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 import { createHarunaUI } from "@/libs/ui";
+import { ThemeService } from "@/modules/master/services/ThemeService";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -19,6 +20,8 @@ const app = createApp(App)
   .use(IonicVue)
   .use(router)
   .use(createHarunaUI());
+
+new ThemeService(document, () => window.localStorage).initialize();
 
 router.isReady().then((): void => {
   app.mount("#app");

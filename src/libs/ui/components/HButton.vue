@@ -43,12 +43,14 @@ const VARIANTS: Record<HButtonVariant, string> = {
 const tone = computed(() => actionColor(props.color));
 const palette = computed(() => ({
   "--h-action-fill": colorVariable(tone.value),
-  "--h-action-text": colorVariable(
-    tone.value === "warning" ? "primary" : tone.value,
-  ),
-  "--h-action-foreground": colorVariable(
-    tone.value === "warning" ? "primary" : "textInverted",
-  ),
+  "--h-action-text":
+    tone.value === "warning"
+      ? "var(--color-warning-text)"
+      : colorVariable(tone.value),
+  "--h-action-foreground":
+    tone.value === "warning"
+      ? "var(--color-warning-foreground)"
+      : "var(--color-action-foreground)",
 }));
 const iconOnly = computed(() => Boolean(props.icon && !slots.default));
 const label = computed(() =>

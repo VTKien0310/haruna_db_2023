@@ -86,9 +86,9 @@ const name = ref("");
 
 ## Design language
 
-The flat design follows the existing [folder logo](../src/assets/logo.svg): white
-surfaces, slate actions, amber selection, cyan accents, visible borders, and
-rounded controls. Use solid fills, borders, and spacing for hierarchy; do not
+The flat design offers Classic (the original slate/cyan/amber palette) and Haruna
+(indigo/blue, teal, and amber from the [logo](../src/assets/logo.svg)), each with
+light and dark variants. Use solid fills, borders, and spacing for hierarchy; do not
 add gradients or decorative shadows. Theme colors, shared sizing, corners,
 overlay layers, and motion tokens live in `src/libs/ui/styles/ui.css` as
 Haruna UI defaults.
@@ -102,7 +102,7 @@ their foreground when no color is supplied.
 
 Theme names use camelCase in component APIs (`color="backgroundElement"` on
 an icon), and kebab-case in CSS/Tailwind (`--color-background-element`,
-`bg-background-element`). The palette is:
+`bg-background-element`). The original **Classic Light** palette is:
 
 | Purpose                     | Component token / value                                                            |
 | --------------------------- | ---------------------------------------------------------------------------------- |
@@ -114,12 +114,37 @@ an icon), and kebab-case in CSS/Tailwind (`--color-background-element`,
 | Selected navigation/options | `selection` / `#fff2ce`, slate text and amber marker                               |
 | Semantic feedback           | `success` / `#276b4c`, `info` / `#2276bb`, `danger` / `#b31e48`, `warning` / amber |
 
+The root `data-theme` attribute selects one of four palettes. With no attribute,
+the CSS defaults to Haruna Light. Existing utilities and component color props
+resolve the same runtime tokens in every palette:
+
+| Theme ID        | Main action      | Accent         | Panel            | Body text             |
+| --------------- | ---------------- | -------------- | ---------------- | --------------------- |
+| `haruna-light`  | Indigo `#1e1b4b` | Teal `#0d9488` | White `#ffffff`  | Slate `#334155`       |
+| `haruna-dark`   | Blue `#bfdbfe`   | Teal `#5eead4` | Indigo `#1e1b4b` | Light slate `#e2e8f0` |
+| `classic-light` | Slate `#143441`  | Cyan `#2bb3cd` | White `#ffffff`  | Slate `#394c5b`       |
+| `classic-dark`  | Slate `#b8d9e6`  | Cyan `#67d4e8` | Slate `#1e293b`  | Light slate `#e2e8f0` |
+
+Dark palettes use light semantic colors with dark solid-action text. Separate
+`--color-action-foreground`, `--color-warning-foreground`, and
+`--color-warning-text` tokens keep button fills and quiet/outlined text readable.
+`--color-text-inverted` remains available for content requiring white text.
+Amber selection, visible field boundaries, focus outlines, and overlay backdrops
+also adapt to the selected variant. Keep all color values in the shared palette;
+feature code must not override colors to implement dark mode.
+
+The application's theme service owns device-local persistence and root attributes.
+Initialize it before mounting, independently of authentication. Profile's
+Appearance selector applies changes immediately; canvas consumers must re-read
+computed CSS colors when the theme store changes. Ionic variable mappings remain
+in `src/main.css`, outside this library.
+
 `HButton` has `variant="solid"` (default), `outlined`, or `quiet`. Every
 button uses the shared control radius, including icon actions. Borders and
-foregrounds follow the selected action color; warning fills use dark foregrounds.
+foregrounds follow the selected palette; warning fills use dark foregrounds.
 There are no round buttons, border overrides, or tinted/gradient variants.
 Segmented controls use one fixed frame with solid selected and quiet unselected
-actions. Cards/dialogs have white surfaces; navigation uses backgroundPrimary.
+actions. Cards/dialogs use backgroundSecondary; navigation uses backgroundPrimary.
 Readonly fields use backgroundElement. Brand raspberry remains a decorative CSS
 token, not a component color; use danger for errors.
 
@@ -176,7 +201,8 @@ token, not a component color; use danger for errors.
 
 Maintain the owned source directly against this guide and observable behavior
 tests. Changes to appearance must update the design contract and migrate all
-consumers together, rather than introduce alternate styling modes.
+consumers together. The four documented palettes share the same geometry and
+component APIs; do not add component-specific alternate styling modes.
 There is no external source synchronization or package publication.
 Apply the implementation boundaries above and the [project coding standards](../AGENTS.md).
 
