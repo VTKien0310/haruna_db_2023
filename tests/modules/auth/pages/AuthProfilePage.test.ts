@@ -56,7 +56,7 @@ describe("AuthProfilePage appearance", () => {
       expect(wrapper.text()).toContain("Saved on this device.");
       await control.trigger("keydown", { key: "Enter" });
       const options = document.querySelectorAll('[role="option"]');
-      expect(options).toHaveLength(4);
+      expect(options).toHaveLength(THEME_OPTIONS.length);
       const option = Array.from(options).find(
         (node) => node.textContent?.trim() === theme.label,
       )!;

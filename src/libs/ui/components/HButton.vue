@@ -46,11 +46,11 @@ const palette = computed(() => ({
   "--h-action-text":
     tone.value === "warning"
       ? "var(--color-warning-text)"
-      : colorVariable(tone.value),
+      : `var(--color-${tone.value}-text, ${colorVariable(tone.value)})`,
   "--h-action-foreground":
     tone.value === "warning"
       ? "var(--color-warning-foreground)"
-      : "var(--color-action-foreground)",
+      : `var(--color-${tone.value}-foreground, var(--color-action-foreground))`,
 }));
 const iconOnly = computed(() => Boolean(props.icon && !slots.default));
 const label = computed(() =>

@@ -21,13 +21,15 @@ battleship [Haruna](https://en.wikipedia.org/wiki/Japanese_battleship_Haruna).
 ## UI library
 
 Haruna UI is the app-owned component library in [src/libs/ui](src/libs/ui),
-with a flat design, four color palettes, and a constrained Vue
+with a flat design, ten color palettes, and a constrained Vue
 component API. See the [Haruna UI guide](doc/haruna-ui-lib.md) for setup, component APIs,
 theme tokens, design conventions, CSS integration, and maintenance.
 
 ### Appearance
 
-Supported themes: Haruna Light, Haruna Dark, Classic Light, and Classic Dark.
+Supported themes: Haruna Light, Haruna Dark, Classic Light, Classic Dark, Legacy,
+Catppuccin Latte, Catppuccin Frappé, Catppuccin Macchiato, Catppuccin Mocha,
+and Tokyo Night.
 The selected theme is stored locally on the device.
 
 ### Regenerate PWA assets

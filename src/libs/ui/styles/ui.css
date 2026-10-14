@@ -216,6 +216,154 @@
   --color-background-secondary: #1e293b;
 }
 
+/* Vuestic UI light: https://ui.vuestic.dev/styles/colors/ */
+:root[data-theme="legacy"] {
+  --color-primary: #154ec1;
+  --color-secondary: #666e75;
+  --color-success: #3d9209;
+  --color-info: #158de3;
+  --color-danger: #e42222;
+  --color-warning: #ffd43a;
+  --color-brand-amber: #ffd43a;
+  --color-brand-cyan: #158de3;
+  --color-brand-raspberry: #e42222;
+  --color-selection: #dee5f2;
+  --color-control-border: #666e75;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #ffffff;
+  --color-background-element: #ecf0f1;
+  --color-background-border: #dee5f2;
+  --color-text-primary: #262824;
+  --color-warning-foreground: #262824;
+  --color-warning-text: #262824;
+  --color-success-foreground: #000000;
+  --color-success-text: color-mix(in srgb, #3d9209 80%, black);
+  --color-info-foreground: #000000;
+  --color-info-text: #154ec1;
+  --color-focus: #49a8ff;
+  --h-overlay-color: rgb(38 40 36 / 24%);
+}
+
+/* Catppuccin flavors: https://catppuccin.com/palette/ */
+:root[data-theme="catppuccin-latte"] {
+  --color-primary: #8839ef;
+  --color-secondary: #5c5f77;
+  --color-success: #40a02b;
+  --color-info: #1e66f5;
+  --color-danger: #d20f39;
+  --color-warning: #df8e1d;
+  --color-brand-amber: #df8e1d;
+  --color-brand-cyan: #179299;
+  --color-brand-raspberry: #ea76cb;
+  --color-selection: #ccd0da;
+  --color-control-border: #7c7f93;
+  --color-background-primary: #e6e9ef;
+  --color-background-secondary: #eff1f5;
+  --color-background-element: #dce0e8;
+  --color-background-border: #bcc0cc;
+  --color-text-primary: #4c4f69;
+  --color-success-foreground: #000000;
+  --color-success-text: color-mix(in srgb, #40a02b 75%, black);
+  --color-info-text: color-mix(in srgb, #1e66f5 90%, black);
+  --color-warning-foreground: #000000;
+  --color-warning-text: #4c4f69;
+  --color-focus: #1e66f5;
+  --h-overlay-color: rgb(76 79 105 / 24%);
+}
+
+:root[data-theme="catppuccin-frappe"],
+:root[data-theme="catppuccin-macchiato"],
+:root[data-theme="catppuccin-mocha"],
+:root[data-theme="tokyo-night"] {
+  color-scheme: dark;
+  --color-action-foreground: var(--color-background-primary);
+  --color-warning-foreground: var(--color-background-primary);
+  --color-warning-text: var(--color-warning);
+  --color-shadow: rgba(0, 0, 0, 0.4);
+  --h-overlay-color: rgb(0 0 0 / 64%);
+}
+
+:root[data-theme="catppuccin-frappe"] {
+  --color-primary: #ca9ee6;
+  --color-secondary: #b5bfe2;
+  --color-success: #a6d189;
+  --color-info: #8caaee;
+  --color-danger: #e78284;
+  --color-warning: #e5c890;
+  --color-brand-amber: #e5c890;
+  --color-brand-cyan: #81c8be;
+  --color-brand-raspberry: #f4b8e4;
+  --color-selection: #414559;
+  --color-control-border: #838ba7;
+  --color-background-primary: #292c3c;
+  --color-background-secondary: #303446;
+  --color-background-element: #414559;
+  --color-background-border: #51576d;
+  --color-text-primary: #c6d0f5;
+  --color-focus: #8caaee;
+}
+
+:root[data-theme="catppuccin-macchiato"] {
+  --color-primary: #c6a0f6;
+  --color-secondary: #b8c0e0;
+  --color-success: #a6da95;
+  --color-info: #8aadf4;
+  --color-danger: #ed8796;
+  --color-warning: #eed49f;
+  --color-brand-amber: #eed49f;
+  --color-brand-cyan: #8bd5ca;
+  --color-brand-raspberry: #f5bde6;
+  --color-selection: #363a4f;
+  --color-control-border: #8087a2;
+  --color-background-primary: #1e2030;
+  --color-background-secondary: #24273a;
+  --color-background-element: #363a4f;
+  --color-background-border: #494d64;
+  --color-text-primary: #cad3f5;
+  --color-focus: #8aadf4;
+}
+
+:root[data-theme="catppuccin-mocha"] {
+  --color-primary: #cba6f7;
+  --color-secondary: #bac2de;
+  --color-success: #a6e3a1;
+  --color-info: #89b4fa;
+  --color-danger: #f38ba8;
+  --color-warning: #f9e2af;
+  --color-brand-amber: #f9e2af;
+  --color-brand-cyan: #94e2d5;
+  --color-brand-raspberry: #f5c2e7;
+  --color-selection: #313244;
+  --color-control-border: #7f849c;
+  --color-background-primary: #181825;
+  --color-background-secondary: #1e1e2e;
+  --color-background-element: #313244;
+  --color-background-border: #45475a;
+  --color-text-primary: #cdd6f4;
+  --color-focus: #89b4fa;
+}
+
+/* Tokyo Night: https://wixdaq.github.io/Tokyo-Night-Website/ */
+:root[data-theme="tokyo-night"] {
+  --color-primary: #7aa2f7;
+  --color-secondary: #a9b1d6;
+  --color-success: #9ece6a;
+  --color-info: #7dcfff;
+  --color-danger: #f7768e;
+  --color-warning: #e0af68;
+  --color-brand-amber: #e0af68;
+  --color-brand-cyan: #73daca;
+  --color-brand-raspberry: #bb9af7;
+  --color-selection: #414868;
+  --color-control-border: #9aa5ce;
+  --color-background-primary: #1a1b26;
+  --color-background-secondary: #1a1b26;
+  --color-background-element: #414868;
+  --color-background-border: #565f89;
+  --color-text-primary: #c0caf5;
+  --color-focus: #7aa2f7;
+}
+
 @utility grid-cols-16 {
   grid-template-columns: repeat(16, minmax(0, 1fr));
 }
