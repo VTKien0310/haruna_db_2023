@@ -13,7 +13,7 @@ battleship [Haruna](https://en.wikipedia.org/wiki/Japanese_battleship_Haruna).
 
 ## Project specification
 
-- Vue 3.3
+- Vue 3.5
 - Supabase BaaS
 - Firebase hosting
 - PWA
@@ -27,9 +27,16 @@ theme tokens, design conventions, CSS integration, and maintenance.
 
 ## System requirement
 
-- Node.js 24.x
+- Node.js 26.x (see `.nvmrc`)
 - npm package manager
 - Docker
+
+Production builds target Chrome and Edge 111+, Firefox 114+, and Safari 16.4+,
+following Vite 8's default browser targets.
+
+TypeScript remains on 6.0 because `vue-tsc` requires the compiler API that
+TypeScript 7.0 does not provide. See
+[Microsoft's compatibility guidance](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/).
 
 ## Project setup for development
 
@@ -66,7 +73,7 @@ The separate test tree follows shared fixture/fake conventions.
 
 ### Setup and commands
 
-Use Node.js 24.x and npm. For testing, install dependencies only:
+Use Node.js 26.x and npm. For testing, install dependencies only:
 
 ```sh
 npm ci
