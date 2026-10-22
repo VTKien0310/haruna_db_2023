@@ -58,7 +58,9 @@ Keep the frontend and Edge Function processes running while developing features 
 
 ### Test-Only Setup
 
-For application tests, install dependencies with `npm ci`, then run `npm test`.
+For application tests, install dependencies with `npm ci` if needed, then run
+`npm test -- <test-paths>` for the affected tests. See **Testing and Validation**
+for when broader checks are necessary.
 No environment files, credentials, Docker, Supabase, backend server, or development
 server are required. Follow the mandatory isolation rules in **Testing and Validation**;
 do not start local services for the application test suite.
@@ -289,10 +291,13 @@ For UI overlay and visual checks, follow the
 ### Commands
 
 ```bash
-npm test                 # One complete run, suitable for CI
-npm run test:watch        # Watch mode for local iteration
-npm run test:coverage     # Text, HTML and LCOV reports under coverage/
-npm test -- tests/modules/translation
+npx --no-install prettier --write <changed-files> # Format only changed files
+npm test -- <test-paths>                          # Run affected test files/directories
+npm test -- tests/modules/translation             # Example: module-scoped tests
+npm run test:watch -- <test-paths>                # Watch affected tests
+npm run type-check                               # Project-wide Vue/TypeScript checks
+npm test                                         # Full suite for broad impact or CI
+npm run test:coverage                            # Harness/coverage changes; reports in coverage/
 ```
 
 Coverage includes untested app code and has no initial percentage gate. Generated
@@ -300,21 +305,30 @@ database types, bootstrap/root routing, and the real backend adapter are exclude
 Add regression tests for bug fixes and update this guidance when the harness
 changes. See README.md for setup and helper examples.
 
-After creating or editing code, always run:
-
-```bash
-npm run format     # Prettier (includes Tailwind class sorting)
-npm run type-check # vue-tsc type checking
-npm test           # Application tests (fully isolated)
-```
+After making changes, run the smallest set of checks that covers the affected
+behavior and its consumers. Whole-project checks can be expensive; do not run
+them by default when focused checks are sufficient.
 
 Rules:
 
-- Fix formatting issues introduced by your changes.
-- Fix type errors introduced by your changes.
+- Format only changed files with `npx --no-install prettier --write <changed-files>`
+  (includes Tailwind class sorting). Replace placeholders with explicit paths.
+  `npm run format` always formats the entire repository; do not use it for routine
+  scoped changes.
+- Run relevant test files or directories with `npm test -- <test-paths>`. Include
+  affected dependencies and consumers, not just tests next to edited files.
+- Run `npm run type-check` when changes affect TypeScript or Vue correctness.
+  The current script checks whole projects and does not support file-level filtering.
+- For documentation-only changes, format the changed files and skip application
+  tests and type checking.
+- Run the full test suite when changes have broad impact that focused tests cannot
+  adequately cover, such as shared test infrastructure, or when explicitly requested.
+- Fix formatting issues and type errors introduced by your changes.
 - Fix test failures introduced by your changes; never weaken isolation to pass.
 - Run `npm run test:coverage` when changing the harness or coverage configuration.
 - Do not ignore type errors without a documented reason.
+- In the final handoff, state which checks ran and any relevant checks skipped,
+  with reasons.
 
 ## PWA Expectations
 
@@ -336,9 +350,11 @@ A task is only considered complete when all of the following are true:
 - Styling respects `@theme` tokens in `src/libs/ui/styles/ui.css`.
 - Code is consistent with the existing architecture.
 - Security implications have been considered.
-- `npm run format` has been run after the changes.
-- `npm run type-check` has been run after the changes.
-- `npm test` has been run after the changes.
+- Changed files have been formatted with scoped Prettier commands.
+- Type checking has been run when changes affect TypeScript or Vue correctness.
+- Relevant tests covering changed behavior and affected consumers have been run;
+  broader tests and coverage have been run when required above.
+- Checks run and relevant checks skipped have been reported with reasons.
 - Any important assumptions or tradeoffs are clearly communicated.
 
 ## Agent Behavior Expectations
