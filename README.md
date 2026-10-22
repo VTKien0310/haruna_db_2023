@@ -1,215 +1,139 @@
 # haruna_db_2023
 
-## About
-
-A multipurpose application for everyday use. The application currently provides:
-
-- Images and videos storage
-- AI-powered translation
-- Web bookmarks management
-
-The application's namesake is derived from the
-battleship [Haruna](https://en.wikipedia.org/wiki/Japanese_battleship_Haruna).
-
-## Project specification
-
-- Vue 3.5
-- Supabase BaaS
-- Firebase hosting
-- PWA
+A Vue 3.5 PWA for image/video storage, AI translation, and hierarchical web bookmarks,
+backed by Supabase and hosted on Firebase. Named after the
+[battleship Haruna](https://en.wikipedia.org/wiki/Japanese_battleship_Haruna).
 
 ## UI library
 
-Haruna UI is the app-owned component library in [src/libs/ui](src/libs/ui),
-with a flat design, ten color palettes, and a constrained Vue
-component API. See the [Haruna UI guide](doc/haruna-ui-lib.md) for setup, component APIs,
-theme tokens, design conventions, CSS integration, and maintenance.
-
-### Appearance
-
-Supported themes: Haruna Light, Haruna Dark, Classic Light, Classic Dark, Legacy,
-Catppuccin Latte, Catppuccin Frappé, Catppuccin Macchiato, Catppuccin Mocha,
-and Tokyo Night.
-The selected theme is stored locally on the device.
-
-### Regenerate PWA assets
-
-After updating [the logo](src/assets/logo.svg), run:
-
-```sh
-npm run generate:pwa-assets
-npm run format
-```
-
-The installed [pwa-asset-generator](https://github.com/elegantapp/pwa-asset-generator)
-creates maskable 192px/512px manifest icons, an Apple touch icon, a PNG favicon,
-and light/dark portrait/landscape Apple launch images under `public/pwa/`.
-It updates the image declarations in `index.html`; the manifest stays configured
-in `vite.config.ts`. Commit the generated images along with those declarations.
-The tool uses a local Chrome browser or downloads its compatible Chromium version
-when needed. On Linux environments that cannot sandbox Chromium, explicitly use
-`PWA_ASSETS_NO_SANDBOX=1 npm run generate:pwa-assets` with the trusted local SVG.
-
-Launch screens use static Haruna branding and the device's light/dark preference;
-the locally selected application theme applies after startup. iOS may cache launch
-images and require removing and re-adding the home-screen installation to refresh
-them. The service worker precaches the generated PNG and JPEG assets.
+[Haruna UI](doc/haruna-ui-lib.md) is the app-owned library in [src/libs/ui](src/libs/ui).
+It defines component APIs, flat styling, theme tokens, CSS integration, and maintenance.
+Ten device-local themes include Haruna/Classic light and dark, Legacy, four Catppuccin
+palettes, and Tokyo Night; see the guide for theme behavior and sources.
 
 ## System requirement
 
-- Node.js 26.x (see `.nvmrc`)
-- npm package manager
-- Docker
-
-Production builds target Chrome and Edge 111+, Firefox 114+, and Safari 16.4+,
-following Vite 8's default browser targets.
-
-TypeScript remains on 6.0 because `vue-tsc` requires the compiler API that
-TypeScript 7.0 does not provide. See
-[Microsoft's compatibility guidance](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/).
+Use Node.js 26.x (see [.nvmrc](.nvmrc)), npm, and Docker for local Supabase.
+Production targets Chrome/Edge 111+, Firefox 114+, and Safari 16.4+ (Vite 8 defaults).
+TypeScript stays on 6.0 because `vue-tsc` needs compiler APIs absent from 7.0;
+see [Microsoft's compatibility guidance](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/).
 
 ## Project setup for development
 
-### Start local Supabase environment
+Run from the repository root:
 
 ```sh
 npx supabase start
-```
-
-### Install dependencies
-
-```sh
 npm install
-```
-
-### Start development server
-
-```sh
 npm run dev
 ```
 
-### Start Edge functions
+In a separate terminal, serve Edge Functions:
 
 ```sh
 supabase functions serve --env-file ./supabase/functions/.env.local
 ```
 
+Keep frontend and Edge Functions running while developing features that use them.
+
+## Regenerate PWA assets
+
+After changing [the logo](src/assets/logo.svg), run:
+
+```sh
+npm run generate:pwa-assets
+npx --no-install prettier --write index.html
+```
+
+[pwa-asset-generator](https://github.com/elegantapp/pwa-asset-generator) creates maskable
+192px/512px icons, an Apple touch icon, PNG favicon, and light/dark portrait/landscape
+Apple launch images in `public/pwa/`; it updates `index.html`, not the manifest in
+`vite.config.ts`. Commit generated assets and declarations. It uses local Chrome
+or downloads compatible Chromium. If Linux cannot sandbox Chromium, explicitly run
+`PWA_ASSETS_NO_SANDBOX=1 npm run generate:pwa-assets` with the trusted local SVG.
+
+Launch screens use static branding and device light/dark preference; the saved app
+theme applies after startup. Refresh cached iOS launch images by removing/re-adding
+the home-screen installation. The service worker precaches generated PNG/JPEG assets.
+
 ## Application tests
 
-Tests run entirely in memory with Vitest, Vue Test Utils, and jsdom. They cover
-Vue components, application services, Pinia state, and workflows across auth,
-gallery, translation, bookmarks, and shared services, including Haruna UI.
-The separate test tree follows shared fixture/fake conventions.
+Vitest, Vue Test Utils, and jsdom run components, services, Pinia, and workflows in
+memory. Install dependencies with `npm ci`; no environment files, credentials,
+Docker, Supabase, backend, or development server are needed or permitted.
+Installation downloads packages; tests require no application network access.
 
 ### Setup and commands
 
-Use Node.js 26.x and npm. For testing, install dependencies only:
-
 ```sh
-npm ci
-npm test
+npm test -- tests/modules/translation  # Focused tests; substitute affected paths
+npm test -- -t "clears loading"       # Filter by behavior
+npm run test:watch -- tests/modules/translation
+npm run type-check                    # Entire application and test projects
+npm test                              # Full suite
+npm run test:coverage                  # Console, HTML, LCOV in coverage/
 ```
 
-No environment files, credentials, Docker, Supabase, backend server, or development
-server are required. Dependency installation downloads npm packages; running the
-tests does not require application network access.
+Format only changed files with `npx --no-install prettier --write <changed-files>`
+using explicit paths, not repository-wide `npm run format`. Run affected tests and
+consumers; use the full suite for broad changes or explicit requests. Type-check
+TypeScript/Vue changes and run coverage for harness/coverage changes. Documentation-only
+changes require formatting, not application tests/type checking. Fix introduced
+failures without weakening isolation; report checks run/skipped with reasons.
 
-```sh
-npm run test:watch       # Re-run affected tests while editing
-npm run test:coverage    # Console summary, HTML and LCOV in coverage/
-npm test -- tests/modules/translation
-npm test -- -t "clears loading"
-npm run format
-npm run type-check       # Check both application and test TypeScript
-```
-
-Open `coverage/index.html` for the HTML report. Coverage includes untested source
-files so gaps remain visible; there is no initial percentage gate. Generated
-database types, app bootstrap/root routing, and the real backend adapter are
-excluded. Coverage artifacts are ignored by Git.
+Coverage includes untested source, has no initial percentage gate, and excludes
+generated database types, bootstrap/root routing, and the real backend adapter.
+Reports in `coverage/` (including `index.html`) are Git-ignored.
 
 ### Structure and adding tests
 
-```text
-tests/
-  setup.ts             # Isolation, fresh Pinia, browser compatibility, cleanup
-  modules/             # Mirrors src/modules/, including services/pages/components
-  ports/               # Pure backend result helpers and browser DOM behavior
-  libs/ui/             # UI controls, real modal/drawer focus, notification lifecycle
-  factories/           # Deterministic typed records; no database factories/seeders
-  fakes/               # Backend, router, notifications, PWA and other doubles
-  support/             # Mount helpers, network guards and isolation self-tests
-```
+Tests mirror source under `tests/modules/`, `tests/ports/` (pure helpers/DOM),
+and `tests/libs/ui/`. `tests/setup.ts` supplies fresh Pinia, browser compatibility,
+mocks, and cleanup; `tests/support/` holds mounting helpers, guards, and isolation
+self-tests. Deterministic records live in `tests/factories/Records.ts` (no database
+seeders); fakes live in `tests/fakes/`.
 
-Name files `*.test.ts` and group cases with `describe("ClassOrComponent", ...)`.
-Assert behavior (rendered state, navigation, payloads, errors, loading cleanup),
-not private methods or broad snapshots. Mount real Haruna form controls when
-testing validation. Use targeted Ionic/modal/browser stubs when their native
-environment is irrelevant; these tests do not prove browser layout or PWA
-installability.
-
-For UI overlay and visual checks, follow the
-[Haruna UI verification guide](doc/haruna-ui-lib.md#verification).
-
-Service tests inject dependencies and use the fresh active Pinia provided by
-setup. For example:
-
-```ts
-const backend = makeBackendFake();
-const toast = makeToast();
-const service = new GalleryListService(backend.port, toast.service);
-const query = backend.query(queryResult([makeMedia()]));
-
-await service.fetchMedias();
-
-expect(query.order).toHaveBeenCalledWith("created_at", { ascending: false });
-expect(useGalleryListStore().medias).toHaveLength(1);
-```
-
-Import those helpers from `tests/fakes/BackendFake.ts`,
-`tests/fakes/Collaborators.ts`, and `tests/factories/Records.ts` using paths relative
-to your test. Each `backend.query(...)` configures the next `.from(...)` call;
-query chains record arguments and return the supplied response without emulating
-database behavior. Configure `backend.get/post`, `backend.auth`, and
-`backend.storage` explicitly for each scenario. Use `BackendApiResult.ok/err`
-for custom API results and `queryResult/queryError` for Supabase-shaped results.
-
-For component tests, use `appMountOptions()` from `tests/support/mountApp.ts`,
-which supplies the active Pinia, Haruna UI plugin, and targeted stubs. Mock service
-container factories to inject real services with fake dependencies for workflow
-tests, or focused service doubles for isolated UI tests. Stop service-owned
-watchers explicitly in `finally` blocks and await asynchronous work before a test
-ends. Setup unmounts components, disposes Pinia, and resets storage, timers, and
-mocks.
+- Name files `*.test.ts`, group with `describe("ClassOrComponent", ...)`, and assert
+  observable success/failure, empty/loading states, navigation, and payloads.
+  Avoid private-method tests and broad snapshots; add regression tests for bugs.
+- Inject service dependencies. Import `makeBackendFake`, `queryResult/queryError`
+  from `tests/fakes/BackendFake.ts`, collaborators such as `makeToast` from
+  `tests/fakes/Collaborators.ts`, and record builders using relative paths.
+  `backend.query(queryResult([makeMedia()]))` queues the next `.from(...)` result;
+  chains record arguments without emulating SQL/RLS. Explicitly configure
+  `backend.get/post`, `auth`, and `storage`; use `BackendApiResult.ok/err` for Custom API results.
+- Use `appMountOptions()` from `tests/support/mountApp.ts` for Pinia, Haruna UI,
+  and targeted stubs. Workflow tests mock container factories to connect real
+  services/stores to fake dependencies; isolated UI tests may use service doubles.
+  Validate with real Haruna controls. Stub native Ionic/browser behavior only when
+  irrelevant; follow [UI verification](doc/haruna-ui-lib.md#verification) for overlays/layout.
+- Await async work, unmount components, and stop service watchers in `finally`
+  where appropriate. Setup disposes Pinia and resets DOM, storage, timers, and mocks;
+  isolate additional side effects equally.
 
 ### Network safety and boundaries
 
-- The real `BackendPort` singleton is mocked before import. A separate guard
-  rejects real Supabase client construction. No sessions are read or refreshed.
-- All API, database, auth, storage, and function calls use explicit in-memory
-  responses. Unconfigured fake operations throw and fail teardown even if the app
-  catches the exception.
-- Browser fetch/XHR/WebSocket/EventSource/beacon, workers, and Node HTTP/socket
-  transports are blocked, including localhost. jsdom does not load external
-  images, stylesheets, or scripts. FFmpeg downloads and PWA registration are faked.
-- Never unmock the backend/client, restore real transports, run external processes
-  to access services, or bypass guards to make a test pass. Extend fakes instead.
-  The guards prevent accidental application I/O; they are not an OS security
-  sandbox for arbitrary test code.
-- Supabase migrations, RLS, Edge Function implementations, live backend contracts,
-  and browser end-to-end tests are outside this suite. A passing test verifies the
-  application's response to fake results, not server behavior.
+- Backend singleton imports are mocked and real Supabase construction is guarded;
+  no sessions are read/refreshed. Never bypass guards with `vi.unmock`,
+  `vi.importActual`, direct SDK construction, or imports of `src/main.ts`.
+- Configure all API/database/auth/storage/function responses in memory.
+  Unconfigured operations fail teardown even when application code catches them.
+- Network transports (browser and Node), workers, and localhost are blocked;
+  jsdom loads no external images/styles/scripts. Keep FFmpeg downloads, PWA
+  registration, browser downloads, and other external side effects mocked.
+- Never restore transports or use subprocesses to reach services; extend fakes.
+  Never read development/production environment files or credentials; Vitest
+  disables environment-file loading and provides dummy endpoints/keys.
+  Only isolation self-tests may consume expected guard violations.
+- Guards prevent accidental I/O, not arbitrary code at the OS level. These tests
+  do not validate migrations, RLS, Edge Functions, server contracts, browser layout,
+  PWA installability, or browser end-to-end behavior.
 
 ## Release
 
-### Build for production
+Build production, then deploy Firebase Hosting:
 
 ```sh
 npx vite build --mode production
-```
-
-### Deploy to Firebase hosting
-
-```sh
 firebase deploy --only hosting
 ```
