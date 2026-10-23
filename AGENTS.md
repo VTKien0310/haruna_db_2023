@@ -1,4 +1,4 @@
-# AGENTS.md
+# HarunaDB Development Guide
 
 ## Project and Working Principles
 
@@ -70,12 +70,12 @@ backend, or development server are needed or permitted for this suite.
   `{Module}{Action}Service.ts`, `{Module}Store.ts`, `{Module}Router.ts` with
   `{Module}RouteName`, `{Module}Entities.ts` for interfaces/enums/constants,
   `{Module}Types.ts` for DTOs/form types, and `{Module}ServiceContainer.ts`.
-  Use dot-separated route names (`gallery.list`), kebab-case store IDs
-  (`gallery-list`), and `SCREAMING_SNAKE_CASE` constants.
+  Use dot-separated route names (`gallery.list`), kebab-case store IDs (`gallery-list`), and `SCREAMING_SNAKE_CASE`
+  constants.
 
 ## UI, Styling, and PWA
 
-- Read and follow the [Haruna UI guide](doc/haruna-ui-lib.md) for UI or styling
+- Read and follow the [Haruna UI guide](doc/design-and-decision/haruna-ui-lib.md) for UI or styling
   work, including supported APIs, design conventions, implementation boundaries,
   provenance, and maintenance. Keep library-specific documentation there.
 - Use Haruna controls from `@/libs/ui` (such as `HButton`, `HInput`, `HForm`,
@@ -89,7 +89,7 @@ backend, or development server are needed or permitted for this suite.
   keep Ionic selectors and `--ion-*` mappings there. Haruna's shared stylesheet
   owns app theme tokens, resets, font classes, and shared utilities, without
   external package imports or framework-specific selectors/variables. Follow
-  [CSS integration rules](doc/haruna-ui-lib.md#css-integration) for import order
+  [CSS integration rules](doc/design-and-decision/haruna-ui-lib.md#css-integration) for import order
   and runtime tokens.
 - Preserve responsive mobile/desktop layouts, touch-friendly interaction, mobile
   performance, unstable-network handling, and clear loading/empty/error states.
@@ -107,8 +107,10 @@ backend, or development server are needed or permitted for this suite.
 
 ## Testing and Validation
 
-Use Vitest, Vue Test Utils, and jsdom. Follow [application test documentation](README.md#application-tests)
-for the mirrored test tree, deterministic factories, fakes, and helper examples.
+Use Vitest, Vue Test Utils, and jsdom. Follow
+[application tests](doc/design-and-decision/application-tests.md) and run commands
+from the [README](README.md#setup-and-commands).
+
 Name tests `*.test.ts`, group with `describe("ClassOrComponent", ...)`, and assert
 observable success, failure, empty, and loading behavior rather than private
 details or broad snapshots. Add regression tests for bug fixes; update guidance
@@ -116,7 +118,7 @@ when the harness changes.
 
 Use real Haruna controls for validation, `appMountOptions()` for components, and
 constructor injection for services. Workflow tests connect real services and
-stores to fake backends. Follow [UI verification guidance](doc/haruna-ui-lib.md#verification)
+stores to fake backends. Follow [UI verification guidance](doc/design-and-decision/haruna-ui-lib.md#verification)
 for overlays and visual checks.
 
 ### Mandatory Isolation
@@ -154,7 +156,8 @@ for overlays and visual checks.
 - Run `npm run type-check` for TypeScript/Vue correctness changes; it checks
   whole projects and has no file-level filtering.
 - Run `npm run test:coverage` for harness/coverage configuration changes. Coverage
-  behavior and exclusions are documented in README.
+  behavior and exclusions are documented in
+  [application tests](doc/design-and-decision/application-tests.md).
 - For documentation-only changes, format changed files and skip application
   tests/type checking. Otherwise use the smallest sufficient checks; do not run
   whole-project checks unnecessarily.
@@ -163,3 +166,15 @@ for overlays and visual checks.
 - Completion requires compliance with architecture, Vue/Ionic/Haruna conventions,
   theme tokens, and security rules. Report checks run, relevant checks skipped
   with reasons, and important assumptions/tradeoffs in the final handoff.
+
+## Design and Decision Documentation
+
+Documentation for design and decision reasoning is available in the
+[`doc/design-and-decision`](doc/design-and-decision) directory. Consult this directory to understand the *"why"* behind
+architectural, business-logic, and convention choices before making changes that could conflict with established
+reasoning.
+
+## Git Conventions
+
+Git conventions (branch naming, commit messages, pull requests) are defined in
+[`doc/conventions-and-standards/git.md`](doc/conventions-and-standards/git.md).
