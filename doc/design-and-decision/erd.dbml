@@ -1,0 +1,85 @@
+// Haruna DB schema snapshot, inspected on 2026-10-22.
+// Source: read-only PostgreSQL catalog queries on local Supabase (localhost:54322/postgres).
+// Scope: all public tables and the referenced auth.users primary key only.
+// Supabase internals, row data, RLS policies, functions, and triggers are omitted.
+
+Project haruna_db {
+  database_type: 'PostgreSQL'
+  Note: 'Application schema from the local Supabase instance. auth.users is an external reference stub.'
+}
+
+Table auth.users {
+  id uuid [pk, not null]
+
+  Note: 'External Supabase Auth table. Only the referenced primary key is shown.'
+}
+
+Table public.medias {
+  id uuid [not null, default: `gen_random_uuid()`]
+  uploader_id uuid [null]
+  name text [not null]
+  mime "character varying" [not null]
+  size bigint [not null]
+  type smallint [not null]
+  storage_path text [not null]
+  created_at "timestamp with time zone" [not null, default: `(now() AT TIME ZONE 'utc'::text)`]
+  updated_at "timestamp with time zone" [not null, default: `(now() AT TIME ZONE 'utc'::text)`]
+  thumbnail_path text [null]
+
+  indexes {
+    id [pk, name: 'medias_pkey', type: btree]
+  }
+}
+
+Table public.profiles {
+  id uuid [not null, default: `gen_random_uuid()`]
+  user_id uuid [null]
+  name "character varying" [null]
+  current_balance bigint [not null, default: `'0'::bigint`]
+  created_at "timestamp with time zone" [not null, default: `(now() AT TIME ZONE 'utc'::text)`]
+  updated_at "timestamp with time zone" [not null, default: `(now() AT TIME ZONE 'utc'::text)`]
+
+  indexes {
+    id [pk, name: 'profiles_pkey', type: btree]
+    user_id [unique, name: 'profiles_user_id_key', type: btree]
+  }
+}
+
+Table public.translation_histories {
+  id uuid [not null, default: `gen_random_uuid()`]
+  owner_id uuid [not null, default: `auth.uid()`]
+  source_language text [not null]
+  target_language text [not null]
+  source_text text [not null]
+  translation text [not null]
+  created_at "timestamp with time zone" [not null, default: `now()`]
+
+  indexes {
+    id [pk, name: 'translation_histories_pkey', type: btree]
+  }
+}
+
+Table public.webpage_bookmarks {
+  id uuid [not null, default: `gen_random_uuid()`]
+  owner_id uuid [null, default: `auth.uid()`]
+  url text [not null]
+  name text [not null]
+  description text [not null]
+  created_at "timestamp with time zone" [not null, default: `(now() AT TIME ZONE 'utc'::text)`]
+  updated_at "timestamp with time zone" [not null, default: `(now() AT TIME ZONE 'utc'::text)`]
+  root_id uuid [null]
+  parent_id uuid [null]
+  level smallint [not null]
+  type smallint [not null]
+
+  indexes {
+    id [pk, name: 'webpage_bookmarks_pkey', type: btree]
+  }
+}
+
+Ref medias_uploader_id_fkey: public.medias.uploader_id > auth.users.id [update: no action, delete: set null]
+Ref profiles_user_id_fkey: auth.users.id - public.profiles.user_id [update: no action, delete: set null]
+Ref translation_histories_owner_id_fkey: public.translation_histories.owner_id > auth.users.id [update: cascade, delete: cascade]
+Ref webpage_bookmarks_owner_id_fkey: public.webpage_bookmarks.owner_id > auth.users.id [update: cascade, delete: set null]
+Ref webpage_bookmarks_parent_id_fkey: public.webpage_bookmarks.parent_id > public.webpage_bookmarks.id [update: cascade, delete: cascade]
+Ref webpage_bookmarks_root_id_fkey: public.webpage_bookmarks.root_id > public.webpage_bookmarks.id [update: cascade, delete: cascade]
