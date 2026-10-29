@@ -57,12 +57,9 @@ that commit range without switching branches, and say which range you reviewed.
 
 ### Step 2: Check for Project-Specific Security Conventions
 
-Before reviewing, read:
+Before reviewing, read [security.md](../../../doc/conventions-and-standards/security.md).
 
-* [AGENTS.md](../../../AGENTS.md) — Security
-* [coding.md](../../../doc/conventions-and-standards/coding.md) — Security
-
-Layer those rules on top of [REFERENCE.md](./references/REFERENCE.md). If the docs disagree with this skill, the docs
+Layer those rules on top of [REFERENCE.md](./references/REFERENCE.md). If that doc disagrees with this skill, the docs
 win. See **Section 12 (Project-Specific Conventions)**.
 
 ### Step 3: Run Dependency Vulnerability Audit

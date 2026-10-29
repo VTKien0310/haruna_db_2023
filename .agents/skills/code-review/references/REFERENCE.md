@@ -5,8 +5,8 @@
 > Security concerns (SQL injection, XSS, CSRF, hardcoded credentials, insecure logging, vulnerable dependencies,
 > and so on) are **not** covered here — use `security-review` or `security-pr-review`.
 
-Re-read [AGENTS.md](../../../../AGENTS.md), [coding.md](../../../../doc/conventions-and-standards/coding.md), and
-[application-tests.md](../../../../doc/design-and-decision/application-tests.md) on every review. If they disagree
+Re-read [coding.md](../../../../doc/conventions-and-standards/coding.md) and
+[application-tests.md](../../../../doc/conventions-and-standards/application-tests.md) on every review. If they disagree
 with this file, the docs win.
 
 ## Review Categories & Rules
@@ -19,7 +19,7 @@ with this file, the docs win.
 
 ### 2. Naming Conventions
 
-From [coding.md](../../../../doc/conventions-and-standards/coding.md) and [AGENTS.md](../../../../AGENTS.md):
+From [coding.md](../../../../doc/conventions-and-standards/coding.md):
 
 * Variables and functions → `camelCase`
 * Classes → `PascalCase`

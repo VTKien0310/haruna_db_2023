@@ -116,13 +116,11 @@ Identify all modified files before proceeding.
 
 ### Step 5: Check for Project-Specific Security Conventions
 
-Read these from **inside the review worktree** (the branch under review may have changed them):
-
-* `AGENTS.md` — Security
-* `doc/conventions-and-standards/coding.md` — Security
+Read `doc/conventions-and-standards/security.md` from **inside the review worktree** (the branch under review may have
+changed it).
 
 Layer any project-specific rules found on top of the general checklist — see **Section 12 (Project-Specific
-Conventions)** in [REFERENCE.md](../security-review/references/REFERENCE.md). If the docs disagree with this skill,
+Conventions)** in [REFERENCE.md](../security-review/references/REFERENCE.md). If that doc disagrees with this skill,
 the docs win.
 
 ### Step 6: Run Dependency Vulnerability Audit
