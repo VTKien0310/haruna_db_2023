@@ -198,9 +198,9 @@ describe("AuthenticationService", () => {
     async (error) => {
       useAuthStore().passwordRecoveryRequired = true;
       backend.auth.updateUser.mockResolvedValue({ error });
-      expect(await service.resetPassword("new-password")).toBe(!error);
+      expect(await service.resetPassword("New-pass1")).toBe(!error);
       expect(backend.auth.updateUser).toHaveBeenCalledWith({
-        password: "new-password",
+        password: "New-pass1",
       });
       if (error) {
         expect(toast.error).toHaveBeenCalledWith("Could not update password");
@@ -214,10 +214,18 @@ describe("AuthenticationService", () => {
       }
     },
   );
-  it("does not change the password outside recovery or when it is too short", async () => {
-    expect(await service.resetPassword("new-password")).toBe(false);
+  it("does not change the password outside recovery or when it misses a rule", async () => {
+    expect(await service.resetPassword("New-pass1")).toBe(false);
     useAuthStore().passwordRecoveryRequired = true;
-    expect(await service.resetPassword("short")).toBe(false);
+    for (const password of [
+      "Short1!",
+      "new-pass1",
+      "NEW-PASS1",
+      "Newpass1",
+      "New-pass",
+    ]) {
+      expect(await service.resetPassword(password)).toBe(false);
+    }
     expect(backend.auth.updateUser).not.toHaveBeenCalled();
   });
 });

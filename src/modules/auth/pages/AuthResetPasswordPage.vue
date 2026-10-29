@@ -24,14 +24,16 @@ const availability = ref<PasswordResetAvailability | null>(null);
 const isUpdatingPassword = ref<boolean>(false);
 
 const enableResetButton = computed((): boolean => {
-  const passwordIsLongEnough: boolean =
-    resetPasswordFormContent.password.length >= 8;
+  const passwordIsAcceptable: boolean =
+    authenticationService.isAcceptableResetPassword(
+      resetPasswordFormContent.password,
+    );
   const confirmationMatches: boolean =
     resetPasswordFormContent.password ===
     resetPasswordFormContent.confirmPassword;
 
   return (
-    passwordIsLongEnough && confirmationMatches && !isUpdatingPassword.value
+    passwordIsAcceptable && confirmationMatches && !isUpdatingPassword.value
   );
 });
 
@@ -93,7 +95,7 @@ function requestNewResetLink() {
           label="New password"
           name="password"
           type="password"
-          placeholder="Minimum length of 8 characters"
+          placeholder="At least 8 characters with upper and lower case, a number, and a special character"
           class="mt-4 w-full"
         />
 

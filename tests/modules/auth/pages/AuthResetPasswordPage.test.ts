@@ -46,21 +46,27 @@ describe("AuthResetPasswordPage workflow", () => {
       ),
     );
   });
-  it("disables update until both passwords match and are long enough", async () => {
+  it("disables update until both passwords match and meet the rules", async () => {
     useAuthStore().passwordRecoveryRequired = true;
     const wrapper = mount(AuthResetPasswordPage, appMountOptions());
     await flushPromises();
     const submit = wrapper.get('button[type="submit"]');
     expect(submit.attributes("disabled")).toBeDefined();
-    await wrapper.get('input[name="password"]').setValue("1234567");
-    await wrapper.get('input[name="confirmPassword"]').setValue("1234567");
+    for (const password of [
+      "Short1!",
+      "new-pass1",
+      "NEW-PASS1",
+      "Newpass1",
+      "New-pass",
+    ]) {
+      await wrapper.get('input[name="password"]').setValue(password);
+      await wrapper.get('input[name="confirmPassword"]').setValue(password);
+      expect(submit.attributes("disabled")).toBeDefined();
+    }
+    await wrapper.get('input[name="password"]').setValue("New-pass1");
+    await wrapper.get('input[name="confirmPassword"]').setValue("Other-pass1");
     expect(submit.attributes("disabled")).toBeDefined();
-    await wrapper.get('input[name="password"]').setValue("new-password");
-    await wrapper
-      .get('input[name="confirmPassword"]')
-      .setValue("other-password");
-    expect(submit.attributes("disabled")).toBeDefined();
-    await wrapper.get('input[name="confirmPassword"]').setValue("new-password");
+    await wrapper.get('input[name="confirmPassword"]').setValue("New-pass1");
     expect(submit.attributes("disabled")).toBeUndefined();
   });
   it("shows an invalid link and offers a new request", async () => {
@@ -116,12 +122,12 @@ describe("AuthResetPasswordPage workflow", () => {
     backend.auth.updateUser.mockResolvedValue({ error: null });
     const wrapper = mount(AuthResetPasswordPage, appMountOptions());
     await flushPromises();
-    await wrapper.get('input[name="password"]').setValue("new-password");
-    await wrapper.get('input[name="confirmPassword"]').setValue("new-password");
+    await wrapper.get('input[name="password"]').setValue("New-pass1");
+    await wrapper.get('input[name="confirmPassword"]').setValue("New-pass1");
     await wrapper.get("form").trigger("submit");
     await flushPromises();
     expect(backend.auth.updateUser).toHaveBeenCalledWith({
-      password: "new-password",
+      password: "New-pass1",
     });
     expect(toast.info).toHaveBeenCalledWith("Password updated");
     expect(useAuthStore().passwordRecoveryRequired).toBe(false);

@@ -117,11 +117,21 @@ export class AuthenticationService {
     return "invalid";
   }
 
+  isAcceptableResetPassword(password: string): boolean {
+    return (
+      password.length >= MINIMUM_PASSWORD_LENGTH &&
+      /\d/.test(password) &&
+      /[^A-Za-z0-9]/.test(password) &&
+      /[a-z]/.test(password) &&
+      /[A-Z]/.test(password)
+    );
+  }
+
   async resetPassword(password: string): Promise<boolean> {
     const authStore = useAuthStore();
     if (
       !authStore.passwordRecoveryRequired ||
-      password.length < MINIMUM_PASSWORD_LENGTH
+      !this.isAcceptableResetPassword(password)
     ) {
       return false;
     }
