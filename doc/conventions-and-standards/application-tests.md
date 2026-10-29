@@ -32,7 +32,7 @@ seeders); fakes live in `tests/fakes/`.
   and targeted stubs. Workflow tests mock container factories to connect real
   services/stores to fake dependencies; isolated UI tests may use service doubles.
   Validate with real Haruna controls. Stub native Ionic/browser behavior only when
-  irrelevant; follow [UI verification](haruna-ui-lib.md#verification) for overlays/layout.
+  irrelevant; follow [UI verification](../design-and-decision/haruna-ui-lib.md#verification) for overlays/layout.
 - Await async work, unmount components, and stop service watchers in `finally`
   where appropriate. Setup disposes Pinia and resets DOM, storage, timers, and mocks;
   isolate additional side effects equally.

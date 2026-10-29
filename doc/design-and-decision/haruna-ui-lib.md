@@ -139,7 +139,7 @@ fixtures without backend imports. jsdom does not prove layout, installability,
 or server behavior.
 
 Follow README's [test commands](../../README.md#setup-and-commands) and
-[isolation boundaries](application-tests.md#network-safety-and-boundaries): format changed
+[isolation boundaries](../conventions-and-standards/application-tests.md#network-safety-and-boundaries): format changed
 files only, run affected tests/consumers, type-check TypeScript/Vue changes, and
 run coverage for harness changes. Use the full suite for broad impact or explicit
 requests; documentation-only edits need formatting only.

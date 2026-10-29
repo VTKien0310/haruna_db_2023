@@ -81,7 +81,7 @@ npm test -- <test-paths>
 ```
 
 Map `src/modules/<module>/` to `tests/modules/<module>/`, and likewise for `src/ports/` and `src/libs/ui/`. Follow
-[application-tests.md](../../../doc/design-and-decision/application-tests.md): no network, no Docker, no Supabase, no
+[application-tests.md](../../../doc/conventions-and-standards/application-tests.md): no network, no Docker, no Supabase, no
 env files. Documentation-only diffs skip type-check and tests. If `node_modules` is missing, say those checks were
 not run instead of installing dependencies.
 
@@ -90,8 +90,8 @@ Refer to **Section 1 (Code Formatting)** and **Tool gates** in [REFERENCE.md](./
 ### Step 3: Review Against Conventions
 
 Load and apply all rules from [REFERENCE.md](./references/REFERENCE.md) — Sections 1 through 9. Re-read
-[AGENTS.md](../../../AGENTS.md) and [coding.md](../../../doc/conventions-and-standards/coding.md) before judging
-architecture or style. If those docs disagree with this skill, the docs win.
+[coding.md](../../../doc/conventions-and-standards/coding.md) before judging
+architecture or style. If that doc disagrees with this skill, the docs win.
 
 ### Step 4: Output Report
 

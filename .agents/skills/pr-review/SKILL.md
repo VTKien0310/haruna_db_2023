@@ -131,7 +131,7 @@ Refer to **Section 1 (Code Formatting)** and **Tool gates** in
 ### Step 6: Review Against Conventions & Output Report
 
 Load and apply all rules from [REFERENCE.md](../code-review/references/REFERENCE.md) — Sections 1 through 9 — against
-the diff content gathered in Step 4. Re-read `AGENTS.md` and `doc/conventions-and-standards/coding.md` from the
+the diff content gathered in Step 4. Re-read `doc/conventions-and-standards/coding.md` from the
 worktree. For a security review of this same diff, use `security-pr-review` instead of `security-review`.
 
 Use the **Output Report Template** defined at the bottom of [REFERENCE.md](../code-review/references/REFERENCE.md), with

@@ -10,7 +10,7 @@ the code, the design notes, or git history if this comment went away?*
 |---|---|
 | **Why** | intent, business rule, trade-off, the reason for a workaround or an unusual choice, a pitfall a reader would otherwise fall into |
 | **How** | a non-obvious algorithm, protocol, or invariant: what the code relies on, not a restatement of each line |
-| **Up-to-date project reference** | a pointer to `doc/design-and-decision/` or a heading in `AGENTS.md` that still exists and still says what the comment claims |
+| **Up-to-date project reference** | a pointer to `doc/design-and-decision/` or `doc/conventions-and-standards/` that still exists and still says what the comment claims |
 | **Reference to other code** | `@see`, "mirrors `X`", "kept in sync with `Y`", when the target still exists |
 | **Open TODO / FIXME** | work or a decision still pending: the code doesn't do it yet, or a documented decision hasn't answered it |
 | **Contract comments** | TSDoc / JSDoc with `@param`, `@returns`, `@throws`, `@deprecated`, or a summary that states a contract a type alone does not express |
@@ -22,7 +22,7 @@ the code, the design notes, or git history if this comment went away?*
 |---|---|
 | **What** | narration that restates the code: `// Get the user`, `// Loop over the items`, `// Return the response`, a docblock that only repeats the function name |
 | **Plan reference** | any pointer to `.agents/plans/**`: plans are temporary working documents, not lasting documentation |
-| **Stale project reference** | the cited `doc/design-and-decision/` file, `AGENTS.md` heading, or section no longer exists, or no longer says what the comment claims |
+| **Stale project reference** | the cited `doc/design-and-decision/` or `doc/conventions-and-standards/` file or section no longer exists, or no longer says what the comment claims |
 | **Handled TODO** | the code now does what the TODO asked, or a design note has settled it |
 | **Commented-out code** | old implementations, disabled calls, debug output |
 | **Noise** | section banners with no information (`// ----- Helpers -----` in a short file), changelog or author notes (`// Added by …`), notes to the reviewer or to another agent |
@@ -34,7 +34,7 @@ A comment that mixes kinds keeps its valuable part:
 * Drop only the plan pointer and keep the why. For example, `Copy on claim, never on upload
   (`.agents/plans/file-upload/README.md` decision 7).` becomes `Copy on claim, never on upload.`
 * If the plan was the **only** place a why that still matters was written down, put that why into the comment in one
-  or two sentences, without the pointer. Point to `doc/design-and-decision/` or `AGENTS.md` instead when they cover
+  or two sentences, without the pointer. Point to `doc/design-and-decision/` or `doc/conventions-and-standards/` instead when they cover
   the same reason.
 * Drop the what-part of a comment and keep its why-part.
 * Fix a stale reference only when the new location is certain (same page, renamed heading). Otherwise it is

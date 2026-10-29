@@ -1,6 +1,6 @@
 ---
 name: comment-purge
-description: Remove low-value code comments (what-narration, references to `.agents/plans/`, stale design-note references, handled TODOs, commented-out code) while keeping the valuable ones (why, how, up-to-date design-note or AGENTS.md references, references to other code, open TODOs, contract comments, tool directives). Cleans the current code changes by default, specific files or directories when directed, and the whole project only when the user asks. Use when the user asks to purge, clean up, trim or remove code comments, or invokes /comment-purge. Do NOT use for reviewing code (use code-review), for writing documentation, or for editing Markdown or `doc/`.
+description: Remove low-value code comments (what-narration, references to `.agents/plans/`, stale design-note references, handled TODOs, commented-out code) while keeping the valuable ones (why, how, up-to-date design-note or `doc/` references, references to other code, open TODOs, contract comments, tool directives). Cleans the current code changes by default, specific files or directories when directed, and the whole project only when the user asks. Use when the user asks to purge, clean up, trim or remove code comments, or invokes /comment-purge. Do NOT use for reviewing code (use code-review), for writing documentation, or for editing Markdown or `doc/`.
 metadata:
     usage: '@comment-purge [changes | <files-or-directories> | project]'
     example: '@comment-purge src/modules/gallery'
@@ -69,7 +69,7 @@ Step 5. Do not pass SQL, shell, YAML, Dockerfiles, or Markdown to the script.
 Read each file in full (comments make sense only in context) and classify every in-scope comment as **keep**,
 **remove**, **rewrite**, or **uncertain**, following [REFERENCE.md](./references/REFERENCE.md):
 
-* Check a `doc/design-and-decision/` or `AGENTS.md` reference by reading the cited file (read-only) and confirming the
+* Check a `doc/design-and-decision/` or `doc/conventions-and-standards/` reference by reading the cited file (read-only) and confirming the
   cited section still says what the comment claims.
 * Check a TODO by reading the code it refers to (and the design note, if it waits on a decision) to see whether it is
   done.

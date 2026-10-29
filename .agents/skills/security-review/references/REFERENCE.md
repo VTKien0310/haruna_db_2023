@@ -2,8 +2,7 @@
 
 > Used by `security-review` and `security-pr-review`. The checklist is written for this repository: a Vue 3 PWA,
 > Supabase (Auth, Postgres, Storage, Edge Functions), and a custom backend API. Re-read
-> [AGENTS.md](../../../../AGENTS.md) Security and
-> [coding.md](../../../../doc/conventions-and-standards/coding.md) Security on every review. If those docs disagree
+> [security.md](../../../../doc/conventions-and-standards/security.md) on every review. If that doc disagrees
 > with this file, the docs win.
 
 ## Review Categories & Rules
@@ -98,8 +97,7 @@
 
 ### 12. Project-Specific Conventions
 
-* Apply the Security sections of `AGENTS.md` and `doc/conventions-and-standards/coding.md`, including any rule those
-  docs add after this skill was written.
+* Apply `doc/conventions-and-standards/security.md`, including any rule that doc adds after this skill was written.
 * These rules describe required practices. They do not certify that deployed RLS or storage policies have been audited.
   A frontend-only diff cannot prove a server policy is correct; say so instead of marking that policy as verified.
 
@@ -241,7 +239,7 @@ Return the full review as a Markdown report using this exact structure:
 
 ### 12. Project-Specific Conventions
 
-- **Source(s) consulted**: [AGENTS.md Security, coding.md Security]
+- **Source(s) consulted**: [security.md]
 - **Issues**: [list any violations or "None"]
 
 ### Commands Run

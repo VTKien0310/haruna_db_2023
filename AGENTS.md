@@ -2,8 +2,7 @@
 
 ## Project and Working Principles
 
-Haruna DB is a PWA for image/video storage, AI translation through the Backend API,
-and hierarchical webpage bookmarks. Stack: Vue 3 + TypeScript, Ionic Vue 9,
+Haruna DB is a PWA. Stack: Vue 3 + TypeScript, Ionic Vue 9,
 Haruna UI, Tailwind CSS 4, Pinia 4, Vue Router 5 via `@ionic/vue-router`,
 Supabase + Custom API, Firebase Hosting; utilities include VueUse, dayjs, and FFmpeg WASM.
 
@@ -97,18 +96,13 @@ backend, or development server are needed or permitted for this suite.
 
 ## Security
 
-- Never hardcode secrets, tokens, API keys, or service credentials, or expose
-  service-role keys/backend secrets in frontend code. All client code is inspectable.
-- Client environment variables use `VITE_` (`VITE_SUPABASE_API_URL`,
-  `VITE_SUPABASE_ANON_KEY`, `VITE_BACKEND_API_URL`).
-- Respect authentication, authorization, and Supabase RLS boundaries. Validate
-  inputs rigorously, including uploads, previews, metadata, and downloads.
-- Do not log sensitive user data or persist it in insecure client storage.
+Security conventions are defined in
+[`doc/conventions-and-standards/security.md`](doc/conventions-and-standards/security.md).
 
 ## Testing and Validation
 
 Use Vitest, Vue Test Utils, and jsdom. Follow
-[application tests](doc/design-and-decision/application-tests.md) and run commands
+[application tests](doc/conventions-and-standards/application-tests.md) and run commands
 from the [README](README.md#setup-and-commands).
 
 Name tests `*.test.ts`, group with `describe("ClassOrComponent", ...)`, and assert
@@ -157,7 +151,7 @@ for overlays and visual checks.
   whole projects and has no file-level filtering.
 - Run `npm run test:coverage` for harness/coverage configuration changes. Coverage
   behavior and exclusions are documented in
-  [application tests](doc/design-and-decision/application-tests.md).
+  [application tests](doc/conventions-and-standards/application-tests.md).
 - For documentation-only changes, format changed files and skip application
   tests/type checking. Otherwise use the smallest sufficient checks; do not run
   whole-project checks unnecessarily.
@@ -170,7 +164,7 @@ for overlays and visual checks.
 ## Design and Decision Documentation
 
 Documentation for design and decision reasoning is available in the
-[`doc/design-and-decision`](doc/design-and-decision) directory. Consult this directory to understand the *"why"* behind
+[`doc/design-and-decision`](doc/design-and-decision) directory. Consult this directory to understand the _"why"_ behind
 architectural, business-logic, and convention choices before making changes that could conflict with established
 reasoning.
 

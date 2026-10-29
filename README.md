@@ -24,7 +24,7 @@ Run from the repository root:
 
 ```sh
 npx supabase start
-npm install
+npm ci
 npm run dev
 ```
 
@@ -61,7 +61,7 @@ the home-screen installation. The service worker precaches generated PNG/JPEG as
 Install dependencies with `npm ci`; no environment files, credentials, Docker,
 Supabase, backend, or development server are needed or permitted. Test layout,
 fakes, isolation, and coverage rules are in
-[Application tests](doc/design-and-decision/application-tests.md).
+[Application tests](doc/conventions-and-standards/application-tests.md).
 
 ### Setup and commands
 
@@ -93,6 +93,8 @@ firebase deploy --only hosting
 ## Conventions and standards
 
 - [Coding](./doc/conventions-and-standards/coding.md)
+- [Security](./doc/conventions-and-standards/security.md)
+- [Application tests](./doc/conventions-and-standards/application-tests.md)
 - [Git](./doc/conventions-and-standards/git.md)
 
 ## Design and decision documentation
