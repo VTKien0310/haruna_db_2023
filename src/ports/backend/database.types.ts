@@ -34,6 +34,47 @@ export type Database = {
   };
   public: {
     Tables: {
+      check_in_entries: {
+        Row: {
+          date: string;
+          id: string;
+          time: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          id?: string;
+          time: string;
+        };
+        Update: {
+          date?: string;
+          id?: string;
+          time?: string;
+        };
+        Relationships: [];
+      };
+      leave_work_entries: {
+        Row: {
+          date: string;
+          end: string;
+          id: string;
+          start: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          end: string;
+          id?: string;
+          start: string;
+        };
+        Update: {
+          date?: string;
+          end?: string;
+          id?: string;
+          start?: string;
+        };
+        Relationships: [];
+      };
       medias: {
         Row: {
           created_at: string;
@@ -47,6 +88,7 @@ export type Database = {
           updated_at: string;
           uploader_id: string | null;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           id?: string;
@@ -82,6 +124,7 @@ export type Database = {
           updated_at: string;
           user_id: string | null;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           current_balance?: number;
@@ -100,6 +143,146 @@ export type Database = {
         };
         Relationships: [];
       };
+      pto_affect_entries: {
+        Row: {
+          created_at: string;
+          entry_id: string | null;
+          entry_type: string | null;
+          id: string;
+          no_deduction: number;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          entry_id?: string | null;
+          entry_type?: string | null;
+          id?: string;
+          no_deduction?: number;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          entry_id?: string | null;
+          entry_type?: string | null;
+          id?: string;
+          no_deduction?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      pto_banks: {
+        Row: {
+          annual_balance: number;
+          created_at: string;
+          extended_balance: number;
+          id: string;
+          owner_id: string;
+          updated_at: string;
+          year: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          annual_balance?: number;
+          created_at?: string;
+          extended_balance?: number;
+          id?: string;
+          owner_id?: string;
+          updated_at?: string;
+          year: number;
+        };
+        Update: {
+          annual_balance?: number;
+          created_at?: string;
+          extended_balance?: number;
+          id?: string;
+          owner_id?: string;
+          updated_at?: string;
+          year?: number;
+        };
+        Relationships: [];
+      };
+      pto_transactions: {
+        Row: {
+          cause: string;
+          created_at: string;
+          entry_id: string;
+          id: string;
+          pto_bank_id: string;
+          value: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          cause: string;
+          created_at?: string;
+          entry_id: string;
+          id?: string;
+          pto_bank_id: string;
+          value: number;
+        };
+        Update: {
+          cause?: string;
+          created_at?: string;
+          entry_id?: string;
+          id?: string;
+          pto_bank_id?: string;
+          value?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "pto_transactions_entry_id_fkey";
+            columns: ["entry_id"];
+            isOneToOne: false;
+            referencedRelation: "pto_affect_entries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "pto_transactions_pto_bank_id_fkey";
+            columns: ["pto_bank_id"];
+            isOneToOne: false;
+            referencedRelation: "pto_banks";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      remote_work_entries: {
+        Row: {
+          date: string;
+          id: string;
+          type: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          id?: string;
+          type: number;
+        };
+        Update: {
+          date?: string;
+          id?: string;
+          type?: number;
+        };
+        Relationships: [];
+      };
+      time_off_entries: {
+        Row: {
+          date: string;
+          id: string;
+          type: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          id?: string;
+          type: number;
+        };
+        Update: {
+          date?: string;
+          id?: string;
+          type?: number;
+        };
+        Relationships: [];
+      };
       translation_histories: {
         Row: {
           created_at: string;
@@ -110,6 +293,7 @@ export type Database = {
           target_language: string;
           translation: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           id?: string;
@@ -144,6 +328,7 @@ export type Database = {
           updated_at: string;
           url: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           description: string;
@@ -186,6 +371,53 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      work_time_entries: {
+        Row: {
+          date: string;
+          id: string;
+          type: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          id?: string;
+          type: number;
+        };
+        Update: {
+          date?: string;
+          id?: string;
+          type?: number;
+        };
+        Relationships: [];
+      };
+      workday_exceptions: {
+        Row: {
+          created_at: string;
+          date: string;
+          id: string;
+          time: number;
+          type: number;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          date: string;
+          id?: string;
+          time: number;
+          type: number;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          date?: string;
+          id?: string;
+          time?: number;
+          type?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
     };
     Views: {
