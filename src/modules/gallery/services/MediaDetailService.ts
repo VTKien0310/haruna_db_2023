@@ -273,7 +273,7 @@ export class MediaDetailService {
         name: GalleryRouteName.LIST,
       })
       .then();
-    this.galleryListService.refreshMedias().then();
+    this.galleryListService.refreshMedia().then();
   }
 
   private async deleteMediaRecordInDb(id: string): Promise<boolean> {

@@ -19,8 +19,8 @@ import { t } from "@/modules/master/locales";
 
 const mediaDetailService = useMediaDetailService();
 
-const totalMediasCount = ref<number>(0);
-const uploadedMediasCount = ref<number>(0);
+const totalMediaCount = ref<number>(0);
+const uploadedMediaCount = ref<number>(0);
 const latestUploadedMedia = ref<Media | null>(null);
 const newlyUploadedMedia = ref<number>(0);
 const webpageBookmarkLinkCount = ref<number>(0);
@@ -29,11 +29,11 @@ const deepestLevelWebpageBookmark = ref<number>(0);
 
 const uploadContributionPercentage = computed(() => {
   // create a filling up animation instead of a draining down for the progress bar
-  if (uploadedMediasCount.value === 0 || totalMediasCount.value === 0) {
+  if (uploadedMediaCount.value === 0 || totalMediaCount.value === 0) {
     return 0;
   }
 
-  return Math.round((uploadedMediasCount.value * 100) / totalMediasCount.value);
+  return Math.round((uploadedMediaCount.value * 100) / totalMediaCount.value);
 });
 
 const isFetchingData = ref<boolean>(false);
@@ -59,15 +59,15 @@ onIonViewDidEnter(async () => {
     await profileService.refreshCurrentUserProfile();
   }
 
-  uploadedMediasCount.value =
-    await galleryStatisticService.countUserUploadedMedias(
+  uploadedMediaCount.value =
+    await galleryStatisticService.countUserUploadedMedia(
       authStore.profile!.user_id!,
     );
-  totalMediasCount.value = await galleryStatisticService.countTotalMedias();
+  totalMediaCount.value = await galleryStatisticService.countTotalMedia();
   latestUploadedMedia.value =
     await galleryStatisticService.getLatestUploadMedia();
   newlyUploadedMedia.value =
-    await galleryStatisticService.countUploadedMediasWithinPassDays(7);
+    await galleryStatisticService.countUploadedMediaWithinPassDays(7);
 
   deepestLevelWebpageBookmark.value =
     await listWebpageBookmarkService.getDeepestLevelWebpageBookmark();
@@ -140,7 +140,7 @@ onIonViewDidEnter(async () => {
 
           <h-card class="m-1 h-full w-full">
             <h-card-title>{{
-              t("elements.latestMediaUploadedAtTitle")
+              t("elements.latestUploadDateTitle")
             }}</h-card-title>
             <h-card-content>
               {{
@@ -154,30 +154,22 @@ onIonViewDidEnter(async () => {
           </h-card>
 
           <h-card class="m-1 h-full w-full">
-            <h-card-title>{{
-              t("elements.newlyUploadedCountTitle")
-            }}</h-card-title>
+            <h-card-title>{{ t("elements.newUploadsTitle") }}</h-card-title>
             <h-card-content>{{ newlyUploadedMedia }}</h-card-content>
           </h-card>
 
           <h-card class="m-1 h-full w-full">
-            <h-card-title>{{
-              t("elements.totalMediaCountTitle")
-            }}</h-card-title>
-            <h-card-content>{{ totalMediasCount }}</h-card-content>
+            <h-card-title>{{ t("elements.totalMediaTitle") }}</h-card-title>
+            <h-card-content>{{ totalMediaCount }}</h-card-content>
           </h-card>
 
           <h-card class="m-1 h-full w-full md:col-start-1">
-            <h-card-title>{{
-              t("elements.uploadedByYouCountTitle")
-            }}</h-card-title>
-            <h-card-content>{{ uploadedMediasCount }}</h-card-content>
+            <h-card-title>{{ t("elements.yourUploadsTitle") }}</h-card-title>
+            <h-card-content>{{ uploadedMediaCount }}</h-card-content>
           </h-card>
 
           <h-card class="col-span-2 m-1 h-full w-full md:col-start-2">
-            <h-card-title>{{
-              t("elements.uploadContributionTitle")
-            }}</h-card-title>
+            <h-card-title>{{ t("elements.uploadShareTitle") }}</h-card-title>
             <h-card-content>
               <h-progress-bar
                 :model-value="uploadContributionPercentage"

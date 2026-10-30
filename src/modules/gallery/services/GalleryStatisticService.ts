@@ -10,7 +10,7 @@ export class GalleryStatisticService {
     private readonly toastService: ToastService,
   ) {}
 
-  async countTotalMedias(): Promise<number> {
+  async countTotalMedia(): Promise<number> {
     const { count, error } = await this.backendPort.spbClient
       .from("medias")
       .select("*", {
@@ -27,7 +27,7 @@ export class GalleryStatisticService {
     return count;
   }
 
-  async countUserUploadedMedias(userId: string): Promise<number> {
+  async countUserUploadedMedia(userId: string): Promise<number> {
     const { count, error } = await this.backendPort.spbClient
       .from("medias")
       .select("*", {
@@ -45,7 +45,7 @@ export class GalleryStatisticService {
     return count;
   }
 
-  async countUploadedMediasWithinPassDays(days: number): Promise<number> {
+  async countUploadedMediaWithinPassDays(days: number): Promise<number> {
     const targetPointInTime: string = dayjs()
       .subtract(days, "day")
       .utc()

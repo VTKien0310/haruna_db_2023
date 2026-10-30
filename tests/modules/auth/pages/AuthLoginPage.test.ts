@@ -9,6 +9,7 @@ import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
 import { makeBackendFake } from "../../../fakes/BackendFake";
 import { makeRouter, makeToast } from "../../../fakes/Collaborators";
 import { appMountOptions } from "../../../support/mountApp";
+import { t } from "@/modules/auth/locales";
 
 vi.mock("@/modules/auth/AuthServiceContainer", () => ({
   useAuthenticationService: vi.fn(),
@@ -63,7 +64,7 @@ describe("AuthLoginPage workflow", () => {
         (wrapper.get('input[name="email"]').element as HTMLInputElement).value,
       ).toBe(success ? "" : "person@example.test");
       if (success) expect(router.push).toHaveBeenCalledWith({ name: "master" });
-      else expect(toast.error).toHaveBeenCalledWith("Login failed");
+      else expect(toast.error).toHaveBeenCalledWith(t("messages.loginFailed"));
     },
   );
   it("opens the forgot-password page", async () => {

@@ -1,23 +1,23 @@
 {
   "messages": {
-    "uploadConfirm": "Proceed to upload {count} file(s)?",
-    "uploadFailed": "Failed to upload {name}",
-    "thumbnailSignedUrlFailed": "Failed to generate signed URL for {path} to create thumbnail",
-    "thumbnailUploadFailed": "Failed to upload thumbnail {name}",
-    "thumbnailCreateFailed": "Failed to create thumbnail for {name}",
-    "mediaRecordCreateFailed": "Failed to create record for {name}",
-    "downloadFailed": "Failed to download media with id {id}",
-    "uploaderFetchFailed": "Failed to fetch uploader of media with id {id}",
-    "signedUrlFailed": "Failed to generate signed URL for {path}",
-    "resizedListFailed": "Failed to list resized images of media with id {id}",
-    "mediaFetchFailed": "Failed to fetch media with id {id}",
-    "mediaNotFound": "Media with id {id} not found",
-    "deleteConfirm": "Proceed to delete the file?",
-    "deleteFailed": "Failed to delete media with id {id}",
-    "fetchMediasFailed": "Failed to fetch medias",
-    "countTotalFailed": "Failed to count total medias",
-    "countUserUploadsFailed": "Failed to count user's uploaded medias",
-    "countNewUploadsFailed": "Failed to count newly uploaded medias"
+    "uploadConfirm": "Upload {count} file(s)?",
+    "uploadFailed": "Couldn't upload {name}",
+    "thumbnailSignedUrlFailed": "Couldn't create a signed URL for {path} to make the thumbnail",
+    "thumbnailUploadFailed": "Couldn't upload thumbnail {name}",
+    "thumbnailCreateFailed": "Couldn't create a thumbnail for {name}",
+    "mediaRecordCreateFailed": "Couldn't create a record for {name}",
+    "downloadFailed": "Couldn't download media {id}",
+    "uploaderFetchFailed": "Couldn't fetch the uploader of media {id}",
+    "signedUrlFailed": "Couldn't create a signed URL for {path}",
+    "resizedListFailed": "Couldn't list resized images of media {id}",
+    "mediaFetchFailed": "Couldn't fetch media {id}",
+    "mediaNotFound": "Media {id} not found",
+    "deleteConfirm": "Delete this file?",
+    "deleteFailed": "Couldn't delete media {id}",
+    "fetchMediaFailed": "Couldn't fetch media",
+    "countTotalFailed": "Couldn't count total media",
+    "countUserUploadsFailed": "Couldn't count your uploads",
+    "countNewUploadsFailed": "Couldn't count new uploads"
   },
   "elements": {
     "galleryMediaRegionLabel": "Gallery media",
@@ -26,7 +26,7 @@
     "uploadDropZoneText": "Add files or drop them here",
     "uploadedMediaAlt": "Uploaded media",
     "mediaDetailBy": "By {name}",
-    "mediaDetailOn": "On {date}",
+    "mediaDetailUploaded": "Uploaded {date}",
     "mediaDetailSize": "Size {size}"
   }
 }

@@ -5,6 +5,7 @@ import {
   THEME_STORAGE_KEY,
 } from "@/modules/master/ThemeEntities";
 import { useThemeStore } from "@/modules/master/stores/ThemeStore";
+import { t } from "@/modules/master/locales";
 
 afterEach(() => {
   document.documentElement.removeAttribute("data-theme");
@@ -91,9 +92,7 @@ describe("ThemeService", () => {
     service.select("haruna-dark");
     expect(useThemeStore().themeId).toBe("haruna-dark");
     expect(document.documentElement.dataset.theme).toBe("haruna-dark");
-    expect(notify).toHaveBeenCalledWith(
-      "Theme applied, but could not be saved on this device.",
-    );
+    expect(notify).toHaveBeenCalledWith(t("messages.themeSaveFailed"));
   });
 
   it("keeps a selection in memory when storage is full", () => {

@@ -24,7 +24,7 @@ const galleryListStore = useGalleryListStore();
 
 const galleryListPageContent = ref<HTMLDivElement | null>(null);
 
-const loadMoreMedias = (event: Event): void => {
+const loadMoreMedia = (event: Event): void => {
   const target = event.currentTarget as HTMLDivElement | null;
 
   if (!target) {
@@ -34,12 +34,12 @@ const loadMoreMedias = (event: Event): void => {
   const { scrollTop, clientHeight, scrollHeight } = target;
 
   if (scrollTop + clientHeight >= scrollHeight * 0.85) {
-    galleryListService.fetchMedias();
+    galleryListService.fetchMedia();
   }
 };
 
 onMounted(() => {
-  galleryListService.refreshMedias();
+  galleryListService.refreshMedia();
 });
 </script>
 
@@ -51,7 +51,7 @@ onMounted(() => {
     </div>
 
     <div
-      @scroll="loadMoreMedias"
+      @scroll="loadMoreMedia"
       ref="galleryListPageContent"
       role="region"
       :aria-label="t('elements.galleryMediaRegionLabel')"
@@ -63,7 +63,7 @@ onMounted(() => {
         class="grid grid-cols-4 place-content-center place-items-center gap-px md:grid-cols-6 lg:grid-cols-10"
       >
         <GalleryGridItem
-          v-for="media in galleryListStore.medias"
+          v-for="media in galleryListStore.media"
           :key="media.id"
           :media="media"
         />
@@ -75,16 +75,16 @@ onMounted(() => {
         class="grid grid-cols-1 place-content-center place-items-center gap-px"
       >
         <GalleryListItem
-          v-for="media in galleryListStore.medias"
+          v-for="media in galleryListStore.media"
           :key="media.id"
           :media="media"
         />
       </div>
 
-      <!-- medias fetch progress indicator -->
+      <!-- media fetch progress indicator -->
       <div
         v-show="
-          galleryListStore.isFetchingGalleryMedias &&
+          galleryListStore.isFetchingGalleryMedia &&
           !galleryListStore.hasFetchedAllRecords
         "
         class="flex w-full flex-row content-center items-center justify-center"

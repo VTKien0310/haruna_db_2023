@@ -55,7 +55,7 @@ export class UploadMediaService {
 
         this.redirectToGalleryListIfHasNoUploadError();
 
-        this.galleryListService.refreshMedias();
+        this.galleryListService.refreshMedia();
       });
   }
 

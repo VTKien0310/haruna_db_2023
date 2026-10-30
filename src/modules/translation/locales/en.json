@@ -1,8 +1,8 @@
 {
   "messages": {
-    "loadLanguagesFailed": "Failed to load supported languages",
-    "translateFailed": "Failed to translate content",
-    "fetchHistoriesFailed": "Failed to fetch translation histories",
+    "loadLanguagesFailed": "Couldn't load the supported languages",
+    "translateFailed": "Couldn't translate the text",
+    "fetchHistoriesFailed": "Couldn't load translation history",
     "copied": "Copied to clipboard",
     "noTranslationHistory": "No translation history yet"
   },
@@ -14,7 +14,7 @@
     "sourceLanguageLabel": "Source language",
     "targetLanguageLabel": "Target language",
     "sourceTextTitle": "Source text",
-    "sourceTextPlaceholder": "Enter text to translate...",
+    "sourceTextPlaceholder": "Enter text to translate…",
     "translationTitle": "Translation",
     "translationPlaceholder": "Translation will appear here",
     "copyTranslationLabel": "Copy translation",

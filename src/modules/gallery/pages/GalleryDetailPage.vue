@@ -217,7 +217,7 @@ watch(
             </p>
             <p>
               {{
-                t("elements.mediaDetailOn", {
+                t("elements.mediaDetailUploaded", {
                   date: media
                     ? mediaDetailService.transformMediaCreatedAtToHumanReadableFormat(
                         media,

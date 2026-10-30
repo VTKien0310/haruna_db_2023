@@ -12,6 +12,7 @@ import { ThemeService } from "@/modules/master/services/ThemeService";
 import { useThemeStore } from "@/modules/master/stores/ThemeStore";
 import { THEME_STORAGE_KEY } from "@/modules/master/ThemeEntities";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
+import { t } from "@/modules/auth/locales";
 
 describe("AuthenticationService", () => {
   let backend: ReturnType<typeof makeBackendFake>;
@@ -54,27 +55,27 @@ describe("AuthenticationService", () => {
       expect(await service.signIn(credential)).toBe(!error);
       expect(backend.auth.signInWithPassword).toHaveBeenCalledWith(credential);
       if (error) {
-        expect(toast.error).toHaveBeenCalledWith("Login failed");
+        expect(toast.error).toHaveBeenCalledWith(t("messages.loginFailed"));
         expect(router.push).not.toHaveBeenCalled();
       } else expect(router.push).toHaveBeenCalledWith({ name: "master" });
     },
   );
   it("clears gallery and history after successful sign-out", async () => {
-    useGalleryListStore().medias = [makeMedia()];
+    useGalleryListStore().media = [makeMedia()];
     useTranslationStore().histories = [makeHistory()];
     useAuthStore().passwordRecoveryRequired = true;
     backend.auth.signOut.mockResolvedValue({ error: null });
     expect(await service.signOut()).toBe(true);
-    expect(useGalleryListStore().medias).toEqual([]);
+    expect(useGalleryListStore().media).toEqual([]);
     expect(useTranslationStore().histories).toEqual([]);
     expect(useAuthStore().passwordRecoveryRequired).toBe(false);
   });
   it("preserves local state when sign-out fails", async () => {
-    useGalleryListStore().medias = [makeMedia()];
+    useGalleryListStore().media = [makeMedia()];
     useAuthStore().passwordRecoveryRequired = true;
     backend.auth.signOut.mockResolvedValue({ error: { message: "offline" } });
     expect(await service.signOut()).toBe(false);
-    expect(useGalleryListStore().medias).toHaveLength(1);
+    expect(useGalleryListStore().media).toHaveLength(1);
     expect(useAuthStore().passwordRecoveryRequired).toBe(true);
     expect(toast.error).toHaveBeenCalled();
   });
@@ -147,7 +148,7 @@ describe("AuthenticationService", () => {
     expect(await service.requestPasswordReset("person@example.test")).toBe(
       false,
     );
-    expect(toast.error).toHaveBeenCalledWith("Could not send reset email");
+    expect(toast.error).toHaveBeenCalledWith(t("messages.resetEmailFailed"));
     expect(toast.info).not.toHaveBeenCalled();
     expect(router.push).not.toHaveBeenCalled();
     expect(toast.error.mock.calls.flat().join(" ")).not.toContain("smtp");
@@ -203,7 +204,9 @@ describe("AuthenticationService", () => {
         password: "New-pass1",
       });
       if (error) {
-        expect(toast.error).toHaveBeenCalledWith("Could not update password");
+        expect(toast.error).toHaveBeenCalledWith(
+          t("messages.passwordUpdateFailed"),
+        );
         expect(toast.error.mock.calls.flat().join(" ")).not.toContain("weak");
         expect(useAuthStore().passwordRecoveryRequired).toBe(true);
         expect(router.push).not.toHaveBeenCalled();

@@ -50,8 +50,7 @@ export class ProfileService {
         password: profileDetail.password,
       });
       if (error) {
-        const errorMessage = error.message.slice(0, -1); // remove the "." in the error message
-        this.toastService.error(errorMessage);
+        this.toastService.error(t("messages.updatePasswordFailed"));
       }
     }
 
@@ -65,7 +64,7 @@ export class ProfileService {
         .eq("user_id", currentUser.id);
 
       if (error) {
-        this.toastService.error(t("messages.updateUsernameFailed"));
+        this.toastService.error(t("messages.updateNameFailed"));
       }
     }
 

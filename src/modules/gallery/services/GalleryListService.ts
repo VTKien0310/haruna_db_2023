@@ -13,17 +13,17 @@ export class GalleryListService {
   ) {}
 
   turnOnIsFetchingMediaState(): void {
-    this.galleryListStore.isFetchingGalleryMedias = true;
+    this.galleryListStore.isFetchingGalleryMedia = true;
   }
 
   turnOffIsFetchingMediaState(): void {
-    this.galleryListStore.isFetchingGalleryMedias = false;
+    this.galleryListStore.isFetchingGalleryMedia = false;
   }
 
-  async fetchMedias(): Promise<void> {
+  async fetchMedia(): Promise<void> {
     if (
       this.galleryListStore.hasFetchedAllRecords ||
-      this.galleryListStore.isFetchingGalleryMedias
+      this.galleryListStore.isFetchingGalleryMedia
     ) {
       return;
     }
@@ -39,7 +39,7 @@ export class GalleryListService {
       .order("created_at", { ascending: false });
 
     if (error || data === null) {
-      this.toastService.error(t("messages.fetchMediasFailed"));
+      this.toastService.error(t("messages.fetchMediaFailed"));
       this.turnOffIsFetchingMediaState();
       return;
     }
@@ -55,31 +55,30 @@ export class GalleryListService {
       return;
     }
 
-    this.galleryListStore.medias.push(...data);
+    this.galleryListStore.media.push(...data);
 
     this.galleryListStore.offset = this.galleryListStore.offset + data.length;
   }
 
   reset(): void {
-    this.galleryListStore.medias = [];
+    this.galleryListStore.media = [];
     this.galleryListStore.offset = 0;
     this.galleryListStore.hasFetchedAllRecords = false;
     this.turnOffIsFetchingMediaState();
   }
 
-  async refreshMedias(): Promise<void> {
+  async refreshMedia(): Promise<void> {
     this.reset();
-    return this.fetchMedias();
+    return this.fetchMedia();
   }
 
   async getPrevAndNextMediaIdInList(currentMedia: Media): Promise<{
     prevId: string | null;
     nextId: string | null;
   }> {
-    const currentMediaListIndex: number =
-      this.galleryListStore.medias.findIndex(
-        (media: Media) => media.id === currentMedia.id,
-      );
+    const currentMediaListIndex: number = this.galleryListStore.media.findIndex(
+      (media: Media) => media.id === currentMedia.id,
+    );
 
     const currentMediaNotFoundInList = currentMediaListIndex === -1;
     if (currentMediaNotFoundInList) {
@@ -91,19 +90,19 @@ export class GalleryListService {
 
     const prevMediaId: string | null =
       currentMediaListIndex > 0
-        ? this.galleryListStore.medias[currentMediaListIndex - 1].id
+        ? this.galleryListStore.media[currentMediaListIndex - 1].id
         : null;
 
     // load more media if the current media is last in list
     const currentMediaIsLastInList: boolean =
-      currentMediaListIndex === this.galleryListStore.medias.length - 1;
+      currentMediaListIndex === this.galleryListStore.media.length - 1;
     if (currentMediaIsLastInList) {
-      await this.fetchMedias();
+      await this.fetchMedia();
     }
 
     const nextMediaIndex: number = currentMediaListIndex + 1;
     const nextMediaId: string | null =
-      this.galleryListStore.medias[nextMediaIndex]?.id ?? null;
+      this.galleryListStore.media[nextMediaIndex]?.id ?? null;
 
     return {
       prevId: prevMediaId,

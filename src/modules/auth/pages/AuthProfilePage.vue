@@ -77,7 +77,7 @@ onMounted(() => {
         >
           <h-input
             v-model="profileFormContent.name"
-            :label="t('elements.nameLabel')"
+            :label="t('elements.displayNameLabel')"
             name="name"
             class="w-full"
           />
