@@ -7,18 +7,12 @@ import type {
 import { MasterRouteName } from "@/modules/master/MasterRouter";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
 import { AuthRouteName } from "@/modules/auth/AuthRouter";
+import { authMessage } from "@/modules/auth/locales";
 import type { ProfileService } from "@/modules/auth/services/ProfileService";
 import type { ToastService } from "@/modules/master/services/ToastService";
 import type { Router } from "vue-router";
 import type { TranslationService } from "@/modules/translation/TranslationService";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
-
-const RESET_EMAIL_SENT =
-  "If an account exists for that email, a reset link has been sent.";
-const RESET_EMAIL_FAILED = "Could not send reset email";
-const PASSWORD_UPDATED = "Password updated";
-const PASSWORD_UPDATE_FAILED = "Could not update password";
-const MINIMUM_PASSWORD_LENGTH = 8;
 
 export class AuthenticationService {
   constructor(
@@ -43,7 +37,7 @@ export class AuthenticationService {
       await this.backendPort.spbClient.auth.signInWithPassword(credential);
 
     if (error) {
-      this.toastService.error("Login failed");
+      this.toastService.error(authMessage("loginFailed"));
       return false;
     }
 
@@ -58,7 +52,7 @@ export class AuthenticationService {
     const { error } = await this.backendPort.spbClient.auth.signOut();
 
     if (error) {
-      this.toastService.error("Logout failed");
+      this.toastService.error(authMessage("logoutFailed"));
       return false;
     }
 
@@ -82,11 +76,11 @@ export class AuthenticationService {
       });
 
     if (error && error.code !== "user_not_found") {
-      this.toastService.error(RESET_EMAIL_FAILED);
+      this.toastService.error(authMessage("resetEmailFailed"));
       return false;
     }
 
-    this.toastService.info(RESET_EMAIL_SENT);
+    this.toastService.info(authMessage("resetEmailSent"));
     this.router.push({
       name: AuthRouteName.LOGIN,
     });
@@ -118,6 +112,8 @@ export class AuthenticationService {
   }
 
   isAcceptableResetPassword(password: string): boolean {
+    const MINIMUM_PASSWORD_LENGTH = 8;
+
     return (
       password.length >= MINIMUM_PASSWORD_LENGTH &&
       /\d/.test(password) &&
@@ -141,12 +137,12 @@ export class AuthenticationService {
     });
 
     if (error) {
-      this.toastService.error(PASSWORD_UPDATE_FAILED);
+      this.toastService.error(authMessage("passwordUpdateFailed"));
       return false;
     }
 
     authStore.passwordRecoveryRequired = false;
-    this.toastService.info(PASSWORD_UPDATED);
+    this.toastService.info(authMessage("passwordUpdated"));
     this.router.push({
       name: MasterRouteName.MASTER,
     });

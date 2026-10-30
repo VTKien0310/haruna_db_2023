@@ -1,0 +1,8 @@
+{
+  "resetEmailSent": "If an account exists for that email, a reset link has been sent.",
+  "resetEmailFailed": "Could not send reset email",
+  "passwordUpdated": "Password updated",
+  "passwordUpdateFailed": "Could not update password",
+  "loginFailed": "Login failed",
+  "logoutFailed": "Logout failed"
+}
