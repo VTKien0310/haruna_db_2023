@@ -47,7 +47,7 @@ export class MediaDetailService {
       .download(media.storage_path);
 
     if (error || !data) {
-      this.toastService.error(t("downloadFailed", { id: media.id }));
+      this.toastService.error(t("messages.downloadFailed", { id: media.id }));
       return;
     }
 
@@ -65,7 +65,9 @@ export class MediaDetailService {
       .eq("user_id", media.uploader_id);
 
     if (error || !data) {
-      this.toastService.error(t("uploaderFetchFailed", { id: media.id }));
+      this.toastService.error(
+        t("messages.uploaderFetchFailed", { id: media.id }),
+      );
       return null;
     }
 
@@ -98,7 +100,9 @@ export class MediaDetailService {
   }
 
   private toastFailedToGenerateSignedUrl(path: string | null): string {
-    this.toastService.error(t("signedUrlFailed", { path: String(path) }));
+    this.toastService.error(
+      t("messages.signedUrlFailed", { path: String(path) }),
+    );
 
     return "";
   }
@@ -117,7 +121,9 @@ export class MediaDetailService {
       .list(media.id);
 
     if (error) {
-      this.toastService.error(t("resizedListFailed", { id: media.id }));
+      this.toastService.error(
+        t("messages.resizedListFailed", { id: media.id }),
+      );
 
       return false;
     }
@@ -247,13 +253,13 @@ export class MediaDetailService {
       .eq("id", id);
 
     if (error || !data) {
-      this.toastService.error(t("mediaFetchFailed", { id }));
+      this.toastService.error(t("messages.mediaFetchFailed", { id }));
       this.masterNavigationService.navigateTo400();
       return null;
     }
 
     if (!data[0]) {
-      this.toastService.error(t("mediaNotFound", { id }));
+      this.toastService.error(t("messages.mediaNotFound", { id }));
       this.masterNavigationService.navigateTo404();
       return null;
     }
@@ -289,7 +295,7 @@ export class MediaDetailService {
 
   async deleteMedia(media: Media): Promise<void> {
     this.modalService
-      .confirm(t("deleteConfirm"))
+      .confirm(t("messages.deleteConfirm"))
       .then(async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;
@@ -304,7 +310,7 @@ export class MediaDetailService {
           : false;
 
         if (!(deleteDbRecordSuccess && deleteFileInBucketSuccess)) {
-          this.toastService.error(t("deleteFailed", { id: media.id }));
+          this.toastService.error(t("messages.deleteFailed", { id: media.id }));
           return;
         }
 

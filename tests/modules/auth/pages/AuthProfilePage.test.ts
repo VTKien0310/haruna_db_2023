@@ -49,12 +49,12 @@ describe("AuthProfilePage appearance", () => {
       const wrapper = mount(AuthProfilePage, appMountOptions());
       await flushPromises();
       const control = wrapper.get('[role="combobox"]');
-      expect(control.attributes("aria-label")).toBe(t("themeLabel"));
+      expect(control.attributes("aria-label")).toBe(t("elements.themeLabel"));
       expect(control.attributes("aria-describedby")).toBe(
         "theme-device-description",
       );
       expect(control.element.closest("form")).toBeNull();
-      expect(wrapper.text()).toContain(t("themeDeviceDescription"));
+      expect(wrapper.text()).toContain(t("elements.themeDeviceDescription"));
       await control.trigger("keydown", { key: "Enter" });
       const options = document.querySelectorAll('[role="option"]');
       expect(options).toHaveLength(THEME_OPTIONS.length);

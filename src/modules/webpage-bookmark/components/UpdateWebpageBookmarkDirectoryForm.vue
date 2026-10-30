@@ -27,12 +27,12 @@ const onSubmit = (formData: WebBookmarkDirectoryFormData): Promise<boolean> => {
 <template>
   <WebpageBookmarkDirectoryForm
     form-icon="edit"
-    :form-title="t('updateDirectoryTitle')"
+    :form-title="t('elements.updateDirectoryTitle')"
     :form-style-is-primary="true"
     :initial-form-data="initialUpdateDirectoryFormData"
     :on-submit="onSubmit"
     :reset-form-on-submit-success="false"
-    :submit-btn-label="t('updateButton')"
+    :submit-btn-label="t('elements.updateButton')"
   />
 </template>
 

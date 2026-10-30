@@ -55,12 +55,12 @@ function handleSendResetEmail() {
         class="bg-background-secondary border-background-border mt-8 flex w-full max-w-sm flex-col items-center justify-center rounded-(--h-panel-radius) border p-6"
       >
         <h2 class="text-text-primary text-xl font-semibold">
-          {{ t("forgotPasswordTitle") }}
+          {{ t("elements.forgotPasswordTitle") }}
         </h2>
 
         <h-input
           v-model="forgotPasswordFormContent.email"
-          :label="t('emailLabel')"
+          :label="t('elements.emailLabel')"
           name="email"
           class="mt-4 w-full"
         />
@@ -71,7 +71,7 @@ function handleSendResetEmail() {
           type="submit"
           class="mt-6 w-full"
         >
-          {{ t("sendResetLinkButton") }}
+          {{ t("elements.sendResetLinkButton") }}
         </h-button>
       </h-form>
     </div>

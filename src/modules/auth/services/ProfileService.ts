@@ -34,7 +34,7 @@ export class ProfileService {
       .eq("user_id", currentUser.id);
 
     if (error || !data) {
-      this.toastService.error(t("fetchProfileFailed"));
+      this.toastService.error(t("messages.fetchProfileFailed"));
 
       this.authStore.profile = null;
 
@@ -65,7 +65,7 @@ export class ProfileService {
         .eq("user_id", currentUser.id);
 
       if (error) {
-        this.toastService.error(t("updateUsernameFailed"));
+        this.toastService.error(t("messages.updateUsernameFailed"));
       }
     }
 

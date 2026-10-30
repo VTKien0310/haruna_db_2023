@@ -77,17 +77,17 @@ onMounted(() => {
         >
           <h-input
             v-model="profileFormContent.name"
-            :label="t('nameLabel')"
+            :label="t('elements.nameLabel')"
             name="name"
             class="w-full"
           />
 
           <h-input
             v-model="profileFormContent.password"
-            :label="t('passwordLabel')"
+            :label="t('elements.passwordLabel')"
             name="password"
             type="password"
-            :placeholder="t('profilePasswordPlaceholder')"
+            :placeholder="t('elements.profilePasswordPlaceholder')"
             class="mt-4 w-full"
           />
 

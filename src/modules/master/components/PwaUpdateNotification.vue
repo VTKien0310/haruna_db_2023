@@ -14,19 +14,19 @@ const handleUpdate = async (): Promise<void> => {
 <template>
   <h-modal
     :model-value="pwaUpdateStore.needRefresh"
-    :title="t('pwaUpdateTitle')"
+    :title="t('elements.pwaUpdateTitle')"
     hide-default-actions
     no-dismiss
     no-outside-dismiss
     no-esc-dismiss
   >
     <p>
-      {{ t("pwaUpdateBody") }}
+      {{ t("messages.pwaUpdateBody") }}
     </p>
 
     <div class="mt-4 flex justify-end">
       <h-button color="primary" @click="handleUpdate">
-        {{ t("pwaUpdateRestart") }}
+        {{ t("elements.pwaUpdateRestart") }}
       </h-button>
     </div>
   </h-modal>

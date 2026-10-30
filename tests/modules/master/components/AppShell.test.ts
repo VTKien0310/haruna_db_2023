@@ -72,7 +72,7 @@ describe("App shell", () => {
     const wrapper = await mountShell();
     try {
       const branding = wrapper.get(
-        `button[aria-label="${t("goToHomeLabel")}"]`,
+        `button[aria-label="${t("elements.goToHomeLabel")}"]`,
       );
       expect(branding.attributes("type")).toBe("button");
       expect(branding.text()).toBe("Haruna");
@@ -88,7 +88,7 @@ describe("App shell", () => {
       expect(router.currentRoute.value.name).toBe("master");
       expect(
         wrapper
-          .get(`[aria-label="${t("openNavigationLabel")}"]`)
+          .get(`[aria-label="${t("elements.openNavigationLabel")}"]`)
           .attributes("aria-expanded"),
       ).toBe("false");
     } finally {
@@ -98,7 +98,9 @@ describe("App shell", () => {
 
   it("exposes menu state, active navigation and closes after a destination is selected", async () => {
     const wrapper = await mountShell();
-    const menu = wrapper.get(`[aria-label="${t("openNavigationLabel")}"]`);
+    const menu = wrapper.get(
+      `[aria-label="${t("elements.openNavigationLabel")}"]`,
+    );
     expect(menu.attributes("aria-expanded")).toBe("false");
     expect(menu.attributes("aria-controls")).toBe("app-navigation");
     await menu.trigger("click");
@@ -107,11 +109,11 @@ describe("App shell", () => {
     expect(wrapper.get("header").attributes()).toHaveProperty("inert");
     const nav = document.querySelector('nav[aria-label="Main navigation"]')!;
     expect(nav.querySelector('[aria-current="page"]')?.textContent).toContain(
-      t("navGallery"),
+      t("elements.navGallery"),
     );
     const home = Array.from(
       nav.querySelectorAll<HTMLButtonElement>("button"),
-    ).find((button) => button.textContent?.includes(t("navHome")))!;
+    ).find((button) => button.textContent?.includes(t("elements.navHome")))!;
     home.click();
     await flushPromises();
     expect(router.currentRoute.value.name).toBe("master");
@@ -125,7 +127,7 @@ describe("App shell", () => {
       const wrapper = await mountShell();
       try {
         await wrapper
-          .get(`[aria-label="${t("openNavigationLabel")}"]`)
+          .get(`[aria-label="${t("elements.openNavigationLabel")}"]`)
           .trigger("click");
         await flushPromises();
         await router.push(path);

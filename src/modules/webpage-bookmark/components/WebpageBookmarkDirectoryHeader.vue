@@ -12,7 +12,7 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
     <p class="overflow-hidden text-ellipsis whitespace-nowrap">
       {{
         webpageBookmarkDetailStore.isFetchingData
-          ? t("fetchingData")
+          ? t("elements.fetchingData")
           : webpageBookmarkDetailStore.webpageBookmarkHeaderTitle
       }}
     </p>

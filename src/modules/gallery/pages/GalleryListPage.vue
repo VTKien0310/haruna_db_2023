@@ -54,7 +54,7 @@ onMounted(() => {
       @scroll="loadMoreMedias"
       ref="galleryListPageContent"
       role="region"
-      :aria-label="t('galleryMediaRegionLabel')"
+      :aria-label="t('elements.galleryMediaRegionLabel')"
       class="invisible-scroll-bar min-h-0 flex-1 overflow-y-auto"
     >
       <!-- grid view -->

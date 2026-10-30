@@ -65,20 +65,32 @@ interface NavItem {
 }
 
 const navItems = computed<NavItem[]>(() => [
-  { label: t("navHome"), icon: "home", routeName: MasterRouteName.MASTER },
-  { label: t("navGallery"), icon: "image", routeName: GalleryRouteName.LIST },
   {
-    label: t("navTranslation"),
+    label: t("elements.navHome"),
+    icon: "home",
+    routeName: MasterRouteName.MASTER,
+  },
+  {
+    label: t("elements.navGallery"),
+    icon: "image",
+    routeName: GalleryRouteName.LIST,
+  },
+  {
+    label: t("elements.navTranslation"),
     icon: "translate",
     routeName: TranslationRouteName.TRANSLATION,
   },
   {
-    label: t("navBookmarks"),
+    label: t("elements.navBookmarks"),
     icon: "topic",
     routeName: WebpageBookmarkRouteName.ROOT,
     routeParams: { id: WEB_BOOKMARK_ROOT_DIR_ID },
   },
-  { label: t("navProfile"), icon: "person", routeName: AuthRouteName.PROFILE },
+  {
+    label: t("elements.navProfile"),
+    icon: "person",
+    routeName: AuthRouteName.PROFILE,
+  },
 ]);
 
 onUnmounted((): void => {

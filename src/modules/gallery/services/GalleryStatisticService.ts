@@ -19,7 +19,7 @@ export class GalleryStatisticService {
       });
 
     if (error || count === null) {
-      this.toastService.error(t("countTotalFailed"));
+      this.toastService.error(t("messages.countTotalFailed"));
 
       return 0;
     }
@@ -37,7 +37,7 @@ export class GalleryStatisticService {
       .eq("uploader_id", userId);
 
     if (error || count === null) {
-      this.toastService.error(t("countUserUploadsFailed"));
+      this.toastService.error(t("messages.countUserUploadsFailed"));
 
       return 0;
     }
@@ -60,7 +60,7 @@ export class GalleryStatisticService {
       .filter("created_at", "gte", targetPointInTime);
 
     if (error || count === null) {
-      this.toastService.error(t("countNewUploadsFailed"));
+      this.toastService.error(t("messages.countNewUploadsFailed"));
 
       return 0;
     }

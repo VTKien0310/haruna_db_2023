@@ -26,7 +26,7 @@ const emit = defineEmits<{
     <h-button
       variant="quiet"
       class="p-0"
-      :aria-label="t('goToHomeLabel')"
+      :aria-label="t('elements.goToHomeLabel')"
       @click="emit('navigate-home')"
     >
       <span class="flex items-center gap-3">
@@ -40,7 +40,7 @@ const emit = defineEmits<{
       @click="emit('toggle-sidebar')"
       icon="menu"
       variant="outlined"
-      :aria-label="t('openNavigationLabel')"
+      :aria-label="t('elements.openNavigationLabel')"
       :aria-expanded="sidebarOpen"
       :aria-controls="sidebarId"
     />

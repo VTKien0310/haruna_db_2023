@@ -77,7 +77,7 @@ describe("AuthResetPasswordPage workflow", () => {
     });
     const wrapper = mount(AuthResetPasswordPage, appMountOptions());
     await flushPromises();
-    expect(wrapper.text()).toContain(t("resetLinkInvalid"));
+    expect(wrapper.text()).toContain(t("elements.resetLinkInvalid"));
     expect(wrapper.find("form").exists()).toBe(false);
     await wrapper.get("button").trigger("click");
     expect(router.push).toHaveBeenCalledWith({
@@ -92,11 +92,11 @@ describe("AuthResetPasswordPage workflow", () => {
     });
     const wrapper = mount(AuthResetPasswordPage, appMountOptions());
     await flushPromises();
-    expect(wrapper.text()).toContain(t("resetLinkInvalid"));
+    expect(wrapper.text()).toContain(t("elements.resetLinkInvalid"));
     useAuthStore().passwordRecoveryRequired = true;
     await flushPromises();
     expect(wrapper.find("form").exists()).toBe(true);
-    expect(wrapper.text()).not.toContain(t("resetLinkInvalid"));
+    expect(wrapper.text()).not.toContain(t("elements.resetLinkInvalid"));
   });
   it("sends an existing signed-in visit home", async () => {
     backend.auth.getSession.mockResolvedValue({
@@ -107,7 +107,7 @@ describe("AuthResetPasswordPage workflow", () => {
     await flushPromises();
     expect(router.push).toHaveBeenCalledWith({ name: "master" });
     expect(wrapper.find("form").exists()).toBe(false);
-    expect(wrapper.text()).not.toContain(t("resetLinkInvalid"));
+    expect(wrapper.text()).not.toContain(t("elements.resetLinkInvalid"));
     expect(backend.auth.updateUser).not.toHaveBeenCalled();
   });
   it("updates the password and continues home", async () => {

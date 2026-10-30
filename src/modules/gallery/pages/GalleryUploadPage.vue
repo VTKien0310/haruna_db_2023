@@ -36,7 +36,7 @@ const uploadPendingMedia = () => {
             galleryUploadStore.isHandlingCreateNewMedia
           "
         >
-          {{ t("uploadButton") }}
+          {{ t("elements.uploadButton") }}
         </h-button>
       </div>
 
@@ -45,8 +45,8 @@ const uploadPendingMedia = () => {
         v-model="galleryUploadStore.pendingNewMediaFiles"
         file-types="image/*,video/*"
         @file-added="newPendingFileAdded"
-        :upload-button-text="t('uploadAddButtonText')"
-        :drop-zone-text="t('uploadDropZoneText')"
+        :upload-button-text="t('elements.uploadAddButtonText')"
+        :drop-zone-text="t('elements.uploadDropZoneText')"
       />
     </div>
   </ion-page>

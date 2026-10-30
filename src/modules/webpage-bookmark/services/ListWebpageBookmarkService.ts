@@ -42,7 +42,7 @@ export class ListWebpageBookmarkService {
       .order("created_at", { ascending: true });
 
     if (error || !data) {
-      this.toastService.error(t("fetchLevelOneFailed"));
+      this.toastService.error(t("messages.fetchLevelOneFailed"));
       return [];
     }
 
@@ -64,7 +64,7 @@ export class ListWebpageBookmarkService {
 
     if (error || !data) {
       this.toastService.error(
-        t("fetchChildrenFailed", { id: currentRecord.id }),
+        t("messages.fetchChildrenFailed", { id: currentRecord.id }),
       );
       return [];
     }
@@ -82,7 +82,7 @@ export class ListWebpageBookmarkService {
       .eq("type", WebpageBookmarkType.LINK);
 
     if (error || count === null) {
-      this.toastService.error(t("countLinksFailed"));
+      this.toastService.error(t("messages.countLinksFailed"));
       return 0;
     }
 
@@ -99,7 +99,7 @@ export class ListWebpageBookmarkService {
       .eq("type", WebpageBookmarkType.DIRECTORY);
 
     if (error || count === null) {
-      this.toastService.error(t("countDirectoriesFailed"));
+      this.toastService.error(t("messages.countDirectoriesFailed"));
       return 0;
     }
 

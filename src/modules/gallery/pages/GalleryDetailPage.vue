@@ -210,10 +210,14 @@ watch(
           class="mb-3 flex h-full w-full flex-col content-start items-start justify-start p-3"
         >
           <div v-show="showMediaDetail">
-            <p>{{ t("mediaDetailBy", { name: mediaUploader?.name ?? "" }) }}</p>
             <p>
               {{
-                t("mediaDetailOn", {
+                t("elements.mediaDetailBy", { name: mediaUploader?.name ?? "" })
+              }}
+            </p>
+            <p>
+              {{
+                t("elements.mediaDetailOn", {
                   date: media
                     ? mediaDetailService.transformMediaCreatedAtToHumanReadableFormat(
                         media,
@@ -224,7 +228,7 @@ watch(
             </p>
             <p>
               {{
-                t("mediaDetailSize", {
+                t("elements.mediaDetailSize", {
                   size: mediaDetailService.transformMediaSizeToHumanReadableFormat(
                     media?.size ?? 0,
                   ),

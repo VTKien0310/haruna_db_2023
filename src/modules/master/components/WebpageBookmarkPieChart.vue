@@ -27,7 +27,7 @@ onMounted(refreshColors);
 watch(() => themeStore.themeId, refreshColors, { flush: "post" });
 
 const chartData = computed(() => ({
-  labels: [t("chartLinksLabel"), t("chartDirectoriesLabel")],
+  labels: [t("elements.chartLinksLabel"), t("elements.chartDirectoriesLabel")],
   datasets: [
     {
       data: [props.linkCount, props.directoryCount],

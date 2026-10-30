@@ -8,7 +8,7 @@ import { t } from "@/modules/master/locales";
     <img
       src="https://http.cat/images/404.jpg"
       class="m-auto max-h-screen max-w-full"
-      :alt="t('notFoundImageAlt')"
+      :alt="t('elements.notFoundImageAlt')"
     />
   </ion-page>
 </template>

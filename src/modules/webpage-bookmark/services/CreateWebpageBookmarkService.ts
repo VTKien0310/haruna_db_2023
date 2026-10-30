@@ -35,7 +35,7 @@ export class CreateWebpageBookmarkService {
       .insert(directoryData);
 
     if (error) {
-      this.toastService.error(t("createDirectoryFailed"));
+      this.toastService.error(t("messages.createDirectoryFailed"));
       return false;
     }
 
@@ -58,7 +58,7 @@ export class CreateWebpageBookmarkService {
       .insert(linkData);
 
     if (error) {
-      this.toastService.error(t("createLinkFailed"));
+      this.toastService.error(t("messages.createLinkFailed"));
       return false;
     }
 

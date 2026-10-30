@@ -90,16 +90,18 @@ const submitForm = async (): Promise<void> => {
       <h-input
         v-model="formData.name"
         :rules="[
-          (value) => (value && value.length > 0) || t('directoryNameRequired'),
           (value) =>
-            (value && value.length <= 30) || t('directoryNameMaxLength'),
+            (value && value.length > 0) || t('messages.directoryNameRequired'),
+          (value) =>
+            (value && value.length <= 30) ||
+            t('messages.directoryNameMaxLength'),
         ]"
-        :label="t('nameLabel')"
+        :label="t('elements.nameLabel')"
         class="mb-2 w-full"
       />
       <h-textarea
         v-model="formData.description"
-        :label="t('descriptionLabel')"
+        :label="t('elements.descriptionLabel')"
         :rows="5"
         class="mb-2 w-full"
       />
@@ -112,7 +114,7 @@ const submitForm = async (): Promise<void> => {
           color="secondary"
           class="mr-2"
         >
-          {{ t("cancelButton") }}
+          {{ t("elements.cancelButton") }}
         </h-button>
         <h-button
           @click="validate() && submitForm()"

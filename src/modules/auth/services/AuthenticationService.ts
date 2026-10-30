@@ -37,7 +37,7 @@ export class AuthenticationService {
       await this.backendPort.spbClient.auth.signInWithPassword(credential);
 
     if (error) {
-      this.toastService.error(t("loginFailed"));
+      this.toastService.error(t("messages.loginFailed"));
       return false;
     }
 
@@ -52,7 +52,7 @@ export class AuthenticationService {
     const { error } = await this.backendPort.spbClient.auth.signOut();
 
     if (error) {
-      this.toastService.error(t("logoutFailed"));
+      this.toastService.error(t("messages.logoutFailed"));
       return false;
     }
 
@@ -76,11 +76,11 @@ export class AuthenticationService {
       });
 
     if (error && error.code !== "user_not_found") {
-      this.toastService.error(t("resetEmailFailed"));
+      this.toastService.error(t("messages.resetEmailFailed"));
       return false;
     }
 
-    this.toastService.info(t("resetEmailSent"));
+    this.toastService.info(t("messages.resetEmailSent"));
     this.router.push({
       name: AuthRouteName.LOGIN,
     });
@@ -137,12 +137,12 @@ export class AuthenticationService {
     });
 
     if (error) {
-      this.toastService.error(t("passwordUpdateFailed"));
+      this.toastService.error(t("messages.passwordUpdateFailed"));
       return false;
     }
 
     authStore.passwordRecoveryRequired = false;
-    this.toastService.info(t("passwordUpdated"));
+    this.toastService.info(t("messages.passwordUpdated"));
     this.router.push({
       name: MasterRouteName.MASTER,
     });

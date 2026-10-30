@@ -54,14 +54,14 @@ function handleLogin() {
       >
         <h-input
           v-model="loginFormContent.email"
-          :label="t('emailLabel')"
+          :label="t('elements.emailLabel')"
           name="email"
           class="w-full"
         />
 
         <h-input
           v-model="loginFormContent.password"
-          :label="t('passwordLabel')"
+          :label="t('elements.passwordLabel')"
           name="password"
           type="password"
           class="mt-4 w-full"
@@ -73,7 +73,7 @@ function handleLogin() {
           type="submit"
           class="mt-6 w-full"
         >
-          {{ t("loginButton") }}
+          {{ t("elements.loginButton") }}
         </h-button>
 
         <h-button
@@ -82,7 +82,7 @@ function handleLogin() {
           class="mt-2 w-full"
           @click="authenticationService.openForgotPassword()"
         >
-          {{ t("forgotPasswordLink") }}
+          {{ t("elements.forgotPasswordLink") }}
         </h-button>
       </h-form>
     </div>

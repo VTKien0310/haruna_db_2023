@@ -34,13 +34,13 @@ export class WebpageBookmarkDetailService {
       .eq("id", id);
 
     if (error || !data) {
-      this.toastService.error(t("fetchRecordFailed", { id }));
+      this.toastService.error(t("messages.fetchRecordFailed", { id }));
       this.masterNavigationService.navigateTo400();
       return null;
     }
 
     if (!data[0]) {
-      this.toastService.error(t("recordNotFound", { id }));
+      this.toastService.error(t("messages.recordNotFound", { id }));
       this.masterNavigationService.navigateTo404();
       return null;
     }

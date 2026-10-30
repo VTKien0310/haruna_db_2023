@@ -20,12 +20,12 @@ const onSubmit = (formData: WebBookmarkLinkFormData): Promise<boolean> => {
 <template>
   <WebpageBookmarkLinkForm
     form-icon="add"
-    :form-title="t('createLinkTitle')"
+    :form-title="t('elements.createLinkTitle')"
     :form-style-is-primary="false"
     :initial-form-data="initialCreateLinkFormData"
     :on-submit="onSubmit"
     :reset-form-on-submit-success="true"
-    :submit-btn-label="t('createButton')"
+    :submit-btn-label="t('elements.createButton')"
   />
 </template>
 

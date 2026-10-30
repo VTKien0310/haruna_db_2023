@@ -90,21 +90,21 @@ function requestNewResetLink() {
         class="bg-background-secondary border-background-border mt-8 flex w-full max-w-sm flex-col items-center justify-center rounded-(--h-panel-radius) border p-6"
       >
         <h2 class="text-text-primary text-xl font-semibold">
-          {{ t("resetPasswordTitle") }}
+          {{ t("elements.resetPasswordTitle") }}
         </h2>
 
         <h-input
           v-model="resetPasswordFormContent.password"
-          :label="t('newPasswordLabel')"
+          :label="t('elements.newPasswordLabel')"
           name="password"
           type="password"
-          :placeholder="t('newPasswordPlaceholder')"
+          :placeholder="t('elements.newPasswordPlaceholder')"
           class="mt-4 w-full"
         />
 
         <h-input
           v-model="resetPasswordFormContent.confirmPassword"
-          :label="t('confirmPasswordLabel')"
+          :label="t('elements.confirmPasswordLabel')"
           name="confirmPassword"
           type="password"
           class="mt-4 w-full"
@@ -116,7 +116,7 @@ function requestNewResetLink() {
           type="submit"
           class="mt-6 w-full"
         >
-          {{ t("updatePasswordButton") }}
+          {{ t("elements.updatePasswordButton") }}
         </h-button>
       </h-form>
 
@@ -125,7 +125,7 @@ function requestNewResetLink() {
         class="bg-background-secondary border-background-border mt-8 flex w-full max-w-sm flex-col items-center justify-center rounded-(--h-panel-radius) border p-6"
       >
         <p class="text-text-primary text-center">
-          {{ t("resetLinkInvalid") }}
+          {{ t("elements.resetLinkInvalid") }}
         </p>
 
         <h-button
@@ -133,7 +133,7 @@ function requestNewResetLink() {
           class="mt-6 w-full"
           @click="requestNewResetLink"
         >
-          {{ t("requestNewLinkButton") }}
+          {{ t("elements.requestNewLinkButton") }}
         </h-button>
       </div>
     </div>

@@ -1,19 +1,23 @@
 {
-  "loadLanguagesFailed": "Failed to load supported languages",
-  "translateFailed": "Failed to translate content",
-  "fetchHistoriesFailed": "Failed to fetch translation histories",
-  "copied": "Copied to clipboard",
-  "translateButton": "Translate",
-  "swapButton": "Swap",
-  "clearButton": "Clear",
-  "resetButton": "Reset",
-  "sourceLanguageLabel": "Source language",
-  "targetLanguageLabel": "Target language",
-  "sourceTextTitle": "Source text",
-  "sourceTextPlaceholder": "Enter text to translate...",
-  "translationTitle": "Translation",
-  "translationPlaceholder": "Translation will appear here",
-  "copyTranslationLabel": "Copy translation",
-  "historyTitle": "History",
-  "noTranslationHistory": "No translation history yet"
+  "messages": {
+    "loadLanguagesFailed": "Failed to load supported languages",
+    "translateFailed": "Failed to translate content",
+    "fetchHistoriesFailed": "Failed to fetch translation histories",
+    "copied": "Copied to clipboard",
+    "noTranslationHistory": "No translation history yet"
+  },
+  "elements": {
+    "translateButton": "Translate",
+    "swapButton": "Swap",
+    "clearButton": "Clear",
+    "resetButton": "Reset",
+    "sourceLanguageLabel": "Source language",
+    "targetLanguageLabel": "Target language",
+    "sourceTextTitle": "Source text",
+    "sourceTextPlaceholder": "Enter text to translate...",
+    "translationTitle": "Translation",
+    "translationPlaceholder": "Translation will appear here",
+    "copyTranslationLabel": "Copy translation",
+    "historyTitle": "History"
+  }
 }

@@ -93,7 +93,7 @@ const copyTranslatedText = async (): Promise<void> => {
   }
 
   await navigator.clipboard.writeText(translatedText.value);
-  toastService.info(t("copied"));
+  toastService.info(t("messages.copied"));
 };
 
 const clearSourceText = (): void => {
@@ -145,20 +145,20 @@ onIonViewDidEnter(async () => {
               :loading="isTranslating"
               @click="translate"
             >
-              {{ t("translateButton") }}
+              {{ t("elements.translateButton") }}
             </h-button>
             <h-button
               variant="outlined"
               :disabled="isTranslating"
               @click="swapLanguages"
             >
-              {{ t("swapButton") }}
+              {{ t("elements.swapButton") }}
             </h-button>
             <h-button variant="outlined" @click="clearSourceText">
-              {{ t("clearButton") }}
+              {{ t("elements.clearButton") }}
             </h-button>
             <h-button variant="outlined" @click="resetTranslation">
-              {{ t("resetButton") }}
+              {{ t("elements.resetButton") }}
             </h-button>
           </div>
         </div>
@@ -172,7 +172,7 @@ onIonViewDidEnter(async () => {
             :options="translationStore.supportedLanguages"
             value-by="code"
             text-by="name"
-            :label="t('sourceLanguageLabel')"
+            :label="t('elements.sourceLanguageLabel')"
             searchable
             :loading="translationStore.isLoadingLanguages"
             class="w-full"
@@ -182,7 +182,7 @@ onIonViewDidEnter(async () => {
             :options="translationStore.supportedLanguages"
             value-by="code"
             text-by="name"
-            :label="t('targetLanguageLabel')"
+            :label="t('elements.targetLanguageLabel')"
             searchable
             :loading="translationStore.isLoadingLanguages"
             class="w-full"
@@ -197,13 +197,13 @@ onIonViewDidEnter(async () => {
           >
             <div class="mb-2 flex h-8 flex-row items-center justify-between">
               <span class="text-text-primary font-bold">{{
-                t("sourceTextTitle")
+                t("elements.sourceTextTitle")
               }}</span>
             </div>
             <h-textarea
               v-model="sourceText"
               counter
-              :placeholder="t('sourceTextPlaceholder')"
+              :placeholder="t('elements.sourceTextPlaceholder')"
               class="translation-textarea w-full"
             />
           </div>
@@ -214,14 +214,14 @@ onIonViewDidEnter(async () => {
           >
             <div class="mb-2 flex h-8 flex-row items-center justify-between">
               <span class="text-text-primary font-bold">{{
-                t("translationTitle")
+                t("elements.translationTitle")
               }}</span>
               <h-button
                 v-if="translatedText"
                 variant="quiet"
                 size="small"
                 icon="content_copy"
-                :aria-label="t('copyTranslationLabel')"
+                :aria-label="t('elements.copyTranslationLabel')"
                 @click="copyTranslatedText"
               />
             </div>
@@ -229,7 +229,7 @@ onIonViewDidEnter(async () => {
               v-model="translatedText"
               :loading="isTranslating"
               readonly
-              :placeholder="t('translationPlaceholder')"
+              :placeholder="t('elements.translationPlaceholder')"
               class="translation-textarea w-full"
             />
           </div>
@@ -239,7 +239,7 @@ onIonViewDidEnter(async () => {
         <div class="mt-3 flex flex-col">
           <div class="mb-2 flex h-8 flex-row items-center justify-between">
             <span class="text-text-primary font-bold">{{
-              t("historyTitle")
+              t("elements.historyTitle")
             }}</span>
           </div>
 
@@ -251,7 +251,7 @@ onIonViewDidEnter(async () => {
             "
             class="text-secondary border-background-border bg-background-secondary flex flex-row items-center justify-center rounded-(--h-panel-radius) border p-6"
           >
-            {{ t("noTranslationHistory") }}
+            {{ t("messages.noTranslationHistory") }}
           </div>
 
           <div class="flex flex-col gap-2">

@@ -39,7 +39,7 @@ export class GalleryListService {
       .order("created_at", { ascending: false });
 
     if (error || data === null) {
-      this.toastService.error(t("fetchMediasFailed"));
+      this.toastService.error(t("messages.fetchMediasFailed"));
       this.turnOffIsFetchingMediaState();
       return;
     }

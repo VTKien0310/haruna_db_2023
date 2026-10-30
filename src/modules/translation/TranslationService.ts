@@ -32,7 +32,7 @@ export class TranslationService {
     );
 
     if (languagesResult.isErr()) {
-      this.toastService.error(t("loadLanguagesFailed"));
+      this.toastService.error(t("messages.loadLanguagesFailed"));
 
       this.translationStore.isLoadingLanguages = false;
 
@@ -58,7 +58,7 @@ export class TranslationService {
     );
 
     if (translationResult.isErr()) {
-      this.toastService.error(t("translateFailed"));
+      this.toastService.error(t("messages.translateFailed"));
 
       return "";
     }
@@ -193,7 +193,7 @@ export class TranslationService {
     );
 
     if (error || data === null || count === null) {
-      this.toastService.error(t("fetchHistoriesFailed"));
+      this.toastService.error(t("messages.fetchHistoriesFailed"));
 
       this.translationStore.isFetchingHistories = false;
 
@@ -239,7 +239,7 @@ export class TranslationService {
     const { data, error, count } = await this.queryTranslationHistories(1, 5);
 
     if (error || data === null || count === null) {
-      this.toastService.error(t("fetchHistoriesFailed"));
+      this.toastService.error(t("messages.fetchHistoriesFailed"));
 
       this.translationStore.isFetchingLatestHistories = false;
 

@@ -101,22 +101,24 @@ const submitForm = async (): Promise<void> => {
       <h-input
         v-model="formData.name"
         :rules="[
-          (value) => (value && value.length > 0) || t('linkNameRequired'),
-          (value) => (value && value.length <= 30) || t('linkNameMaxLength'),
+          (value) =>
+            (value && value.length > 0) || t('messages.linkNameRequired'),
+          (value) =>
+            (value && value.length <= 30) || t('messages.linkNameMaxLength'),
         ]"
-        :label="t('nameLabel')"
+        :label="t('elements.nameLabel')"
         class="mb-2 w-full"
       />
       <h-input
         v-model="formData.url"
         type="url"
-        :rules="[(value) => isValidUrl(value) || t('urlInvalid')]"
-        :label="t('urlLabel')"
+        :rules="[(value) => isValidUrl(value) || t('messages.urlInvalid')]"
+        :label="t('elements.urlLabel')"
         class="mb-2 w-full"
       />
       <h-textarea
         v-model="formData.description"
-        :label="t('descriptionLabel')"
+        :label="t('elements.descriptionLabel')"
         :rows="5"
         class="mb-2 w-full"
       />
@@ -129,7 +131,7 @@ const submitForm = async (): Promise<void> => {
           color="secondary"
           class="mr-2"
         >
-          {{ t("cancelButton") }}
+          {{ t("elements.cancelButton") }}
         </h-button>
         <h-button
           @click="validate() && submitForm()"

@@ -22,7 +22,7 @@ const toastService = useToastService();
 const copyUrl = (): void => {
   if (!webpageBookmarkDetailStore.webpageBookmark) return;
   navigator.clipboard.writeText(webpageBookmarkDetailStore.webpageBookmark.url);
-  toastService.info(t("linkCopied"));
+  toastService.info(t("messages.linkCopied"));
 };
 
 const openUrl = (): void => {

@@ -54,11 +54,11 @@ describe("TranslationPage workflow", () => {
   it("renders empty history and disables blank translations", async () => {
     const wrapper = mount(TranslationPage, appMountOptions());
     await flushPromises();
-    expect(wrapper.text()).toContain(t("noTranslationHistory"));
+    expect(wrapper.text()).toContain(t("messages.noTranslationHistory"));
     expect(
       wrapper
         .findAll("button")
-        .find((button) => button.text() === t("translateButton"))
+        .find((button) => button.text() === t("elements.translateButton"))
         ?.attributes("disabled"),
     ).toBeDefined();
   });
@@ -72,7 +72,7 @@ describe("TranslationPage workflow", () => {
     await wrapper.findAll("textarea")[0].setValue("こんにちは");
     const button = (text: string) =>
       wrapper.findAll("button").find((item) => item.text() === text)!;
-    await button(t("translateButton")).trigger("click");
+    await button(t("elements.translateButton")).trigger("click");
     await flushPromises();
     expect(
       (wrapper.findAll("textarea")[1].element as HTMLTextAreaElement).value,
@@ -80,14 +80,14 @@ describe("TranslationPage workflow", () => {
     expect(wrapper.text()).toContain("Japanese → English");
     expect(
       wrapper
-        .get(`button[aria-label="${t("copyTranslationLabel")}"]`)
+        .get(`button[aria-label="${t("elements.copyTranslationLabel")}"]`)
         .classes(),
     ).toContain("h-button-icon-only");
-    await button(t("swapButton")).trigger("click");
+    await button(t("elements.swapButton")).trigger("click");
     expect(
       (wrapper.findAll("textarea")[0].element as HTMLTextAreaElement).value,
     ).toBe("Hello");
-    await button(t("resetButton")).trigger("click");
+    await button(t("elements.resetButton")).trigger("click");
     expect(
       (wrapper.findAll("textarea")[0].element as HTMLTextAreaElement).value,
     ).toBe("");
@@ -96,7 +96,7 @@ describe("TranslationPage workflow", () => {
     ).toBe("");
     expect(
       wrapper
-        .find(`button[aria-label="${t("copyTranslationLabel")}"]`)
+        .find(`button[aria-label="${t("elements.copyTranslationLabel")}"]`)
         .exists(),
     ).toBe(false);
   });

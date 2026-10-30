@@ -97,20 +97,20 @@ onIonViewDidEnter(async () => {
           class="mb-1 grid w-full grid-cols-3 place-content-center place-items-center gap-1"
         >
           <h-card class="col-span-3 m-1 h-full w-full md:col-span-1">
-            <h-card-title>{{ t("bookmarkStatsTitle") }}</h-card-title>
+            <h-card-title>{{ t("elements.bookmarkStatsTitle") }}</h-card-title>
             <h-card-content
               class="mt-2 flex w-full flex-col content-center items-center justify-around md:mt-12"
             >
               <div
                 class="flex w-1/2 content-center items-center justify-between"
               >
-                <span>{{ t("bookmarkLinkCountLabel") }}</span>
+                <span>{{ t("elements.bookmarkLinkCountLabel") }}</span>
                 <span class="font-bold">{{ webpageBookmarkLinkCount }}</span>
               </div>
               <div
                 class="flex w-1/2 content-center items-center justify-between"
               >
-                <span>{{ t("bookmarkDirectoryCountLabel") }}</span>
+                <span>{{ t("elements.bookmarkDirectoryCountLabel") }}</span>
                 <span class="font-bold">{{
                   webpageBookmarkDirectoryCount
                 }}</span>
@@ -118,7 +118,7 @@ onIonViewDidEnter(async () => {
               <div
                 class="flex w-1/2 content-center items-center justify-between"
               >
-                <span>{{ t("bookmarkDeepestLevelLabel") }}</span>
+                <span>{{ t("elements.bookmarkDeepestLevelLabel") }}</span>
                 <span class="font-bold">{{ deepestLevelWebpageBookmark }}</span>
               </div>
             </h-card-content>
@@ -127,7 +127,9 @@ onIonViewDidEnter(async () => {
           <h-card
             class="col-span-3 m-1 h-full w-full md:col-span-2 md:col-start-2"
           >
-            <h-card-title>{{ t("bookmarkBreakdownTitle") }}</h-card-title>
+            <h-card-title>{{
+              t("elements.bookmarkBreakdownTitle")
+            }}</h-card-title>
             <h-card-content>
               <WebpageBookmarkPieChart
                 :link-count="webpageBookmarkLinkCount"
@@ -137,7 +139,9 @@ onIonViewDidEnter(async () => {
           </h-card>
 
           <h-card class="m-1 h-full w-full">
-            <h-card-title>{{ t("latestMediaUploadedAtTitle") }}</h-card-title>
+            <h-card-title>{{
+              t("elements.latestMediaUploadedAtTitle")
+            }}</h-card-title>
             <h-card-content>
               {{
                 latestUploadedMedia
@@ -150,22 +154,30 @@ onIonViewDidEnter(async () => {
           </h-card>
 
           <h-card class="m-1 h-full w-full">
-            <h-card-title>{{ t("newlyUploadedCountTitle") }}</h-card-title>
+            <h-card-title>{{
+              t("elements.newlyUploadedCountTitle")
+            }}</h-card-title>
             <h-card-content>{{ newlyUploadedMedia }}</h-card-content>
           </h-card>
 
           <h-card class="m-1 h-full w-full">
-            <h-card-title>{{ t("totalMediaCountTitle") }}</h-card-title>
+            <h-card-title>{{
+              t("elements.totalMediaCountTitle")
+            }}</h-card-title>
             <h-card-content>{{ totalMediasCount }}</h-card-content>
           </h-card>
 
           <h-card class="m-1 h-full w-full md:col-start-1">
-            <h-card-title>{{ t("uploadedByYouCountTitle") }}</h-card-title>
+            <h-card-title>{{
+              t("elements.uploadedByYouCountTitle")
+            }}</h-card-title>
             <h-card-content>{{ uploadedMediasCount }}</h-card-content>
           </h-card>
 
           <h-card class="col-span-2 m-1 h-full w-full md:col-start-2">
-            <h-card-title>{{ t("uploadContributionTitle") }}</h-card-title>
+            <h-card-title>{{
+              t("elements.uploadContributionTitle")
+            }}</h-card-title>
             <h-card-content>
               <h-progress-bar
                 :model-value="uploadContributionPercentage"
@@ -177,7 +189,9 @@ onIonViewDidEnter(async () => {
         </div>
 
         <h-card class="w-full">
-          <h-card-title>{{ t("latestTranslationsTitle") }}</h-card-title>
+          <h-card-title>{{
+            t("elements.latestTranslationsTitle")
+          }}</h-card-title>
           <h-card-content>
             <h-progress-bar
               v-if="translationStore.isFetchingLatestHistories"
@@ -191,7 +205,7 @@ onIonViewDidEnter(async () => {
               "
               class="text-secondary flex flex-row items-center justify-center p-3"
             >
-              {{ t("noTranslationHistory") }}
+              {{ t("messages.noTranslationHistory") }}
             </div>
 
             <div v-else class="flex flex-col gap-2">

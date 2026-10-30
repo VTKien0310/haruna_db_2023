@@ -26,7 +26,7 @@ export class UpdateWebpageBookmarkService {
       .eq("id", record.id);
 
     if (error) {
-      this.toastService.error(t("updateFailed", { id: record.id }));
+      this.toastService.error(t("messages.updateFailed", { id: record.id }));
       return false;
     }
 

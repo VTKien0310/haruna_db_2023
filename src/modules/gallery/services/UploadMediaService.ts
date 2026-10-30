@@ -35,7 +35,7 @@ export class UploadMediaService {
   uploadPendingNewMediaFiles(): void {
     this.modalService
       .confirm(
-        t("uploadConfirm", {
+        t("messages.uploadConfirm", {
           count: this.galleryUploadStore.pendingNewMediaFiles.length,
         }),
       )
@@ -82,7 +82,7 @@ export class UploadMediaService {
       .upload(fileStorageName, file, defaultStorageFileOptions);
 
     if (error || !data?.path) {
-      this.toastService.error(t("uploadFailed", { name: file.name }));
+      this.toastService.error(t("messages.uploadFailed", { name: file.name }));
 
       return false;
     }
@@ -190,7 +190,7 @@ export class UploadMediaService {
 
     if (error || !data) {
       this.toastService.error(
-        t("thumbnailSignedUrlFailed", {
+        t("messages.thumbnailSignedUrlFailed", {
           path: storageVideoFilePath,
         }),
       );
@@ -239,7 +239,7 @@ export class UploadMediaService {
 
       if (thumbnailUploadResult.error || !thumbnailUploadResult.data?.path) {
         this.toastService.error(
-          t("thumbnailUploadFailed", { name: thumbnailFileName }),
+          t("messages.thumbnailUploadFailed", { name: thumbnailFileName }),
         );
 
         return "";
@@ -250,7 +250,9 @@ export class UploadMediaService {
 
       return thumbnailUploadResult.data.path;
     } catch (e: unknown) {
-      this.toastService.error(t("thumbnailCreateFailed", { name: video.name }));
+      this.toastService.error(
+        t("messages.thumbnailCreateFailed", { name: video.name }),
+      );
 
       return "";
     }
@@ -281,7 +283,7 @@ export class UploadMediaService {
 
   private toastFailedToCreateMediaRecord(originalFile: File): boolean {
     this.toastService.error(
-      t("mediaRecordCreateFailed", { name: originalFile.name }),
+      t("messages.mediaRecordCreateFailed", { name: originalFile.name }),
     );
 
     return false;

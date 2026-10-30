@@ -34,7 +34,7 @@ export class ThemeService {
     try {
       this.storage().setItem(THEME_STORAGE_KEY, value);
     } catch {
-      this.notifySaveFailure(t("themeSaveFailed"));
+      this.notifySaveFailure(t("messages.themeSaveFailed"));
     }
   }
 

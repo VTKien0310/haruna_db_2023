@@ -28,11 +28,15 @@ export class DeleteWebpageBookmarkService {
       .eq("id", record.id);
 
     if (error) {
-      this.toastService.error(t("deleteRecordFailed", { id: record.id }));
+      this.toastService.error(
+        t("messages.deleteRecordFailed", { id: record.id }),
+      );
       return false;
     }
 
-    this.toastService.info(t("deletedSuccessfully", { name: record.name }));
+    this.toastService.info(
+      t("messages.deletedSuccessfully", { name: record.name }),
+    );
 
     return true;
   }
@@ -72,7 +76,7 @@ export class DeleteWebpageBookmarkService {
     }
 
     this.modalService
-      .confirm(t("deleteDirectoryConfirm"))
+      .confirm(t("messages.deleteDirectoryConfirm"))
       .then(async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;
@@ -81,7 +85,7 @@ export class DeleteWebpageBookmarkService {
         const canDeleteDirectory =
           await this.checkDirectoryDeletionCondition(record);
         if (!canDeleteDirectory) {
-          this.toastService.error(t("deleteDirectoryHasChildren"));
+          this.toastService.error(t("messages.deleteDirectoryHasChildren"));
           return;
         }
 
@@ -102,7 +106,7 @@ export class DeleteWebpageBookmarkService {
     }
 
     this.modalService
-      .confirm(t("deleteLinkConfirm"))
+      .confirm(t("messages.deleteLinkConfirm"))
       .then(async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;

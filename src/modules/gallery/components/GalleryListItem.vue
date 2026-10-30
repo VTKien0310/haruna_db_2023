@@ -41,7 +41,7 @@ onMounted(() => {
     <img
       v-if="mediaThumbnailSignedUrlCreated"
       :src="mediaThumbnailSignedUrl"
-      :alt="t('uploadedMediaAlt')"
+      :alt="t('elements.uploadedMediaAlt')"
       class="m-auto max-h-screen max-w-full"
     />
 
