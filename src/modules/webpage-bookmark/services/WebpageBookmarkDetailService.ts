@@ -10,6 +10,7 @@ import {
 import type { MasterNavigationService } from "@/modules/master/services/MasterNavigationService.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore.ts";
+import { webpageBookmarkMessage } from "@/modules/webpage-bookmark/locales";
 import type { ListWebpageBookmarkService } from "@/modules/webpage-bookmark/services/ListWebpageBookmarkService.ts";
 
 export class WebpageBookmarkDetailService {
@@ -33,13 +34,15 @@ export class WebpageBookmarkDetailService {
       .eq("id", id);
 
     if (error || !data) {
-      this.toastService.error(`Failed to fetch bookmark record with id ${id}`);
+      this.toastService.error(
+        webpageBookmarkMessage("fetchRecordFailed", { id }),
+      );
       this.masterNavigationService.navigateTo400();
       return null;
     }
 
     if (!data[0]) {
-      this.toastService.error(`Bookmark record with id ${id} not found`);
+      this.toastService.error(webpageBookmarkMessage("recordNotFound", { id }));
       this.masterNavigationService.navigateTo404();
       return null;
     }

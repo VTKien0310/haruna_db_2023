@@ -9,6 +9,7 @@ import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ModalService } from "@/modules/master/services/ModalService";
 import type { ToastService } from "@/modules/master/services/ToastService";
 import type { Router } from "vue-router";
+import { galleryMessage } from "@/modules/gallery/locales";
 import type { MasterNavigationService } from "@/modules/master/services/MasterNavigationService";
 
 type DisplayRatio = {
@@ -46,7 +47,9 @@ export class MediaDetailService {
       .download(media.storage_path);
 
     if (error || !data) {
-      this.toastService.error(`Failed to download media with id ${media.id}`);
+      this.toastService.error(
+        galleryMessage("downloadFailed", { id: media.id }),
+      );
       return;
     }
 
@@ -65,7 +68,7 @@ export class MediaDetailService {
 
     if (error || !data) {
       this.toastService.error(
-        `Failed to fetch uploader of media with id ${media.id}`,
+        galleryMessage("uploaderFetchFailed", { id: media.id }),
       );
       return null;
     }
@@ -99,7 +102,9 @@ export class MediaDetailService {
   }
 
   private toastFailedToGenerateSignedUrl(path: string | null): string {
-    this.toastService.error(`Failed to generate signed URL for ${path}`);
+    this.toastService.error(
+      galleryMessage("signedUrlFailed", { path: String(path) }),
+    );
 
     return "";
   }
@@ -119,7 +124,7 @@ export class MediaDetailService {
 
     if (error) {
       this.toastService.error(
-        `Failed to list resized images of media with id ${media.id}`,
+        galleryMessage("resizedListFailed", { id: media.id }),
       );
 
       return false;
@@ -250,13 +255,13 @@ export class MediaDetailService {
       .eq("id", id);
 
     if (error || !data) {
-      this.toastService.error(`Failed to fetch media with id ${id}`);
+      this.toastService.error(galleryMessage("mediaFetchFailed", { id }));
       this.masterNavigationService.navigateTo400();
       return null;
     }
 
     if (!data[0]) {
-      this.toastService.error(`Media with id ${id} not found`);
+      this.toastService.error(galleryMessage("mediaNotFound", { id }));
       this.masterNavigationService.navigateTo404();
       return null;
     }
@@ -292,7 +297,7 @@ export class MediaDetailService {
 
   async deleteMedia(media: Media): Promise<void> {
     this.modalService
-      .confirm(`Proceed to delete the file?`)
+      .confirm(galleryMessage("deleteConfirm"))
       .then(async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;
@@ -307,7 +312,9 @@ export class MediaDetailService {
           : false;
 
         if (!(deleteDbRecordSuccess && deleteFileInBucketSuccess)) {
-          this.toastService.error(`Failed to delete media with id ${media.id}`);
+          this.toastService.error(
+            galleryMessage("deleteFailed", { id: media.id }),
+          );
           return;
         }
 

@@ -7,6 +7,7 @@ import type {
   WebBookmarkHierarchicalData,
 } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
+import { webpageBookmarkMessage } from "@/modules/webpage-bookmark/locales";
 import type { ListWebpageBookmarkService } from "@/modules/webpage-bookmark/services/ListWebpageBookmarkService.ts";
 
 export class CreateWebpageBookmarkService {
@@ -34,7 +35,7 @@ export class CreateWebpageBookmarkService {
       .insert(directoryData);
 
     if (error) {
-      this.toastService.error("Failed to create directory");
+      this.toastService.error(webpageBookmarkMessage("createDirectoryFailed"));
       return false;
     }
 
@@ -57,7 +58,7 @@ export class CreateWebpageBookmarkService {
       .insert(linkData);
 
     if (error) {
-      this.toastService.error("Failed to create link");
+      this.toastService.error(webpageBookmarkMessage("createLinkFailed"));
       return false;
     }
 

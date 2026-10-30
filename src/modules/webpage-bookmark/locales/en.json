@@ -1,0 +1,17 @@
+{
+  "linkCopied": "Link copied to clipboard",
+  "createDirectoryFailed": "Failed to create directory",
+  "createLinkFailed": "Failed to create link",
+  "deleteRecordFailed": "Failed to delete bookmark record with id {id}",
+  "deletedSuccessfully": "Deleted {name} successfully",
+  "deleteDirectoryConfirm": "Are you sure you want to delete this directory?",
+  "deleteDirectoryHasChildren": "Cannot delete directory because it has children",
+  "deleteLinkConfirm": "Are you sure you want to delete this link?",
+  "fetchLevelOneFailed": "Failed to fetch level 1 records",
+  "fetchChildrenFailed": "Failed to fetch children records of {id}",
+  "countLinksFailed": "Failed to count webpage bookmark links",
+  "countDirectoriesFailed": "Failed to count webpage bookmark directories",
+  "updateFailed": "Failed to update record with id {id}",
+  "fetchRecordFailed": "Failed to fetch bookmark record with id {id}",
+  "recordNotFound": "Bookmark record with id {id} not found"
+}

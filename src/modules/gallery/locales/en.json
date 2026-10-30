@@ -1,0 +1,20 @@
+{
+  "uploadConfirm": "Proceed to upload {count} file(s)?",
+  "uploadFailed": "Failed to upload {name}",
+  "thumbnailSignedUrlFailed": "Failed to generate signed URL for {path} to create thumbnail",
+  "thumbnailUploadFailed": "Failed to upload thumbnail {name}",
+  "thumbnailCreateFailed": "Failed to create thumbnail for {name}",
+  "mediaRecordCreateFailed": "Failed to create record for {name}",
+  "downloadFailed": "Failed to download media with id {id}",
+  "uploaderFetchFailed": "Failed to fetch uploader of media with id {id}",
+  "signedUrlFailed": "Failed to generate signed URL for {path}",
+  "resizedListFailed": "Failed to list resized images of media with id {id}",
+  "mediaFetchFailed": "Failed to fetch media with id {id}",
+  "mediaNotFound": "Media with id {id} not found",
+  "deleteConfirm": "Proceed to delete the file?",
+  "deleteFailed": "Failed to delete media with id {id}",
+  "fetchMediasFailed": "Failed to fetch medias",
+  "countTotalFailed": "Failed to count total medias",
+  "countUserUploadsFailed": "Failed to count user's uploaded medias",
+  "countNewUploadsFailed": "Failed to count newly uploaded medias"
+}

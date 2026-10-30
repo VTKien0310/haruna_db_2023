@@ -8,6 +8,7 @@ import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ToastService } from "@/modules/master/services/ToastService";
 import type { ModalService } from "@/modules/master/services/ModalService";
+import { galleryMessage } from "@/modules/gallery/locales";
 import type { Router } from "vue-router";
 
 const uuid = (): string => crypto.randomUUID();
@@ -34,7 +35,9 @@ export class UploadMediaService {
   uploadPendingNewMediaFiles(): void {
     this.modalService
       .confirm(
-        `Proceed to upload ${this.galleryUploadStore.pendingNewMediaFiles.length} file(s)?`,
+        galleryMessage("uploadConfirm", {
+          count: this.galleryUploadStore.pendingNewMediaFiles.length,
+        }),
       )
       .then(async (confirmToProceed: boolean): Promise<void> => {
         if (!confirmToProceed) {
@@ -79,7 +82,9 @@ export class UploadMediaService {
       .upload(fileStorageName, file, defaultStorageFileOptions);
 
     if (error || !data?.path) {
-      this.toastService.error(`Failed to upload ${file.name}`);
+      this.toastService.error(
+        galleryMessage("uploadFailed", { name: file.name }),
+      );
 
       return false;
     }
@@ -187,7 +192,9 @@ export class UploadMediaService {
 
     if (error || !data) {
       this.toastService.error(
-        `Failed to generate signed URL for ${storageVideoFilePath} to create thumbnail`,
+        galleryMessage("thumbnailSignedUrlFailed", {
+          path: storageVideoFilePath,
+        }),
       );
 
       return "";
@@ -234,7 +241,7 @@ export class UploadMediaService {
 
       if (thumbnailUploadResult.error || !thumbnailUploadResult.data?.path) {
         this.toastService.error(
-          `Failed to upload thumbnail ${thumbnailFileName}`,
+          galleryMessage("thumbnailUploadFailed", { name: thumbnailFileName }),
         );
 
         return "";
@@ -245,7 +252,9 @@ export class UploadMediaService {
 
       return thumbnailUploadResult.data.path;
     } catch (e: unknown) {
-      this.toastService.error(`Failed to create thumbnail for ${video.name}`);
+      this.toastService.error(
+        galleryMessage("thumbnailCreateFailed", { name: video.name }),
+      );
 
       return "";
     }
@@ -275,7 +284,9 @@ export class UploadMediaService {
   }
 
   private toastFailedToCreateMediaRecord(originalFile: File): boolean {
-    this.toastService.error(`Failed to create record for ${originalFile.name}`);
+    this.toastService.error(
+      galleryMessage("mediaRecordCreateFailed", { name: originalFile.name }),
+    );
 
     return false;
   }

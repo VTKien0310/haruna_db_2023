@@ -6,6 +6,7 @@ import type {
 } from "@/modules/translation/TranslationTypes";
 import type { TranslationHistory } from "@/modules/translation/TranslationEntities";
 import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
+import { translationMessage } from "@/modules/translation/locales";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class TranslationService {
@@ -31,7 +32,7 @@ export class TranslationService {
     );
 
     if (languagesResult.isErr()) {
-      this.toastService.error("Failed to load supported languages");
+      this.toastService.error(translationMessage("loadLanguagesFailed"));
 
       this.translationStore.isLoadingLanguages = false;
 
@@ -57,7 +58,7 @@ export class TranslationService {
     );
 
     if (translationResult.isErr()) {
-      this.toastService.error("Failed to translate content");
+      this.toastService.error(translationMessage("translateFailed"));
 
       return "";
     }
@@ -192,7 +193,7 @@ export class TranslationService {
     );
 
     if (error || data === null || count === null) {
-      this.toastService.error("Failed to fetch translation histories");
+      this.toastService.error(translationMessage("fetchHistoriesFailed"));
 
       this.translationStore.isFetchingHistories = false;
 
@@ -238,7 +239,7 @@ export class TranslationService {
     const { data, error, count } = await this.queryTranslationHistories(1, 5);
 
     if (error || data === null || count === null) {
-      this.toastService.error("Failed to fetch translation histories");
+      this.toastService.error(translationMessage("fetchHistoriesFailed"));
 
       this.translationStore.isFetchingLatestHistories = false;
 

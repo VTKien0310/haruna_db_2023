@@ -1,0 +1,6 @@
+{
+  "loadLanguagesFailed": "Failed to load supported languages",
+  "translateFailed": "Failed to translate content",
+  "fetchHistoriesFailed": "Failed to fetch translation histories",
+  "copied": "Copied to clipboard"
+}
