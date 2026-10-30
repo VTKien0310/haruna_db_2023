@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { Doughnut } from "vue-chartjs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useThemeStore } from "../stores/ThemeStore";
+import { t } from "../locales";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -26,7 +27,7 @@ onMounted(refreshColors);
 watch(() => themeStore.themeId, refreshColors, { flush: "post" });
 
 const chartData = computed(() => ({
-  labels: ["Links", "Directories"],
+  labels: [t("chartLinksLabel"), t("chartDirectoriesLabel")],
   datasets: [
     {
       data: [props.linkCount, props.directoryCount],

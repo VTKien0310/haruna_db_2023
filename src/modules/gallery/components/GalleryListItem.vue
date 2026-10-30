@@ -6,6 +6,7 @@ import {
   useMediaDetailService,
 } from "@/modules/gallery/GalleryServiceContainer";
 import { HIcon } from "@/libs/ui";
+import { t } from "@/modules/gallery/locales";
 
 const props = defineProps<{
   media: Media;
@@ -40,7 +41,7 @@ onMounted(() => {
     <img
       v-if="mediaThumbnailSignedUrlCreated"
       :src="mediaThumbnailSignedUrl"
-      alt="Uploaded media"
+      :alt="t('uploadedMediaAlt')"
       class="m-auto max-h-screen max-w-full"
     />
 

@@ -4,6 +4,7 @@ import { computed, reactive, ref } from "vue";
 import type { PasswordResetRequest } from "@/modules/auth/AuthTypes";
 import { IonPage } from "@ionic/vue";
 import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
+import { t } from "@/modules/auth/locales";
 import logo from "@/assets/logo.svg";
 
 const forgotPasswordForm = ref<HFormHandle>();
@@ -53,11 +54,13 @@ function handleSendResetEmail() {
         @submit.prevent="handleSendResetEmail"
         class="bg-background-secondary border-background-border mt-8 flex w-full max-w-sm flex-col items-center justify-center rounded-(--h-panel-radius) border p-6"
       >
-        <h2 class="text-text-primary text-xl font-semibold">Forgot password</h2>
+        <h2 class="text-text-primary text-xl font-semibold">
+          {{ t("forgotPasswordTitle") }}
+        </h2>
 
         <h-input
           v-model="forgotPasswordFormContent.email"
-          label="Email"
+          :label="t('emailLabel')"
           name="email"
           class="mt-4 w-full"
         />
@@ -68,7 +71,7 @@ function handleSendResetEmail() {
           type="submit"
           class="mt-6 w-full"
         >
-          Send reset link
+          {{ t("sendResetLinkButton") }}
         </h-button>
       </h-form>
     </div>

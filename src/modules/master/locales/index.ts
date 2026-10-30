@@ -7,9 +7,6 @@ export const masterLocales = {
 export type MasterLocale = keyof typeof masterLocales;
 export type MasterMessageKey = keyof typeof en;
 
-export function masterMessage(
-  key: MasterMessageKey,
-  locale: MasterLocale = "en",
-): string {
+export function t(key: MasterMessageKey, locale: MasterLocale = "en"): string {
   return masterLocales[locale][key];
 }

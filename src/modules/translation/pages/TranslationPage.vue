@@ -6,7 +6,7 @@ import type { TranslationHistory } from "@/modules/translation/TranslationEntiti
 import type { TranslationDraft } from "@/modules/translation/TranslationTypes";
 import { useTranslationService } from "@/modules/translation/TranslationServiceContainer";
 import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
-import { translationMessage } from "@/modules/translation/locales";
+import { t } from "@/modules/translation/locales";
 import { useToastService } from "@/modules/master/MasterServiceContainer";
 import {
   HButton,
@@ -93,7 +93,7 @@ const copyTranslatedText = async (): Promise<void> => {
   }
 
   await navigator.clipboard.writeText(translatedText.value);
-  toastService.info(translationMessage("copied"));
+  toastService.info(t("copied"));
 };
 
 const clearSourceText = (): void => {
@@ -145,20 +145,20 @@ onIonViewDidEnter(async () => {
               :loading="isTranslating"
               @click="translate"
             >
-              Translate
+              {{ t("translateButton") }}
             </h-button>
             <h-button
               variant="outlined"
               :disabled="isTranslating"
               @click="swapLanguages"
             >
-              Swap
+              {{ t("swapButton") }}
             </h-button>
             <h-button variant="outlined" @click="clearSourceText">
-              Clear
+              {{ t("clearButton") }}
             </h-button>
             <h-button variant="outlined" @click="resetTranslation">
-              Reset
+              {{ t("resetButton") }}
             </h-button>
           </div>
         </div>
@@ -172,7 +172,7 @@ onIonViewDidEnter(async () => {
             :options="translationStore.supportedLanguages"
             value-by="code"
             text-by="name"
-            label="Source language"
+            :label="t('sourceLanguageLabel')"
             searchable
             :loading="translationStore.isLoadingLanguages"
             class="w-full"
@@ -182,7 +182,7 @@ onIonViewDidEnter(async () => {
             :options="translationStore.supportedLanguages"
             value-by="code"
             text-by="name"
-            label="Target language"
+            :label="t('targetLanguageLabel')"
             searchable
             :loading="translationStore.isLoadingLanguages"
             class="w-full"
@@ -196,12 +196,14 @@ onIonViewDidEnter(async () => {
             class="border-background-border bg-background-secondary flex flex-col rounded-(--h-panel-radius) border p-4"
           >
             <div class="mb-2 flex h-8 flex-row items-center justify-between">
-              <span class="text-text-primary font-bold">Source text</span>
+              <span class="text-text-primary font-bold">{{
+                t("sourceTextTitle")
+              }}</span>
             </div>
             <h-textarea
               v-model="sourceText"
               counter
-              placeholder="Enter text to translate..."
+              :placeholder="t('sourceTextPlaceholder')"
               class="translation-textarea w-full"
             />
           </div>
@@ -211,13 +213,15 @@ onIonViewDidEnter(async () => {
             class="border-background-border bg-background-secondary flex flex-col rounded-(--h-panel-radius) border p-4"
           >
             <div class="mb-2 flex h-8 flex-row items-center justify-between">
-              <span class="text-text-primary font-bold">Translation</span>
+              <span class="text-text-primary font-bold">{{
+                t("translationTitle")
+              }}</span>
               <h-button
                 v-if="translatedText"
                 variant="quiet"
                 size="small"
                 icon="content_copy"
-                aria-label="Copy translation"
+                :aria-label="t('copyTranslationLabel')"
                 @click="copyTranslatedText"
               />
             </div>
@@ -225,7 +229,7 @@ onIonViewDidEnter(async () => {
               v-model="translatedText"
               :loading="isTranslating"
               readonly
-              placeholder="Translation will appear here"
+              :placeholder="t('translationPlaceholder')"
               class="translation-textarea w-full"
             />
           </div>
@@ -234,7 +238,9 @@ onIonViewDidEnter(async () => {
         <!-- translation histories -->
         <div class="mt-3 flex flex-col">
           <div class="mb-2 flex h-8 flex-row items-center justify-between">
-            <span class="text-text-primary font-bold">History</span>
+            <span class="text-text-primary font-bold">{{
+              t("historyTitle")
+            }}</span>
           </div>
 
           <h-progress-bar v-if="isFetchingHistories" indeterminate />
@@ -245,7 +251,7 @@ onIonViewDidEnter(async () => {
             "
             class="text-secondary border-background-border bg-background-secondary flex flex-row items-center justify-center rounded-(--h-panel-radius) border p-6"
           >
-            No translation history yet
+            {{ t("noTranslationHistory") }}
           </div>
 
           <div class="flex flex-col gap-2">

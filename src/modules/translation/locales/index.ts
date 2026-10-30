@@ -7,7 +7,7 @@ export const translationLocales = {
 export type TranslationLocale = keyof typeof translationLocales;
 export type TranslationMessageKey = keyof typeof en;
 
-export function translationMessage(
+export function t(
   key: TranslationMessageKey,
   locale: TranslationLocale = "en",
 ): string {

@@ -1,7 +1,7 @@
 import type { BackendPort } from "@/ports/backend/BackendPort";
 import dayjs from "dayjs";
 import type { Media } from "@/modules/gallery/GalleryEntities";
-import { galleryMessage } from "@/modules/gallery/locales";
+import { t } from "@/modules/gallery/locales";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class GalleryStatisticService {
@@ -19,7 +19,7 @@ export class GalleryStatisticService {
       });
 
     if (error || count === null) {
-      this.toastService.error(galleryMessage("countTotalFailed"));
+      this.toastService.error(t("countTotalFailed"));
 
       return 0;
     }
@@ -37,7 +37,7 @@ export class GalleryStatisticService {
       .eq("uploader_id", userId);
 
     if (error || count === null) {
-      this.toastService.error(galleryMessage("countUserUploadsFailed"));
+      this.toastService.error(t("countUserUploadsFailed"));
 
       return 0;
     }
@@ -60,7 +60,7 @@ export class GalleryStatisticService {
       .filter("created_at", "gte", targetPointInTime);
 
     if (error || count === null) {
-      this.toastService.error(galleryMessage("countNewUploadsFailed"));
+      this.toastService.error(t("countNewUploadsFailed"));
 
       return 0;
     }

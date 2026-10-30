@@ -7,7 +7,7 @@ import {
 } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter.ts";
 import type { ModalService } from "@/modules/master/services/ModalService.ts";
-import { webpageBookmarkMessage } from "@/modules/webpage-bookmark/locales";
+import { t } from "@/modules/webpage-bookmark/locales";
 import type { WebpageBookmarkDetailService } from "@/modules/webpage-bookmark/services/WebpageBookmarkDetailService.ts";
 
 export class DeleteWebpageBookmarkService {
@@ -28,15 +28,11 @@ export class DeleteWebpageBookmarkService {
       .eq("id", record.id);
 
     if (error) {
-      this.toastService.error(
-        webpageBookmarkMessage("deleteRecordFailed", { id: record.id }),
-      );
+      this.toastService.error(t("deleteRecordFailed", { id: record.id }));
       return false;
     }
 
-    this.toastService.info(
-      webpageBookmarkMessage("deletedSuccessfully", { name: record.name }),
-    );
+    this.toastService.info(t("deletedSuccessfully", { name: record.name }));
 
     return true;
   }
@@ -76,7 +72,7 @@ export class DeleteWebpageBookmarkService {
     }
 
     this.modalService
-      .confirm(webpageBookmarkMessage("deleteDirectoryConfirm"))
+      .confirm(t("deleteDirectoryConfirm"))
       .then(async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;
@@ -85,9 +81,7 @@ export class DeleteWebpageBookmarkService {
         const canDeleteDirectory =
           await this.checkDirectoryDeletionCondition(record);
         if (!canDeleteDirectory) {
-          this.toastService.error(
-            webpageBookmarkMessage("deleteDirectoryHasChildren"),
-          );
+          this.toastService.error(t("deleteDirectoryHasChildren"));
           return;
         }
 
@@ -108,7 +102,7 @@ export class DeleteWebpageBookmarkService {
     }
 
     this.modalService
-      .confirm(webpageBookmarkMessage("deleteLinkConfirm"))
+      .confirm(t("deleteLinkConfirm"))
       .then(async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;

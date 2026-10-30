@@ -2,6 +2,7 @@
 import { useCreateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import WebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/WebpageBookmarkLinkForm.vue";
 import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import { t } from "@/modules/webpage-bookmark/locales";
 
 const initialCreateLinkFormData: WebBookmarkLinkFormData = {
   name: "",
@@ -19,12 +20,12 @@ const onSubmit = (formData: WebBookmarkLinkFormData): Promise<boolean> => {
 <template>
   <WebpageBookmarkLinkForm
     form-icon="add"
-    form-title="Create new link"
+    :form-title="t('createLinkTitle')"
     :form-style-is-primary="false"
     :initial-form-data="initialCreateLinkFormData"
     :on-submit="onSubmit"
     :reset-form-on-submit-success="true"
-    submit-btn-label="Create"
+    :submit-btn-label="t('createButton')"
   />
 </template>
 

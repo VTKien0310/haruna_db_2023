@@ -3,6 +3,7 @@ import { flushPromises, mount } from "@vue/test-utils";
 import App from "@/App.vue";
 import router from "@/router";
 import { appMountOptions, SlotStub } from "../../../support/mountApp";
+import { t } from "@/modules/master/locales";
 
 vi.mock("@/router", async () => {
   const { createMemoryHistory, createRouter } = await import("vue-router");
@@ -70,7 +71,9 @@ describe("App shell", () => {
   it("navigates home from the branding and safely handles repeated activation", async () => {
     const wrapper = await mountShell();
     try {
-      const branding = wrapper.get('button[aria-label="Go to home"]');
+      const branding = wrapper.get(
+        `button[aria-label="${t("goToHomeLabel")}"]`,
+      );
       expect(branding.attributes("type")).toBe("button");
       expect(branding.text()).toBe("Haruna");
       expect(branding.get("img").attributes("alt")).toBe("");
@@ -85,7 +88,7 @@ describe("App shell", () => {
       expect(router.currentRoute.value.name).toBe("master");
       expect(
         wrapper
-          .get('[aria-label="Open navigation"]')
+          .get(`[aria-label="${t("openNavigationLabel")}"]`)
           .attributes("aria-expanded"),
       ).toBe("false");
     } finally {
@@ -95,7 +98,7 @@ describe("App shell", () => {
 
   it("exposes menu state, active navigation and closes after a destination is selected", async () => {
     const wrapper = await mountShell();
-    const menu = wrapper.get('[aria-label="Open navigation"]');
+    const menu = wrapper.get(`[aria-label="${t("openNavigationLabel")}"]`);
     expect(menu.attributes("aria-expanded")).toBe("false");
     expect(menu.attributes("aria-controls")).toBe("app-navigation");
     await menu.trigger("click");
@@ -104,11 +107,11 @@ describe("App shell", () => {
     expect(wrapper.get("header").attributes()).toHaveProperty("inert");
     const nav = document.querySelector('nav[aria-label="Main navigation"]')!;
     expect(nav.querySelector('[aria-current="page"]')?.textContent).toContain(
-      "Gallery",
+      t("navGallery"),
     );
     const home = Array.from(
       nav.querySelectorAll<HTMLButtonElement>("button"),
-    ).find((button) => button.textContent?.includes("Home"))!;
+    ).find((button) => button.textContent?.includes(t("navHome")))!;
     home.click();
     await flushPromises();
     expect(router.currentRoute.value.name).toBe("master");
@@ -121,7 +124,9 @@ describe("App shell", () => {
     async (path) => {
       const wrapper = await mountShell();
       try {
-        await wrapper.get('[aria-label="Open navigation"]').trigger("click");
+        await wrapper
+          .get(`[aria-label="${t("openNavigationLabel")}"]`)
+          .trigger("click");
         await flushPromises();
         await router.push(path);
         await flushPromises();

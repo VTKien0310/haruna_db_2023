@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
+import { t } from "@/modules/webpage-bookmark/locales";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 </script>
@@ -11,7 +12,7 @@ const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
     <p class="overflow-hidden text-ellipsis whitespace-nowrap">
       {{
         webpageBookmarkDetailStore.isFetchingData
-          ? "Fetching data..."
+          ? t("fetchingData")
           : webpageBookmarkDetailStore.webpageBookmarkHeaderTitle
       }}
     </p>

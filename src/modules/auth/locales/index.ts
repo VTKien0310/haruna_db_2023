@@ -7,9 +7,6 @@ export const authLocales = {
 export type AuthLocale = keyof typeof authLocales;
 export type AuthMessageKey = keyof typeof en;
 
-export function authMessage(
-  key: AuthMessageKey,
-  locale: AuthLocale = "en",
-): string {
+export function t(key: AuthMessageKey, locale: AuthLocale = "en"): string {
   return authLocales[locale][key];
 }

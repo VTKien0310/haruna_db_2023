@@ -16,5 +16,13 @@
   "fetchMediasFailed": "Failed to fetch medias",
   "countTotalFailed": "Failed to count total medias",
   "countUserUploadsFailed": "Failed to count user's uploaded medias",
-  "countNewUploadsFailed": "Failed to count newly uploaded medias"
+  "countNewUploadsFailed": "Failed to count newly uploaded medias",
+  "galleryMediaRegionLabel": "Gallery media",
+  "uploadButton": "Upload",
+  "uploadAddButtonText": "Add",
+  "uploadDropZoneText": "Add files or drop them here",
+  "uploadedMediaAlt": "Uploaded media",
+  "mediaDetailBy": "By {name}",
+  "mediaDetailOn": "On {date}",
+  "mediaDetailSize": "Size {size}"
 }

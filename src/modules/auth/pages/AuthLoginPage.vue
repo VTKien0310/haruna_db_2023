@@ -4,6 +4,7 @@ import { computed, reactive, ref } from "vue";
 import type { AuthCredential } from "@/modules/auth/AuthTypes";
 import { IonPage } from "@ionic/vue";
 import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
+import { t } from "@/modules/auth/locales";
 import logo from "@/assets/logo.svg";
 
 const loginForm = ref<HFormHandle>();
@@ -53,14 +54,14 @@ function handleLogin() {
       >
         <h-input
           v-model="loginFormContent.email"
-          label="Email"
+          :label="t('emailLabel')"
           name="email"
           class="w-full"
         />
 
         <h-input
           v-model="loginFormContent.password"
-          label="Password"
+          :label="t('passwordLabel')"
           name="password"
           type="password"
           class="mt-4 w-full"
@@ -72,7 +73,7 @@ function handleLogin() {
           type="submit"
           class="mt-6 w-full"
         >
-          Login
+          {{ t("loginButton") }}
         </h-button>
 
         <h-button
@@ -81,7 +82,7 @@ function handleLogin() {
           class="mt-2 w-full"
           @click="authenticationService.openForgotPassword()"
         >
-          Forgot password?
+          {{ t("forgotPasswordLink") }}
         </h-button>
       </h-form>
     </div>

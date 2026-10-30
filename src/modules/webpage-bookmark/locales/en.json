@@ -13,5 +13,21 @@
   "countDirectoriesFailed": "Failed to count webpage bookmark directories",
   "updateFailed": "Failed to update record with id {id}",
   "fetchRecordFailed": "Failed to fetch bookmark record with id {id}",
-  "recordNotFound": "Bookmark record with id {id} not found"
+  "recordNotFound": "Bookmark record with id {id} not found",
+  "createLinkTitle": "Create new link",
+  "createDirectoryTitle": "Create new directory",
+  "updateLinkTitle": "Update link",
+  "updateDirectoryTitle": "Update directory",
+  "createButton": "Create",
+  "updateButton": "Update",
+  "cancelButton": "Cancel",
+  "nameLabel": "Name",
+  "urlLabel": "URL",
+  "descriptionLabel": "Description",
+  "linkNameRequired": "Link name is required",
+  "linkNameMaxLength": "Link name max length is 30",
+  "urlInvalid": "Must be a valid URL",
+  "directoryNameRequired": "Directory name is required",
+  "directoryNameMaxLength": "Directory name max length is 30",
+  "fetchingData": "Fetching data..."
 }

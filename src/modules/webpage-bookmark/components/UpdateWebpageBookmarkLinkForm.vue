@@ -2,6 +2,7 @@
 import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores/WebpageBookmarkDetailStore.ts";
 import WebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/WebpageBookmarkLinkForm.vue";
+import { t } from "@/modules/webpage-bookmark/locales";
 import { useUpdateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
@@ -27,12 +28,12 @@ const onSubmit = (formData: WebBookmarkLinkFormData): Promise<boolean> => {
 <template>
   <WebpageBookmarkLinkForm
     form-icon="edit"
-    form-title="Update link"
+    :form-title="t('updateLinkTitle')"
     :form-style-is-primary="true"
     :initial-form-data="initialUpdateLinkFormData"
     :on-submit="onSubmit"
     :reset-form-on-submit-success="false"
-    submit-btn-label="Update"
+    :submit-btn-label="t('updateButton')"
   />
 </template>
 

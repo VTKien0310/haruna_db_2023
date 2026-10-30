@@ -7,7 +7,7 @@ export const galleryLocales = {
 export type GalleryLocale = keyof typeof galleryLocales;
 export type GalleryMessageKey = keyof typeof en;
 
-export function galleryMessage(
+export function t(
   key: GalleryMessageKey,
   params: Record<string, string | number> = {},
   locale: GalleryLocale = "en",

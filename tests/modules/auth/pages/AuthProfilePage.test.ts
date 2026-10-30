@@ -9,6 +9,7 @@ import {
 import { useThemeStore } from "@/modules/master/stores/ThemeStore";
 import { useThemeService } from "@/modules/master/MasterServiceContainer";
 import { appMountOptions } from "../../../support/mountApp";
+import { t } from "@/modules/master/locales";
 
 const account = vi.hoisted(() => ({
   refresh: vi.fn(),
@@ -48,12 +49,12 @@ describe("AuthProfilePage appearance", () => {
       const wrapper = mount(AuthProfilePage, appMountOptions());
       await flushPromises();
       const control = wrapper.get('[role="combobox"]');
-      expect(control.attributes("aria-label")).toBe("Theme");
+      expect(control.attributes("aria-label")).toBe(t("themeLabel"));
       expect(control.attributes("aria-describedby")).toBe(
         "theme-device-description",
       );
       expect(control.element.closest("form")).toBeNull();
-      expect(wrapper.text()).toContain("Saved on this device.");
+      expect(wrapper.text()).toContain(t("themeDeviceDescription"));
       await control.trigger("keydown", { key: "Enter" });
       const options = document.querySelectorAll('[role="option"]');
       expect(options).toHaveLength(THEME_OPTIONS.length);

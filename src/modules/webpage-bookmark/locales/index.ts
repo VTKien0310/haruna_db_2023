@@ -7,7 +7,7 @@ export const webpageBookmarkLocales = {
 export type WebpageBookmarkLocale = keyof typeof webpageBookmarkLocales;
 export type WebpageBookmarkMessageKey = keyof typeof en;
 
-export function webpageBookmarkMessage(
+export function t(
   key: WebpageBookmarkMessageKey,
   params: Record<string, string | number> = {},
   locale: WebpageBookmarkLocale = "en",

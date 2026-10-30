@@ -7,7 +7,7 @@ import type {
 import { MasterRouteName } from "@/modules/master/MasterRouter";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
 import { AuthRouteName } from "@/modules/auth/AuthRouter";
-import { authMessage } from "@/modules/auth/locales";
+import { t } from "@/modules/auth/locales";
 import type { ProfileService } from "@/modules/auth/services/ProfileService";
 import type { ToastService } from "@/modules/master/services/ToastService";
 import type { Router } from "vue-router";
@@ -37,7 +37,7 @@ export class AuthenticationService {
       await this.backendPort.spbClient.auth.signInWithPassword(credential);
 
     if (error) {
-      this.toastService.error(authMessage("loginFailed"));
+      this.toastService.error(t("loginFailed"));
       return false;
     }
 
@@ -52,7 +52,7 @@ export class AuthenticationService {
     const { error } = await this.backendPort.spbClient.auth.signOut();
 
     if (error) {
-      this.toastService.error(authMessage("logoutFailed"));
+      this.toastService.error(t("logoutFailed"));
       return false;
     }
 
@@ -76,11 +76,11 @@ export class AuthenticationService {
       });
 
     if (error && error.code !== "user_not_found") {
-      this.toastService.error(authMessage("resetEmailFailed"));
+      this.toastService.error(t("resetEmailFailed"));
       return false;
     }
 
-    this.toastService.info(authMessage("resetEmailSent"));
+    this.toastService.info(t("resetEmailSent"));
     this.router.push({
       name: AuthRouteName.LOGIN,
     });
@@ -137,12 +137,12 @@ export class AuthenticationService {
     });
 
     if (error) {
-      this.toastService.error(authMessage("passwordUpdateFailed"));
+      this.toastService.error(t("passwordUpdateFailed"));
       return false;
     }
 
     authStore.passwordRecoveryRequired = false;
-    this.toastService.info(authMessage("passwordUpdated"));
+    this.toastService.info(t("passwordUpdated"));
     this.router.push({
       name: MasterRouteName.MASTER,
     });

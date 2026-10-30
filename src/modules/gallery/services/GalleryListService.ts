@@ -1,7 +1,7 @@
 import { useGalleryListStore } from "@/modules/gallery/stores/GalleryListStore";
 import type { Media } from "@/modules/gallery/GalleryEntities";
 import type { BackendPort } from "@/ports/backend/BackendPort";
-import { galleryMessage } from "@/modules/gallery/locales";
+import { t } from "@/modules/gallery/locales";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class GalleryListService {
@@ -39,7 +39,7 @@ export class GalleryListService {
       .order("created_at", { ascending: false });
 
     if (error || data === null) {
-      this.toastService.error(galleryMessage("fetchMediasFailed"));
+      this.toastService.error(t("fetchMediasFailed"));
       this.turnOffIsFetchingMediaState();
       return;
     }

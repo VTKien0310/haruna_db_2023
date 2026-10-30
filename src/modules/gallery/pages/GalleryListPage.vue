@@ -7,6 +7,7 @@ import { useGalleryListService } from "@/modules/gallery/GalleryServiceContainer
 import GalleryGridItem from "@/modules/gallery/components/GalleryGridItem.vue";
 import GalleryListItem from "@/modules/gallery/components/GalleryListItem.vue";
 import { type HButtonOption, HButtonToggle, HProgressCircle } from "@/libs/ui";
+import { t } from "@/modules/gallery/locales";
 
 const viewModeOptions: HButtonOption[] = [
   { value: "grid", icon: "grid_view" },
@@ -53,7 +54,7 @@ onMounted(() => {
       @scroll="loadMoreMedias"
       ref="galleryListPageContent"
       role="region"
-      aria-label="Gallery media"
+      :aria-label="t('galleryMediaRegionLabel')"
       class="invisible-scroll-bar min-h-0 flex-1 overflow-y-auto"
     >
       <!-- grid view -->

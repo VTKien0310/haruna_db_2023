@@ -20,6 +20,7 @@ import { WEB_BOOKMARK_ROOT_DIR_ID } from "@/modules/webpage-bookmark/WebpageBook
 import AppTopBar from "@/modules/master/components/AppTopBar.vue";
 import PwaUpdateNotification from "@/modules/master/components/PwaUpdateNotification.vue";
 import { usePwaUpdateService } from "@/modules/master/MasterServiceContainer";
+import { t } from "@/modules/master/locales";
 
 const authenticationService = useAuthenticationService();
 authenticationService.registerOnAuthStateChange();
@@ -63,22 +64,22 @@ interface NavItem {
   routeParams?: Record<string, string>;
 }
 
-const navItems: NavItem[] = [
-  { label: "Home", icon: "home", routeName: MasterRouteName.MASTER },
-  { label: "Gallery", icon: "image", routeName: GalleryRouteName.LIST },
+const navItems = computed<NavItem[]>(() => [
+  { label: t("navHome"), icon: "home", routeName: MasterRouteName.MASTER },
+  { label: t("navGallery"), icon: "image", routeName: GalleryRouteName.LIST },
   {
-    label: "Translation",
+    label: t("navTranslation"),
     icon: "translate",
     routeName: TranslationRouteName.TRANSLATION,
   },
   {
-    label: "Bookmarks",
+    label: t("navBookmarks"),
     icon: "topic",
     routeName: WebpageBookmarkRouteName.ROOT,
     routeParams: { id: WEB_BOOKMARK_ROOT_DIR_ID },
   },
-  { label: "Profile", icon: "person", routeName: AuthRouteName.PROFILE },
-];
+  { label: t("navProfile"), icon: "person", routeName: AuthRouteName.PROFILE },
+]);
 
 onUnmounted((): void => {
   pwaUpdateService.stopWatching();

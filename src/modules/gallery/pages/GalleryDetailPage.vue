@@ -17,6 +17,7 @@ import {
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
 import { createAnimation, type Animation } from "@ionic/vue";
 import { HButton, HProgressBar } from "@/libs/ui";
+import { t } from "@/modules/gallery/locales";
 
 const media = ref<Media | null>(null);
 const mediaSignedUrl = ref<string>("");
@@ -209,23 +210,25 @@ watch(
           class="mb-3 flex h-full w-full flex-col content-start items-start justify-start p-3"
         >
           <div v-show="showMediaDetail">
-            <p>By {{ mediaUploader?.name ?? "" }}</p>
+            <p>{{ t("mediaDetailBy", { name: mediaUploader?.name ?? "" }) }}</p>
             <p>
-              On
               {{
-                media
-                  ? mediaDetailService.transformMediaCreatedAtToHumanReadableFormat(
-                      media,
-                    )
-                  : ""
+                t("mediaDetailOn", {
+                  date: media
+                    ? mediaDetailService.transformMediaCreatedAtToHumanReadableFormat(
+                        media,
+                      )
+                    : "",
+                })
               }}
             </p>
             <p>
-              Size
               {{
-                mediaDetailService.transformMediaSizeToHumanReadableFormat(
-                  media?.size ?? 0,
-                )
+                t("mediaDetailSize", {
+                  size: mediaDetailService.transformMediaSizeToHumanReadableFormat(
+                    media?.size ?? 0,
+                  ),
+                })
               }}
             </p>
           </div>

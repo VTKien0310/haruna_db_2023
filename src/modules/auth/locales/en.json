@@ -6,5 +6,20 @@
   "loginFailed": "Login failed",
   "logoutFailed": "Logout failed",
   "fetchProfileFailed": "Failed to fetch current user profile",
-  "updateUsernameFailed": "Failed to update username"
+  "updateUsernameFailed": "Failed to update username",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "loginButton": "Login",
+  "forgotPasswordLink": "Forgot password?",
+  "forgotPasswordTitle": "Forgot password",
+  "sendResetLinkButton": "Send reset link",
+  "resetPasswordTitle": "Reset password",
+  "newPasswordLabel": "New password",
+  "newPasswordPlaceholder": "At least 8 characters with upper and lower case, a number, and a special character",
+  "confirmPasswordLabel": "Confirm password",
+  "updatePasswordButton": "Update password",
+  "resetLinkInvalid": "This reset link is invalid or has expired.",
+  "requestNewLinkButton": "Request a new link",
+  "nameLabel": "Name",
+  "profilePasswordPlaceholder": "Minimum length of 8 characters"
 }

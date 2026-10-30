@@ -5,7 +5,7 @@ import {
   type WebpageBookmark,
   WebpageBookmarkType,
 } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
-import { webpageBookmarkMessage } from "@/modules/webpage-bookmark/locales";
+import { t } from "@/modules/webpage-bookmark/locales";
 
 export class ListWebpageBookmarkService {
   private readonly webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
@@ -42,7 +42,7 @@ export class ListWebpageBookmarkService {
       .order("created_at", { ascending: true });
 
     if (error || !data) {
-      this.toastService.error(webpageBookmarkMessage("fetchLevelOneFailed"));
+      this.toastService.error(t("fetchLevelOneFailed"));
       return [];
     }
 
@@ -64,7 +64,7 @@ export class ListWebpageBookmarkService {
 
     if (error || !data) {
       this.toastService.error(
-        webpageBookmarkMessage("fetchChildrenFailed", { id: currentRecord.id }),
+        t("fetchChildrenFailed", { id: currentRecord.id }),
       );
       return [];
     }
@@ -82,7 +82,7 @@ export class ListWebpageBookmarkService {
       .eq("type", WebpageBookmarkType.LINK);
 
     if (error || count === null) {
-      this.toastService.error(webpageBookmarkMessage("countLinksFailed"));
+      this.toastService.error(t("countLinksFailed"));
       return 0;
     }
 
@@ -99,7 +99,7 @@ export class ListWebpageBookmarkService {
       .eq("type", WebpageBookmarkType.DIRECTORY);
 
     if (error || count === null) {
-      this.toastService.error(webpageBookmarkMessage("countDirectoriesFailed"));
+      this.toastService.error(t("countDirectoriesFailed"));
       return 0;
     }
 
