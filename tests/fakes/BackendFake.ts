@@ -62,6 +62,9 @@ export function makeBackendFake() {
     signInWithPassword: strictMock<Promise<{ error: unknown }>>(
       "auth.signInWithPassword",
     ),
+    resetPasswordForEmail: strictMock<Promise<{ error: unknown }>>(
+      "auth.resetPasswordForEmail",
+    ),
     signOut: strictMock<Promise<{ error: unknown }>>("auth.signOut"),
     updateUser: strictMock<Promise<{ error: unknown }>>("auth.updateUser"),
     onAuthStateChange: strictMock<unknown>("auth.onAuthStateChange"),

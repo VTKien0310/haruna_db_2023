@@ -28,7 +28,12 @@ const pwaUpdateService = usePwaUpdateService();
 pwaUpdateService.startWatching();
 
 const hideNavBar = computed((): boolean => {
-  return router.currentRoute.value.name === AuthRouteName.LOGIN;
+  const routeName = router.currentRoute.value.name;
+  return (
+    routeName === AuthRouteName.LOGIN ||
+    routeName === AuthRouteName.FORGOT_PASSWORD ||
+    routeName === AuthRouteName.RESET_PASSWORD
+  );
 });
 
 const isSidebarOpen = ref(false);

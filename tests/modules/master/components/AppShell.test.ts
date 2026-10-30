@@ -22,6 +22,16 @@ vi.mock("@/router", async () => {
         },
         { path: "/auth", name: "auth.profile", component },
         { path: "/auth/login", name: "auth.login", component },
+        {
+          path: "/auth/forgot-password",
+          name: "auth.forgot-password",
+          component,
+        },
+        {
+          path: "/auth/reset-password",
+          name: "auth.reset-password",
+          component,
+        },
       ],
     }),
   };
@@ -106,14 +116,21 @@ describe("App shell", () => {
     expect(menu.attributes("aria-expanded")).toBe("false");
     expect(wrapper.get("header").attributes()).not.toHaveProperty("inert");
   });
-  it("closes on external navigation and hides the header on login", async () => {
-    const wrapper = await mountShell();
-    await wrapper.get('[aria-label="Open navigation"]').trigger("click");
-    await flushPromises();
-    await router.push("/auth/login");
-    await flushPromises();
-    expect(wrapper.find("header").exists()).toBe(false);
-    expect(document.querySelector('[role="dialog"]')).toBeNull();
-    expect(document.body.style.overflow).not.toBe("hidden");
-  });
+  it.each(["/auth/login", "/auth/forgot-password", "/auth/reset-password"])(
+    "closes on external navigation and hides the header on %s",
+    async (path) => {
+      const wrapper = await mountShell();
+      try {
+        await wrapper.get('[aria-label="Open navigation"]').trigger("click");
+        await flushPromises();
+        await router.push(path);
+        await flushPromises();
+        expect(wrapper.find("header").exists()).toBe(false);
+        expect(document.querySelector('[role="dialog"]')).toBeNull();
+        expect(document.body.style.overflow).not.toBe("hidden");
+      } finally {
+        wrapper.unmount();
+      }
+    },
+  );
 });

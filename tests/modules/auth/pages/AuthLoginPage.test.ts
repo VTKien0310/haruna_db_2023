@@ -35,11 +35,17 @@ describe("AuthLoginPage workflow", () => {
   });
   it("disables login until both fields are entered", async () => {
     const wrapper = mount(AuthLoginPage, appMountOptions());
-    expect(wrapper.get("button").attributes("disabled")).toBeDefined();
+    expect(
+      wrapper.get('button[type="submit"]').attributes("disabled"),
+    ).toBeDefined();
     await wrapper.get('input[name="email"]').setValue("person@example.test");
-    expect(wrapper.get("button").attributes("disabled")).toBeDefined();
+    expect(
+      wrapper.get('button[type="submit"]').attributes("disabled"),
+    ).toBeDefined();
     await wrapper.get('input[name="password"]').setValue("dummy-password");
-    expect(wrapper.get("button").attributes("disabled")).toBeUndefined();
+    expect(
+      wrapper.get('button[type="submit"]').attributes("disabled"),
+    ).toBeUndefined();
   });
   it.each([true, false])(
     "submits through the real service with success=%s",
@@ -60,4 +66,11 @@ describe("AuthLoginPage workflow", () => {
       else expect(toast.error).toHaveBeenCalledWith("Login failed");
     },
   );
+  it("opens the forgot-password page", async () => {
+    const wrapper = mount(AuthLoginPage, appMountOptions());
+    await wrapper.get("button[type='button']").trigger("click");
+    expect(router.push).toHaveBeenCalledWith({
+      name: "auth.forgot-password",
+    });
+  });
 });

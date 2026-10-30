@@ -74,6 +74,15 @@ function handleLogin() {
         >
           Login
         </h-button>
+
+        <h-button
+          type="button"
+          variant="quiet"
+          class="mt-2 w-full"
+          @click="authenticationService.openForgotPassword()"
+        >
+          Forgot password?
+        </h-button>
       </h-form>
     </div>
   </ion-page>
