@@ -2,6 +2,7 @@ import { useAuthStore } from "@/modules/auth/stores/AuthStore";
 import type { User } from "@supabase/supabase-js";
 import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ProfileDetail } from "@/modules/auth/AuthTypes";
+import { authMessage } from "@/modules/auth/locales";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class ProfileService {
@@ -33,7 +34,7 @@ export class ProfileService {
       .eq("user_id", currentUser.id);
 
     if (error || !data) {
-      this.toastService.error(`Failed to fetch current user profile`);
+      this.toastService.error(authMessage("fetchProfileFailed"));
 
       this.authStore.profile = null;
 
@@ -64,7 +65,7 @@ export class ProfileService {
         .eq("user_id", currentUser.id);
 
       if (error) {
-        this.toastService.error(`Failed to update username`);
+        this.toastService.error(authMessage("updateUsernameFailed"));
       }
     }
 

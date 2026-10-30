@@ -7,6 +7,7 @@ import {
 } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
 import { WebpageBookmarkRouteName } from "@/modules/webpage-bookmark/WebpageBookmarkRouter.ts";
 import type { ModalService } from "@/modules/master/services/ModalService.ts";
+import { webpageBookmarkMessage } from "@/modules/webpage-bookmark/locales";
 import type { WebpageBookmarkDetailService } from "@/modules/webpage-bookmark/services/WebpageBookmarkDetailService.ts";
 
 export class DeleteWebpageBookmarkService {
@@ -28,12 +29,14 @@ export class DeleteWebpageBookmarkService {
 
     if (error) {
       this.toastService.error(
-        `Failed to delete bookmark record with id ${record.id}`,
+        webpageBookmarkMessage("deleteRecordFailed", { id: record.id }),
       );
       return false;
     }
 
-    this.toastService.info(`Deleted ${record.name} successfully`);
+    this.toastService.info(
+      webpageBookmarkMessage("deletedSuccessfully", { name: record.name }),
+    );
 
     return true;
   }
@@ -73,7 +76,7 @@ export class DeleteWebpageBookmarkService {
     }
 
     this.modalService
-      .confirm("Are you sure you want to delete this directory?")
+      .confirm(webpageBookmarkMessage("deleteDirectoryConfirm"))
       .then(async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;
@@ -83,7 +86,7 @@ export class DeleteWebpageBookmarkService {
           await this.checkDirectoryDeletionCondition(record);
         if (!canDeleteDirectory) {
           this.toastService.error(
-            "Cannot delete directory because it has children",
+            webpageBookmarkMessage("deleteDirectoryHasChildren"),
           );
           return;
         }
@@ -105,7 +108,7 @@ export class DeleteWebpageBookmarkService {
     }
 
     this.modalService
-      .confirm("Are you sure you want to delete this link?")
+      .confirm(webpageBookmarkMessage("deleteLinkConfirm"))
       .then(async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;

@@ -6,6 +6,7 @@ import type { TranslationHistory } from "@/modules/translation/TranslationEntiti
 import type { TranslationDraft } from "@/modules/translation/TranslationTypes";
 import { useTranslationService } from "@/modules/translation/TranslationServiceContainer";
 import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
+import { translationMessage } from "@/modules/translation/locales";
 import { useToastService } from "@/modules/master/MasterServiceContainer";
 import {
   HButton,
@@ -92,7 +93,7 @@ const copyTranslatedText = async (): Promise<void> => {
   }
 
   await navigator.clipboard.writeText(translatedText.value);
-  toastService.info("Copied to clipboard");
+  toastService.info(translationMessage("copied"));
 };
 
 const clearSourceText = (): void => {

@@ -5,6 +5,7 @@ import {
   type WebpageBookmark,
   WebpageBookmarkType,
 } from "@/modules/webpage-bookmark/WebpageBookmarkEntities.ts";
+import { webpageBookmarkMessage } from "@/modules/webpage-bookmark/locales";
 
 export class ListWebpageBookmarkService {
   private readonly webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
@@ -41,7 +42,7 @@ export class ListWebpageBookmarkService {
       .order("created_at", { ascending: true });
 
     if (error || !data) {
-      this.toastService.error(`Failed to fetch level 1 records`);
+      this.toastService.error(webpageBookmarkMessage("fetchLevelOneFailed"));
       return [];
     }
 
@@ -63,7 +64,7 @@ export class ListWebpageBookmarkService {
 
     if (error || !data) {
       this.toastService.error(
-        `Failed to fetch children records of ${currentRecord.id}`,
+        webpageBookmarkMessage("fetchChildrenFailed", { id: currentRecord.id }),
       );
       return [];
     }
@@ -81,7 +82,7 @@ export class ListWebpageBookmarkService {
       .eq("type", WebpageBookmarkType.LINK);
 
     if (error || count === null) {
-      this.toastService.error(`Failed to count webpage bookmark links`);
+      this.toastService.error(webpageBookmarkMessage("countLinksFailed"));
       return 0;
     }
 
@@ -98,7 +99,7 @@ export class ListWebpageBookmarkService {
       .eq("type", WebpageBookmarkType.DIRECTORY);
 
     if (error || count === null) {
-      this.toastService.error(`Failed to count webpage bookmark directories`);
+      this.toastService.error(webpageBookmarkMessage("countDirectoriesFailed"));
       return 0;
     }
 

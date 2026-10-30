@@ -4,5 +4,7 @@
   "passwordUpdated": "Password updated",
   "passwordUpdateFailed": "Could not update password",
   "loginFailed": "Login failed",
-  "logoutFailed": "Logout failed"
+  "logoutFailed": "Logout failed",
+  "fetchProfileFailed": "Failed to fetch current user profile",
+  "updateUsernameFailed": "Failed to update username"
 }
