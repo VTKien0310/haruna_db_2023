@@ -1,19 +1,18 @@
 import en from "./en.json";
+import {
+  createLocaleResolver,
+  type LocaleKeyOf,
+  type SameLocaleShape,
+} from "@/libs/locales/LocaleResolver";
 
 export const webpageBookmarkLocales = {
   en,
-} as const satisfies Record<string, { [K in keyof typeof en]: string }>;
+} as const satisfies Record<string, SameLocaleShape<typeof en>>;
 
 export type WebpageBookmarkLocale = keyof typeof webpageBookmarkLocales;
-export type WebpageBookmarkMessageKey = keyof typeof en;
+export type WebpageBookmarkMessageKey = LocaleKeyOf<typeof en>;
 
-export function webpageBookmarkMessage(
-  key: WebpageBookmarkMessageKey,
-  params: Record<string, string | number> = {},
-  locale: WebpageBookmarkLocale = "en",
-): string {
-  return Object.entries(params).reduce<string>(
-    (message, [name, value]) => message.replaceAll(`{${name}}`, String(value)),
-    webpageBookmarkLocales[locale][key],
-  );
-}
+export const t = createLocaleResolver<
+  WebpageBookmarkMessageKey,
+  WebpageBookmarkLocale
+>(webpageBookmarkLocales, "en");

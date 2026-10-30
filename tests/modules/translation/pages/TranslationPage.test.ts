@@ -10,6 +10,7 @@ import { makeBackendFake, queryResult } from "../../../fakes/BackendFake";
 import { makeToast } from "../../../fakes/Collaborators";
 import { makeHistory } from "../../../factories/Records";
 import { appMountOptions } from "../../../support/mountApp";
+import { t } from "@/modules/translation/locales";
 
 vi.mock("@/modules/translation/TranslationServiceContainer", () => ({
   useTranslationService: vi.fn(),
@@ -53,11 +54,11 @@ describe("TranslationPage workflow", () => {
   it("renders empty history and disables blank translations", async () => {
     const wrapper = mount(TranslationPage, appMountOptions());
     await flushPromises();
-    expect(wrapper.text()).toContain("No translation history yet");
+    expect(wrapper.text()).toContain(t("messages.noTranslationHistory"));
     expect(
       wrapper
         .findAll("button")
-        .find((button) => button.text() === "Translate")
+        .find((button) => button.text() === t("elements.translateButton"))
         ?.attributes("disabled"),
     ).toBeDefined();
   });
@@ -71,29 +72,33 @@ describe("TranslationPage workflow", () => {
     await wrapper.findAll("textarea")[0].setValue("こんにちは");
     const button = (text: string) =>
       wrapper.findAll("button").find((item) => item.text() === text)!;
-    await button("Translate").trigger("click");
+    await button(t("elements.translateButton")).trigger("click");
     await flushPromises();
     expect(
       (wrapper.findAll("textarea")[1].element as HTMLTextAreaElement).value,
     ).toBe("Hello");
     expect(wrapper.text()).toContain("Japanese → English");
     expect(
-      wrapper.get('button[aria-label="Copy translation"]').classes(),
+      wrapper
+        .get(`button[aria-label="${t("elements.copyTranslationLabel")}"]`)
+        .classes(),
     ).toContain("h-button-icon-only");
-    await button("Swap").trigger("click");
+    await button(t("elements.swapButton")).trigger("click");
     expect(
       (wrapper.findAll("textarea")[0].element as HTMLTextAreaElement).value,
     ).toBe("Hello");
-    await button("Reset").trigger("click");
+    await button(t("elements.resetButton")).trigger("click");
     expect(
       (wrapper.findAll("textarea")[0].element as HTMLTextAreaElement).value,
     ).toBe("");
     expect(
       (wrapper.findAll("textarea")[1].element as HTMLTextAreaElement).value,
     ).toBe("");
-    expect(wrapper.find('button[aria-label="Copy translation"]').exists()).toBe(
-      false,
-    );
+    expect(
+      wrapper
+        .find(`button[aria-label="${t("elements.copyTranslationLabel")}"]`)
+        .exists(),
+    ).toBe(false);
   });
   it("selects a history record and shows loading/pagination", async () => {
     const wrapper = mount(TranslationPage, appMountOptions());

@@ -9,6 +9,7 @@ import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
 import { makeBackendFake } from "../../../fakes/BackendFake";
 import { makeRouter, makeToast } from "../../../fakes/Collaborators";
 import { appMountOptions } from "../../../support/mountApp";
+import { t } from "@/modules/auth/locales";
 
 vi.mock("@/modules/auth/AuthServiceContainer", () => ({
   useAuthenticationService: vi.fn(),
@@ -63,7 +64,9 @@ describe("AuthForgotPasswordPage workflow", () => {
         );
         expect(router.push).toHaveBeenCalledWith({ name: "auth.login" });
       } else {
-        expect(toast.error).toHaveBeenCalledWith("Could not send reset email");
+        expect(toast.error).toHaveBeenCalledWith(
+          t("messages.resetEmailFailed"),
+        );
         expect(router.push).not.toHaveBeenCalled();
       }
     },

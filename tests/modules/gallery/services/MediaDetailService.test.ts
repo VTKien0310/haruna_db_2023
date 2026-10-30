@@ -128,7 +128,7 @@ describe("MediaDetailService", () => {
     modal.confirm.mockResolvedValue(true);
     const query = backend.query(queryResult());
     backend.storage.remove.mockResolvedValue(queryResult());
-    const refresh = vi.spyOn(list, "refreshMedias").mockResolvedValue();
+    const refresh = vi.spyOn(list, "refreshMedia").mockResolvedValue();
     await service.deleteMedia(makeMedia());
     await flushPromises();
     expect(query.eq).toHaveBeenCalledWith("id", "media-1");

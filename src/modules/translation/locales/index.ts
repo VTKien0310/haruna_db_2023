@@ -1,15 +1,18 @@
 import en from "./en.json";
+import {
+  createLocaleResolver,
+  type LocaleKeyOf,
+  type SameLocaleShape,
+} from "@/libs/locales/LocaleResolver";
 
 export const translationLocales = {
   en,
-} as const satisfies Record<string, { [K in keyof typeof en]: string }>;
+} as const satisfies Record<string, SameLocaleShape<typeof en>>;
 
 export type TranslationLocale = keyof typeof translationLocales;
-export type TranslationMessageKey = keyof typeof en;
+export type TranslationMessageKey = LocaleKeyOf<typeof en>;
 
-export function translationMessage(
-  key: TranslationMessageKey,
-  locale: TranslationLocale = "en",
-): string {
-  return translationLocales[locale][key];
-}
+export const t = createLocaleResolver<TranslationMessageKey, TranslationLocale>(
+  translationLocales,
+  "en",
+);

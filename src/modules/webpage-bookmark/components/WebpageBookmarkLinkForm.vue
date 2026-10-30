@@ -9,6 +9,7 @@ import {
 } from "@/libs/ui";
 import { computed, reactive, ref } from "vue";
 import type { WebBookmarkLinkFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import { t } from "@/modules/webpage-bookmark/locales";
 
 interface Props {
   formIcon?: string;
@@ -100,23 +101,24 @@ const submitForm = async (): Promise<void> => {
       <h-input
         v-model="formData.name"
         :rules="[
-          (value) => (value && value.length > 0) || 'Link name is required',
           (value) =>
-            (value && value.length <= 30) || 'Link name max length is 30',
+            (value && value.length > 0) || t('messages.linkNameRequired'),
+          (value) =>
+            (value && value.length <= 30) || t('messages.linkNameMaxLength'),
         ]"
-        label="Name"
+        :label="t('elements.nameLabel')"
         class="mb-2 w-full"
       />
       <h-input
         v-model="formData.url"
         type="url"
-        :rules="[(value) => isValidUrl(value) || 'Must be a valid URL']"
-        label="URL"
+        :rules="[(value) => isValidUrl(value) || t('messages.urlInvalid')]"
+        :label="t('elements.urlLabel')"
         class="mb-2 w-full"
       />
       <h-textarea
         v-model="formData.description"
-        label="Description"
+        :label="t('elements.descriptionLabel')"
         :rows="5"
         class="mb-2 w-full"
       />
@@ -129,7 +131,7 @@ const submitForm = async (): Promise<void> => {
           color="secondary"
           class="mr-2"
         >
-          Cancel
+          {{ t("elements.cancelButton") }}
         </h-button>
         <h-button
           @click="validate() && submitForm()"

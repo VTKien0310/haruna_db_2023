@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { IonPage } from "@ionic/vue";
+import { t } from "@/modules/master/locales";
 </script>
 
 <template>
@@ -7,7 +8,7 @@ import { IonPage } from "@ionic/vue";
     <img
       src="https://http.cat/images/404.jpg"
       class="m-auto max-h-screen max-w-full"
-      alt="404 image from HTTP Cat"
+      :alt="t('elements.notFoundImageAlt')"
     />
   </ion-page>
 </template>

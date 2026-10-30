@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { HButton } from "@/libs/ui";
+import { t } from "@/modules/master/locales";
 import logo from "@/assets/logo.svg";
 
 withDefaults(
@@ -25,7 +26,7 @@ const emit = defineEmits<{
     <h-button
       variant="quiet"
       class="p-0"
-      aria-label="Go to home"
+      :aria-label="t('elements.goToHomeLabel')"
       @click="emit('navigate-home')"
     >
       <span class="flex items-center gap-3">
@@ -39,7 +40,7 @@ const emit = defineEmits<{
       @click="emit('toggle-sidebar')"
       icon="menu"
       variant="outlined"
-      aria-label="Open navigation"
+      :aria-label="t('elements.openNavigationLabel')"
       :aria-expanded="sidebarOpen"
       :aria-controls="sidebarId"
     />

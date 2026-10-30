@@ -9,6 +9,7 @@ import {
 } from "@/libs/ui";
 import { computed, reactive, ref } from "vue";
 import type { WebBookmarkDirectoryFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import { t } from "@/modules/webpage-bookmark/locales";
 
 interface Props {
   formIcon?: string;
@@ -90,16 +91,17 @@ const submitForm = async (): Promise<void> => {
         v-model="formData.name"
         :rules="[
           (value) =>
-            (value && value.length > 0) || 'Directory name is required',
+            (value && value.length > 0) || t('messages.directoryNameRequired'),
           (value) =>
-            (value && value.length <= 30) || 'Directory name max length is 30',
+            (value && value.length <= 30) ||
+            t('messages.directoryNameMaxLength'),
         ]"
-        label="Name"
+        :label="t('elements.nameLabel')"
         class="mb-2 w-full"
       />
       <h-textarea
         v-model="formData.description"
-        label="Description"
+        :label="t('elements.descriptionLabel')"
         :rows="5"
         class="mb-2 w-full"
       />
@@ -112,7 +114,7 @@ const submitForm = async (): Promise<void> => {
           color="secondary"
           class="mr-2"
         >
-          Cancel
+          {{ t("elements.cancelButton") }}
         </h-button>
         <h-button
           @click="validate() && submitForm()"

@@ -3,6 +3,7 @@ import { useGalleryUploadStore } from "@/modules/gallery/stores/GalleryUploadSto
 import { IonPage } from "@ionic/vue";
 import { useUploadMediaService } from "@/modules/gallery/GalleryServiceContainer";
 import { HButton, HFileUpload, HProgressBar } from "@/libs/ui";
+import { t } from "@/modules/gallery/locales";
 
 const uploadMediaService = useUploadMediaService();
 
@@ -35,7 +36,7 @@ const uploadPendingMedia = () => {
             galleryUploadStore.isHandlingCreateNewMedia
           "
         >
-          Upload
+          {{ t("elements.uploadButton") }}
         </h-button>
       </div>
 
@@ -44,8 +45,8 @@ const uploadPendingMedia = () => {
         v-model="galleryUploadStore.pendingNewMediaFiles"
         file-types="image/*,video/*"
         @file-added="newPendingFileAdded"
-        upload-button-text="Add"
-        dropZoneText="Add files or drop them here"
+        :upload-button-text="t('elements.uploadAddButtonText')"
+        :drop-zone-text="t('elements.uploadDropZoneText')"
       />
     </div>
   </ion-page>

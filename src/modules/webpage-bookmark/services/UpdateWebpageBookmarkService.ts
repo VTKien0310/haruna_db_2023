@@ -6,7 +6,7 @@ import type {
   WebBookmarkDirectoryFormData,
   WebBookmarkLinkFormData,
 } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
-import { webpageBookmarkMessage } from "@/modules/webpage-bookmark/locales";
+import { t } from "@/modules/webpage-bookmark/locales";
 
 export class UpdateWebpageBookmarkService {
   constructor(
@@ -26,9 +26,7 @@ export class UpdateWebpageBookmarkService {
       .eq("id", record.id);
 
     if (error) {
-      this.toastService.error(
-        webpageBookmarkMessage("updateFailed", { id: record.id }),
-      );
+      this.toastService.error(t("messages.updateFailed", { id: record.id }));
       return false;
     }
 

@@ -1,10 +1,30 @@
 {
-  "resetEmailSent": "If an account exists for that email, a reset link has been sent.",
-  "resetEmailFailed": "Could not send reset email",
-  "passwordUpdated": "Password updated",
-  "passwordUpdateFailed": "Could not update password",
-  "loginFailed": "Login failed",
-  "logoutFailed": "Logout failed",
-  "fetchProfileFailed": "Failed to fetch current user profile",
-  "updateUsernameFailed": "Failed to update username"
+  "messages": {
+    "resetEmailSent": "If an account exists for that email, a reset link has been sent.",
+    "resetEmailFailed": "Couldn't send the reset email",
+    "passwordUpdated": "Password updated",
+    "passwordUpdateFailed": "Couldn't update the password",
+    "loginFailed": "Couldn't log you in",
+    "logoutFailed": "Couldn't log you out",
+    "fetchProfileFailed": "Couldn't load your profile",
+    "updateNameFailed": "Couldn't update your name",
+    "updatePasswordFailed": "Couldn't update your password"
+  },
+  "elements": {
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loginButton": "Log in",
+    "forgotPasswordLink": "Forgot password?",
+    "forgotPasswordTitle": "Forgot password",
+    "sendResetLinkButton": "Send reset link",
+    "resetPasswordTitle": "Reset password",
+    "newPasswordLabel": "New password",
+    "newPasswordPlaceholder": "At least 8 characters, including uppercase and lowercase letters, a number, and a special character",
+    "confirmPasswordLabel": "Confirm password",
+    "updatePasswordButton": "Update password",
+    "resetLinkInvalid": "This reset link is invalid or has expired.",
+    "requestNewLinkButton": "Request a new link",
+    "displayNameLabel": "Display name",
+    "profilePasswordPlaceholder": "Leave blank to keep your current password"
+  }
 }

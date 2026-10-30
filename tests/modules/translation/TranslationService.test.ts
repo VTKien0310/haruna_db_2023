@@ -9,6 +9,7 @@ import {
 } from "../../fakes/BackendFake";
 import { makeToast } from "../../fakes/Collaborators";
 import { makeHistory } from "../../factories/Records";
+import { t } from "@/modules/translation/locales";
 
 describe("TranslationService", () => {
   let backend: ReturnType<typeof makeBackendFake>;
@@ -67,7 +68,7 @@ describe("TranslationService", () => {
     backend.post.mockResolvedValue(BackendApiResult.err(new Error("offline")));
     expect(await service.translateIfNeeded("text", "ja", "en")).toBeNull();
     expect(useTranslationStore().lastTranslationKey).toBeNull();
-    expect(toast.error).toHaveBeenCalledWith("Failed to translate content");
+    expect(toast.error).toHaveBeenCalledWith(t("messages.translateFailed"));
   });
   it("paginates histories and prevents concurrent fetches", async () => {
     const query = backend.query(queryResult([makeHistory()], 12));

@@ -9,6 +9,7 @@ import {
   useProfileService,
 } from "@/modules/auth/AuthServiceContainer";
 import { HButton, HForm, HInput } from "@/libs/ui";
+import { t } from "@/modules/auth/locales";
 import ThemeSelector from "@/modules/master/components/ThemeSelector.vue";
 
 const authenticationService = useAuthenticationService();
@@ -76,17 +77,17 @@ onMounted(() => {
         >
           <h-input
             v-model="profileFormContent.name"
-            label="Name"
+            :label="t('elements.displayNameLabel')"
             name="name"
             class="w-full"
           />
 
           <h-input
             v-model="profileFormContent.password"
-            label="Password"
+            :label="t('elements.passwordLabel')"
             name="password"
             type="password"
-            placeholder="Minimum length of 8 characters"
+            :placeholder="t('elements.profilePasswordPlaceholder')"
             class="mt-4 w-full"
           />
 

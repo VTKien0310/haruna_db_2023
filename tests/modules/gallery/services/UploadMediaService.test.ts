@@ -43,7 +43,7 @@ describe("UploadMediaService", () => {
     modal = makeModal();
     router = makeRouter();
     const list = new GalleryListService(backend.port, toast.service);
-    vi.spyOn(list, "refreshMedias").mockResolvedValue();
+    vi.spyOn(list, "refreshMedia").mockResolvedValue();
     service = new UploadMediaService(
       router,
       backend.port,

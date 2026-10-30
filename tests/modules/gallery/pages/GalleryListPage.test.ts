@@ -7,8 +7,8 @@ import { makeMedia } from "../../../factories/Records";
 import { appMountOptions } from "../../../support/mountApp";
 
 const list = vi.hoisted(() => ({
-  refreshMedias: vi.fn(),
-  fetchMedias: vi.fn(),
+  refreshMedia: vi.fn(),
+  fetchMedia: vi.fn(),
 }));
 vi.mock("@/modules/gallery/GalleryServiceContainer", () => ({
   useGalleryListService: () => list,
@@ -32,17 +32,17 @@ vi.mock("@/modules/gallery/components/GalleryListItem.vue", () => ({
 describe("GalleryListPage", () => {
   it("refreshes on mount, shows loading and switches views", async () => {
     const store = useGalleryListStore();
-    store.medias = [makeMedia()];
-    store.isFetchingGalleryMedias = true;
+    store.media = [makeMedia()];
+    store.isFetchingGalleryMedia = true;
     const wrapper = mount(GalleryListPage, appMountOptions());
-    expect(list.refreshMedias).toHaveBeenCalledOnce();
+    expect(list.refreshMedia).toHaveBeenCalledOnce();
     expect(wrapper.getComponent(HProgressCircle).isVisible()).toBe(true);
     expect(wrapper.get(".grid-item").isVisible()).toBe(true);
     expect(wrapper.get(".list-item").isVisible()).toBe(false);
     wrapper.getComponent(HButtonToggle).vm.$emit("update:modelValue", "list");
     await flushPromises();
     expect(wrapper.get(".list-item").isVisible()).toBe(true);
-    store.isFetchingGalleryMedias = false;
+    store.isFetchingGalleryMedia = false;
     await flushPromises();
     expect(wrapper.getComponent(HProgressCircle).isVisible()).toBe(false);
   });
@@ -56,6 +56,6 @@ describe("GalleryListPage", () => {
       scrollHeight: { value: 1000 },
     });
     await scroller.trigger("scroll");
-    expect(list.fetchMedias).toHaveBeenCalledOnce();
+    expect(list.fetchMedia).toHaveBeenCalledOnce();
   });
 });

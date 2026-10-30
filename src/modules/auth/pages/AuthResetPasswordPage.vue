@@ -8,6 +8,7 @@ import type {
 import { IonPage, onIonViewDidEnter } from "@ionic/vue";
 import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
+import { t } from "@/modules/auth/locales";
 import logo from "@/assets/logo.svg";
 
 const resetPasswordForm = ref<HFormHandle>();
@@ -88,20 +89,22 @@ function requestNewResetLink() {
         @submit.prevent="handleResetPassword"
         class="bg-background-secondary border-background-border mt-8 flex w-full max-w-sm flex-col items-center justify-center rounded-(--h-panel-radius) border p-6"
       >
-        <h2 class="text-text-primary text-xl font-semibold">Reset password</h2>
+        <h2 class="text-text-primary text-xl font-semibold">
+          {{ t("elements.resetPasswordTitle") }}
+        </h2>
 
         <h-input
           v-model="resetPasswordFormContent.password"
-          label="New password"
+          :label="t('elements.newPasswordLabel')"
           name="password"
           type="password"
-          placeholder="At least 8 characters with upper and lower case, a number, and a special character"
+          :placeholder="t('elements.newPasswordPlaceholder')"
           class="mt-4 w-full"
         />
 
         <h-input
           v-model="resetPasswordFormContent.confirmPassword"
-          label="Confirm password"
+          :label="t('elements.confirmPasswordLabel')"
           name="confirmPassword"
           type="password"
           class="mt-4 w-full"
@@ -113,7 +116,7 @@ function requestNewResetLink() {
           type="submit"
           class="mt-6 w-full"
         >
-          Update password
+          {{ t("elements.updatePasswordButton") }}
         </h-button>
       </h-form>
 
@@ -122,7 +125,7 @@ function requestNewResetLink() {
         class="bg-background-secondary border-background-border mt-8 flex w-full max-w-sm flex-col items-center justify-center rounded-(--h-panel-radius) border p-6"
       >
         <p class="text-text-primary text-center">
-          This reset link is invalid or has expired.
+          {{ t("elements.resetLinkInvalid") }}
         </p>
 
         <h-button
@@ -130,7 +133,7 @@ function requestNewResetLink() {
           class="mt-6 w-full"
           @click="requestNewResetLink"
         >
-          Request a new link
+          {{ t("elements.requestNewLinkButton") }}
         </h-button>
       </div>
     </div>

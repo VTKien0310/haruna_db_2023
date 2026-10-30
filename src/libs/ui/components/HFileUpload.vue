@@ -102,7 +102,7 @@ function remove(index: number): void {
       @change="add(($event.target as HTMLInputElement).files)"
     />
     <p v-if="rejected" role="alert" class="text-danger mt-2">
-      Some files have an unsupported file type.
+      Some files have an unsupported type.
     </p>
     <ul v-if="modelValue.length" class="divide-background-border mt-4 divide-y">
       <li

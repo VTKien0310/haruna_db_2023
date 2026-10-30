@@ -1,3 +1,36 @@
 {
-  "themeSaveFailed": "Theme applied, but could not be saved on this device."
+  "messages": {
+    "themeSaveFailed": "Theme applied, but it couldn't be saved on this device.",
+    "pwaUpdateBody": "A new version of the app is available. Please restart the app to apply the update.",
+    "noTranslationHistory": "No translation history yet"
+  },
+  "elements": {
+    "navHome": "Home",
+    "navGallery": "Gallery",
+    "navTranslation": "Translation",
+    "navBookmarks": "Bookmarks",
+    "navProfile": "Profile",
+    "goToHomeLabel": "Go to home",
+    "openNavigationLabel": "Open navigation",
+    "appearanceTitle": "Appearance",
+    "themeLabel": "Theme",
+    "themeDeviceDescription": "Saved on this device.",
+    "pwaUpdateTitle": "Update available",
+    "pwaUpdateRestart": "Restart app",
+    "bookmarkStatsTitle": "Bookmark statistics",
+    "bookmarkLinkCountLabel": "Link count:",
+    "bookmarkDirectoryCountLabel": "Directory count:",
+    "bookmarkDeepestLevelLabel": "Deepest level:",
+    "bookmarkBreakdownTitle": "Web bookmarks breakdown",
+    "latestUploadDateTitle": "Latest upload date",
+    "newUploadsTitle": "New uploads (7 days)",
+    "totalMediaTitle": "Total media",
+    "yourUploadsTitle": "Your uploads",
+    "uploadShareTitle": "Your upload share",
+    "latestTranslationsTitle": "Latest translations",
+    "chartLinksLabel": "Links",
+    "chartDirectoriesLabel": "Directories",
+    "notFoundImageAlt": "404 image from HTTP Cat",
+    "badRequestImageAlt": "400 image from HTTP Cat"
+  }
 }

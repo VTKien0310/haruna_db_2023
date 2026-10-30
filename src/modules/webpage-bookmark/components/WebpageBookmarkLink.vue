@@ -6,7 +6,7 @@ import { useToastService } from "@/modules/master/MasterServiceContainer.ts";
 import { useDeleteWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import UpdateWebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/UpdateWebpageBookmarkLinkForm.vue";
 import NavigateToParentBookmarkDirectoryBtn from "@/modules/webpage-bookmark/components/NavigateToParentBookmarkDirectoryBtn.vue";
-import { webpageBookmarkMessage } from "@/modules/webpage-bookmark/locales";
+import { t } from "@/modules/webpage-bookmark/locales";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
@@ -22,7 +22,7 @@ const toastService = useToastService();
 const copyUrl = (): void => {
   if (!webpageBookmarkDetailStore.webpageBookmark) return;
   navigator.clipboard.writeText(webpageBookmarkDetailStore.webpageBookmark.url);
-  toastService.info(webpageBookmarkMessage("linkCopied"));
+  toastService.info(t("messages.linkCopied"));
 };
 
 const openUrl = (): void => {

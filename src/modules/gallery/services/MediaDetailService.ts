@@ -9,7 +9,7 @@ import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ModalService } from "@/modules/master/services/ModalService";
 import type { ToastService } from "@/modules/master/services/ToastService";
 import type { Router } from "vue-router";
-import { galleryMessage } from "@/modules/gallery/locales";
+import { t } from "@/modules/gallery/locales";
 import type { MasterNavigationService } from "@/modules/master/services/MasterNavigationService";
 
 type DisplayRatio = {
@@ -47,9 +47,7 @@ export class MediaDetailService {
       .download(media.storage_path);
 
     if (error || !data) {
-      this.toastService.error(
-        galleryMessage("downloadFailed", { id: media.id }),
-      );
+      this.toastService.error(t("messages.downloadFailed", { id: media.id }));
       return;
     }
 
@@ -68,7 +66,7 @@ export class MediaDetailService {
 
     if (error || !data) {
       this.toastService.error(
-        galleryMessage("uploaderFetchFailed", { id: media.id }),
+        t("messages.uploaderFetchFailed", { id: media.id }),
       );
       return null;
     }
@@ -103,7 +101,7 @@ export class MediaDetailService {
 
   private toastFailedToGenerateSignedUrl(path: string | null): string {
     this.toastService.error(
-      galleryMessage("signedUrlFailed", { path: String(path) }),
+      t("messages.signedUrlFailed", { path: String(path) }),
     );
 
     return "";
@@ -124,7 +122,7 @@ export class MediaDetailService {
 
     if (error) {
       this.toastService.error(
-        galleryMessage("resizedListFailed", { id: media.id }),
+        t("messages.resizedListFailed", { id: media.id }),
       );
 
       return false;
@@ -255,13 +253,13 @@ export class MediaDetailService {
       .eq("id", id);
 
     if (error || !data) {
-      this.toastService.error(galleryMessage("mediaFetchFailed", { id }));
+      this.toastService.error(t("messages.mediaFetchFailed", { id }));
       this.masterNavigationService.navigateTo400();
       return null;
     }
 
     if (!data[0]) {
-      this.toastService.error(galleryMessage("mediaNotFound", { id }));
+      this.toastService.error(t("messages.mediaNotFound", { id }));
       this.masterNavigationService.navigateTo404();
       return null;
     }
@@ -275,7 +273,7 @@ export class MediaDetailService {
         name: GalleryRouteName.LIST,
       })
       .then();
-    this.galleryListService.refreshMedias().then();
+    this.galleryListService.refreshMedia().then();
   }
 
   private async deleteMediaRecordInDb(id: string): Promise<boolean> {
@@ -297,7 +295,7 @@ export class MediaDetailService {
 
   async deleteMedia(media: Media): Promise<void> {
     this.modalService
-      .confirm(galleryMessage("deleteConfirm"))
+      .confirm(t("messages.deleteConfirm"))
       .then(async (confirmation: boolean): Promise<void> => {
         if (!confirmation) {
           return;
@@ -312,9 +310,7 @@ export class MediaDetailService {
           : false;
 
         if (!(deleteDbRecordSuccess && deleteFileInBucketSuccess)) {
-          this.toastService.error(
-            galleryMessage("deleteFailed", { id: media.id }),
-          );
+          this.toastService.error(t("messages.deleteFailed", { id: media.id }));
           return;
         }
 

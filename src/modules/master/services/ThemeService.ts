@@ -5,7 +5,7 @@ import {
   THEME_STORAGE_KEY,
   type ThemeId,
 } from "../ThemeEntities";
-import { masterMessage } from "../locales";
+import { t } from "../locales";
 import { useThemeStore } from "../stores/ThemeStore";
 
 export class ThemeService {
@@ -34,7 +34,7 @@ export class ThemeService {
     try {
       this.storage().setItem(THEME_STORAGE_KEY, value);
     } catch {
-      this.notifySaveFailure(masterMessage("themeSaveFailed"));
+      this.notifySaveFailure(t("messages.themeSaveFailed"));
     }
   }
 
