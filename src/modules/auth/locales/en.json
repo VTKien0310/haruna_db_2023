@@ -7,7 +7,7 @@
     "loginFailed": "Couldn't log you in",
     "logoutFailed": "Couldn't log you out",
     "fetchProfileFailed": "Couldn't load your profile",
-    "updateNameFailed": "Couldn't update your name",
+    "updateProfileFailed": "Couldn't update your profile",
     "updatePasswordFailed": "Couldn't update your password"
   },
   "elements": {
@@ -25,6 +25,9 @@
     "resetLinkInvalid": "This reset link is invalid or has expired.",
     "requestNewLinkButton": "Request a new link",
     "displayNameLabel": "Display name",
+    "birthDateLabel": "Birth date",
+    "workStartDateLabel": "Work start date",
+    "workStartDateInfo": "Your work start date is used to calculate the seniority balance of each year's PTO bank.",
     "profilePasswordPlaceholder": "Leave blank to keep your current password"
   }
 }

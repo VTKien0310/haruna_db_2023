@@ -60,11 +60,13 @@ export class ProfileService {
         .from("profiles")
         .update({
           name: profileDetail.name,
+          birth_date: profileDetail.birthDate,
+          work_start_date: profileDetail.workStartDate,
         })
         .eq("user_id", currentUser.id);
 
       if (error) {
-        this.toastService.error(t("messages.updateNameFailed"));
+        this.toastService.error(t("messages.updateProfileFailed"));
       }
     }
 
