@@ -21,6 +21,8 @@ export const makeProfile = (overrides: Partial<Profile> = {}): Profile => ({
   id: "profile-1",
   name: "Test User",
   user_id: "user-1",
+  birth_date: "1990-01-01",
+  work_start_date: "2020-04-01",
   created_at: timestamp,
   updated_at: timestamp,
   ...overrides,

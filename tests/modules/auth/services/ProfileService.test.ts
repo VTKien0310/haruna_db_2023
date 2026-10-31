@@ -49,7 +49,7 @@ describe("ProfileService", () => {
     expect(toast.error).toHaveBeenCalled();
   });
   it.each(["", "new-password"])(
-    "updates name and conditionally password %j",
+    "updates name, dates, and conditionally password %j",
     async (password) => {
       backend.auth.getUser.mockResolvedValue({
         data: { user: { id: "user-1" } },
@@ -58,8 +58,17 @@ describe("ProfileService", () => {
       backend.auth.updateUser.mockResolvedValue({ error: null });
       const update = backend.query(queryResult());
       backend.query(queryResult([makeProfile({ name: "Updated" })]));
-      await service.updateCurrentUserProfile({ name: "Updated", password });
-      expect(update.update).toHaveBeenCalledWith({ name: "Updated" });
+      await service.updateCurrentUserProfile({
+        name: "Updated",
+        password,
+        birthDate: "1991-02-03",
+        workStartDate: "2021-05-06",
+      });
+      expect(update.update).toHaveBeenCalledWith({
+        name: "Updated",
+        birth_date: "1991-02-03",
+        work_start_date: "2021-05-06",
+      });
       expect(useAuthStore().profile?.name).toBe("Updated");
       expect(backend.auth.updateUser).toHaveBeenCalledTimes(password ? 1 : 0);
     },

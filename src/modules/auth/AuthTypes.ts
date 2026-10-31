@@ -6,6 +6,8 @@ export interface AuthCredential {
 export interface ProfileDetail {
   name: string;
   password: string;
+  birthDate: string;
+  workStartDate: string;
 }
 
 export interface PasswordResetRequest {

@@ -10,6 +10,9 @@ import { useThemeStore } from "@/modules/master/stores/ThemeStore";
 import { useThemeService } from "@/modules/master/MasterServiceContainer";
 import { appMountOptions } from "../../../support/mountApp";
 import { t } from "@/modules/master/locales";
+import { t as authT } from "@/modules/auth/locales";
+import { useAuthStore } from "@/modules/auth/stores/AuthStore";
+import { makeProfile } from "../../../factories/Records";
 
 const account = vi.hoisted(() => ({
   refresh: vi.fn(),
@@ -72,4 +75,30 @@ describe("AuthProfilePage appearance", () => {
       expect((control.element as HTMLInputElement).value).toBe(theme.label);
     },
   );
+});
+
+describe("AuthProfilePage dates", () => {
+  it("shows date pickers with seniority info and enables saving on date change", async () => {
+    useAuthStore().profile = makeProfile();
+    const wrapper = mount(AuthProfilePage, appMountOptions());
+    await flushPromises();
+    try {
+      const birthDate = wrapper.get('input[name="birth_date"]');
+      const workStartDate = wrapper.get('input[name="work_start_date"]');
+      expect(birthDate.attributes("type")).toBe("date");
+      expect(workStartDate.attributes("type")).toBe("date");
+      expect((birthDate.element as HTMLInputElement).value).toBe("1990-01-01");
+      expect((workStartDate.element as HTMLInputElement).value).toBe(
+        "2020-04-01",
+      );
+      expect(wrapper.text()).toContain(authT("elements.workStartDateInfo"));
+
+      const save = wrapper.get('button[type="submit"]');
+      expect(save.attributes("disabled")).toBeDefined();
+      await workStartDate.setValue("2021-06-07");
+      expect(save.attributes("disabled")).toBeUndefined();
+    } finally {
+      wrapper.unmount();
+    }
+  });
 });

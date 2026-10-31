@@ -19,12 +19,16 @@ const authStore = useAuthStore();
 const profileFormContent = reactive<ProfileDetail>({
   name: "",
   password: "",
+  birthDate: "",
+  workStartDate: "",
 });
 
 function reloadProfileFormContent(): void {
   profileService.refreshCurrentUserProfile().then(() => {
     profileFormContent.name = authStore.profile?.name ?? "";
     profileFormContent.password = "";
+    profileFormContent.birthDate = authStore.profile?.birth_date ?? "";
+    profileFormContent.workStartDate = authStore.profile?.work_start_date ?? "";
   });
 }
 
@@ -39,8 +43,20 @@ const enableUpdateProfileButton = computed((): boolean => {
   const passwordHasBeenInput: boolean = (profileFormContent.password &&
     profileFormContent.password.length >= 8) as boolean;
 
+  const birthDateHasBeenUpdated: boolean =
+    profileFormContent.birthDate.length > 0 &&
+    profileFormContent.birthDate !== authStore.profile?.birth_date;
+
+  const workStartDateHasBeenUpdated: boolean =
+    profileFormContent.workStartDate.length > 0 &&
+    profileFormContent.workStartDate !== authStore.profile?.work_start_date;
+
   return (
-    (nameHasBeenUpdated || passwordHasBeenInput) && !isUpdatingProfile.value
+    (nameHasBeenUpdated ||
+      passwordHasBeenInput ||
+      birthDateHasBeenUpdated ||
+      workStartDateHasBeenUpdated) &&
+    !isUpdatingProfile.value
   );
 });
 
@@ -81,6 +97,26 @@ onMounted(() => {
             name="name"
             class="w-full"
           />
+
+          <h-input
+            v-model="profileFormContent.birthDate"
+            :label="t('elements.birthDateLabel')"
+            name="birth_date"
+            type="date"
+            class="mt-4 w-full"
+          />
+
+          <h-input
+            v-model="profileFormContent.workStartDate"
+            :label="t('elements.workStartDateLabel')"
+            name="work_start_date"
+            type="date"
+            class="mt-4 w-full"
+          />
+
+          <p class="text-secondary mt-2 w-full text-sm">
+            {{ t("elements.workStartDateInfo") }}
+          </p>
 
           <h-input
             v-model="profileFormContent.password"
