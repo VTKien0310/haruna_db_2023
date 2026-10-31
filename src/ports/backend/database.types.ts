@@ -117,29 +117,32 @@ export type Database = {
       };
       profiles: {
         Row: {
+          birth_date: string;
           created_at: string;
-          current_balance: number;
           id: string;
           name: string | null;
           updated_at: string;
           user_id: string | null;
+          work_start_date: string;
         };
         ComputedFields: never;
         Insert: {
+          birth_date?: string;
           created_at?: string;
-          current_balance?: number;
           id?: string;
           name?: string | null;
           updated_at?: string;
           user_id?: string | null;
+          work_start_date?: string;
         };
         Update: {
+          birth_date?: string;
           created_at?: string;
-          current_balance?: number;
           id?: string;
           name?: string | null;
           updated_at?: string;
           user_id?: string | null;
+          work_start_date?: string;
         };
         Relationships: [];
       };
@@ -178,6 +181,7 @@ export type Database = {
           extended_balance: number;
           id: string;
           owner_id: string;
+          seniority_balance: number;
           updated_at: string;
           year: number;
         };
@@ -188,6 +192,7 @@ export type Database = {
           extended_balance?: number;
           id?: string;
           owner_id?: string;
+          seniority_balance?: number;
           updated_at?: string;
           year: number;
         };
@@ -197,6 +202,7 @@ export type Database = {
           extended_balance?: number;
           id?: string;
           owner_id?: string;
+          seniority_balance?: number;
           updated_at?: string;
           year?: number;
         };
