@@ -153,6 +153,7 @@ export type Database = {
           entry_type: string | null;
           id: string;
           no_deduction: number;
+          owner_id: string;
           updated_at: string;
         };
         ComputedFields: never;
@@ -162,6 +163,7 @@ export type Database = {
           entry_type?: string | null;
           id?: string;
           no_deduction?: number;
+          owner_id?: string;
           updated_at?: string;
         };
         Update: {
@@ -170,6 +172,7 @@ export type Database = {
           entry_type?: string | null;
           id?: string;
           no_deduction?: number;
+          owner_id?: string;
           updated_at?: string;
         };
         Relationships: [];
