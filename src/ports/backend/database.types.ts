@@ -183,6 +183,9 @@ export type Database = {
           created_at: string;
           extended_balance: number;
           id: string;
+          original_annual_balance: number | null;
+          original_extended_balance: number | null;
+          original_seniority_balance: number | null;
           owner_id: string;
           seniority_balance: number;
           updated_at: string;
@@ -194,6 +197,9 @@ export type Database = {
           created_at?: string;
           extended_balance?: number;
           id?: string;
+          original_annual_balance?: number | null;
+          original_extended_balance?: number | null;
+          original_seniority_balance?: number | null;
           owner_id?: string;
           seniority_balance?: number;
           updated_at?: string;
@@ -204,6 +210,9 @@ export type Database = {
           created_at?: string;
           extended_balance?: number;
           id?: string;
+          original_annual_balance?: number | null;
+          original_extended_balance?: number | null;
+          original_seniority_balance?: number | null;
           owner_id?: string;
           seniority_balance?: number;
           updated_at?: string;
