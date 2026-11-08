@@ -32,8 +32,7 @@ function select(value: number) {
       :key="page"
       :aria-label="`Page ${page}`"
       :aria-current="page === modelValue ? 'page' : undefined"
-      :variant="page === modelValue ? 'solid' : 'outlined'"
-      class="min-w-(--h-control-height)"
+      :variant="page === modelValue ? 'filled' : 'text'"
       :disabled="disabled"
       @click="select(page)"
       >{{ page }}</HButton

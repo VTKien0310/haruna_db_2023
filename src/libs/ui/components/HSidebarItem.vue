@@ -4,18 +4,18 @@ defineProps<{ active?: boolean }>();
 <template>
   <button
     type="button"
-    class="h-focus relative w-full cursor-pointer rounded-(--h-control-radius) text-left"
+    class="h-focus h-state-layer text-label-large relative isolate min-h-14 w-full cursor-pointer rounded-full text-left"
     :class="
       active
-        ? 'bg-selection text-primary font-medium'
-        : 'text-text-primary hover:bg-background-element'
+        ? 'text-on-secondary-container font-medium'
+        : 'text-on-surface-variant'
     "
     :aria-current="active ? 'page' : undefined"
   >
     <span
       v-if="active"
       aria-hidden="true"
-      class="bg-brand-amber absolute inset-y-2 left-0 w-1 rounded-full"
+      class="bg-secondary-container absolute inset-0 -z-10 rounded-full"
     />
     <slot />
   </button>

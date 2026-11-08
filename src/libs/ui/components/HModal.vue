@@ -65,7 +65,7 @@ onUnmounted(() => {
   <Teleport to="body">
     <div
       v-if="modelValue"
-      class="h-ui h-modal-backdrop fixed inset-0 z-(--h-modal-z-index) flex items-center justify-center bg-(--h-overlay-color) p-4"
+      class="h-ui h-modal-backdrop h-scrim fixed inset-0 z-(--h-modal-z-index) flex items-center justify-center p-4"
       @click.self="outside"
     >
       <section
@@ -78,12 +78,12 @@ onUnmounted(() => {
         :aria-label="!title ? 'Dialog' : undefined"
         :aria-describedby="message ? `${id}-message` : undefined"
         tabindex="-1"
-        class="bg-background-secondary text-text-primary border-background-border relative max-h-full w-full max-w-(--h-modal-width) overflow-y-auto rounded-(--h-panel-radius) border p-6 outline-none"
+        class="bg-surface-container-high text-on-surface border-outline-variant shadow-level-3 rounded-extra-large relative max-h-full w-full max-w-(--h-modal-width) overflow-y-auto border p-6 outline-none"
       >
         <div v-if="!noDismiss" class="absolute top-2 right-2">
           <HButton
             icon="close"
-            variant="quiet"
+            variant="text"
             color="secondary"
             aria-label="Close dialog"
             @click="cancel"
@@ -92,15 +92,21 @@ onUnmounted(() => {
         <h2
           v-if="title"
           :id="`${id}-title`"
-          class="mb-6 pr-10 text-xl font-semibold"
+          class="text-headline-small mb-6 pr-10 font-normal"
         >
           {{ title }}
         </h2>
-        <p v-if="message" :id="`${id}-message`">{{ message }}</p>
+        <p
+          v-if="message"
+          :id="`${id}-message`"
+          class="text-on-surface-variant text-body-large"
+        >
+          {{ message }}
+        </p>
         <slot />
         <div v-if="!hideDefaultActions" class="mt-6 flex justify-end gap-2">
-          <HButton variant="outlined" @click="cancel">{{ cancelText }}</HButton
-          ><HButton @click="confirm">{{ okText }}</HButton>
+          <HButton variant="text" @click="cancel">{{ cancelText }}</HButton
+          ><HButton variant="text" @click="confirm">{{ okText }}</HButton>
         </div>
       </section>
     </div>

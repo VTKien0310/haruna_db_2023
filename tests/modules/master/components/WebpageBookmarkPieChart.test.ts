@@ -25,9 +25,9 @@ afterEach(() => {
 describe("WebpageBookmarkPieChart", () => {
   it("refreshes slice and legend colors after selecting a theme and stops reading colors on unmount", async () => {
     const properties = new Map([
-      ["--color-brand-cyan", "#0d9488"],
-      ["--color-brand-amber", "#f59e0b"],
-      ["--color-text-primary", "#334155"],
+      ["--color-primary", "#0d9488"],
+      ["--color-tertiary", "#f59e0b"],
+      ["--color-on-surface", "#334155"],
     ]);
     const originalStyle = getComputedStyle(document.documentElement);
     const getStyle = vi
@@ -51,9 +51,9 @@ describe("WebpageBookmarkPieChart", () => {
     expect(renderedChart.props("options").plugins.legend.labels.color).toBe(
       "#334155",
     );
-    properties.set("--color-brand-cyan", "#5eead4");
-    properties.set("--color-brand-amber", "#fbbf24");
-    properties.set("--color-text-primary", "#e2e8f0");
+    properties.set("--color-primary", "#5eead4");
+    properties.set("--color-tertiary", "#fbbf24");
+    properties.set("--color-on-surface", "#e2e8f0");
     service.select("haruna-dark");
     await nextTick();
     expect(renderedChart.props("data").datasets[0].backgroundColor).toEqual([

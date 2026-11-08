@@ -4,6 +4,7 @@ const emit = defineEmits<{ "update:modelValue": [value: boolean] }>();
 </script>
 <template>
   <div
+    class="h-ui h-state-layer"
     @mouseenter="emit('update:modelValue', true)"
     @mouseleave="emit('update:modelValue', false)"
     @focusin="emit('update:modelValue', true)"

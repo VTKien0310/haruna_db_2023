@@ -2,29 +2,27 @@ import type { InjectionKey } from "vue";
 import type { FormService } from "../services/FormService";
 
 export type HSize = "small" | "medium" | "large";
-export type HButtonVariant = "solid" | "outlined" | "quiet";
+export type HButtonVariant =
+  "filled" | "tonal" | "outlined" | "text" | "elevated";
+export type HButtonSize = "xsmall" | "small" | "medium" | "large" | "xlarge";
+export type HButtonShape = "round" | "square";
+export type HCardVariant = "elevated" | "filled" | "outlined";
 export type HStatusColor =
-  "primary" | "success" | "info" | "danger" | "warning";
+  "primary" | "tertiary" | "error" | "success" | "warning";
 export type HActionColor = HStatusColor | "secondary";
 export type HColor =
-  | "primary"
-  | "secondary"
-  | "success"
-  | "info"
-  | "danger"
-  | "warning"
-  | "brandAmber"
-  | "brandCyan"
-  | "selection"
-  | "controlBorder"
-  | "backgroundPrimary"
-  | "backgroundSecondary"
-  | "backgroundElement"
-  | "backgroundBorder"
-  | "textPrimary"
-  | "textInverted"
-  | "shadow"
-  | "focus";
+  | HActionColor
+  | `on${Capitalize<HActionColor>}`
+  | `${HActionColor}Container`
+  | `on${Capitalize<HActionColor>}Container`
+  | "surface"
+  | "onSurface"
+  | "onSurfaceVariant"
+  | "outline"
+  | "outlineVariant"
+  | "inverseSurface"
+  | "inverseOnSurface"
+  | "inversePrimary";
 export type HRule = (value: string) => boolean | string;
 export interface HFieldProps {
   modelValue?: string;
@@ -80,31 +78,51 @@ export interface HNotifications {
 }
 export const FORM_KEY: InjectionKey<FormService> = Symbol("HarunaForm");
 
-const COLORS: Record<HColor, string> = {
-  primary: "var(--color-primary)",
-  secondary: "var(--color-secondary)",
-  success: "var(--color-success)",
-  info: "var(--color-info)",
-  danger: "var(--color-danger)",
-  warning: "var(--color-warning)",
-  brandAmber: "var(--color-brand-amber)",
-  brandCyan: "var(--color-brand-cyan)",
-  selection: "var(--color-selection)",
-  controlBorder: "var(--color-control-border)",
-  backgroundPrimary: "var(--color-background-primary)",
-  backgroundSecondary: "var(--color-background-secondary)",
-  backgroundElement: "var(--color-background-element)",
-  backgroundBorder: "var(--color-background-border)",
-  textPrimary: "var(--color-text-primary)",
-  textInverted: "var(--color-text-inverted)",
-  shadow: "var(--color-shadow)",
-  focus: "var(--color-focus)",
-};
+const COLOR_ROLES: readonly HColor[] = [
+  "primary",
+  "secondary",
+  "tertiary",
+  "error",
+  "success",
+  "warning",
+  "onPrimary",
+  "onSecondary",
+  "onTertiary",
+  "onError",
+  "onSuccess",
+  "onWarning",
+  "primaryContainer",
+  "secondaryContainer",
+  "tertiaryContainer",
+  "errorContainer",
+  "successContainer",
+  "warningContainer",
+  "onPrimaryContainer",
+  "onSecondaryContainer",
+  "onTertiaryContainer",
+  "onErrorContainer",
+  "onSuccessContainer",
+  "onWarningContainer",
+  "surface",
+  "onSurface",
+  "onSurfaceVariant",
+  "outline",
+  "outlineVariant",
+  "inverseSurface",
+  "inverseOnSurface",
+  "inversePrimary",
+];
+const COLORS = Object.fromEntries(
+  COLOR_ROLES.map((color) => [
+    color,
+    `var(--color-${color.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)})`,
+  ]),
+) as Record<HColor, string>;
 const STATUS_COLORS: readonly HStatusColor[] = [
   "primary",
+  "tertiary",
+  "error",
   "success",
-  "info",
-  "danger",
   "warning",
 ];
 

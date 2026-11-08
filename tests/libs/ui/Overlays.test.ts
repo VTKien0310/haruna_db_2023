@@ -73,6 +73,25 @@ describe("HModal", () => {
     wrapper.unmount();
     expect(document.body.style.overflow).not.toBe("hidden");
   });
+  it("uses M3 dialog surfaces, shape, elevation and text actions", async () => {
+    const wrapper = mount(HModal, {
+      ...realModalOptions(),
+      props: { modelValue: true, title: "Details", message: "A message" },
+    });
+    await flushPromises();
+    const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
+    expect(dialog.classList).toContain("bg-surface-container-high");
+    expect(dialog.classList).toContain("rounded-extra-large");
+    expect(dialog.classList).toContain("shadow-level-3");
+    expect(dialog.querySelector("h2")?.classList).toContain(
+      "text-headline-small",
+    );
+    expect(dialog.querySelectorAll(".h-button-text")).toHaveLength(3);
+    expect(document.querySelector(".h-modal-backdrop")?.classList).toContain(
+      "h-scrim",
+    );
+    wrapper.unmount();
+  });
   const Fixture = defineComponent({
     components: { HModal, HButton },
     setup() {
@@ -204,10 +223,20 @@ describe("Haruna notification services", () => {
     const { wrapper, service } = mountNotifications();
     service.toast({
       message: "<img src=x onerror=alert(1)>",
-      color: "danger",
+      color: "error",
       duration: 100,
     });
     await flushPromises();
+    const snackbar = document.querySelector<HTMLElement>('[role="alert"]')!;
+    expect(snackbar.classList).toContain("bg-inverse-surface");
+    expect(snackbar.classList).toContain("shadow-level-3");
+    expect(snackbar.classList).toContain("rounded-extra-small");
+    expect(snackbar.querySelector(".h-icon")?.textContent?.trim()).toBe(
+      "error",
+    );
+    expect(
+      snackbar.querySelector("[aria-label='Dismiss notification']")?.classList,
+    ).toContain("h-snackbar-action");
     expect(document.querySelector('[role="alert"]')?.textContent).toContain(
       "<img src=x onerror=alert(1)>",
     );

@@ -25,23 +25,35 @@ export class ProfileService {
     const currentUser = await this.me();
     if (!currentUser) {
       this.authStore.profile = null;
+      this.authStore.userSpecialPermissions = [];
       return;
     }
 
-    const { data, error } = await this.backendPort.spbClient
-      .from("profiles")
-      .select()
-      .eq("user_id", currentUser.id);
+    const [profileResult, specialPermissionsResult] = await Promise.all([
+      this.backendPort.spbClient
+        .from("profiles")
+        .select()
+        .eq("user_id", currentUser.id),
+      this.backendPort.spbClient
+        .from("user_special_permissions")
+        .select()
+        .eq("user_id", currentUser.id),
+    ]);
 
-    if (error || !data) {
+    if (profileResult.error || !profileResult.data) {
       this.toastService.error(t("messages.fetchProfileFailed"));
-
       this.authStore.profile = null;
+    } else {
+      this.authStore.profile = profileResult.data[0];
+    }
 
+    if (specialPermissionsResult.error || !specialPermissionsResult.data) {
+      this.toastService.error(t("messages.fetchSpecialPermissionsFailed"));
+      this.authStore.userSpecialPermissions = [];
       return;
     }
 
-    this.authStore.profile = data[0];
+    this.authStore.userSpecialPermissions = specialPermissionsResult.data;
   }
 
   async updateCurrentUserProfile(profileDetail: ProfileDetail): Promise<void> {

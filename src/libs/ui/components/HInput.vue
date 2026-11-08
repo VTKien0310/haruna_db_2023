@@ -74,13 +74,14 @@ defineExpose({
     :loading="loading"
     :disabled="disabled"
     :readonly="readonly"
+    :filled="Boolean(modelValue)"
     :count="counter ? modelValue.length : undefined"
   >
     <input
       v-bind="nativeAttrs()"
       :id="controlId()"
       ref="control"
-      class="h-field-input text-text-primary w-full min-w-0 flex-1 bg-transparent text-base outline-none"
+      class="h-field-input text-on-surface text-body-large w-full flex-1 bg-transparent outline-none"
       :value="modelValue"
       :type="type"
       :name="name"

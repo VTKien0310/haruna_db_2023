@@ -1,4 +1,4 @@
 <script setup lang="ts"></script>
 <template>
-  <div class="p-5"><slot /></div>
+  <div class="text-on-surface text-body-medium p-5"><slot /></div>
 </template>

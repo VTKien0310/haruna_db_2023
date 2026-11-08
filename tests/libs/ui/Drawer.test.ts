@@ -24,6 +24,12 @@ describe("HDrawer", () => {
     expect(dialog().id).toBe("navigation");
     expect(dialog().getAttribute("aria-label")).toBe("Navigation");
     expect(dialog().getAttribute("aria-modal")).toBe("true");
+    expect(dialog().classList).toContain("bg-surface-container-low");
+    expect(dialog().classList).toContain("rounded-l-large");
+    expect(dialog().classList).toContain("w-(--h-sidebar-width)");
+    expect(document.querySelector(".h-drawer-backdrop")?.classList).toContain(
+      "h-scrim",
+    );
     expect(
       (document.querySelector(".h-drawer-backdrop") as HTMLElement).style.top,
     ).toBe("64px");

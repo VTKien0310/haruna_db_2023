@@ -18,10 +18,10 @@ const colors = ref<string[]>([]);
 const legendColor = ref("");
 function refreshColors(): void {
   const theme = getComputedStyle(document.documentElement);
-  colors.value = ["--color-brand-cyan", "--color-brand-amber"].map((token) =>
+  colors.value = ["--color-primary", "--color-tertiary"].map((token) =>
     theme.getPropertyValue(token).trim(),
   );
-  legendColor.value = theme.getPropertyValue("--color-text-primary").trim();
+  legendColor.value = theme.getPropertyValue("--color-on-surface").trim();
 }
 onMounted(refreshColors);
 watch(() => themeStore.themeId, refreshColors, { flush: "post" });

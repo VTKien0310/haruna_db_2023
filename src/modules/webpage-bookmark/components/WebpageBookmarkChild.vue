@@ -31,7 +31,7 @@ const navigateToWebpageBookmarkDetailPage = (): void => {
   <h-hover
     v-model="isBeingHovered"
     @click="navigateToWebpageBookmarkDetailPage"
-    class="flex flex-row content-center items-center justify-start gap-3 rounded-lg px-3"
+    class="rounded-medium flex flex-row content-center items-center justify-start gap-3 px-3"
     :class="{
       hovered: isBeingHovered,
     }"
@@ -47,7 +47,6 @@ const navigateToWebpageBookmarkDetailPage = (): void => {
 
 <style scoped>
 .hovered {
-  background-color: var(--color-background-element);
   cursor: pointer;
 }
 </style>

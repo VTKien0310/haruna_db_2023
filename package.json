@@ -16,12 +16,13 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "generate:pwa-assets": "node scripts/generate-pwa-assets.ts",
+    "generate:m3-themes": "node scripts/generate-m3-themes.ts",
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@floating-ui/vue": "^2.0.1",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
+    "@floating-ui/vue": "^2.0.1",
     "@ionic/vue": "^9.0.7",
     "@ionic/vue-router": "^9.0.7",
     "@supabase/supabase-js": "^2.117.3",
@@ -37,6 +38,7 @@
     "vue-router": "^5.4.0"
   },
   "devDependencies": {
+    "@material/material-color-utilities": "^0.3.0",
     "@tsconfig/node26": "^26.0.1",
     "@types/node": "^26.6.5",
     "@vitejs/plugin-vue": "^6.0.10",

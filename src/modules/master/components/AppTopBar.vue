@@ -21,19 +21,17 @@ const emit = defineEmits<{
 <template>
   <header
     v-if="visible"
-    class="h-ui bg-background-secondary border-background-border text-primary fixed top-0 right-0 left-0 z-(--h-header-z-index) flex h-(--h-app-header-height) w-full items-center justify-between border-b px-4"
+    class="h-ui bg-surface border-outline-variant text-on-surface fixed top-0 right-0 left-0 z-(--h-header-z-index) flex h-(--h-app-header-height) w-full items-center justify-between border-b px-4"
   >
     <h-button
-      variant="quiet"
+      variant="text"
       class="p-0"
       :aria-label="t('elements.goToHomeLabel')"
       @click="emit('navigate-home')"
     >
       <span class="flex items-center gap-3">
         <img :src="logo" alt="" class="h-10 w-10 shrink-0" />
-        <span class="text-(length:--h-wordmark-size) font-semibold"
-          >Haruna</span
-        >
+        <span class="text-title-large font-medium">Haruna</span>
       </span>
     </h-button>
     <h-button

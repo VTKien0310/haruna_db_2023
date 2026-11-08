@@ -48,7 +48,11 @@ describe("HButton", () => {
     const buttons = wrapper.findAll("button");
     expect(buttons[0].attributes("aria-label")).toBe("grid view");
     expect(buttons[0].classes()).toContain("h-button-icon-only");
+    expect(buttons[0].classes()).toContain("h-button-filled");
     expect(buttons[0].attributes("aria-pressed")).toBe("true");
+    expect(buttons[0].get(".h-icon").classes()).toContain("h-icon-filled");
+    expect(buttons[1].classes()).toContain("h-button-outlined");
+    expect(buttons[1].get(".h-icon").classes()).not.toContain("h-icon-filled");
     await buttons[1].trigger("click");
     expect(wrapper.emitted("update:modelValue")).toEqual([["list"]]);
   });
@@ -104,10 +108,21 @@ describe("HSelect", () => {
   it("searches, navigates and emits mapped values through keyboard selection", async () => {
     const wrapper = mountSelect();
     const input = wrapper.get("input");
+    expect(wrapper.get("label").attributes("for")).toBe(input.attributes("id"));
+    expect(wrapper.get(".h-field-control").classes()).toContain(
+      "h-field-filled",
+    );
     expect((input.element as HTMLInputElement).value).toBe("Japanese");
     await input.trigger("keydown", { key: "ArrowDown" });
     await flushPromises();
     expect(input.attributes("aria-expanded")).toBe("true");
+    expect(popup().get('[role="listbox"]').classes()).toContain(
+      "bg-surface-container",
+    );
+    expect(popup().get('[role="option"]').classes()).toContain("min-h-12");
+    expect(popup().get('[role="option"]').classes()).toContain(
+      "h-select-selected",
+    );
     await input.setValue("eng");
     expect(popup().findAll('[role="option"]')).toHaveLength(1);
     expect(popup().get('[role="option"]').text()).toBe("English");
@@ -166,6 +181,9 @@ describe("HFileUpload", () => {
         onFileAdded: () => events.push("added"),
       },
     });
+    expect(wrapper.classes()).toContain("h-state-layer");
+    expect(wrapper.classes()).toContain("border-outline-variant");
+    expect(wrapper.classes()).toContain("rounded-medium");
     expect(wrapper.text()).toContain("Drop files here");
     await wrapper.trigger("drop", { dataTransfer: { files: [file] } });
     expect(events).toEqual(["update", "added"]);
@@ -242,6 +260,12 @@ describe("HPagination and progress", () => {
     expect(
       wrapper.get('[aria-label="Page 1"]').attributes("aria-current"),
     ).toBe("page");
+    expect(wrapper.get('[aria-label="Page 1"]').classes()).toContain(
+      "h-button-filled",
+    );
+    expect(wrapper.get('[aria-label="Page 2"]').classes()).toContain(
+      "h-button-text",
+    );
     await wrapper.get("nav").trigger("keydown", { key: "ArrowLeft" });
     expect(wrapper.emitted("update:modelValue")).toBeUndefined();
     await wrapper.get('[aria-label="Page 2"]').trigger("click");

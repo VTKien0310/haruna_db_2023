@@ -27,7 +27,7 @@ into application notification service constructors.
 - **Fields:** `HInput`/`HTextarea` forward native IDs, descriptions, attributes,
   and focus/blur events to controls; layout styles apply to their frame.
   Textareas retain counters/handles, use `rows` (default 2, minimum 1), and do not
-  resize manually. Readonly fields use the muted surface.
+  resize manually. Readonly fields use `surface-container-high`.
 - **Selection:** `HSelect` supports string models, typed options, `textBy`,
   `valueBy`, search/loading/disabled states. Enter/arrows open; arrows/Home/End
   navigate; Enter selects; Escape/Tab dismiss.
@@ -43,50 +43,75 @@ into application notification service constructors.
 - **Uploads:** `HFileUpload` always shows drop area/picker, emits updated `File[]`
   before `file-added`, resets input for same-file reselection, and supports removal.
   MIME/extension filters never replace service/server validation.
-- **Feedback/media:** `HProgressBar` has an 8px cyan track, with a default `value`
-  slot or `showPercent` below; indeterminate progress hides unknown percentages.
-  Circular progress retains size presets, defaults to primary, and inherits button
-  foregrounds. `HSkeleton` uses shared radius/reduced-motion-aware pulse, exposing
-  only width/height. `HImage` supports cover (default)/contain, aspect ratio,
-  and loader/error slots.
+- **Feedback/media:** `HProgressBar` uses a 4px `secondary-container` track and
+  `primary` indicator with a stop marker, with a default `value` slot or
+  `showPercent` below; indeterminate progress hides unknown percentages. Circular
+  progress uses the same roles and retains size presets. `HSkeleton` uses
+  `surface-container-highest` with a reduced-motion-aware pulse, exposing only
+  width/height. `HImage` uses `surface-container-highest` for loader/error states
+  and supports cover (default)/contain, aspect ratio, and loader/error slots.
 
 ## Design language
 
-Use solid fills, borders, and spacing, without gradients or decorative shadows.
-[Shared styles](../../src/libs/ui/styles/ui.css) define palette values, sizing, corners,
-layers, and motion; use their tokens rather than one-off colors, fonts, or dimensions.
+Use Material Design 3 Expressive roles, state layers, shape, elevation, and motion.
+The [shared stylesheet](../../src/libs/ui/styles/ui.css) imports the generated
+scheme and defines design tokens; use them instead of one-off colors, fonts, or
+dimensions.
 
-- Color props map explicit tokens; arbitrary CSS colors are unsupported and invalid
-  values fall back to primary. `HActionColor`: primary, secondary, success, info,
-  danger, warning; `HStatusColor` excludes secondary. Icons accept `HColor` and
-  otherwise inherit foreground. Use camelCase in props (`backgroundElement`),
-  kebab-case in CSS/Tailwind (`--color-background-element`, `bg-background-element`).
-- `HButton` variants are solid (default), outlined, and quiet; all use shared
-  control radius, including icon actions. No round buttons, border overrides,
-  tinted/gradient variants. Segments use a fixed frame with solid selected/quiet
-  unselected actions. Cards/dialogs use backgroundSecondary, navigation
-  backgroundPrimary, readonly controls backgroundElement. Brand raspberry is
-  decorative CSS only; use danger for errors.
+- **Color roles:** use role classes such as `bg-primary`, `text-on-surface`,
+  `bg-surface-container-low`, and `border-outline-variant`. Every scheme includes
+  primary, secondary, tertiary, error, success, and warning foreground/container
+  pairs, plus surface/container, inverse, outline, scrim, and shadow roles.
+  Status semantics map `info` to `tertiary` and `danger` to `error`; success and
+  warning are harmonized custom colors. `HActionColor` includes primary, secondary,
+  tertiary, error, success, and warning; `HStatusColor` excludes secondary. `HColor`
+  is an allow-list of roles, not arbitrary CSS. Props use camelCase (`onSurface`),
+  while CSS variables/utilities use kebab-case (`--color-on-surface`,
+  `text-on-surface`). Invalid runtime values fall back to primary.
+- **Components:** `HButton` defaults to `filled`; supported variants are `filled`,
+  `tonal`, `outlined`, `text`, and `elevated`. Sizes are `xsmall`/32px,
+  `small`/40px (default), `medium`/56px, `large`/96px, and `xlarge`/136px.
+  Page-level floating actions use `medium`; `large`/`xlarge` are reserved for hero
+  or emphasis actions. Shapes are `round` and `square`. Icon-only controls retain
+  accessible names and all buttons have a 48px minimum touch target. Pressing
+  morphs the shape. `HButtonToggle`
+  is a connected group with 2px gaps, secondary selected roles, and filled selected
+  icons. `HCard` variants are elevated, filled, and outlined (default), with
+  `rounded-medium` geometry.
+- **Surfaces:** cards use `surface-container-low`, `surface-container-highest`, or
+  `surface` with `outline-variant`; dialogs use `surface-container-high`,
+  `rounded-extra-large`, level-3 elevation, and a 32% scrim. The navigation drawer
+  uses `surface-container-low`, an inner `rounded-large` edge, and a full-radius
+  `secondary-container` active indicator. Menus use `surface-container` and
+  level-2 elevation. Snackbars use `inverse-surface`; their action uses
+  `inverse-primary`, and error notifications include an error icon.
+- **Fields and selection:** `HInput`, `HTextarea`, and `HSelect` are 56px outlined
+  fields with 4px corners, floating labels, and body-small supporting/error text.
+  Select menus use 48px items and `secondary-container` selection. File upload uses
+  a dashed `outline-variant` border, `rounded-medium`, and a state layer.
+- **Feedback/media:** `HProgressBar` and `HProgressCircle` use a `primary` indicator
+  on a `secondary-container` track; the linear track is 4px with a gap and stop
+  marker. `HSkeleton` and image loader/error surfaces use
+  `surface-container-highest`. `HIcon` uses Material Symbols Outlined with the
+  variable `FILL` axis.
 
 ### Themes
 
-Root `data-theme` selects ten palettes; absence defaults to Haruna Light.
-Haruna and Classic offer light/dark variants; Legacy is light; Catppuccin Latte
-is light and Frappé/Macchiato/Mocha are dark; Tokyo Night is dark. Theme IDs and
-exact values live in shared styles. Haruna draws from the [logo](../../src/assets/logo.svg);
-external palette sources are [Vuestic](https://ui.vuestic.dev/styles/colors/),
-[Catppuccin](https://catppuccin.com/palette/), and
-[Tokyo Night](https://wixdaq.github.io/Tokyo-Night-Website/).
+Root `data-theme` selects one of ten seed-derived M3 schemes; absence defaults to
+Haruna Light. IDs remain stable for saved preferences. Haruna and Classic generate
+light/dark variants; Legacy and Catppuccin Latte are light; Catppuccin Frappé,
+Macchiato, Mocha, and Tokyo Night are dark. Seeds are declared in
+`src/modules/master/ThemeEntities.ts`: Haruna `#1e1b4b`, Classic `#143441`, Legacy
+`#154ec1`, Latte `#8839ef`, Frappé `#ca9ee6`, Macchiato `#c6a0f6`, Mocha `#cba6f7`,
+and Tokyo Night `#7aa2f7`.
 
-Keep semantic/selection/focus/backdrop colors in the palette, never feature-level
-dark-mode overrides. Catppuccin uses Mantle canvas, Base panels, Surface 0 selections/
-readonly controls, and Mauve actions. Preserve contrast overrides:
-`--color-<action>-foreground` controls solid text and `--color-<action>-text`
-quiet/outlined text, falling back to shared foreground/semantic colors.
-Legacy/Latte require darker success text and black on green; Legacy also uses
-black on info fills and primary blue for quiet info; Latte darkens quiet info.
-Dark palettes use light fills with dark action text. Preserve
-`--color-action-foreground`, warning foreground/text, and white `--color-text-inverted`.
+`scripts/generate-m3-themes.ts` uses `SchemeTonalSpot` and
+`@material/material-color-utilities` at development time to generate the committed
+`src/libs/ui/styles/m3-schemes.css`. It also harmonizes the success/warning custom
+colors and verifies each `themeColor` matches its generated `surface`. Run
+`npm run generate:m3-themes` after changing seeds or color generation. Theme
+selection still updates `data-theme`, `color-scheme`, local persistence, and the
+meta `theme-color`; canvas consumers re-read CSS roles after theme changes.
 
 The app theme service initializes before mount independently of authentication,
 persists per device, and updates root attributes immediately from Profile Appearance.
@@ -95,16 +120,22 @@ remain in `../../src/main.css`.
 
 ### Layout, typography, and accessibility
 
-- Shared `--h-*` tokens: controls 44px, compact buttons 36px, large buttons 48px;
-  coarse-pointer targets at least 44px. Control corners 8px, panel/dialog corners
-  12px; spacing follows 4px rhythm.
-- Roboto: body/fields/navigation/card titles 16px, buttons and sentence-case labels
-  14px, shell wordmark 22px. Legacy font utilities serve existing non-UI content.
+- Shape tokens: `rounded-extra-small` 4px, `rounded-small` 8px,
+  `rounded-medium` 12px, `rounded-large` 16px, `rounded-large-increased` 20px,
+  `rounded-extra-large` 28px, `rounded-extra-large-increased` 32px, and
+  `rounded-extra-extra-large` 48px. Spacing follows a 4px rhythm.
+- Roboto uses the M3 display/headline/title/body/label scales, each with large,
+  medium, and small sizes. Use the matching Tailwind token (for example,
+  `text-title-medium` or `text-body-large`) rather than arbitrary type sizes.
+- Elevation uses `shadow-level-1` through `shadow-level-5`. State-layer opacities
+  are 8% on hover and 10% on focus/press. Focus-visible uses a 3px secondary
+  outline with 2px offset. Motion uses `ease-spatial-*` for shape/size and
+  `ease-effects-*` for color/opacity; every animation and transition respects
+  `prefers-reduced-motion`.
 - Keep disabled controls legible; loading controls retain size, accessible names,
-  and duplicate-input protection. Preserve 2px blue focus outlines with 2px offset
-  and reduced-motion support.
-- The right drawer sits below the shared 64px header, fits 288px or viewport minus
-  32px, and makes background content inert.
+  and duplicate-input protection. The right drawer sits below the supplied header
+  offset, is at most 360px wide and fits the viewport minus 56px, and makes
+  background content inert.
 
 ## CSS integration
 

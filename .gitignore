@@ -27,6 +27,7 @@ coverage
 *.sln
 *.sw?
 .ai
+/.junie
 
 # .env
 .env.development

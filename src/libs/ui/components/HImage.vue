@@ -45,12 +45,12 @@ watch(
     />
     <div v-if="!loaded && !failed" class="absolute inset-0">
       <slot name="loader"
-        ><div class="h-pulse bg-background-element h-full w-full"
+        ><div class="h-pulse bg-surface-container-highest h-full w-full"
       /></slot>
     </div>
     <div
       v-if="failed || !src"
-      class="bg-background-element text-secondary flex h-full min-h-12 items-center justify-center"
+      class="bg-surface-container-highest text-on-surface-variant flex h-full min-h-12 items-center justify-center"
     >
       <slot name="error"
         ><span role="img" :aria-label="alt || 'Image unavailable'"

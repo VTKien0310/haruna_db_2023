@@ -48,9 +48,13 @@ const progress = computed(() =>
 <style scoped>
 .h-progress-circle {
   color: var(--color-primary);
+  --h-progress-track-color: var(--color-secondary-container);
+  --h-progress-indicator-color: var(--color-primary);
 }
 :global(.h-button .h-progress-circle) {
   color: inherit;
+  --h-progress-track-color: currentColor;
+  --h-progress-indicator-color: currentColor;
 }
 circle {
   fill: none;
@@ -58,9 +62,10 @@ circle {
   stroke-width: 3;
 }
 .h-progress-track {
-  opacity: 0.15;
+  stroke: var(--h-progress-track-color);
 }
 .h-progress-value {
+  stroke: var(--h-progress-indicator-color);
   stroke-linecap: round;
   transform: rotate(-90deg);
   transform-origin: center;

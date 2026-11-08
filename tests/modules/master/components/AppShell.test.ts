@@ -83,7 +83,7 @@ describe("App shell", () => {
       expect(router.currentRoute.value.name).toBe("master");
       expect(router.currentRoute.value.path).toBe("/");
 
-      await branding.get("span.font-semibold").trigger("click");
+      await branding.get("span.text-title-large").trigger("click");
       await flushPromises();
       expect(router.currentRoute.value.name).toBe("master");
       expect(

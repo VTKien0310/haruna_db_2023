@@ -71,7 +71,7 @@ const openUrl = (): void => {
       class="absolute right-1 bottom-10 flex flex-col content-center items-center justify-around"
     >
       <UpdateWebpageBookmarkLinkForm />
-      <h-button @click="deleteLink" icon="delete" class="m-1" color="danger" />
+      <h-button @click="deleteLink" icon="delete" class="m-1" color="error" />
       <NavigateToParentBookmarkDirectoryBtn />
     </div>
   </div>

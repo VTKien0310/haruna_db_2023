@@ -153,6 +153,7 @@ export type Database = {
           entry_type: string | null;
           id: string;
           no_deduction: number;
+          owner_id: string;
           updated_at: string;
         };
         ComputedFields: never;
@@ -162,6 +163,7 @@ export type Database = {
           entry_type?: string | null;
           id?: string;
           no_deduction?: number;
+          owner_id?: string;
           updated_at?: string;
         };
         Update: {
@@ -170,6 +172,7 @@ export type Database = {
           entry_type?: string | null;
           id?: string;
           no_deduction?: number;
+          owner_id?: string;
           updated_at?: string;
         };
         Relationships: [];
@@ -180,6 +183,9 @@ export type Database = {
           created_at: string;
           extended_balance: number;
           id: string;
+          original_annual_balance: number | null;
+          original_extended_balance: number | null;
+          original_seniority_balance: number | null;
           owner_id: string;
           seniority_balance: number;
           updated_at: string;
@@ -191,6 +197,9 @@ export type Database = {
           created_at?: string;
           extended_balance?: number;
           id?: string;
+          original_annual_balance?: number | null;
+          original_extended_balance?: number | null;
+          original_seniority_balance?: number | null;
           owner_id?: string;
           seniority_balance?: number;
           updated_at?: string;
@@ -201,6 +210,9 @@ export type Database = {
           created_at?: string;
           extended_balance?: number;
           id?: string;
+          original_annual_balance?: number | null;
+          original_extended_balance?: number | null;
+          original_seniority_balance?: number | null;
           owner_id?: string;
           seniority_balance?: number;
           updated_at?: string;
@@ -377,6 +389,28 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      user_special_permissions: {
+        Row: {
+          created_at: string;
+          id: number;
+          permission: number;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: number;
+          permission: number;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          permission?: number;
+          user_id?: string;
+        };
+        Relationships: [];
       };
       work_time_entries: {
         Row: {

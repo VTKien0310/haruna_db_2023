@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router";
 import { computed, onMounted, ref, type StyleValue, watch } from "vue";
 import { type Media, MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
-import type { Profile } from "@/modules/auth/ProfileEntities";
+import type { Profile } from "@/modules/auth/AuthEntities";
 import { IonPage } from "@ionic/vue";
 import {
   useGalleryListService,
@@ -247,7 +247,7 @@ watch(
             v-if="uploaderIsMe"
             @click="deleteMedia"
             icon="delete"
-            color="danger"
+            color="error"
           />
         </div>
       </div>
@@ -261,7 +261,8 @@ watch(
 }
 
 .detail-area {
-  background-color: var(--color-background-border);
-  border-radius: 20px;
+  border-radius: var(--radius-medium);
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface);
 }
 </style>
