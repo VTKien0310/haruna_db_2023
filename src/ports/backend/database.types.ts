@@ -390,6 +390,28 @@ export type Database = {
           },
         ];
       };
+      user_special_permissions: {
+        Row: {
+          created_at: string;
+          id: number;
+          permission: number;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: number;
+          permission: number;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          permission?: number;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       work_time_entries: {
         Row: {
           date: string;
