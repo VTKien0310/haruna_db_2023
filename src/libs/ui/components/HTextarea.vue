@@ -77,13 +77,14 @@ const rowCount = computed(() =>
     :loading="loading"
     :disabled="disabled"
     :readonly="readonly"
+    :filled="Boolean(modelValue)"
     :count="counter ? modelValue.length : undefined"
   >
     <textarea
       v-bind="nativeAttrs()"
       :id="controlId()"
       ref="control"
-      class="h-field-input text-text-primary h-full w-full min-w-0 flex-1 resize-none bg-transparent py-3 text-base outline-none"
+      class="h-field-input text-on-surface text-body-large min-h-12 w-full flex-1 resize-none bg-transparent outline-none"
       :value="modelValue"
       :rows="rowCount"
       :name="name"

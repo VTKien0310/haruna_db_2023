@@ -77,7 +77,7 @@ function remove(index: number): void {
 
 <template>
   <div
-    class="h-ui text-text-primary border-control-border bg-background-primary w-full rounded-(--h-control-radius) border border-dashed p-4"
+    class="h-ui h-state-layer text-on-surface border-outline-variant bg-surface-container-low rounded-medium w-full border border-dashed p-4"
     :class="{ 'h-upload-dragging': dragging && !disabled }"
     :aria-disabled="disabled"
     @dragover.prevent="dragging = !disabled"
@@ -101,22 +101,22 @@ function remove(index: number): void {
       :disabled="disabled"
       @change="add(($event.target as HTMLInputElement).files)"
     />
-    <p v-if="rejected" role="alert" class="text-danger mt-2">
+    <p v-if="rejected" role="alert" class="text-error text-body-small mt-2">
       Some files have an unsupported type.
     </p>
-    <ul v-if="modelValue.length" class="divide-background-border mt-4 divide-y">
+    <ul v-if="modelValue.length" class="divide-outline-variant mt-4 divide-y">
       <li
         v-for="(file, index) in modelValue"
         :key="index"
         class="flex items-center gap-3 py-2"
       >
         <span class="min-w-0 flex-1 truncate">{{ file.name }}</span>
-        <span class="text-secondary text-sm"
+        <span class="text-on-surface-variant text-body-small"
           >{{ (file.size / 1024).toFixed(1) }} KB</span
         >
         <HButton
           icon="close"
-          variant="quiet"
+          variant="text"
           :aria-label="`Remove ${file.name}`"
           :disabled="disabled"
           @click="remove(index)"
@@ -128,7 +128,7 @@ function remove(index: number): void {
 
 <style scoped>
 .h-upload-dragging {
-  background: var(--color-selection);
+  background: var(--color-secondary-container);
   border-color: var(--color-primary);
 }
 </style>

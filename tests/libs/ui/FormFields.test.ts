@@ -69,7 +69,18 @@ describe("HForm and fields", () => {
     expect(wrapper.get('[role="alert"]').text()).toBe("Required");
     expect(input.attributes("aria-invalid")).toBe("true");
     expect(wrapper.get("label").attributes("for")).toBe(input.attributes("id"));
+    expect(wrapper.get("label").classes()).toContain("h-control-label");
+    expect(wrapper.get(".h-field-control").attributes("aria-invalid")).toBe(
+      "true",
+    );
+    expect(wrapper.get('[role="alert"]').classes()).toContain("text-error");
+    expect(wrapper.get('[role="alert"]').classes()).toContain(
+      "text-body-small",
+    );
     await input.setValue("Valid");
+    expect(wrapper.get(".h-field-control").classes()).toContain(
+      "h-field-filled",
+    );
     await wrapper.get("textarea").setValue("Description");
     expect(form.vm.isValid).toBe(true);
     expect(form.vm.validate()).toBe(true);
@@ -134,12 +145,19 @@ describe("HForm and fields", () => {
     expect(textarea.attributes("disabled")).toBeDefined();
     expect(textarea.attributes("rows")).toBe("5");
     expect(textarea.classes()).toContain("resize-none");
+    expect(wrapper.get(".h-field-control").classes()).toContain(
+      "h-field-readonly",
+    );
+    expect(wrapper.get(".h-field-control").classes()).toContain(
+      "h-field-disabled",
+    );
     expect(wrapper.find('[role="progressbar"]').exists()).toBe(true);
     expect(wrapper.get('[role="progressbar"]').attributes("aria-label")).toBe(
       "Loading",
     );
     expect(wrapper.get("[aria-busy]").attributes("aria-busy")).toBe("true");
     expect(wrapper.text()).toContain("5");
+    expect(wrapper.find(".text-body-small").exists()).toBe(true);
     await wrapper.setProps({ loading: false });
     expect(wrapper.find('[role="progressbar"]').exists()).toBe(false);
     expect(wrapper.get("[aria-busy]").attributes("aria-busy")).toBe("false");

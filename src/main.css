@@ -1,4 +1,4 @@
-@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+@import "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1&display=swap";
 @import "https://fonts.googleapis.com/css2?family=Oxygen+Mono&family=Pacifico&family=Roboto:wght@400;500;600;700&family=Roboto+Slab&display=swap";
 
 @import "tailwindcss";
@@ -18,22 +18,26 @@
 body,
 ion-app {
   --ion-font-family: var(--h-font-family);
-  --ion-background-color: var(--color-background-secondary);
-  --ion-text-color: var(--color-text-primary);
-  --ion-border-color: var(--color-background-border);
+  --ion-background-color: var(--color-surface);
+  --ion-text-color: var(--color-on-surface);
+  --ion-border-color: var(--color-outline-variant);
   --ion-color-primary: var(--color-primary);
-  --ion-color-primary-contrast: var(--color-action-foreground);
+  --ion-color-primary-contrast: var(--color-on-primary);
+  --ion-color-secondary: var(--color-secondary);
+  --ion-color-secondary-contrast: var(--color-on-secondary);
+  --ion-color-tertiary: var(--color-tertiary);
+  --ion-color-tertiary-contrast: var(--color-on-tertiary);
   --ion-color-success: var(--color-success);
-  --ion-color-success-contrast: var(--color-action-foreground);
-  --ion-color-danger: var(--color-danger);
-  --ion-color-danger-contrast: var(--color-action-foreground);
+  --ion-color-success-contrast: var(--color-on-success);
+  --ion-color-danger: var(--color-error);
+  --ion-color-danger-contrast: var(--color-on-error);
   --ion-color-warning: var(--color-warning);
-  --ion-color-warning-contrast: var(--color-warning-foreground);
+  --ion-color-warning-contrast: var(--color-on-warning);
 }
 
 ion-app {
   font-family: var(--h-font-family);
   line-height: 1.5;
-  color: var(--color-text-primary);
-  background: var(--color-background-secondary);
+  color: var(--color-on-surface);
+  background: var(--color-surface);
 }

@@ -6,14 +6,14 @@ export class ToastService {
   error(message: string): void {
     this.notifications.toast({
       message: message,
-      color: "danger",
+      color: "error",
     });
   }
 
   info(message: string): void {
     this.notifications.toast({
       message: message,
-      color: "primary",
+      color: "tertiary",
     });
   }
 }

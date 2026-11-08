@@ -1,28 +1,17 @@
+@import "./m3-schemes.css";
+
 /* Shared geometry and motion; palettes follow the root data-theme attribute. */
 :root {
   color-scheme: light;
   --h-font-family: "Roboto", sans-serif;
-  --h-control-height: 2.75rem;
-  --h-control-radius: 0.5rem;
-  --h-panel-radius: 0.75rem;
-  --h-input-border-width: 1px;
-  --h-input-radius: var(--h-control-radius);
-  --h-card-title-size: 1rem;
-  --h-wordmark-size: 1.375rem;
-  --h-button-small-height: 2.25rem;
-  --h-button-large-height: 3rem;
-  --h-touch-target: 2.75rem;
-  --h-input-line-height: 1.5rem;
   --h-app-header-height: 4rem;
   --h-header-z-index: 40;
   --h-drawer-z-index: 60;
   --h-modal-z-index: 80;
   --h-modal-width: 37.5rem;
-  --h-overlay-color: rgb(20 52 65 / 24%);
   --h-dropdown-z-index: 90;
   --h-toast-z-index: 100;
-  --h-sidebar-width: 18rem;
-  --h-motion-duration: 0.2s;
+  --h-sidebar-width: min(360px, calc(100vw - 56px));
   --h-loader-duration: 1s;
   --h-pulse-duration: 1.5s;
 }
@@ -30,63 +19,98 @@
   font-family: var(--h-font-family);
 }
 .h-focus:focus-visible {
-  outline: 2px solid var(--color-focus);
+  outline: 3px solid var(--color-secondary);
   outline-offset: 2px;
 }
 .h-field-control {
-  min-height: var(--h-control-height);
-  border-radius: var(--h-input-radius);
-  background: var(--color-background-secondary);
-  border: var(--h-input-border-width) solid var(--color-control-border);
-  transition: border-color var(--h-motion-duration) ease;
+  position: relative;
+  min-height: 3.5rem;
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-extra-small);
+  background: var(--color-surface);
+  padding-inline: 1rem;
+  transition:
+    border-color var(--duration-effects-fast) var(--ease-effects-default),
+    background-color var(--duration-effects-fast) var(--ease-effects-default);
 }
 .h-field-control:focus-within {
-  border-color: var(--color-focus);
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
+  border: 2px solid var(--color-primary);
+  outline: none;
 }
 .h-field-control[aria-invalid="true"] {
-  border-color: var(--color-danger);
+  border-color: var(--color-error);
 }
-.h-field-readonly,
-.h-field-disabled {
-  background: var(--color-background-element);
+.h-field-control[aria-invalid="true"]:focus-within {
+  border-color: var(--color-error);
+}
+.h-field-readonly {
+  background: var(--color-surface-container-high);
 }
 .h-field-disabled {
-  color: var(--color-secondary);
+  border-color: color-mix(in srgb, var(--color-on-surface) 12%, transparent);
+  background: var(--color-disabled-container);
+  color: var(--color-disabled-content);
 }
 .h-field-control:has(textarea) {
-  min-height: 0;
+  min-height: 3.5rem;
+  align-items: flex-start;
+  padding-block: 0.5rem;
 }
 .h-field-input {
-  line-height: var(--h-input-line-height);
+  min-width: 0;
+  line-height: 1.5rem;
+  padding-block: 1rem 0.5rem;
+}
+.h-field-control:has(.h-control-label) .h-field-input::placeholder {
+  opacity: 0;
+}
+.h-field-control:focus-within:has(.h-control-label)
+  .h-field-input::placeholder {
+  opacity: 1;
 }
 .h-control-label {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 500;
-  margin-bottom: 0.25rem;
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  z-index: 1;
+  transform: translateY(-50%);
+  padding-inline: 0.25rem;
+  background: var(--color-surface);
+  color: var(--color-on-surface-variant);
+  font-size: 1rem;
+  line-height: 1.5rem;
+  pointer-events: none;
+  transition:
+    top var(--duration-effects-fast) var(--ease-effects-default),
+    color var(--duration-effects-fast) var(--ease-effects-default),
+    font-size var(--duration-effects-fast) var(--ease-effects-default);
+}
+.h-field-control:focus-within .h-control-label,
+.h-field-control.h-field-filled .h-control-label {
+  top: 0;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.h-field-control:focus-within .h-control-label {
+  color: var(--color-primary);
+}
+.h-field-control[aria-invalid="true"] .h-control-label {
+  color: var(--color-error);
+}
+.h-field-readonly .h-control-label {
+  background: var(--color-surface-container-high);
+}
+.h-field-disabled .h-control-label {
+  background: transparent;
+  color: var(--color-disabled-content);
+}
+.h-field-disabled .h-field-input {
+  color: var(--color-disabled-content);
 }
 .h-select-input {
-  min-height: calc(var(--h-control-height) - 2 * var(--h-input-border-width));
-}
-.h-segmented .h-button {
-  border: 0;
-  border-radius: 0;
-}
-.h-segmented .h-button + .h-button {
-  border-left: 1px solid var(--color-background-border);
-}
-.h-button:not(:disabled) {
-  transition:
-    background-color var(--h-motion-duration) ease,
-    border-color var(--h-motion-duration) ease;
-}
-@media (pointer: coarse) {
-  .h-button {
-    min-height: var(--h-touch-target);
-    min-width: var(--h-touch-target);
-  }
+  min-height: 3.25rem;
+  line-height: 1.5rem;
+  padding-block: 1rem 0.5rem;
 }
 .h-spinner {
   animation: h-spin var(--h-loader-duration) linear infinite;
@@ -115,6 +139,29 @@
     transform: translateX(350%);
   }
 }
+.h-state-layer {
+  position: relative;
+  isolation: isolate;
+}
+.h-state-layer::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  content: "";
+  pointer-events: none;
+}
+.h-state-layer:hover::after {
+  opacity: 0.08;
+}
+.h-state-layer:focus-visible::after,
+.h-state-layer:active::after {
+  opacity: 0.1;
+}
+.h-scrim {
+  background-color: color-mix(in srgb, var(--color-scrim) 32%, transparent);
+}
 @media (prefers-reduced-motion: reduce) {
   .h-ui,
   .h-ui *,
@@ -128,240 +175,104 @@
   }
 }
 
-/* Components resolve colors at runtime, so keep even tokens without utilities. */
 @theme static {
-  /* Haruna Light is also the CSS fallback before application initialization. */
-  --color-primary: #1e1b4b;
-  --color-secondary: #64748b;
-  --color-success: #0f766e;
-  --color-info: #2563eb;
-  --color-danger: #be123c;
-  --color-warning: #f59e0b;
-  --color-brand-amber: #f59e0b;
-  --color-brand-cyan: #0d9488;
-  --color-brand-raspberry: #eb305d;
-  --color-selection: #fef3c7;
-  --color-control-border: #64748b;
-  --color-background-primary: #f8fafc;
-  --color-background-secondary: #ffffff;
-  --color-background-element: #eef2f6;
-  --color-background-border: #cbd5e1;
-  --color-text-primary: #334155;
-  --color-text-inverted: #ffffff;
-  --color-action-foreground: #ffffff;
-  --color-warning-foreground: #1e1b4b;
-  --color-warning-text: #92400e;
-  --color-shadow: rgba(0, 0, 0, 0.12);
-  --color-focus: #2563eb;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --radius-extra-small: 4px;
+  --radius-small: 8px;
+  --radius-medium: 12px;
+  --radius-large: 16px;
+  --radius-large-increased: 20px;
+  --radius-extra-large: 28px;
+  --radius-extra-large-increased: 32px;
+  --radius-extra-extra-large: 48px;
+
+  --text-display-large: 3.5625rem;
+  --text-display-large--line-height: 4rem;
+  --text-display-large--letter-spacing: -0.015625rem;
+  --text-display-medium: 2.8125rem;
+  --text-display-medium--line-height: 3.25rem;
+  --text-display-medium--letter-spacing: -0.015625rem;
+  --text-display-small: 2.25rem;
+  --text-display-small--line-height: 2.75rem;
+  --text-display-small--letter-spacing: 0;
+  --text-headline-large: 2rem;
+  --text-headline-large--line-height: 2.5rem;
+  --text-headline-large--letter-spacing: 0;
+  --text-headline-medium: 1.75rem;
+  --text-headline-medium--line-height: 2.25rem;
+  --text-headline-medium--letter-spacing: 0;
+  --text-headline-small: 1.5rem;
+  --text-headline-small--line-height: 2rem;
+  --text-headline-small--letter-spacing: 0;
+  --text-title-large: 1.375rem;
+  --text-title-large--line-height: 1.75rem;
+  --text-title-large--letter-spacing: 0;
+  --text-title-medium: 1rem;
+  --text-title-medium--line-height: 1.5rem;
+  --text-title-medium--letter-spacing: 0.009375rem;
+  --text-title-small: 0.875rem;
+  --text-title-small--line-height: 1.25rem;
+  --text-title-small--letter-spacing: 0.00625rem;
+  --text-body-large: 1rem;
+  --text-body-large--line-height: 1.5rem;
+  --text-body-large--letter-spacing: 0.03125rem;
+  --text-body-medium: 0.875rem;
+  --text-body-medium--line-height: 1.25rem;
+  --text-body-medium--letter-spacing: 0.015625rem;
+  --text-body-small: 0.75rem;
+  --text-body-small--line-height: 1rem;
+  --text-body-small--letter-spacing: 0.025rem;
+  --text-label-large: 0.875rem;
+  --text-label-large--line-height: 1.25rem;
+  --text-label-large--letter-spacing: 0.00625rem;
+  --text-label-medium: 0.75rem;
+  --text-label-medium--line-height: 1rem;
+  --text-label-medium--letter-spacing: 0.03125rem;
+  --text-label-small: 0.6875rem;
+  --text-label-small--line-height: 1rem;
+  --text-label-small--letter-spacing: 0.03125rem;
+
+  --shadow-level-1:
+    0 1px 2px 0 color-mix(in srgb, var(--color-shadow) 30%, transparent),
+    0 1px 3px 1px color-mix(in srgb, var(--color-shadow) 15%, transparent);
+  --shadow-level-2:
+    0 1px 2px 0 color-mix(in srgb, var(--color-shadow) 30%, transparent),
+    0 2px 6px 2px color-mix(in srgb, var(--color-shadow) 15%, transparent);
+  --shadow-level-3:
+    0 1px 3px 0 color-mix(in srgb, var(--color-shadow) 30%, transparent),
+    0 4px 8px 3px color-mix(in srgb, var(--color-shadow) 15%, transparent);
+  --shadow-level-4:
+    0 2px 3px 0 color-mix(in srgb, var(--color-shadow) 30%, transparent),
+    0 6px 10px 4px color-mix(in srgb, var(--color-shadow) 15%, transparent);
+  --shadow-level-5:
+    0 4px 4px 0 color-mix(in srgb, var(--color-shadow) 30%, transparent),
+    0 8px 12px 6px color-mix(in srgb, var(--color-shadow) 15%, transparent);
+
+  --ease-spatial-fast: cubic-bezier(0.42, 1.67, 0.21, 0.9);
+  --ease-spatial-default: cubic-bezier(0.38, 1.21, 0.22, 1);
+  --ease-effects-fast: cubic-bezier(0.31, 0.94, 0.34, 1);
+  --ease-effects-default: cubic-bezier(0.34, 0.8, 0.34, 1);
+  --duration-spatial-fast: 350ms;
+  --duration-spatial-default: 500ms;
+  --duration-effects-fast: 150ms;
+  --duration-effects-default: 200ms;
+
+  --color-disabled-container: color-mix(
+    in srgb,
+    var(--color-on-surface) 10%,
+    transparent
+  );
+  --color-disabled-content: color-mix(
+    in srgb,
+    var(--color-on-surface) 38%,
+    transparent
+  );
 
   --breakpoint-sm: 640px;
   --breakpoint-md: 1024px;
   --breakpoint-lg: 1440px;
   --breakpoint-xl: 1920px;
-}
-
-:root[data-theme="classic-light"] {
-  --color-primary: #143441;
-  --color-secondary: #657786;
-  --color-success: #276b4c;
-  --color-info: #2276bb;
-  --color-danger: #b31e48;
-  --color-warning: #febe40;
-  --color-brand-amber: #febe40;
-  --color-brand-cyan: #2bb3cd;
-  --color-selection: #fff2ce;
-  --color-control-border: #7c8f9b;
-  --color-background-primary: #f7f9fa;
-  --color-background-element: #ecf1f4;
-  --color-background-border: #cbd5dc;
-  --color-text-primary: #394c5b;
-  --color-warning-foreground: #143441;
-  --color-warning-text: #143441;
-  --color-focus: #2276bb;
-}
-
-:root[data-theme$="-dark"] {
-  color-scheme: dark;
-  --color-secondary: #cbd5e1;
-  --color-success: #6ee7b7;
-  --color-info: #93c5fd;
-  --color-danger: #fda4af;
-  --color-warning: #fbbf24;
-  --color-brand-amber: #fbbf24;
-  --color-brand-raspberry: #fb7185;
-  --color-control-border: #94a3b8;
-  --color-background-primary: #0f172a;
-  --color-background-element: #334155;
-  --color-background-border: #64748b;
-  --color-text-primary: #e2e8f0;
-  --color-action-foreground: #0f172a;
-  --color-warning-foreground: #0f172a;
-  --color-warning-text: #fbbf24;
-  --color-shadow: rgba(0, 0, 0, 0.4);
-  --color-focus: #93c5fd;
-  --h-overlay-color: rgb(0 0 0 / 64%);
-}
-
-:root[data-theme="haruna-dark"] {
-  --color-primary: #bfdbfe;
-  --color-brand-cyan: #5eead4;
-  --color-selection: #3b3156;
-  --color-background-secondary: #1e1b4b;
-}
-
-:root[data-theme="classic-dark"] {
-  --color-primary: #b8d9e6;
-  --color-brand-cyan: #67d4e8;
-  --color-selection: #46391f;
-  --color-background-secondary: #1e293b;
-}
-
-/* Vuestic UI light: https://ui.vuestic.dev/styles/colors/ */
-:root[data-theme="legacy"] {
-  --color-primary: #154ec1;
-  --color-secondary: #666e75;
-  --color-success: #3d9209;
-  --color-info: #158de3;
-  --color-danger: #e42222;
-  --color-warning: #ffd43a;
-  --color-brand-amber: #ffd43a;
-  --color-brand-cyan: #158de3;
-  --color-brand-raspberry: #e42222;
-  --color-selection: #dee5f2;
-  --color-control-border: #666e75;
-  --color-background-primary: #ffffff;
-  --color-background-secondary: #ffffff;
-  --color-background-element: #ecf0f1;
-  --color-background-border: #dee5f2;
-  --color-text-primary: #262824;
-  --color-warning-foreground: #262824;
-  --color-warning-text: #262824;
-  --color-success-foreground: #000000;
-  --color-success-text: color-mix(in srgb, #3d9209 80%, black);
-  --color-info-foreground: #000000;
-  --color-info-text: #154ec1;
-  --color-focus: #49a8ff;
-  --h-overlay-color: rgb(38 40 36 / 24%);
-}
-
-/* Catppuccin flavors: https://catppuccin.com/palette/ */
-:root[data-theme="catppuccin-latte"] {
-  --color-primary: #8839ef;
-  --color-secondary: #5c5f77;
-  --color-success: #40a02b;
-  --color-info: #1e66f5;
-  --color-danger: #d20f39;
-  --color-warning: #df8e1d;
-  --color-brand-amber: #df8e1d;
-  --color-brand-cyan: #179299;
-  --color-brand-raspberry: #ea76cb;
-  --color-selection: #ccd0da;
-  --color-control-border: #7c7f93;
-  --color-background-primary: #e6e9ef;
-  --color-background-secondary: #eff1f5;
-  --color-background-element: #dce0e8;
-  --color-background-border: #bcc0cc;
-  --color-text-primary: #4c4f69;
-  --color-success-foreground: #000000;
-  --color-success-text: color-mix(in srgb, #40a02b 75%, black);
-  --color-info-text: color-mix(in srgb, #1e66f5 90%, black);
-  --color-warning-foreground: #000000;
-  --color-warning-text: #4c4f69;
-  --color-focus: #1e66f5;
-  --h-overlay-color: rgb(76 79 105 / 24%);
-}
-
-:root[data-theme="catppuccin-frappe"],
-:root[data-theme="catppuccin-macchiato"],
-:root[data-theme="catppuccin-mocha"],
-:root[data-theme="tokyo-night"] {
-  color-scheme: dark;
-  --color-action-foreground: var(--color-background-primary);
-  --color-warning-foreground: var(--color-background-primary);
-  --color-warning-text: var(--color-warning);
-  --color-shadow: rgba(0, 0, 0, 0.4);
-  --h-overlay-color: rgb(0 0 0 / 64%);
-}
-
-:root[data-theme="catppuccin-frappe"] {
-  --color-primary: #ca9ee6;
-  --color-secondary: #b5bfe2;
-  --color-success: #a6d189;
-  --color-info: #8caaee;
-  --color-danger: #e78284;
-  --color-warning: #e5c890;
-  --color-brand-amber: #e5c890;
-  --color-brand-cyan: #81c8be;
-  --color-brand-raspberry: #f4b8e4;
-  --color-selection: #414559;
-  --color-control-border: #838ba7;
-  --color-background-primary: #292c3c;
-  --color-background-secondary: #303446;
-  --color-background-element: #414559;
-  --color-background-border: #51576d;
-  --color-text-primary: #c6d0f5;
-  --color-focus: #8caaee;
-}
-
-:root[data-theme="catppuccin-macchiato"] {
-  --color-primary: #c6a0f6;
-  --color-secondary: #b8c0e0;
-  --color-success: #a6da95;
-  --color-info: #8aadf4;
-  --color-danger: #ed8796;
-  --color-warning: #eed49f;
-  --color-brand-amber: #eed49f;
-  --color-brand-cyan: #8bd5ca;
-  --color-brand-raspberry: #f5bde6;
-  --color-selection: #363a4f;
-  --color-control-border: #8087a2;
-  --color-background-primary: #1e2030;
-  --color-background-secondary: #24273a;
-  --color-background-element: #363a4f;
-  --color-background-border: #494d64;
-  --color-text-primary: #cad3f5;
-  --color-focus: #8aadf4;
-}
-
-:root[data-theme="catppuccin-mocha"] {
-  --color-primary: #cba6f7;
-  --color-secondary: #bac2de;
-  --color-success: #a6e3a1;
-  --color-info: #89b4fa;
-  --color-danger: #f38ba8;
-  --color-warning: #f9e2af;
-  --color-brand-amber: #f9e2af;
-  --color-brand-cyan: #94e2d5;
-  --color-brand-raspberry: #f5c2e7;
-  --color-selection: #313244;
-  --color-control-border: #7f849c;
-  --color-background-primary: #181825;
-  --color-background-secondary: #1e1e2e;
-  --color-background-element: #313244;
-  --color-background-border: #45475a;
-  --color-text-primary: #cdd6f4;
-  --color-focus: #89b4fa;
-}
-
-/* Tokyo Night: https://wixdaq.github.io/Tokyo-Night-Website/ */
-:root[data-theme="tokyo-night"] {
-  --color-primary: #7aa2f7;
-  --color-secondary: #a9b1d6;
-  --color-success: #9ece6a;
-  --color-info: #7dcfff;
-  --color-danger: #f7768e;
-  --color-warning: #e0af68;
-  --color-brand-amber: #e0af68;
-  --color-brand-cyan: #73daca;
-  --color-brand-raspberry: #bb9af7;
-  --color-selection: #414868;
-  --color-control-border: #9aa5ce;
-  --color-background-primary: #1a1b26;
-  --color-background-secondary: #1a1b26;
-  --color-background-element: #414868;
-  --color-background-border: #565f89;
-  --color-text-primary: #c0caf5;
-  --color-focus: #7aa2f7;
 }
 
 @utility grid-cols-16 {
@@ -437,8 +348,8 @@
 body {
   font-family: var(--h-font-family);
   line-height: 1.5;
-  color: var(--color-text-primary);
-  background: var(--color-background-secondary);
+  color: var(--color-on-surface);
+  background: var(--color-surface);
 }
 
 .invisible-scroll-bar {

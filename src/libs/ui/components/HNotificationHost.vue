@@ -2,7 +2,6 @@
 import HButton from "./HButton.vue";
 import HModal from "./HModal.vue";
 import HIcon from "./HIcon.vue";
-import { colorVariable } from "../types/UiTypes";
 import type { NotificationService } from "../services/NotificationService";
 const props = defineProps<{ service: NotificationService }>();
 const toasts = props.service.toasts;
@@ -16,15 +15,14 @@ const confirmations = props.service.confirmations;
     <div
       v-for="toast in toasts"
       :key="toast.id"
-      class="bg-background-secondary text-text-primary border-background-border pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-(--h-control-radius) border border-l-4 py-2 pr-2 pl-3"
-      :style="{ borderLeftColor: colorVariable(toast.color ?? 'primary') }"
-      :role="toast.color === 'danger' ? 'alert' : 'status'"
+      class="h-snackbar bg-inverse-surface text-inverse-on-surface shadow-level-3 rounded-extra-small pointer-events-auto flex w-full max-w-sm items-center gap-3 px-3 py-2"
+      :role="toast.color === 'error' ? 'alert' : 'status'"
     >
       <HIcon
         :name="
           toast.color === 'success'
             ? 'check_circle'
-            : toast.color === 'danger'
+            : toast.color === 'error'
               ? 'error'
               : toast.color === 'warning'
                 ? 'warning'
@@ -36,8 +34,9 @@ const confirmations = props.service.confirmations;
       <span class="min-w-0 flex-1 break-words">{{ toast.message }}</span
       ><HButton
         icon="close"
-        variant="quiet"
+        variant="text"
         color="primary"
+        class="h-snackbar-action"
         aria-label="Dismiss notification"
         @click="service.dismissToast(toast.id)"
       />
@@ -56,3 +55,9 @@ const confirmations = props.service.confirmations;
     @cancel="service.settle(entry.id, false)"
   />
 </template>
+
+<style scoped>
+.h-snackbar-action {
+  color: var(--color-inverse-primary);
+}
+</style>

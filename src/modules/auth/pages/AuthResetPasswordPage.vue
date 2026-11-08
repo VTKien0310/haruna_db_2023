@@ -76,20 +76,20 @@ function requestNewResetLink() {
 <template>
   <ion-page>
     <div
-      class="bg-background-primary flex h-full w-full flex-col items-center justify-center overflow-y-auto px-4 py-8"
+      class="bg-surface flex h-full w-full flex-col items-center justify-center overflow-y-auto px-4 py-8"
     >
       <div class="text-primary flex items-center gap-3">
         <img :src="logo" alt="" class="h-14 w-14" />
-        <h1 class="text-3xl font-semibold">Haruna</h1>
+        <h1 class="text-headline-medium font-normal">Haruna</h1>
       </div>
 
       <h-form
         v-if="availability === 'ready'"
         ref="resetPasswordForm"
         @submit.prevent="handleResetPassword"
-        class="bg-background-secondary border-background-border mt-8 flex w-full max-w-sm flex-col items-center justify-center rounded-(--h-panel-radius) border p-6"
+        class="bg-surface-container-low border-outline-variant rounded-medium mt-8 flex w-full max-w-sm flex-col items-center justify-center border p-6"
       >
-        <h2 class="text-text-primary text-xl font-semibold">
+        <h2 class="text-on-surface text-title-medium font-medium">
           {{ t("elements.resetPasswordTitle") }}
         </h2>
 
@@ -122,9 +122,9 @@ function requestNewResetLink() {
 
       <div
         v-else-if="availability === 'invalid'"
-        class="bg-background-secondary border-background-border mt-8 flex w-full max-w-sm flex-col items-center justify-center rounded-(--h-panel-radius) border p-6"
+        class="bg-surface-container-low border-outline-variant rounded-medium mt-8 flex w-full max-w-sm flex-col items-center justify-center border p-6"
       >
-        <p class="text-text-primary text-center">
+        <p class="text-on-surface text-center">
           {{ t("elements.resetLinkInvalid") }}
         </p>
 

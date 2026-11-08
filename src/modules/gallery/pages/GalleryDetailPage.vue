@@ -247,7 +247,7 @@ watch(
             v-if="uploaderIsMe"
             @click="deleteMedia"
             icon="delete"
-            color="danger"
+            color="error"
           />
         </div>
       </div>
@@ -261,7 +261,8 @@ watch(
 }
 
 .detail-area {
-  background-color: var(--color-background-border);
-  border-radius: 20px;
+  border-radius: var(--radius-medium);
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface);
 }
 </style>

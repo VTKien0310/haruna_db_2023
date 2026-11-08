@@ -84,7 +84,7 @@ const submitForm = async (): Promise<void> => {
     @click="triggerShowForm"
     :icon="formIcon"
     class="m-1"
-    :variant="formStyleIsPrimary ? 'solid' : 'outlined'"
+    :variant="formStyleIsPrimary ? 'filled' : 'outlined'"
   />
 
   <h-modal

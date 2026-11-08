@@ -161,19 +161,20 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="anchor" class="h-ui text-text-primary relative min-w-0">
-    <label v-if="label" :for="id" class="h-control-label block">{{
-      label
-    }}</label>
+  <div ref="anchor" class="h-ui text-on-surface relative min-w-0">
     <div
       class="h-field-control flex items-center gap-2 px-3"
-      :class="{ 'h-field-disabled': disabled }"
+      :class="{
+        'h-field-disabled': disabled || loading,
+        'h-field-filled': Boolean(selected || search),
+      }"
       :aria-busy="loading"
     >
+      <label v-if="label" :for="id" class="h-control-label">{{ label }}</label>
       <input
         :id="id"
         ref="input"
-        class="h-select-input w-full min-w-0 bg-transparent outline-none"
+        class="h-select-input text-on-surface text-body-large w-full min-w-0 flex-1 bg-transparent outline-none"
         role="combobox"
         :aria-label="label"
         :aria-describedby="
@@ -215,7 +216,7 @@ onUnmounted(() => {
         ref="list"
         role="listbox"
         :aria-label="label"
-        class="h-ui text-text-primary border-control-border bg-background-secondary fixed z-(--h-dropdown-z-index) overflow-y-auto rounded-(--h-control-radius) border p-1"
+        class="h-ui text-on-surface border-outline-variant bg-surface-container shadow-level-2 rounded-medium fixed z-(--h-dropdown-z-index) max-h-80 overflow-y-auto border p-1"
         @pointerdown.prevent
       >
         <div
@@ -224,7 +225,7 @@ onUnmounted(() => {
           :key="choice.value"
           role="option"
           :aria-selected="choice.value === modelValue"
-          class="flex min-h-(--h-control-height) cursor-pointer items-center rounded-(--h-control-radius) px-3 py-2"
+          class="h-state-layer rounded-small text-body-large flex min-h-12 cursor-pointer items-center px-3"
           :class="{
             'h-select-selected': choice.value === modelValue,
             'h-select-highlighted': index === highlighted,
@@ -237,7 +238,7 @@ onUnmounted(() => {
         <div
           v-if="!visible.length"
           role="status"
-          class="text-secondary px-3 py-2"
+          class="text-on-surface-variant text-body-medium px-3 py-2"
         >
           {{ options.length ? "No options found" : "No options" }}
         </div>
@@ -248,11 +249,11 @@ onUnmounted(() => {
 
 <style scoped>
 .h-select-highlighted {
-  background: var(--color-background-element);
+  background: var(--color-surface-container-high);
 }
 .h-select-selected {
-  background: var(--color-selection);
-  color: var(--color-primary);
+  background: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
   font-weight: 500;
 }
 </style>

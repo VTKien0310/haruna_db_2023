@@ -20,7 +20,7 @@ const useThemeService = () => {
     document,
     () => window.localStorage,
     (message) => {
-      ui.toast({ message, color: "danger" });
+      ui.toast({ message, color: "error" });
     },
   );
 };

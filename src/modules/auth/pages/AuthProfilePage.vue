@@ -114,7 +114,7 @@ onMounted(() => {
             class="mt-4 w-full"
           />
 
-          <p class="text-secondary mt-2 w-full text-sm">
+          <p class="text-on-surface-variant text-body-small mt-2 w-full">
             {{ t("elements.workStartDateInfo") }}
           </p>
 
@@ -149,7 +149,7 @@ onMounted(() => {
           @click="handleLogout"
           icon="logout"
           class="w-full"
-          color="danger"
+          color="error"
         />
         <ThemeSelector />
       </div>

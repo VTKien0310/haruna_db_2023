@@ -10,7 +10,7 @@ withDefaults(
 <template>
   <div
     aria-hidden="true"
-    class="h-ui h-pulse bg-background-element rounded-(--h-control-radius)"
+    class="h-ui h-pulse bg-surface-container-highest rounded-small"
     :style="{ width, height }"
   />
 </template>

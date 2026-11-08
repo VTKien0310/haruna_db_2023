@@ -1,6 +1,6 @@
 <script setup lang="ts"></script>
 <template>
-  <div class="px-5 pt-5 text-(length:--h-card-title-size) font-semibold">
+  <div class="text-on-surface text-title-medium px-5 pt-5 font-medium">
     <slot />
   </div>
 </template>

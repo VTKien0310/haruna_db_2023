@@ -40,17 +40,17 @@ function handleLogin() {
 <template>
   <ion-page>
     <div
-      class="bg-background-primary flex h-full w-full flex-col items-center justify-center overflow-y-auto px-4 py-8"
+      class="bg-surface flex h-full w-full flex-col items-center justify-center overflow-y-auto px-4 py-8"
     >
       <div class="text-primary flex items-center gap-3">
         <img :src="logo" alt="" class="h-14 w-14" />
-        <h1 class="text-3xl font-semibold">Haruna</h1>
+        <h1 class="text-headline-medium font-normal">Haruna</h1>
       </div>
 
       <h-form
         ref="loginForm"
         @submit.prevent="handleLogin"
-        class="bg-background-secondary border-background-border mt-8 flex w-full max-w-sm flex-col items-center justify-center rounded-(--h-panel-radius) border p-6"
+        class="bg-surface-container-low border-outline-variant rounded-medium mt-8 flex w-full max-w-sm flex-col items-center justify-center border p-6"
       >
         <h-input
           v-model="loginFormContent.email"
@@ -78,7 +78,7 @@ function handleLogin() {
 
         <h-button
           type="button"
-          variant="quiet"
+          variant="text"
           class="mt-2 w-full"
           @click="authenticationService.openForgotPassword()"
         >

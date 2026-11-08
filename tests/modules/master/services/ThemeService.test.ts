@@ -25,7 +25,9 @@ describe("ThemeService", () => {
         document
           .querySelector('meta[name="theme-color"]')
           ?.getAttribute("content"),
-      ).toBe("#ffffff");
+      ).toBe(
+        THEME_OPTIONS.find((theme) => theme.id === "haruna-light")?.themeColor,
+      );
       expect(storage.setItem).not.toHaveBeenCalled();
     },
   );

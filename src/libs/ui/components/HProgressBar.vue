@@ -34,16 +34,26 @@ const percentage = computed(() =>
     :aria-valuemax="maximum"
     :aria-valuenow="indeterminate ? undefined : value"
   >
-    <div class="bg-background-element h-2 overflow-hidden rounded-full">
+    <div
+      class="h-progress-track bg-secondary-container relative h-1 overflow-hidden rounded-full"
+    >
       <div
-        class="bg-brand-cyan h-full rounded-full"
+        class="h-progress-indicator bg-primary h-full rounded-full"
         :class="{ 'h-progress-indeterminate': indeterminate }"
-        :style="{ width: indeterminate ? '30%' : `${percentage}%` }"
+        :style="{
+          width: indeterminate ? '30%' : `max(0px, calc(${percentage}% - 8px))`,
+        }"
+      />
+      <span
+        v-if="!indeterminate && percentage > 0"
+        aria-hidden="true"
+        class="h-progress-stop bg-primary absolute top-1/2 h-1 w-1 -translate-x-full -translate-y-1/2 rounded-full"
+        :style="{ left: `${percentage}%` }"
       />
     </div>
     <div
       v-if="slots.default || (showPercent && !indeterminate)"
-      class="text-text-primary mt-1 text-right text-sm"
+      class="text-on-surface text-body-small mt-1 text-right"
     >
       <slot :value="modelValue">{{ Math.round(percentage) }}%</slot>
     </div>

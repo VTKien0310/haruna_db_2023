@@ -49,7 +49,7 @@ onMounted(() => {
       v-if="mediaIsVideo"
       name="videocam"
       class="absolute right-1 bottom-1"
-      color="backgroundElement"
+      color="onSurfaceVariant"
     />
   </div>
 </template>

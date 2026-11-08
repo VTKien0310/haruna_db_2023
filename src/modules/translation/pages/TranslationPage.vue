@@ -135,7 +135,7 @@ onIonViewDidEnter(async () => {
 
 <template>
   <ion-page>
-    <div class="bg-background-primary h-full overflow-y-auto">
+    <div class="bg-surface h-full overflow-y-auto">
       <div class="mx-auto flex w-full max-w-6xl flex-col px-3 pt-3 pb-6">
         <!-- header -->
         <div class="flex flex-row flex-wrap items-center justify-end gap-2">
@@ -165,7 +165,7 @@ onIonViewDidEnter(async () => {
 
         <!-- language selection bar -->
         <div
-          class="border-background-border bg-background-secondary mt-4 flex flex-col items-stretch gap-4 rounded-(--h-panel-radius) border p-4 md:flex-row md:items-center"
+          class="border-outline-variant bg-surface-container-low rounded-medium mt-4 flex flex-col items-stretch gap-4 border p-4 md:flex-row md:items-center"
         >
           <h-select
             v-model="sourceLanguage"
@@ -193,10 +193,10 @@ onIonViewDidEnter(async () => {
         <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
           <!-- source panel -->
           <div
-            class="border-background-border bg-background-secondary flex flex-col rounded-(--h-panel-radius) border p-4"
+            class="border-outline-variant bg-surface-container-low rounded-medium flex flex-col border p-4"
           >
             <div class="mb-2 flex h-8 flex-row items-center justify-between">
-              <span class="text-text-primary font-bold">{{
+              <span class="text-on-surface text-title-medium font-medium">{{
                 t("elements.sourceTextTitle")
               }}</span>
             </div>
@@ -210,15 +210,15 @@ onIonViewDidEnter(async () => {
 
           <!-- output panel -->
           <div
-            class="border-background-border bg-background-secondary flex flex-col rounded-(--h-panel-radius) border p-4"
+            class="border-outline-variant bg-surface-container-low rounded-medium flex flex-col border p-4"
           >
             <div class="mb-2 flex h-8 flex-row items-center justify-between">
-              <span class="text-text-primary font-bold">{{
+              <span class="text-on-surface text-title-medium font-medium">{{
                 t("elements.translationTitle")
               }}</span>
               <h-button
                 v-if="translatedText"
-                variant="quiet"
+                variant="text"
                 size="small"
                 icon="content_copy"
                 :aria-label="t('elements.copyTranslationLabel')"
@@ -238,7 +238,7 @@ onIonViewDidEnter(async () => {
         <!-- translation histories -->
         <div class="mt-3 flex flex-col">
           <div class="mb-2 flex h-8 flex-row items-center justify-between">
-            <span class="text-text-primary font-bold">{{
+            <span class="text-on-surface text-title-medium font-medium">{{
               t("elements.historyTitle")
             }}</span>
           </div>
@@ -249,7 +249,7 @@ onIonViewDidEnter(async () => {
             v-if="
               !isFetchingHistories && translationStore.histories.length === 0
             "
-            class="text-secondary border-background-border bg-background-secondary flex flex-row items-center justify-center rounded-(--h-panel-radius) border p-6"
+            class="text-on-surface-variant border-outline-variant bg-surface-container-low rounded-medium flex flex-row items-center justify-center border p-6"
           >
             {{ t("messages.noTranslationHistory") }}
           </div>
@@ -259,7 +259,7 @@ onIonViewDidEnter(async () => {
               v-for="record in translationStore.histories"
               :key="record.id"
               @click="fillFromHistory(record)"
-              class="border-background-border bg-background-secondary hover:bg-background-element flex cursor-pointer flex-col gap-1 rounded-(--h-control-radius) border p-3 transition-colors"
+              class="h-state-layer border-outline-variant bg-surface-container-low rounded-small flex cursor-pointer flex-col gap-1 border p-3 transition-colors"
               :class="{
                 'pointer-events-none opacity-50': isHistoryRecordActive(record),
               }"
@@ -268,10 +268,10 @@ onIonViewDidEnter(async () => {
                 {{ resolveLanguageName(record.source_language) }} →
                 {{ resolveLanguageName(record.target_language) }}
               </span>
-              <span class="text-text-primary truncate">
+              <span class="text-on-surface truncate">
                 {{ record.source_text }}
               </span>
-              <span class="text-secondary truncate">
+              <span class="text-on-surface-variant truncate">
                 {{ record.translation }}
               </span>
             </div>

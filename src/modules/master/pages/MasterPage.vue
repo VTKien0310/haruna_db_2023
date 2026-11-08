@@ -195,7 +195,7 @@ onIonViewDidEnter(async () => {
                 translationStore.hasLoadedLatestHistories &&
                 translationStore.latestHistories.length === 0
               "
-              class="text-secondary flex flex-row items-center justify-center p-3"
+              class="text-on-surface-variant flex flex-row items-center justify-center p-3"
             >
               {{ t("messages.noTranslationHistory") }}
             </div>
@@ -205,15 +205,15 @@ onIonViewDidEnter(async () => {
                 v-for="record in translationStore.latestHistories"
                 :key="record.id"
                 @click="navigateToTranslationHistory(record.id)"
-                class="border-background-border bg-background-secondary hover:bg-background-element flex cursor-pointer flex-col gap-1 rounded-(--h-control-radius) border p-3 transition-colors"
+                class="h-state-layer border-outline-variant bg-surface-container-low rounded-small flex cursor-pointer flex-col gap-1 border p-3 transition-colors"
               >
                 <span class="text-primary text-sm font-bold">
                   {{ record.source_language }} → {{ record.target_language }}
                 </span>
-                <span class="text-text-primary truncate">
+                <span class="text-on-surface truncate">
                   {{ record.source_text }}
                 </span>
-                <span class="text-secondary truncate">
+                <span class="text-on-surface-variant truncate">
                   {{ record.translation }}
                 </span>
               </div>

@@ -8,6 +8,7 @@ withDefaults(
     loading?: boolean;
     disabled?: boolean;
     readonly?: boolean;
+    filled?: boolean;
     count?: number;
   }>(),
   { loading: false, disabled: false, readonly: false },
@@ -15,16 +16,20 @@ withDefaults(
 </script>
 
 <template>
-  <div class="h-ui h-text-field text-text-primary inline-flex min-w-0 flex-col">
-    <label v-if="label" :for="controlId" class="h-control-label">{{
-      label
-    }}</label>
+  <div class="h-ui h-text-field text-on-surface inline-flex min-w-0 flex-col">
     <div
-      class="h-field-control flex min-w-0 flex-1 items-center gap-2 px-3"
-      :class="{ 'h-field-readonly': readonly, 'h-field-disabled': disabled }"
+      class="h-field-control flex min-w-0 flex-1 items-center gap-2"
+      :class="{
+        'h-field-readonly': readonly,
+        'h-field-disabled': disabled,
+        'h-field-filled': filled,
+      }"
       :aria-invalid="errors.length > 0"
       :aria-busy="loading"
     >
+      <label v-if="label" :for="controlId" class="h-control-label">{{
+        label
+      }}</label>
       <slot />
       <HProgressCircle
         v-if="loading"
@@ -37,14 +42,14 @@ withDefaults(
     <div
       v-if="errors.length"
       :id="`${controlId}-errors`"
-      class="text-danger text-sm"
+      class="text-error text-body-small mt-1"
       role="alert"
     >
       <p v-for="(error, index) in errors" :key="index">{{ error }}</p>
     </div>
     <span
       v-if="count !== undefined"
-      class="text-secondary text-right text-xs"
+      class="text-on-surface-variant text-body-small mt-1 text-right"
       >{{ count }}</span
     >
   </div>

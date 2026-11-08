@@ -13,11 +13,11 @@ describe("Notification services", () => {
     service.info("Done");
     expect(ui.init).toHaveBeenNthCalledWith(1, {
       message: "Failed",
-      color: "danger",
+      color: "error",
     });
     expect(ui.init).toHaveBeenNthCalledWith(2, {
       message: "Done",
-      color: "primary",
+      color: "tertiary",
     });
   });
   it("returns confirmation without opening a real dialog", async () => {

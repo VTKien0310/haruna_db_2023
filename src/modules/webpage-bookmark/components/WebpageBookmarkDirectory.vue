@@ -63,7 +63,7 @@ const deleteDirectory = (): void => {
         @click="deleteDirectory"
         icon="delete"
         class="m-1"
-        color="danger"
+        color="error"
       />
       <NavigateToParentBookmarkDirectoryBtn />
     </div>

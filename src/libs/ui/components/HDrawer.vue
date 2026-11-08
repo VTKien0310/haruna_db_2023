@@ -47,7 +47,7 @@ onUnmounted(() => {
     <Transition name="h-drawer">
       <div
         v-if="modelValue"
-        class="h-ui h-drawer-backdrop fixed right-0 bottom-0 left-0 z-(--h-drawer-z-index) bg-(--h-overlay-color)"
+        class="h-ui h-drawer-backdrop h-scrim fixed right-0 bottom-0 left-0 z-(--h-drawer-z-index)"
         :style="{ top: topOffset }"
         @click.self="close"
       >
@@ -59,7 +59,7 @@ onUnmounted(() => {
           aria-modal="true"
           :aria-label="label"
           tabindex="-1"
-          class="h-drawer-panel bg-background-primary border-background-border absolute top-0 right-0 bottom-0 flex w-(--h-sidebar-width) max-w-[calc(100%_-_2rem)] flex-col overflow-y-auto border-l p-3 outline-none"
+          class="h-drawer-panel bg-surface-container-low text-on-surface border-outline-variant shadow-level-1 rounded-l-large absolute top-0 right-0 bottom-0 flex w-(--h-sidebar-width) flex-col overflow-y-auto border-l p-3 outline-none"
         >
           <div class="mb-3 flex shrink-0 justify-end">
             <HButton
@@ -78,12 +78,14 @@ onUnmounted(() => {
 
 <style scoped>
 .h-drawer-enter-active,
-.h-drawer-leave-active,
+.h-drawer-leave-active {
+  transition: opacity var(--duration-effects-default)
+    var(--ease-effects-default);
+}
 .h-drawer-enter-active .h-drawer-panel,
 .h-drawer-leave-active .h-drawer-panel {
-  transition:
-    opacity var(--h-motion-duration) ease,
-    transform var(--h-motion-duration) ease;
+  transition: transform var(--duration-spatial-default)
+    var(--ease-spatial-default);
 }
 .h-drawer-enter-from,
 .h-drawer-leave-to {
