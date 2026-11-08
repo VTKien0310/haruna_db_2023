@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import type { Media } from "@/modules/gallery/GalleryEntities";
-import type { Profile } from "@/modules/auth/ProfileEntities";
+import type { Profile } from "@/modules/auth/AuthEntities";
 import { domPort } from "@/ports/dom/DomPort";
 import type { GalleryListService } from "@/modules/gallery/services/GalleryListService";
 import { GalleryRouteName } from "@/modules/gallery/GalleryRouter";

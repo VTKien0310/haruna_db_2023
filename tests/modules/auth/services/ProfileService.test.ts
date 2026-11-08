@@ -7,7 +7,11 @@ import {
   queryError,
 } from "../../../fakes/BackendFake";
 import { makeToast } from "../../../fakes/Collaborators";
-import { makeProfile } from "../../../factories/Records";
+import {
+  makeProfile,
+  makeUserSpecialPermission,
+} from "../../../factories/Records";
+import { t } from "@/modules/auth/locales";
 
 describe("ProfileService", () => {
   let backend: ReturnType<typeof makeBackendFake>;
@@ -18,35 +22,77 @@ describe("ProfileService", () => {
     toast = makeToast();
     service = new ProfileService(backend.port, toast.service);
   });
-  it("clears profile without a user", async () => {
+  it("clears profile and special permissions without a user", async () => {
     useAuthStore().profile = makeProfile();
+    useAuthStore().userSpecialPermissions = [makeUserSpecialPermission()];
     backend.auth.getUser.mockResolvedValue({
       data: { user: null },
       error: null,
     });
     await service.refreshCurrentUserProfile();
     expect(useAuthStore().profile).toBeNull();
+    expect(useAuthStore().userSpecialPermissions).toEqual([]);
     expect(backend.spbClient.from).not.toHaveBeenCalled();
   });
-  it("loads the current user's profile", async () => {
+  it("loads the current user's profile and special permissions", async () => {
     backend.auth.getUser.mockResolvedValue({
       data: { user: { id: "user-1" } },
       error: null,
     });
-    const query = backend.query(queryResult([makeProfile()]));
+    const profileQuery = backend.query(queryResult([makeProfile()]));
+    const specialPermissionsQuery = backend.query(
+      queryResult([makeUserSpecialPermission()]),
+    );
     await service.refreshCurrentUserProfile();
-    expect(query.eq).toHaveBeenCalledWith("user_id", "user-1");
+    expect(profileQuery.eq).toHaveBeenCalledWith("user_id", "user-1");
+    expect(specialPermissionsQuery.eq).toHaveBeenCalledWith(
+      "user_id",
+      "user-1",
+    );
     expect(useAuthStore().profile).toEqual(makeProfile());
+    expect(useAuthStore().userSpecialPermissions).toEqual([
+      makeUserSpecialPermission(),
+    ]);
   });
-  it("clears profile on query error", async () => {
+  it("stores an empty permission list when the user has no permissions", async () => {
+    backend.auth.getUser.mockResolvedValue({
+      data: { user: { id: "user-1" } },
+      error: null,
+    });
+    useAuthStore().userSpecialPermissions = [makeUserSpecialPermission()];
+    backend.query(queryResult([makeProfile()]));
+    backend.query(queryResult([]));
+    await service.refreshCurrentUserProfile();
+    expect(useAuthStore().userSpecialPermissions).toEqual([]);
+  });
+  it("clears profile on query error without discarding permissions", async () => {
     backend.auth.getUser.mockResolvedValue({
       data: { user: { id: "user-1" } },
       error: null,
     });
     backend.query(queryError());
+    backend.query(queryResult([makeUserSpecialPermission()]));
     await service.refreshCurrentUserProfile();
     expect(useAuthStore().profile).toBeNull();
-    expect(toast.error).toHaveBeenCalled();
+    expect(useAuthStore().userSpecialPermissions).toEqual([
+      makeUserSpecialPermission(),
+    ]);
+    expect(toast.error).toHaveBeenCalledWith(t("messages.fetchProfileFailed"));
+  });
+  it("clears special permissions on query error without discarding profile", async () => {
+    backend.auth.getUser.mockResolvedValue({
+      data: { user: { id: "user-1" } },
+      error: null,
+    });
+    useAuthStore().userSpecialPermissions = [makeUserSpecialPermission()];
+    backend.query(queryResult([makeProfile()]));
+    backend.query(queryError());
+    await service.refreshCurrentUserProfile();
+    expect(useAuthStore().profile).toEqual(makeProfile());
+    expect(useAuthStore().userSpecialPermissions).toEqual([]);
+    expect(toast.error).toHaveBeenCalledWith(
+      t("messages.fetchSpecialPermissionsFailed"),
+    );
   });
   it.each(["", "new-password"])(
     "updates name, dates, and conditionally password %j",
@@ -58,6 +104,7 @@ describe("ProfileService", () => {
       backend.auth.updateUser.mockResolvedValue({ error: null });
       const update = backend.query(queryResult());
       backend.query(queryResult([makeProfile({ name: "Updated" })]));
+      backend.query(queryResult([]));
       await service.updateCurrentUserProfile({
         name: "Updated",
         password,

@@ -1,7 +1,11 @@
 import type { Media } from "@/modules/gallery/GalleryEntities";
-import type { Profile } from "@/modules/auth/ProfileEntities";
 import type { TranslationHistory } from "@/modules/translation/TranslationEntities";
 import type { WebpageBookmark } from "@/modules/webpage-bookmark/WebpageBookmarkEntities";
+import {
+  type Profile,
+  type UserSpecialPermission,
+  UserSpecialPermissionType,
+} from "@/modules/auth/AuthEntities";
 
 const timestamp = "2026-01-02T12:00:00Z";
 export const makeMedia = (overrides: Partial<Media> = {}): Media => ({
@@ -25,6 +29,15 @@ export const makeProfile = (overrides: Partial<Profile> = {}): Profile => ({
   work_start_date: "2020-04-01",
   created_at: timestamp,
   updated_at: timestamp,
+  ...overrides,
+});
+export const makeUserSpecialPermission = (
+  overrides: Partial<UserSpecialPermission> = {},
+): UserSpecialPermission => ({
+  id: 1,
+  user_id: "user-1",
+  created_at: timestamp,
+  permission: UserSpecialPermissionType.MANAGE_WORK_DAY_EXCEPTION,
   ...overrides,
 });
 export const makeHistory = (

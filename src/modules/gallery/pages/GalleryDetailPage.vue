@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router";
 import { computed, onMounted, ref, type StyleValue, watch } from "vue";
 import { type Media, MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
-import type { Profile } from "@/modules/auth/ProfileEntities";
+import type { Profile } from "@/modules/auth/AuthEntities";
 import { IonPage } from "@ionic/vue";
 import {
   useGalleryListService,
