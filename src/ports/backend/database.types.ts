@@ -415,18 +415,24 @@ export type Database = {
       work_time_entries: {
         Row: {
           date: string;
+          duration: number;
           id: string;
+          time: number;
           type: number;
         };
         ComputedFields: never;
         Insert: {
           date: string;
+          duration?: number;
           id?: string;
+          time?: number;
           type: number;
         };
         Update: {
           date?: string;
+          duration?: number;
           id?: string;
+          time?: number;
           type?: number;
         };
         Relationships: [];
