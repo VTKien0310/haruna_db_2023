@@ -37,7 +37,7 @@ export const makeUserSpecialPermission = (
   id: 1,
   user_id: "user-1",
   created_at: timestamp,
-  permission: UserSpecialPermissionType.MANAGE_WORK_DAY_EXCEPTION,
+  permission: UserSpecialPermissionType.MANAGE_WORKDAY_EXCEPTIONS,
   ...overrides,
 });
 export const makeHistory = (

@@ -9,7 +9,7 @@ export interface Profile {
 }
 
 export enum UserSpecialPermissionType {
-  MANAGE_WORK_DAY_EXCEPTION = 0,
+  MANAGE_WORKDAY_EXCEPTIONS = 0,
 }
 
 export interface UserSpecialPermission {
