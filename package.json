@@ -11,7 +11,7 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false && vue-tsc --noEmit -p tsconfig.test.json",
+    "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false && vue-tsc --noEmit -p tsconfig.test.json && tsc --noEmit -p scripts/tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
