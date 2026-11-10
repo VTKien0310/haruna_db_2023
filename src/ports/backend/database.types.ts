@@ -225,6 +225,7 @@ export type Database = {
           cause: string;
           created_at: string;
           entry_id: string;
+          exceed_bank_value: number;
           id: string;
           pto_bank_id: string;
           value: number;
@@ -234,6 +235,7 @@ export type Database = {
           cause: string;
           created_at?: string;
           entry_id: string;
+          exceed_bank_value?: number;
           id?: string;
           pto_bank_id: string;
           value: number;
@@ -242,6 +244,7 @@ export type Database = {
           cause?: string;
           created_at?: string;
           entry_id?: string;
+          exceed_bank_value?: number;
           id?: string;
           pto_bank_id?: string;
           value?: number;
