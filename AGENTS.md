@@ -2,18 +2,18 @@
 
 ## Project and Working Principles
 
-Haruna DB is a PWA. Stack: Vue 3 + TypeScript, Ionic Vue 9,
-Haruna UI, Tailwind CSS 4, Pinia 4, Vue Router 5 via `@ionic/vue-router`,
-Supabase + Custom API, Firebase Hosting; utilities include VueUse, dayjs, and FFmpeg WASM.
+Haruna DB is a PWA built with Vue 3, TypeScript, Ionic Vue 9, Haruna UI,
+Tailwind CSS 4, Pinia 4, and Vue Router 5 via `@ionic/vue-router`. It uses
+Supabase, the Custom API, Firebase Hosting, VueUse, dayjs, and FFmpeg WASM.
 
 - Prioritize security, simplicity, maintainability, then consistency with existing
-  code. Follow Vue and Ionic best practices; prefer explicit, readable solutions.
+  code. Follow Vue and Ionic best practices. Prefer explicit, readable solutions.
 - Make the smallest change that fully solves the task. Avoid speculative
   abstractions, unjustified dependencies, and unrequested architectural changes.
 - Ask when requirements conflict, security/backend responsibilities are unclear,
   or changes could affect authentication, authorization, or data access rules.
   Clarify uncertainty before risky or irreversible changes.
-- Match existing style; remove dead code, commented-out code, and placeholders
+- Match the existing style. Remove dead code, commented-out code, and placeholders
   unless explicitly requested. Extract shared logic when justified.
 
 ## Development
@@ -39,7 +39,7 @@ backend, or development server are needed or permitted for this suite.
 - Pinia stores use setup-style `defineStore` and expose `ref<T>()` and `computed()`
   state only: no actions or getters. Business logic belongs in services, not
   stores or page components. Do not use composables returning reactive state.
-- Use `Promise<boolean>` or `void` for service control flow; do not throw for
+- Use `Promise<boolean>` or `void` for service control flow. Do not throw for
   expected failures. Show user-facing errors through toast notifications.
 - All backend access goes through `backendPort` from
   `@/ports/backend/BackendPort.ts`. Prefer `backendPort.spbClient` for native
@@ -48,7 +48,7 @@ backend, or development server are needed or permitted for this suite.
   check `if (error || !data)`.
 - Invoke Edge Functions with `backendPort.spbClient.functions.invoke()`;
   implementations live in `supabase/functions/` and run on Deno.
-- Use `backendPort.get<T>()` / `post<T>()` for heavy computation, complex
+- Use `backendPort.get<T>()` and `backendPort.post<T>()` for heavy computation, complex
   orchestration, or dedicated-server needs when Edge Function cold starts,
   compute limits, or complexity make Supabase unsuitable. The port injects the
   Supabase session as Bearer auth. Handle expected errors with
@@ -59,10 +59,10 @@ backend, or development server are needed or permitted for this suite.
 
 - Use TypeScript (`.ts`) and exclusively `<script setup lang="ts">` with inline
   Vue templates; no Options API, regular script blocks, or separate HTML files.
-  Prefer strong types; avoid `any`.
+  Prefer strong types. Avoid `any`.
 - Keep components lean. Use `ref<T>()`, `reactive<T>()`, and `computed()` for local
   state; clean up watchers and side effects. Use Ionic lifecycle hooks such as
-  `onIonViewDidEnter` / `onIonViewWillLeave` for page-level concerns.
+  `onIonViewDidEnter` and `onIonViewWillLeave` for page-level concerns.
 - Use module-scoped routing with exported route-name enums and lazy-loaded pages.
 - Use dayjs with the UTC plugin for all date handling.
 - Naming: `{Module}Page.vue`, descriptive component names,
@@ -120,8 +120,8 @@ for overlays and visual checks.
 - Never contact real or local API, Supabase, database, storage, auth, or Edge
   Function services. Do not start Docker, Supabase, development servers, or other
   external services for application tests.
-- Never read development/production environment files or credentials. Vitest
-  disables environment-file loading and supplies dummy endpoints/keys.
+- Never read development or production environment files or credentials. Vitest
+  disables environment-file loading and supplies dummy endpoints and keys.
 - Backend singleton imports and Supabase client construction are guarded before
   app imports. Never bypass guards via `vi.unmock`, `vi.importActual`, or direct
   SDK construction; never import `src/main.ts` into tests.
@@ -153,8 +153,8 @@ for overlays and visual checks.
   behavior and exclusions are documented in
   [application tests](doc/conventions-and-standards/application-tests.md).
 - For documentation-only changes, format changed files and skip application
-  tests/type checking. Otherwise use the smallest sufficient checks; do not run
-  whole-project checks unnecessarily.
+  tests and type checking. Otherwise, use the smallest sufficient checks. Do not
+  run whole-project checks unnecessarily.
 - Fix introduced formatting issues, type errors, and test failures; never weaken
   isolation to pass or ignore type errors without a documented reason.
 - Completion requires compliance with architecture, Vue/Ionic/Haruna conventions,
@@ -163,10 +163,9 @@ for overlays and visual checks.
 
 ## Design and Decision Documentation
 
-Documentation for design and decision reasoning is available in the
-[`doc/design-and-decision`](doc/design-and-decision) directory. Consult this directory to understand the _"why"_ behind
-architectural, business-logic, and convention choices before making changes that could conflict with established
-reasoning.
+Before making changes that could conflict with established decisions, consult
+[`doc/design-and-decision`](doc/design-and-decision). The directory explains
+the reasoning behind architecture, business logic, and conventions.
 
 Update [`doc/design-and-decision/erd.dbml`](doc/design-and-decision/erd.dbml)
 whenever database schema changes affect the ERD.
