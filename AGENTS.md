@@ -168,6 +168,9 @@ Documentation for design and decision reasoning is available in the
 architectural, business-logic, and convention choices before making changes that could conflict with established
 reasoning.
 
+Update [`doc/design-and-decision/erd.dbml`](doc/design-and-decision/erd.dbml)
+whenever database schema changes affect the ERD.
+
 ## Git Conventions
 
 Git conventions (branch naming, commit messages, pull requests) are defined in
