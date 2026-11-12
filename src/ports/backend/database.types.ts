@@ -153,6 +153,7 @@ export type Database = {
           entry_type: string | null;
           id: string;
           no_deduction: number;
+          note: string;
           owner_id: string;
           updated_at: string;
         };
@@ -163,6 +164,7 @@ export type Database = {
           entry_type?: string | null;
           id?: string;
           no_deduction?: number;
+          note?: string;
           owner_id?: string;
           updated_at?: string;
         };
@@ -172,6 +174,7 @@ export type Database = {
           entry_type?: string | null;
           id?: string;
           no_deduction?: number;
+          note?: string;
           owner_id?: string;
           updated_at?: string;
         };
