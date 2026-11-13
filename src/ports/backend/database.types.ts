@@ -231,6 +231,7 @@ export type Database = {
           exceed_bank_value: number;
           id: string;
           pto_bank_id: string;
+          type: number;
           value: number;
         };
         ComputedFields: never;
@@ -241,6 +242,7 @@ export type Database = {
           exceed_bank_value?: number;
           id?: string;
           pto_bank_id: string;
+          type?: number;
           value: number;
         };
         Update: {
@@ -250,6 +252,7 @@ export type Database = {
           exceed_bank_value?: number;
           id?: string;
           pto_bank_id?: string;
+          type?: number;
           value?: number;
         };
         Relationships: [
