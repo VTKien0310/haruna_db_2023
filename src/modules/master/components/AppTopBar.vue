@@ -1,27 +1,46 @@
 <script setup lang="ts">
-import { VaButton } from "vuestic-ui";
+import { HButton } from "@/libs/ui";
+import { t } from "@/modules/master/locales";
+import logo from "@/assets/logo.svg";
 
-defineProps<{
-  visible: boolean;
-}>();
+withDefaults(
+  defineProps<{
+    visible: boolean;
+    sidebarOpen?: boolean;
+    sidebarId?: string;
+  }>(),
+  { sidebarOpen: false, sidebarId: "app-navigation" },
+);
 
 const emit = defineEmits<{
+  "navigate-home": [];
   "toggle-sidebar": [];
 }>();
 </script>
 
 <template>
-  <div
+  <header
     v-if="visible"
-    class="branding-background border-background-border fixed top-0 right-0 left-0 z-40 flex h-14 w-full items-center justify-between border-b px-4 text-white shadow-md"
+    class="h-ui bg-surface border-outline-variant text-on-surface fixed top-0 right-0 left-0 z-(--h-header-z-index) flex h-(--h-app-header-height) w-full items-center justify-between border-b px-4"
   >
-    <h1 class="branding-font font-bold">HARUNA</h1>
-    <va-button @click="emit('toggle-sidebar')" icon="menu" size="large" />
-  </div>
+    <h-button
+      variant="text"
+      class="p-0"
+      :aria-label="t('elements.goToHomeLabel')"
+      @click="emit('navigate-home')"
+    >
+      <span class="flex items-center gap-3">
+        <img :src="logo" alt="" class="h-10 w-10 shrink-0" />
+        <span class="text-title-large font-medium">Haruna</span>
+      </span>
+    </h-button>
+    <h-button
+      @click="emit('toggle-sidebar')"
+      icon="menu"
+      variant="outlined"
+      :aria-label="t('elements.openNavigationLabel')"
+      :aria-expanded="sidebarOpen"
+      :aria-controls="sidebarId"
+    />
+  </header>
 </template>
-
-<style scoped>
-.branding-font {
-  margin: 0;
-}
-</style>

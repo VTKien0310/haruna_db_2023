@@ -1,0 +1,37 @@
+{
+  "messages": {
+    "linkCopied": "Link copied to clipboard",
+    "createDirectoryFailed": "Couldn't create the directory",
+    "createLinkFailed": "Couldn't create the link",
+    "deleteRecordFailed": "Couldn't delete bookmark {id}",
+    "deletedSuccessfully": "Deleted {name}",
+    "deleteDirectoryConfirm": "Delete this directory?",
+    "deleteDirectoryHasChildren": "This directory can't be deleted because it still has items in it",
+    "deleteLinkConfirm": "Delete this link?",
+    "fetchLevelOneFailed": "Couldn't load the top-level bookmarks",
+    "fetchChildrenFailed": "Couldn't load the contents of {id}",
+    "countLinksFailed": "Couldn't count bookmark links",
+    "countDirectoriesFailed": "Couldn't count bookmark directories",
+    "updateFailed": "Couldn't update bookmark {id}",
+    "fetchRecordFailed": "Couldn't load bookmark {id}",
+    "recordNotFound": "Bookmark {id} not found",
+    "linkNameRequired": "Enter a link name",
+    "linkNameMaxLength": "Link names can be up to 30 characters",
+    "urlInvalid": "Enter a valid URL",
+    "directoryNameRequired": "Enter a directory name",
+    "directoryNameMaxLength": "Directory names can be up to 30 characters"
+  },
+  "elements": {
+    "createLinkTitle": "Create new link",
+    "createDirectoryTitle": "Create new directory",
+    "updateLinkTitle": "Update link",
+    "updateDirectoryTitle": "Update directory",
+    "createButton": "Create",
+    "updateButton": "Update",
+    "cancelButton": "Cancel",
+    "nameLabel": "Name",
+    "urlLabel": "URL",
+    "descriptionLabel": "Description",
+    "fetchingData": "Loading…"
+  }
+}

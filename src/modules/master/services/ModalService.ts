@@ -1,15 +1,11 @@
-import { type ModalOptions, useModal } from "vuestic-ui";
+import { type HNotifications } from "@/libs/ui";
 
 export class ModalService {
-  private readonly confirmModal: (
-    options: string | ModalOptions,
-  ) => Promise<boolean>;
-
-  constructor() {
-    this.confirmModal = useModal().confirm;
-  }
+  constructor(
+    private readonly notifications: Pick<HNotifications, "confirm">,
+  ) {}
 
   confirm(options: string): Promise<boolean> {
-    return this.confirmModal(options);
+    return this.notifications.confirm(options);
   }
 }

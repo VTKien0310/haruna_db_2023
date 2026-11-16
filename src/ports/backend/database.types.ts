@@ -34,6 +34,47 @@ export type Database = {
   };
   public: {
     Tables: {
+      check_in_entries: {
+        Row: {
+          date: string;
+          id: string;
+          time: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          id?: string;
+          time: string;
+        };
+        Update: {
+          date?: string;
+          id?: string;
+          time?: string;
+        };
+        Relationships: [];
+      };
+      leave_work_entries: {
+        Row: {
+          date: string;
+          end: string;
+          id: string;
+          start: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          end: string;
+          id?: string;
+          start: string;
+        };
+        Update: {
+          date?: string;
+          end?: string;
+          id?: string;
+          start?: string;
+        };
+        Relationships: [];
+      };
       medias: {
         Row: {
           created_at: string;
@@ -47,6 +88,7 @@ export type Database = {
           updated_at: string;
           uploader_id: string | null;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           id?: string;
@@ -75,28 +117,199 @@ export type Database = {
       };
       profiles: {
         Row: {
+          birth_date: string;
           created_at: string;
-          current_balance: number;
           id: string;
           name: string | null;
           updated_at: string;
           user_id: string | null;
+          work_start_date: string;
         };
+        ComputedFields: never;
         Insert: {
+          birth_date?: string;
           created_at?: string;
-          current_balance?: number;
           id?: string;
           name?: string | null;
           updated_at?: string;
           user_id?: string | null;
+          work_start_date?: string;
+        };
+        Update: {
+          birth_date?: string;
+          created_at?: string;
+          id?: string;
+          name?: string | null;
+          updated_at?: string;
+          user_id?: string | null;
+          work_start_date?: string;
+        };
+        Relationships: [];
+      };
+      pto_affect_entries: {
+        Row: {
+          created_at: string;
+          entry_id: string | null;
+          entry_type: string | null;
+          id: string;
+          no_deduction: number;
+          note: string;
+          owner_id: string;
+          title: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          entry_id?: string | null;
+          entry_type?: string | null;
+          id?: string;
+          no_deduction?: number;
+          note?: string;
+          owner_id?: string;
+          title?: string;
+          updated_at?: string;
         };
         Update: {
           created_at?: string;
-          current_balance?: number;
+          entry_id?: string | null;
+          entry_type?: string | null;
           id?: string;
-          name?: string | null;
+          no_deduction?: number;
+          note?: string;
+          owner_id?: string;
+          title?: string;
           updated_at?: string;
-          user_id?: string | null;
+        };
+        Relationships: [];
+      };
+      pto_banks: {
+        Row: {
+          annual_balance: number;
+          created_at: string;
+          extended_balance: number;
+          id: string;
+          original_annual_balance: number | null;
+          original_extended_balance: number | null;
+          original_seniority_balance: number | null;
+          owner_id: string;
+          seniority_balance: number;
+          updated_at: string;
+          year: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          annual_balance?: number;
+          created_at?: string;
+          extended_balance?: number;
+          id?: string;
+          original_annual_balance?: number | null;
+          original_extended_balance?: number | null;
+          original_seniority_balance?: number | null;
+          owner_id?: string;
+          seniority_balance?: number;
+          updated_at?: string;
+          year: number;
+        };
+        Update: {
+          annual_balance?: number;
+          created_at?: string;
+          extended_balance?: number;
+          id?: string;
+          original_annual_balance?: number | null;
+          original_extended_balance?: number | null;
+          original_seniority_balance?: number | null;
+          owner_id?: string;
+          seniority_balance?: number;
+          updated_at?: string;
+          year?: number;
+        };
+        Relationships: [];
+      };
+      pto_transactions: {
+        Row: {
+          cause: string;
+          created_at: string;
+          entry_id: string;
+          exceed_bank_value: number;
+          id: string;
+          pto_bank_id: string;
+          type: number;
+          value: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          cause: string;
+          created_at?: string;
+          entry_id: string;
+          exceed_bank_value?: number;
+          id?: string;
+          pto_bank_id: string;
+          type?: number;
+          value: number;
+        };
+        Update: {
+          cause?: string;
+          created_at?: string;
+          entry_id?: string;
+          exceed_bank_value?: number;
+          id?: string;
+          pto_bank_id?: string;
+          type?: number;
+          value?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "pto_transactions_entry_id_fkey";
+            columns: ["entry_id"];
+            isOneToOne: false;
+            referencedRelation: "pto_affect_entries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "pto_transactions_pto_bank_id_fkey";
+            columns: ["pto_bank_id"];
+            isOneToOne: false;
+            referencedRelation: "pto_banks";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      remote_work_entries: {
+        Row: {
+          date: string;
+          id: string;
+          type: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          id?: string;
+          type: number;
+        };
+        Update: {
+          date?: string;
+          id?: string;
+          type?: number;
+        };
+        Relationships: [];
+      };
+      time_off_entries: {
+        Row: {
+          date: string;
+          id: string;
+          type: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          id?: string;
+          type: number;
+        };
+        Update: {
+          date?: string;
+          id?: string;
+          type?: number;
         };
         Relationships: [];
       };
@@ -110,6 +323,7 @@ export type Database = {
           target_language: string;
           translation: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           id?: string;
@@ -144,6 +358,7 @@ export type Database = {
           updated_at: string;
           url: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           description: string;
@@ -187,6 +402,84 @@ export type Database = {
           },
         ];
       };
+      user_special_permissions: {
+        Row: {
+          created_at: string;
+          id: number;
+          permission: number;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: number;
+          permission: number;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          permission?: number;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      work_time_entries: {
+        Row: {
+          date: string;
+          duration: number;
+          id: string;
+          time: number;
+          type: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          duration?: number;
+          id?: string;
+          time?: number;
+          type: number;
+        };
+        Update: {
+          date?: string;
+          duration?: number;
+          id?: string;
+          time?: number;
+          type?: number;
+        };
+        Relationships: [];
+      };
+      workday_exceptions: {
+        Row: {
+          created_at: string;
+          date: string;
+          id: string;
+          time: number;
+          type: number;
+          title: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          date: string;
+          id?: string;
+          time: number;
+          type: number;
+          title?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          date?: string;
+          id?: string;
+          time?: number;
+          type?: number;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -214,12 +507,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -241,13 +534,12 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -266,13 +558,12 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -291,13 +582,12 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -310,11 +600,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }

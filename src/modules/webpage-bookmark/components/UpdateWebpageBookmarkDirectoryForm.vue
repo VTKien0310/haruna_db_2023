@@ -3,6 +3,7 @@ import { useWebpageBookmarkDetailStore } from "@/modules/webpage-bookmark/stores
 import type { WebBookmarkDirectoryFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
 import { useUpdateWebpageBookmarkService } from "@/modules/webpage-bookmark/WebpageBookmarkServiceContainer.ts";
 import WebpageBookmarkDirectoryForm from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectoryForm.vue";
+import { t } from "@/modules/webpage-bookmark/locales";
 
 const webpageBookmarkDetailStore = useWebpageBookmarkDetailStore();
 
@@ -26,12 +27,12 @@ const onSubmit = (formData: WebBookmarkDirectoryFormData): Promise<boolean> => {
 <template>
   <WebpageBookmarkDirectoryForm
     form-icon="edit"
-    form-title="Update directory"
+    :form-title="t('elements.updateDirectoryTitle')"
     :form-style-is-primary="true"
     :initial-form-data="initialUpdateDirectoryFormData"
     :on-submit="onSubmit"
     :reset-form-on-submit-success="false"
-    submit-btn-label="Update"
+    :submit-btn-label="t('elements.updateButton')"
   />
 </template>
 

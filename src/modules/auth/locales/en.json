@@ -1,0 +1,34 @@
+{
+  "messages": {
+    "resetEmailSent": "If an account exists for that email, a reset link has been sent.",
+    "resetEmailFailed": "Couldn't send the reset email",
+    "passwordUpdated": "Password updated",
+    "passwordUpdateFailed": "Couldn't update the password",
+    "loginFailed": "Couldn't log you in",
+    "logoutFailed": "Couldn't log you out",
+    "fetchProfileFailed": "Couldn't load your profile",
+    "fetchSpecialPermissionsFailed": "Couldn't load your permissions",
+    "updateProfileFailed": "Couldn't update your profile",
+    "updatePasswordFailed": "Couldn't update your password"
+  },
+  "elements": {
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loginButton": "Log in",
+    "forgotPasswordLink": "Forgot password?",
+    "forgotPasswordTitle": "Forgot password",
+    "sendResetLinkButton": "Send reset link",
+    "resetPasswordTitle": "Reset password",
+    "newPasswordLabel": "New password",
+    "newPasswordPlaceholder": "At least 8 characters, including uppercase and lowercase letters, a number, and a special character",
+    "confirmPasswordLabel": "Confirm password",
+    "updatePasswordButton": "Update password",
+    "resetLinkInvalid": "This reset link is invalid or has expired.",
+    "requestNewLinkButton": "Request a new link",
+    "displayNameLabel": "Display name",
+    "birthDateLabel": "Birth date",
+    "workStartDateLabel": "Work start date",
+    "workStartDateInfo": "Your work start date is used to calculate the seniority balance of each year's PTO bank.",
+    "profilePasswordPlaceholder": "Leave blank to keep your current password"
+  }
+}

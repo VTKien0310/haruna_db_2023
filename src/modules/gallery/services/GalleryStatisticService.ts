@@ -1,6 +1,7 @@
 import type { BackendPort } from "@/ports/backend/BackendPort";
 import dayjs from "dayjs";
 import type { Media } from "@/modules/gallery/GalleryEntities";
+import { t } from "@/modules/gallery/locales";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class GalleryStatisticService {
@@ -9,7 +10,7 @@ export class GalleryStatisticService {
     private readonly toastService: ToastService,
   ) {}
 
-  async countTotalMedias(): Promise<number> {
+  async countTotalMedia(): Promise<number> {
     const { count, error } = await this.backendPort.spbClient
       .from("medias")
       .select("*", {
@@ -18,7 +19,7 @@ export class GalleryStatisticService {
       });
 
     if (error || count === null) {
-      this.toastService.error("Failed to count total medias");
+      this.toastService.error(t("messages.countTotalFailed"));
 
       return 0;
     }
@@ -26,7 +27,7 @@ export class GalleryStatisticService {
     return count;
   }
 
-  async countUserUploadedMedias(userId: string): Promise<number> {
+  async countUserUploadedMedia(userId: string): Promise<number> {
     const { count, error } = await this.backendPort.spbClient
       .from("medias")
       .select("*", {
@@ -36,7 +37,7 @@ export class GalleryStatisticService {
       .eq("uploader_id", userId);
 
     if (error || count === null) {
-      this.toastService.error("Failed to count user's uploaded medias");
+      this.toastService.error(t("messages.countUserUploadsFailed"));
 
       return 0;
     }
@@ -44,7 +45,7 @@ export class GalleryStatisticService {
     return count;
   }
 
-  async countUploadedMediasWithinPassDays(days: number): Promise<number> {
+  async countUploadedMediaWithinPassDays(days: number): Promise<number> {
     const targetPointInTime: string = dayjs()
       .subtract(days, "day")
       .utc()
@@ -59,7 +60,7 @@ export class GalleryStatisticService {
       .filter("created_at", "gte", targetPointInTime);
 
     if (error || count === null) {
-      this.toastService.error("Failed to count newly uploaded medias");
+      this.toastService.error(t("messages.countNewUploadsFailed"));
 
       return 0;
     }

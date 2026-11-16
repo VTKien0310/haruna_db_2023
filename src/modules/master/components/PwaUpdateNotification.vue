@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { VaButton, VaModal } from "vuestic-ui";
+import { HButton, HModal } from "@/libs/ui";
 
 import { usePwaUpdateStore } from "@/modules/master/stores/PwaUpdateStore";
+import { t } from "@/modules/master/locales";
 
 const pwaUpdateStore = usePwaUpdateStore();
 
@@ -11,21 +12,22 @@ const handleUpdate = async (): Promise<void> => {
 </script>
 
 <template>
-  <va-modal
+  <h-modal
     :model-value="pwaUpdateStore.needRefresh"
-    title="Update Available"
+    :title="t('elements.pwaUpdateTitle')"
     hide-default-actions
     no-dismiss
     no-outside-dismiss
     no-esc-dismiss
   >
     <p>
-      A new version of the app is available. Please restart the app to apply the
-      update.
+      {{ t("messages.pwaUpdateBody") }}
     </p>
 
     <div class="mt-4 flex justify-end">
-      <va-button color="primary" @click="handleUpdate">Restart App</va-button>
+      <h-button color="primary" @click="handleUpdate">
+        {{ t("elements.pwaUpdateRestart") }}
+      </h-button>
     </div>
-  </va-modal>
+  </h-modal>
 </template>

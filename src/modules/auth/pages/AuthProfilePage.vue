@@ -8,7 +8,9 @@ import {
   useAuthenticationService,
   useProfileService,
 } from "@/modules/auth/AuthServiceContainer";
-import { VaButton, VaForm, VaInput } from "vuestic-ui";
+import { HButton, HForm, HInput } from "@/libs/ui";
+import { t } from "@/modules/auth/locales";
+import ThemeSelector from "@/modules/master/components/ThemeSelector.vue";
 
 const authenticationService = useAuthenticationService();
 const profileService = useProfileService();
@@ -17,12 +19,16 @@ const authStore = useAuthStore();
 const profileFormContent = reactive<ProfileDetail>({
   name: "",
   password: "",
+  birthDate: "",
+  workStartDate: "",
 });
 
 function reloadProfileFormContent(): void {
   profileService.refreshCurrentUserProfile().then(() => {
     profileFormContent.name = authStore.profile?.name ?? "";
     profileFormContent.password = "";
+    profileFormContent.birthDate = authStore.profile?.birth_date ?? "";
+    profileFormContent.workStartDate = authStore.profile?.work_start_date ?? "";
   });
 }
 
@@ -37,8 +43,20 @@ const enableUpdateProfileButton = computed((): boolean => {
   const passwordHasBeenInput: boolean = (profileFormContent.password &&
     profileFormContent.password.length >= 8) as boolean;
 
+  const birthDateHasBeenUpdated: boolean =
+    profileFormContent.birthDate.length > 0 &&
+    profileFormContent.birthDate !== authStore.profile?.birth_date;
+
+  const workStartDateHasBeenUpdated: boolean =
+    profileFormContent.workStartDate.length > 0 &&
+    profileFormContent.workStartDate !== authStore.profile?.work_start_date;
+
   return (
-    (nameHasBeenUpdated || passwordHasBeenInput) && !isUpdatingProfile.value
+    (nameHasBeenUpdated ||
+      passwordHasBeenInput ||
+      birthDateHasBeenUpdated ||
+      workStartDateHasBeenUpdated) &&
+    !isUpdatingProfile.value
   );
 });
 
@@ -65,56 +83,75 @@ onMounted(() => {
 <template>
   <ion-page>
     <div
-      class="flex min-h-screen w-full flex-col content-center items-center justify-start p-3 sm:justify-center"
+      class="flex h-full w-full flex-col items-center justify-start overflow-y-auto p-4 sm:justify-center"
     >
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 xl:w-1/5">
-        <va-form
+        <h-form
           @submit.prevent="handleUpdateProfile"
           ref="profileForm"
-          tag="form"
           class="!mb-2 flex w-full flex-col content-center items-center justify-center"
         >
-          <va-input
+          <h-input
             v-model="profileFormContent.name"
-            label="Name"
+            :label="t('elements.displayNameLabel')"
             name="name"
             class="w-full"
           />
 
-          <va-input
-            v-model="profileFormContent.password"
-            label="Password"
-            name="password"
-            type="password"
-            placeholder="Minimum length of 8 characters"
-            class="mt-2 w-full"
+          <h-input
+            v-model="profileFormContent.birthDate"
+            :label="t('elements.birthDateLabel')"
+            name="birth_date"
+            type="date"
+            class="mt-4 w-full"
           />
 
-          <div class="mt-6 flex w-full flex-row justify-between">
-            <va-button
+          <h-input
+            v-model="profileFormContent.workStartDate"
+            :label="t('elements.workStartDateLabel')"
+            name="work_start_date"
+            type="date"
+            class="mt-4 w-full"
+          />
+
+          <p class="text-on-surface-variant text-body-small mt-2 w-full">
+            {{ t("elements.workStartDateInfo") }}
+          </p>
+
+          <h-input
+            v-model="profileFormContent.password"
+            :label="t('elements.passwordLabel')"
+            name="password"
+            type="password"
+            :placeholder="t('elements.profilePasswordPlaceholder')"
+            class="mt-4 w-full"
+          />
+
+          <div class="mt-6 flex w-full flex-row gap-2">
+            <h-button
               :disabled="!enableUpdateProfileButton"
               :loading="isUpdatingProfile"
               icon="save"
               type="submit"
-              class="mr-1 w-full"
+              class="min-w-0 flex-1"
             />
 
-            <va-button
+            <h-button
               @click="reloadProfileFormContent"
               icon="replay"
-              preset="secondary"
-              border-color="primary"
-              class="ml-1 w-full"
+              variant="outlined"
+              class="min-w-0 flex-1"
             />
           </div>
-        </va-form>
+        </h-form>
 
-        <va-button
+        <h-button
           @click="handleLogout"
           icon="logout"
           class="w-full"
-          color="danger"
+          color="error"
         />
+        <ThemeSelector />
       </div>
     </div>
   </ion-page>

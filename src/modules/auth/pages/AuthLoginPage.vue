@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { useForm, VaButton, VaForm, VaInput } from "vuestic-ui";
+import { HButton, HForm, HInput, type HFormHandle } from "@/libs/ui";
 import { computed, reactive, ref } from "vue";
 import type { AuthCredential } from "@/modules/auth/AuthTypes";
 import { IonPage } from "@ionic/vue";
 import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
+import { t } from "@/modules/auth/locales";
+import logo from "@/assets/logo.svg";
 
-const { reset } = useForm("loginForm");
+const loginForm = ref<HFormHandle>();
 
 const authenticationService = useAuthenticationService();
 
@@ -29,7 +31,7 @@ function handleLogin() {
   authenticationService.signIn(loginFormContent).then((isSuccess: boolean) => {
     isHandlingLogin.value = false;
     if (isSuccess) {
-      reset();
+      loginForm.value?.reset();
     }
   });
 }
@@ -38,45 +40,51 @@ function handleLogin() {
 <template>
   <ion-page>
     <div
-      class="flex min-h-screen w-full flex-col content-center items-center justify-center"
+      class="bg-surface flex h-full w-full flex-col items-center justify-center overflow-y-auto px-4 py-8"
     >
-      <h1
-        class="branding-font branding-color w-full text-center text-4xl font-bold"
-      >
-        HARUNA
-      </h1>
+      <div class="text-primary flex items-center gap-3">
+        <img :src="logo" alt="" class="h-14 w-14" />
+        <h1 class="text-headline-medium font-normal">Haruna</h1>
+      </div>
 
-      <va-form
+      <h-form
         ref="loginForm"
-        tag="form"
         @submit.prevent="handleLogin"
-        class="mt-12 flex w-2/3 flex-col content-center items-center justify-center sm:w-1/2 md:w-1/4"
+        class="bg-surface-container-low border-outline-variant rounded-medium mt-8 flex w-full max-w-sm flex-col items-center justify-center border p-6"
       >
-        <va-input
+        <h-input
           v-model="loginFormContent.email"
-          label="Email"
+          :label="t('elements.emailLabel')"
           name="email"
           class="w-full"
         />
 
-        <va-input
+        <h-input
           v-model="loginFormContent.password"
-          label="Password"
+          :label="t('elements.passwordLabel')"
           name="password"
           type="password"
-          class="mt-2 w-full"
+          class="mt-4 w-full"
         />
 
-        <va-button
+        <h-button
           :disabled="!enableLoginButton"
           :loading="isHandlingLogin"
           type="submit"
-          gradient
           class="mt-6 w-full"
         >
-          Login
-        </va-button>
-      </va-form>
+          {{ t("elements.loginButton") }}
+        </h-button>
+
+        <h-button
+          type="button"
+          variant="text"
+          class="mt-2 w-full"
+          @click="authenticationService.openForgotPassword()"
+        >
+          {{ t("elements.forgotPasswordLink") }}
+        </h-button>
+      </h-form>
     </div>
   </ion-page>
 </template>

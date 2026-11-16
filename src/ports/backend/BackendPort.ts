@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import type { FileOptions } from "@supabase/storage-js/src/lib/types";
+import type { FileOptions } from "@supabase/storage-js";
 import type { Database } from "@/ports/backend/database.types";
 import type { BackendApiResponse } from "@/ports/backend/BackendPortTypes";
 import {

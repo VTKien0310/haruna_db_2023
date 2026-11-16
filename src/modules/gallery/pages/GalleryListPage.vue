@@ -6,13 +6,10 @@ import { IonPage } from "@ionic/vue";
 import { useGalleryListService } from "@/modules/gallery/GalleryServiceContainer";
 import GalleryGridItem from "@/modules/gallery/components/GalleryGridItem.vue";
 import GalleryListItem from "@/modules/gallery/components/GalleryListItem.vue";
-import {
-  type ButtonOption,
-  VaButtonToggle,
-  VaProgressCircle,
-} from "vuestic-ui";
+import { type HButtonOption, HButtonToggle, HProgressCircle } from "@/libs/ui";
+import { t } from "@/modules/gallery/locales";
 
-const viewModeOptions: ButtonOption[] = [
+const viewModeOptions: HButtonOption[] = [
   { value: "grid", icon: "grid_view" },
   { value: "list", icon: "splitscreen" },
 ];
@@ -27,7 +24,7 @@ const galleryListStore = useGalleryListStore();
 
 const galleryListPageContent = ref<HTMLDivElement | null>(null);
 
-const loadMoreMedias = (event: Event): void => {
+const loadMoreMedia = (event: Event): void => {
   const target = event.currentTarget as HTMLDivElement | null;
 
   if (!target) {
@@ -37,31 +34,28 @@ const loadMoreMedias = (event: Event): void => {
   const { scrollTop, clientHeight, scrollHeight } = target;
 
   if (scrollTop + clientHeight >= scrollHeight * 0.85) {
-    galleryListService.fetchMedias();
+    galleryListService.fetchMedia();
   }
 };
 
 onMounted(() => {
-  galleryListService.refreshMedias();
+  galleryListService.refreshMedia();
 });
 </script>
 
 <template>
   <ion-page>
-    <div class="m-1 flex flex-row content-center items-center justify-end">
+    <div class="flex shrink-0 flex-row items-center justify-end p-3">
       <!-- view mode selection -->
-      <va-button-toggle
-        v-model="currentViewMode"
-        :options="viewModeOptions"
-        preset="secondary"
-        border-color="primary"
-      />
+      <h-button-toggle v-model="currentViewMode" :options="viewModeOptions" />
     </div>
 
     <div
-      @scroll="loadMoreMedias"
+      @scroll="loadMoreMedia"
       ref="galleryListPageContent"
-      class="invisible-scroll-bar h-screen overflow-scroll"
+      role="region"
+      :aria-label="t('elements.galleryMediaRegionLabel')"
+      class="invisible-scroll-bar min-h-0 flex-1 overflow-y-auto"
     >
       <!-- grid view -->
       <div
@@ -69,7 +63,7 @@ onMounted(() => {
         class="grid grid-cols-4 place-content-center place-items-center gap-px md:grid-cols-6 lg:grid-cols-10"
       >
         <GalleryGridItem
-          v-for="media in galleryListStore.medias"
+          v-for="media in galleryListStore.media"
           :key="media.id"
           :media="media"
         />
@@ -81,24 +75,24 @@ onMounted(() => {
         class="grid grid-cols-1 place-content-center place-items-center gap-px"
       >
         <GalleryListItem
-          v-for="media in galleryListStore.medias"
+          v-for="media in galleryListStore.media"
           :key="media.id"
           :media="media"
         />
       </div>
 
-      <!-- medias fetch progress indicator -->
+      <!-- media fetch progress indicator -->
       <div
         v-show="
-          galleryListStore.isFetchingGalleryMedias &&
+          galleryListStore.isFetchingGalleryMedia &&
           !galleryListStore.hasFetchedAllRecords
         "
         class="flex w-full flex-row content-center items-center justify-center"
       >
-        <va-progress-circle indeterminate />
+        <h-progress-circle indeterminate />
       </div>
 
-      <div class="fixed right-3 bottom-12">
+      <div class="fixed right-4 bottom-6">
         <GalleryToUploadPageButton />
       </div>
 

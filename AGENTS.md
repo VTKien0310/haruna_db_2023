@@ -1,285 +1,176 @@
-# AGENTS.md
+# HarunaDB Development Guide
 
-## Project: Haruna DB
+## Project and Working Principles
 
-A multipurpose Progressive Web App (PWA) for everyday use, providing:
+Haruna DB is a PWA built with Vue 3, TypeScript, Ionic Vue 9, Haruna UI,
+Tailwind CSS 4, Pinia 4, and Vue Router 5 via `@ionic/vue-router`. It uses
+Supabase, the Custom API, Firebase Hosting, VueUse, dayjs, and FFmpeg WASM.
 
-- Image and video storage (gallery)
-- AI-powered translation (via the Backend API)
-- Webpage bookmark management (hierarchical directory tree)
+- Prioritize security, simplicity, maintainability, then consistency with existing
+  code. Follow Vue and Ionic best practices. Prefer explicit, readable solutions.
+- Make the smallest change that fully solves the task. Avoid speculative
+  abstractions, unjustified dependencies, and unrequested architectural changes.
+- Ask when requirements conflict, security/backend responsibilities are unclear,
+  or changes could affect authentication, authorization, or data access rules.
+  Clarify uncertainty before risky or irreversible changes.
+- Match the existing style. Remove dead code, commented-out code, and placeholders
+  unless explicitly requested. Extract shared logic when justified.
 
-### Tech Stack
+## Development
 
-| Layer            | Technology                              |
-| ---------------- | --------------------------------------- |
-| Framework        | Vue 3 + TypeScript                      |
-| Mobile/PWA       | Ionic Vue 8                             |
-| UI Components    | Vuestic UI                              |
-| Styling          | Tailwind CSS 4                          |
-| State Management | Pinia 3                                 |
-| Routing          | Vue Router 4 via `@ionic/vue-router`    |
-| Backend          | Supabase + Custom API via `BackendPort` |
-| Hosting          | Firebase Hosting                        |
-| Utilities        | VueUse, dayjs, FFmpeg WASM              |
+Run commands from the repository root. Follow [development setup](README.md#project-setup-for-development):
+start Supabase, install dependencies, start the frontend, and serve Edge Functions
+with the documented local environment file. Keep frontend and Edge Function
+processes running when developing features that use them.
 
-This file defines the standards and expectations that coding agents must follow when working on this project.
+For application tests, use `npm ci` if dependencies are needed, then
+`npm test -- <test-paths>`. No environment files, credentials, Docker, Supabase,
+backend, or development server are needed or permitted for this suite.
 
-## Core Principles
+## Architecture and Backend Boundaries
 
-- Prioritize **security, maintainability, and clarity** over cleverness.
-- Follow **Vue best practices**.
-- Follow **Ionic best practices**.
-- Follow **Vuestic UI conventions**.
-- Prefer **simple, readable, composable solutions**.
-- Keep the UI consistent with the app's design system and theme.
-- Respect the separation of responsibilities between the frontend and the backend port.
+- Keep features self-contained in `src/modules/<module>/` with routing, pages,
+  components, services, stores, entities, types, and service containers.
+  `src/libs/ui/` owns reusable UI; `src/ports/` owns infrastructure adapters,
+  including `backend/` and browser utilities in `dom/`.
+- Services are plain TypeScript classes with constructor dependency injection.
+  Factories in `*ServiceContainer.ts` wire dependencies and return a new instance
+  on every call. Services access stores via `use*Store()`.
+- Pinia stores use setup-style `defineStore` and expose `ref<T>()` and `computed()`
+  state only: no actions or getters. Business logic belongs in services, not
+  stores or page components. Do not use composables returning reactive state.
+- Use `Promise<boolean>` or `void` for service control flow. Do not throw for
+  expected failures. Show user-facing errors through toast notifications.
+- All backend access goes through `backendPort` from
+  `@/ports/backend/BackendPort.ts`. Prefer `backendPort.spbClient` for native
+  CRUD, authentication, storage, and lightweight Edge Functions; type database
+  queries with generated `Database` types. Destructure `{ data, error }` and
+  check `if (error || !data)`.
+- Invoke Edge Functions with `backendPort.spbClient.functions.invoke()`;
+  implementations live in `supabase/functions/` and run on Deno.
+- Use `backendPort.get<T>()` and `backendPort.post<T>()` for heavy computation, complex
+  orchestration, or dedicated-server needs when Edge Function cold starts,
+  compute limits, or complexity make Supabase unsuitable. The port injects the
+  Supabase session as Bearer auth. Handle expected errors with
+  `BackendApiResult<T, E>` (`isOk`, `isErr`, `map`, `flatMap`, `unwrap`, `unwrapOr`,
+  `unwrapErr`).
 
 ## Frontend Standards
 
-### Vue
+- Use TypeScript (`.ts`) and exclusively `<script setup lang="ts">` with inline
+  Vue templates; no Options API, regular script blocks, or separate HTML files.
+  Prefer strong types. Avoid `any`.
+- Keep components lean. Use `ref<T>()`, `reactive<T>()`, and `computed()` for local
+  state; clean up watchers and side effects. Use Ionic lifecycle hooks such as
+  `onIonViewDidEnter` and `onIonViewWillLeave` for page-level concerns.
+- Use module-scoped routing with exported route-name enums and lazy-loaded pages.
+- Use dayjs with the UTC plugin for all date handling.
+- Naming: `{Module}Page.vue`, descriptive component names,
+  `{Module}{Action}Service.ts`, `{Module}Store.ts`, `{Module}Router.ts` with
+  `{Module}RouteName`, `{Module}Entities.ts` for interfaces/enums/constants,
+  `{Module}Types.ts` for DTOs/form types, and `{Module}ServiceContainer.ts`.
+  Use dot-separated route names (`gallery.list`), kebab-case store IDs (`gallery-list`), and `SCREAMING_SNAKE_CASE`
+  constants.
 
-- Use `<script setup lang="ts">` exclusively (Composition API + TypeScript).
-- Use inline templates (no separate `.html` files).
-- Prefer **strong typing** everywhere; avoid `any`.
-- Keep components lean; move logic into services/utilities.
-- Use `ref<T>()`, `reactive<T>()`, `computed()` for local state.
-- Clean up side effects and watchers appropriately.
-- Use Ionic lifecycle hooks (`onIonViewDidEnter`, `onIonViewWillLeave`) for page-level concerns.
-- Use **Vuestic UI components** (`VaButton`, `VaInput`, `VaForm`, `VaSelect`, etc.) instead of raw HTML controls.
+## UI, Styling, and PWA
 
-### Naming Conventions
+- Read and follow the [Haruna UI guide](doc/design-and-decision/haruna-ui-lib.md) for UI or styling
+  work, including supported APIs, design conventions, implementation boundaries,
+  provenance, and maintenance. Keep library-specific documentation there.
+- Use Haruna controls from `@/libs/ui` (such as `HButton`, `HInput`, `HForm`,
+  `HSelect`) instead of raw application controls; use Ionic components where
+  appropriate. Library primitives may use native elements for semantics and
+  accessibility.
+- Prefer Tailwind utilities in templates and minimal scoped CSS. Reuse existing
+  `@theme static` tokens, breakpoints, grids, font classes, and utilities in
+  `src/libs/ui/styles/ui.css`; do not introduce one-off colors or magic numbers.
+- `src/main.css` imports/registers external fonts, Tailwind, Ionic, and Haruna UI;
+  keep Ionic selectors and `--ion-*` mappings there. Haruna's shared stylesheet
+  owns app theme tokens, resets, font classes, and shared utilities, without
+  external package imports or framework-specific selectors/variables. Follow
+  [CSS integration rules](doc/design-and-decision/haruna-ui-lib.md#css-integration) for import order
+  and runtime tokens.
+- Preserve responsive mobile/desktop layouts, touch-friendly interaction, mobile
+  performance, unstable-network handling, and clear loading/empty/error states.
+  Preserve manifest installability and the `vite-plugin-pwa` `generateSW` setup.
 
-- **Pages:** `{Module}Page.vue` (e.g., `GalleryListPage.vue`)
-- **Components:** Descriptive names (e.g., `GalleryGridItem.vue`)
-- **Services:** `{Module}{Action}Service.ts` (e.g., `GalleryListService.ts`)
-- **Stores:** `{Module}Store.ts` (e.g., `AuthStore.ts`)
-- **Routers:** `{Module}Router.ts` with exported enum `{Module}RouteName`
-- **Entities:** `{Module}Entities.ts` (interfaces, enums, constants)
-- **Types:** `{Module}Types.ts` (DTOs, form data types)
-- **Service Containers:** `{Module}ServiceContainer.ts`
-- **Route names:** Dot notation strings (e.g., `"gallery.list"`, `"auth.login"`)
-- **Store IDs:** Kebab-case strings (e.g., `"gallery-list"`)
-- **Constants:** `SCREAMING_SNAKE_CASE`
+## Security
 
-## Architecture and Boundaries
-
-### Module Structure
-
-The project uses a modular, port-based architecture (hexagonal/ports-and-adapters pattern):
-
-```
-src/
-  modules/          # Self-contained feature modules
-    <module>/
-      <Module>Router.ts
-      <Module>ServiceContainer.ts
-      <Module>Entities.ts
-      <Module>Types.ts
-      pages/
-      components/
-      services/
-      stores/
-  ports/            # Infrastructure adapters (external services)
-    backend/        # Supabase client + Custom backend HTTP client
-    dom/            # Browser DOM utilities
-```
-
-Each module is fully self-contained with its own routing, pages, components, services, stores, entities, and types.
-
-### Service Pattern
-
-- Services are **plain TypeScript classes** with constructor dependency injection.
-- Factory functions in `*ServiceContainer.ts` compose services with their dependencies.
-- Each call to a factory function creates a **new instance** (not singleton).
-- Services access Pinia stores directly via `use*Store()`.
-- Services return `Promise<boolean>` or `void` for control flow; no exceptions for expected failures.
-
-### Pinia Stores
-
-- Use **Composition API (setup function)** style of `defineStore`.
-- Stores are **pure state containers** — no actions or getters.
-- Business logic lives in service classes, not stores.
-- Expose `ref<T>()` and `computed()` values.
-
-## Backend Boundaries
-
-### Unified Backend Port
-
-All backend access (Supabase + Custom API) is centralized through `backendPort` from `@/ports/backend/BackendPort.ts`.
-
-#### Supabase Access
-
-Use `backendPort.spbClient` for:
-
-- **Database queries** (typed with generated `Database` types)
-- **Authentication** (`signInWithPassword`, `signOut`, `getSession`, `onAuthStateChange`)
-- **Storage operations** (`upload`, `download`, `createSignedUrl`, `remove`, `list`)
-- **Edge functions** for lightweight server-side logic
-
-Pattern for Supabase calls: destructure `{ data, error }` and check `if (error || !data)`.
-
-Edge functions are invoked via `backendPort.spbClient.functions.invoke()` and are located in `supabase/functions/` (Deno
-runtime).
-
-#### Custom Backend API (Heavy Compute)
-
-Use `backendPort` directly for:
-
-- Complex business logic and orchestration
-- Heavy computation that should not run on Supabase edge functions
-- Operations requiring a dedicated server environment
-
-- Uses a custom **`BackendApiResult<T, E>` monad** for error handling (no exceptions for expected errors).
-- Supports `.isOk()`, `.isErr()`, `.map()`, `.flatMap()`, `.unwrap()`, `.unwrapOr()`, `.unwrapErr()`.
-- Auto-injects Supabase session token as Bearer auth.
-- Methods: `get<T>()`, `post<T>()`.
-
-### When Unsure About Boundaries
-
-- Prefer Supabase for anything it can handle natively (CRUD, auth, storage, simple edge functions).
-- Move to the custom backend API when Supabase edge function limitations are hit (cold starts, compute limits,
-  complexity).
-- Never expose Supabase service role key or backend secrets in frontend code.
-
-## Styling and Theme
-
-### Tailwind CSS
-
-- Use Tailwind utility classes in templates for layout and styling.
-- Prefer existing theme tokens from `@theme` in `src/main.css` before adding new ones:
-  - **Colors:** `primary`, `secondary`, `success`, `info`, `danger`, `warning`, `background-primary`,
-    `background-secondary`, `background-element`, `background-border`, `text-primary`, `text-inverted`, `shadow`, `focus`
-  - **Breakpoints:** `xs` (0), `sm` (640), `md` (1024), `lg` (1440), `xl` (1920)
-- Do not introduce one-off colors or magic numbers.
-- Use custom grid templates: `grid-cols-16`, `grid-cols-20` when needed.
-
-### Vuestic UI
-
-- Official documentation: https://ui.vuestic.dev/introduction/overview
-- Use Vuestic components for interactive UI: `VaButton`, `VaInput`, `VaForm`, `VaSelect`, `VaTextarea`, `VaCard`,
-  `VaImage`, `VaFileUpload`, `VaProgressBar`, `VaProgressCircle`, `VaSkeleton`, `VaButtonToggle`, `VaIcon`, `VaAppBar`,
-  `VaModal`.
-- Follow Vuestic theming and configuration.
-- Vuestic UI is used directly (no `@vuestic/tailwind` bridge needed).
-- **Color naming**: Vuestic uses camelCase color names (e.g., `color="backgroundElement"`), while Tailwind uses kebab-case (e.g., `bg-background-element`). These are separate systems — the `color` prop on Vuestic components uses Vuestic's internal color names, not Tailwind class names.
-
-### Global CSS
-
-- Global resets and font definitions live in `src/main.css`.
-- Font classes: `.branding-font` (Pacifico), `.title-font` (Oxygen Mono), `.sans-serif-font` (Roboto), `.serif-font` (
-  Roboto Slab).
-- `.invisible-scroll-bar` utility for hidden scrollbars.
-- Keep `<style scoped>` blocks minimal; prefer Tailwind classes.
-
-## Security Requirements
-
-- Never hardcode secrets, tokens, API keys, or service credentials.
-- Never expose Supabase service role key in frontend code.
-- All client-side env vars use `VITE_` prefix (`VITE_SUPABASE_API_URL`, `VITE_SUPABASE_ANON_KEY`,
-  `VITE_BACKEND_API_URL`).
-- Assume all client code is inspectable by end users.
-- Design with Supabase row-level security (RLS) in mind.
-- Validate inputs rigorously.
-- Be cautious with file uploads, previews, metadata, and download flows.
-- Respect authentication and authorization boundaries.
-- Avoid logging sensitive user data.
-- Do not store sensitive information in insecure client-side persistence.
-
-## Code Quality
-
-- Use TypeScript throughout; all files use `.ts` extension, all Vue files use `lang="ts"`.
-- Keep code concise, readable, and easy to reason about.
-- Avoid duplication; extract reusable pieces when justified.
-- Do not over-abstract prematurely.
-- Match existing codebase style when editing existing files.
-- Prefer explicitness over hidden behavior.
-- Do not leave dead code, commented-out blocks, or placeholder implementations unless explicitly requested.
-- Use `dayjs` with UTC plugin for all date handling.
+Security conventions are defined in
+[`doc/conventions-and-standards/security.md`](doc/conventions-and-standards/security.md).
 
 ## Testing and Validation
 
-After creating or editing code, always run:
+Use Vitest, Vue Test Utils, and jsdom. Follow
+[application tests](doc/conventions-and-standards/application-tests.md) and run commands
+from the [README](README.md#setup-and-commands).
 
-```bash
-npm run format     # Prettier (includes Tailwind class sorting)
-npm run type-check # vue-tsc type checking
-```
+Name tests `*.test.ts`, group with `describe("ClassOrComponent", ...)`, and assert
+observable success, failure, empty, and loading behavior rather than private
+details or broad snapshots. Add regression tests for bug fixes; update guidance
+when the harness changes.
 
-Rules:
+Use real Haruna controls for validation, `appMountOptions()` for components, and
+constructor injection for services. Workflow tests connect real services and
+stores to fake backends. Follow [UI verification guidance](doc/design-and-decision/haruna-ui-lib.md#verification)
+for overlays and visual checks.
 
-- Fix formatting issues introduced by your changes.
-- Fix type errors introduced by your changes.
-- Do not ignore type errors without a documented reason.
+### Mandatory Isolation
 
-## PWA Expectations
+- Never contact real or local API, Supabase, database, storage, auth, or Edge
+  Function services. Do not start Docker, Supabase, development servers, or other
+  external services for application tests.
+- Never read development or production environment files or credentials. Vitest
+  disables environment-file loading and supplies dummy endpoints and keys.
+- Backend singleton imports and Supabase client construction are guarded before
+  app imports. Never bypass guards via `vi.unmock`, `vi.importActual`, or direct
+  SDK construction; never import `src/main.ts` into tests.
+- Use `makeBackendFake()` with explicit responses. Unconfigured operations fail
+  teardown even if caught by application code. Each `backend.query(...)` queues
+  one response per `.from(...)`; chains record arguments, not SQL/RLS semantics.
+- Never restore real network transports or use subprocesses to access services.
+  Extend fakes; keep FFmpeg, service-worker registration, browser downloads, and
+  other external side effects mocked.
+- Only isolation self-tests may consume expected guard violations; other tests
+  must leave them for global teardown to detect.
+- Await async work, unmount components, and stop service-owned watchers, using
+  `finally` where appropriate. Setup resets Pinia, DOM, browser storage, timers,
+  and mocks; isolate any additional side effects equally.
+- Migrations, RLS, Edge Function implementations, server contracts, and browser
+  end-to-end tests are outside this suite. Mock tests do not validate server behavior.
 
-This is a Progressive Web App (configured via `vite-plugin-pwa` with `generateSW` strategy):
+### Completion Checks
 
-- **Responsive design** — works on mobile and desktop.
-- **Touch-friendly** interactions.
-- **Graceful handling** of unstable networks.
-- **Installability** via PWA manifest.
-- **Good performance** on mobile devices.
-- Provide clear UX for **loading states**, **empty states**, and **error states**.
+- Format only changed files with `npx --no-install prettier --write <changed-files>`
+  (including Tailwind sorting); substitute explicit paths. Do not use repository-wide
+  `npm run format` for scoped changes.
+- Run `npm test -- <test-paths>` covering changed behavior, dependencies, and
+  consumers. Run the full suite (`npm test`) for broad impact that focused tests
+  cannot cover, such as shared test infrastructure, or when explicitly requested.
+- Run `npm run type-check` for TypeScript/Vue correctness changes; it checks
+  whole projects and has no file-level filtering.
+- Run `npm run test:coverage` for harness/coverage configuration changes. Coverage
+  behavior and exclusions are documented in
+  [application tests](doc/conventions-and-standards/application-tests.md).
+- For documentation-only changes, format changed files and skip application
+  tests and type checking. Otherwise, use the smallest sufficient checks. Do not
+  run whole-project checks unnecessarily.
+- Fix introduced formatting issues, type errors, and test failures; never weaken
+  isolation to pass or ignore type errors without a documented reason.
+- Completion requires compliance with architecture, Vue/Ionic/Haruna conventions,
+  theme tokens, and security rules. Report checks run, relevant checks skipped
+  with reasons, and important assumptions/tradeoffs in the final handoff.
 
-## Definition of Done
+## Design and Decision Documentation
 
-A task is only considered complete when all of the following are true:
+Before making changes that could conflict with established decisions, consult
+[`doc/design-and-decision`](doc/design-and-decision). The directory explains
+the reasoning behind architecture, business logic, and conventions.
 
-- The implementation follows Vue, Ionic, and Vuestic best practices.
-- The UI uses Vuestic/Ionic components where appropriate.
-- Styling respects `@theme` tokens in `src/main.css`.
-- Code is consistent with the existing architecture.
-- Security implications have been considered.
-- `npm run format` has been run after the changes.
-- `npm run type-check` has been run after the changes.
-- Any important assumptions or tradeoffs are clearly communicated.
+Update [`doc/design-and-decision/erd.dbml`](doc/design-and-decision/erd.dbml)
+whenever database schema changes affect the ERD.
 
-## Agent Behavior Expectations
+## Git Conventions
 
-- Make the smallest reasonable change that fully solves the problem.
-- Do not make broad architectural changes unless explicitly requested.
-- Ask for clarification if:
-  - Requirements conflict.
-  - Security boundaries are unclear.
-  - The intended responsibility between Supabase and the backend API is ambiguous.
-  - A change could affect authentication, authorization, or data access rules.
-- When suggesting improvements, prefer practical recommendations over speculative refactors.
-
-## Preferred Implementation Patterns
-
-- `<script setup lang="ts">` for all Vue components.
-- Typed service classes with constructor DI.
-- Factory functions in `*ServiceContainer.ts` for dependency wiring.
-- Vuestic UI components for interactive elements.
-- Tailwind utility classes for layout and styling.
-- Pinia stores as pure state containers.
-- Module-scoped routing with enum route names.
-- Lazy-loaded route components.
-- `BackendApiResult` monad for `BackendPort` error handling.
-- Destructured `{ data, error }` pattern for Supabase calls.
-- Toast notifications for user-facing errors.
-
-## Avoid
-
-- Options API or regular `<script>` blocks.
-- Raw HTML controls when Vuestic components are appropriate.
-- Business logic embedded directly in page components.
-- Hardcoded theme values when existing tokens can be used.
-- Unstructured state management.
-- Leaking sensitive data into logs, client storage, or frontend configuration.
-- Overengineering simple features.
-- Introducing dependencies without clear justification.
-- Exceptions for expected error flows (use `BackendApiResult` or boolean returns).
-- Composables returning reactive state (use service classes instead).
-
-## If Unsure
-
-If implementation details are unclear, prefer:
-
-1. Security
-2. Simplicity
-3. Maintainability
-4. Consistency with the existing codebase
-
-When in doubt, ask for clarification before making risky or irreversible changes.
+Git conventions (branch naming, commit messages, pull requests) are defined in
+[`doc/conventions-and-standards/git.md`](doc/conventions-and-standards/git.md).

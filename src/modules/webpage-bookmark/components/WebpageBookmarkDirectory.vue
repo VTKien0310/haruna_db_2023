@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VaButton, VaTextarea } from "vuestic-ui";
+import { HButton, HTextarea } from "@/libs/ui";
 import WebpageBookmarkDirectoryHeader from "@/modules/webpage-bookmark/components/WebpageBookmarkDirectoryHeader.vue";
 import CreateWebpageBookmarkDirectoryForm from "@/modules/webpage-bookmark/components/CreateWebpageBookmarkDirectoryForm.vue";
 import CreateWebpageBookmarkLinkForm from "@/modules/webpage-bookmark/components/CreateWebpageBookmarkLinkForm.vue";
@@ -25,13 +25,12 @@ const deleteDirectory = (): void => {
     <div class="grid h-full grid-flow-row grid-cols-1 grid-rows-16 gap-2">
       <WebpageBookmarkDirectoryHeader class="row-span-1 self-start" />
 
-      <va-textarea
+      <h-textarea
         v-if="!webpageBookmarkDetailStore.currentIsRoot"
         :model-value="
           webpageBookmarkDetailStore.webpageBookmark?.description ?? ''
         "
         readonly
-        :resize="false"
         class="row-span-3 h-full w-full self-center px-2"
       />
 
@@ -59,13 +58,12 @@ const deleteDirectory = (): void => {
       <UpdateWebpageBookmarkDirectoryForm
         v-if="!webpageBookmarkDetailStore.currentIsRoot"
       />
-      <va-button
+      <h-button
         v-if="!webpageBookmarkDetailStore.currentIsRoot"
         @click="deleteDirectory"
         icon="delete"
-        round
         class="m-1"
-        color="danger"
+        color="error"
       />
       <NavigateToParentBookmarkDirectoryBtn />
     </div>

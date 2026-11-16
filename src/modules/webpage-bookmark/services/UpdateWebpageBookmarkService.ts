@@ -6,6 +6,7 @@ import type {
   WebBookmarkDirectoryFormData,
   WebBookmarkLinkFormData,
 } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import { t } from "@/modules/webpage-bookmark/locales";
 
 export class UpdateWebpageBookmarkService {
   constructor(
@@ -16,7 +17,8 @@ export class UpdateWebpageBookmarkService {
 
   private async updateRecord(
     record: WebpageBookmark,
-    updateData: Record<string, string>,
+    updateData: Pick<WebBookmarkLinkFormData, "name" | "description"> &
+      Partial<Pick<WebBookmarkLinkFormData, "url">>,
   ): Promise<boolean> {
     const { error } = await this.backendPort.spbClient
       .from("webpage_bookmarks")
@@ -24,7 +26,7 @@ export class UpdateWebpageBookmarkService {
       .eq("id", record.id);
 
     if (error) {
-      this.toastService.error(`Failed to update record with id ${record.id}`);
+      this.toastService.error(t("messages.updateFailed", { id: record.id }));
       return false;
     }
 

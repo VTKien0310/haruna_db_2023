@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router";
 import { computed, onMounted, ref, type StyleValue, watch } from "vue";
 import { type Media, MediaTypeEnum } from "@/modules/gallery/GalleryEntities";
-import type { Profile } from "@/modules/auth/ProfileEntities";
+import type { Profile } from "@/modules/auth/AuthEntities";
 import { IonPage } from "@ionic/vue";
 import {
   useGalleryListService,
@@ -16,7 +16,8 @@ import {
 } from "@vueuse/core";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
 import { createAnimation, type Animation } from "@ionic/vue";
-import { VaButton, VaProgressBar } from "vuestic-ui";
+import { HButton, HProgressBar } from "@/libs/ui";
+import { t } from "@/modules/gallery/locales";
 
 const media = ref<Media | null>(null);
 const mediaSignedUrl = ref<string>("");
@@ -186,9 +187,9 @@ watch(
     <div
       ref="mediaDisplayArea"
       :style="pageBackground"
-      class="h-screen bg-contain bg-scroll bg-center bg-no-repeat transition-colors duration-300"
+      class="h-full bg-contain bg-scroll bg-center bg-no-repeat transition-colors duration-300"
     >
-      <va-progress-bar v-show="showProgressBar" indeterminate />
+      <h-progress-bar v-show="showProgressBar" indeterminate />
 
       <div
         v-if="mediaIsVideo"
@@ -209,23 +210,29 @@ watch(
           class="mb-3 flex h-full w-full flex-col content-start items-start justify-start p-3"
         >
           <div v-show="showMediaDetail">
-            <p>By {{ mediaUploader?.name ?? "" }}</p>
             <p>
-              On
               {{
-                media
-                  ? mediaDetailService.transformMediaCreatedAtToHumanReadableFormat(
-                      media,
-                    )
-                  : ""
+                t("elements.mediaDetailBy", { name: mediaUploader?.name ?? "" })
               }}
             </p>
             <p>
-              Size
               {{
-                mediaDetailService.transformMediaSizeToHumanReadableFormat(
-                  media?.size ?? 0,
-                )
+                t("elements.mediaDetailUploaded", {
+                  date: media
+                    ? mediaDetailService.transformMediaCreatedAtToHumanReadableFormat(
+                        media,
+                      )
+                    : "",
+                })
+              }}
+            </p>
+            <p>
+              {{
+                t("elements.mediaDetailSize", {
+                  size: mediaDetailService.transformMediaSizeToHumanReadableFormat(
+                    media?.size ?? 0,
+                  ),
+                })
               }}
             </p>
           </div>
@@ -234,24 +241,13 @@ watch(
         <div
           class="flex w-full flex-row content-center items-center justify-end"
         >
-          <va-button
-            @click="triggerShowMediaDetail"
-            round
-            icon="info"
-            class="mr-1"
-          />
-          <va-button
-            @click="downloadMedia"
-            round
-            icon="download"
-            class="mr-1"
-          />
-          <va-button
+          <h-button @click="triggerShowMediaDetail" icon="info" class="mr-1" />
+          <h-button @click="downloadMedia" icon="download" class="mr-1" />
+          <h-button
             v-if="uploaderIsMe"
             @click="deleteMedia"
-            round
             icon="delete"
-            color="danger"
+            color="error"
           />
         </div>
       </div>
@@ -265,7 +261,8 @@ watch(
 }
 
 .detail-area {
-  background-color: var(--va-background-border);
-  border-radius: 20px;
+  border-radius: var(--radius-medium);
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface);
 }
 </style>

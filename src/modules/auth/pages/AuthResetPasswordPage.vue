@@ -1,0 +1,141 @@
+<script setup lang="ts">
+import { HButton, HForm, HInput, type HFormHandle } from "@/libs/ui";
+import { computed, reactive, ref, watch } from "vue";
+import type {
+  PasswordResetAvailability,
+  PasswordResetDetail,
+} from "@/modules/auth/AuthTypes";
+import { IonPage, onIonViewDidEnter } from "@ionic/vue";
+import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
+import { useAuthStore } from "@/modules/auth/stores/AuthStore";
+import { t } from "@/modules/auth/locales";
+import logo from "@/assets/logo.svg";
+
+const resetPasswordForm = ref<HFormHandle>();
+
+const authenticationService = useAuthenticationService();
+const authStore = useAuthStore();
+
+const resetPasswordFormContent = reactive<PasswordResetDetail>({
+  password: "",
+  confirmPassword: "",
+});
+
+const availability = ref<PasswordResetAvailability | null>(null);
+const isUpdatingPassword = ref<boolean>(false);
+
+const enableResetButton = computed((): boolean => {
+  const passwordIsAcceptable: boolean =
+    authenticationService.isAcceptableResetPassword(
+      resetPasswordFormContent.password,
+    );
+  const confirmationMatches: boolean =
+    resetPasswordFormContent.password ===
+    resetPasswordFormContent.confirmPassword;
+
+  return (
+    passwordIsAcceptable && confirmationMatches && !isUpdatingPassword.value
+  );
+});
+
+onIonViewDidEnter(async () => {
+  const next = await authenticationService.preparePasswordReset();
+  availability.value = authStore.passwordRecoveryRequired ? "ready" : next;
+});
+
+watch(
+  () => authStore.passwordRecoveryRequired,
+  (required: boolean) => {
+    if (required) {
+      availability.value = "ready";
+    }
+  },
+);
+
+function handleResetPassword() {
+  if (!enableResetButton.value) {
+    return;
+  }
+
+  isUpdatingPassword.value = true;
+  authenticationService
+    .resetPassword(resetPasswordFormContent.password)
+    .then((isSuccess: boolean) => {
+      isUpdatingPassword.value = false;
+      if (isSuccess) {
+        resetPasswordForm.value?.reset();
+      }
+    });
+}
+
+function requestNewResetLink() {
+  authenticationService.openForgotPassword();
+}
+</script>
+
+<template>
+  <ion-page>
+    <div
+      class="bg-surface flex h-full w-full flex-col items-center justify-center overflow-y-auto px-4 py-8"
+    >
+      <div class="text-primary flex items-center gap-3">
+        <img :src="logo" alt="" class="h-14 w-14" />
+        <h1 class="text-headline-medium font-normal">Haruna</h1>
+      </div>
+
+      <h-form
+        v-if="availability === 'ready'"
+        ref="resetPasswordForm"
+        @submit.prevent="handleResetPassword"
+        class="bg-surface-container-low border-outline-variant rounded-medium mt-8 flex w-full max-w-sm flex-col items-center justify-center border p-6"
+      >
+        <h2 class="text-on-surface text-title-medium font-medium">
+          {{ t("elements.resetPasswordTitle") }}
+        </h2>
+
+        <h-input
+          v-model="resetPasswordFormContent.password"
+          :label="t('elements.newPasswordLabel')"
+          name="password"
+          type="password"
+          :placeholder="t('elements.newPasswordPlaceholder')"
+          class="mt-4 w-full"
+        />
+
+        <h-input
+          v-model="resetPasswordFormContent.confirmPassword"
+          :label="t('elements.confirmPasswordLabel')"
+          name="confirmPassword"
+          type="password"
+          class="mt-4 w-full"
+        />
+
+        <h-button
+          :disabled="!enableResetButton"
+          :loading="isUpdatingPassword"
+          type="submit"
+          class="mt-6 w-full"
+        >
+          {{ t("elements.updatePasswordButton") }}
+        </h-button>
+      </h-form>
+
+      <div
+        v-else-if="availability === 'invalid'"
+        class="bg-surface-container-low border-outline-variant rounded-medium mt-8 flex w-full max-w-sm flex-col items-center justify-center border p-6"
+      >
+        <p class="text-on-surface text-center">
+          {{ t("elements.resetLinkInvalid") }}
+        </p>
+
+        <h-button
+          type="button"
+          class="mt-6 w-full"
+          @click="requestNewResetLink"
+        >
+          {{ t("elements.requestNewLinkButton") }}
+        </h-button>
+      </div>
+    </div>
+  </ion-page>
+</template>

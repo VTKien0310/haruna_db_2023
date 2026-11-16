@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import {
-  useForm,
-  VaButton,
-  VaForm,
-  VaInput,
-  VaModal,
-  VaTextarea,
-} from "vuestic-ui";
-import { reactive, ref } from "vue";
+  type HFormHandle,
+  HButton,
+  HForm,
+  HInput,
+  HModal,
+  HTextarea,
+} from "@/libs/ui";
+import { computed, reactive, ref } from "vue";
 import type { WebBookmarkDirectoryFormData } from "@/modules/webpage-bookmark/WebpageBookmarkTypes.ts";
+import { t } from "@/modules/webpage-bookmark/locales";
 
 interface Props {
   formIcon?: string;
@@ -30,11 +31,10 @@ const {
   submitBtnLabel = "Submit",
 } = defineProps<Props>();
 
-const {
-  isValid: validCreationData,
-  validate,
-  resetValidation,
-} = useForm("formRef");
+const formRef = ref<HFormHandle>();
+const validCreationData = computed(() => formRef.value?.isValid ?? false);
+const validate = () => formRef.value?.validate() ?? false;
+const resetValidation = () => formRef.value?.resetValidation();
 
 const showForm = ref<boolean>(false);
 
@@ -69,66 +69,63 @@ const submitForm = async (): Promise<void> => {
 </script>
 
 <template>
-  <va-button
+  <h-button
     @click="triggerShowForm"
     :icon="formIcon"
-    round
     class="m-1"
-    :preset="formStyleIsPrimary ? '' : 'secondary'"
-    :border-color="formStyleIsPrimary ? '' : 'primary'"
+    :variant="formStyleIsPrimary ? 'filled' : 'outlined'"
   />
 
-  <va-modal
+  <h-modal
     v-model="showForm"
     :title="formTitle"
     hide-default-actions
     no-dismiss
   >
     <!--    form content-->
-    <va-form
+    <h-form
       ref="formRef"
       class="flex w-full flex-col content-center justify-center"
     >
-      <va-input
+      <h-input
         v-model="formData.name"
         :rules="[
           (value) =>
-            (value && value.length > 0) || 'Directory name is required',
+            (value && value.length > 0) || t('messages.directoryNameRequired'),
           (value) =>
-            (value && value.length <= 30) || 'Directory name max length is 30',
+            (value && value.length <= 30) ||
+            t('messages.directoryNameMaxLength'),
         ]"
-        label="Name"
+        :label="t('elements.nameLabel')"
         class="mb-2 w-full"
       />
-      <va-textarea
+      <h-textarea
         v-model="formData.description"
-        label="Description"
-        :min-rows="5"
-        :max-rows="5"
-        :resize="false"
+        :label="t('elements.descriptionLabel')"
+        :rows="5"
         class="mb-2 w-full"
       />
 
       <!--      form action-->
       <div class="flex w-full flex-row content-center justify-end">
-        <va-button
+        <h-button
           @click="triggerShowForm"
-          preset="secondary"
+          variant="outlined"
           color="secondary"
           class="mr-2"
         >
-          Cancel
-        </va-button>
-        <va-button
+          {{ t("elements.cancelButton") }}
+        </h-button>
+        <h-button
           @click="validate() && submitForm()"
           :disabled="!validCreationData"
           type="submit"
         >
           {{ submitBtnLabel }}
-        </va-button>
+        </h-button>
       </div>
-    </va-form>
-  </va-modal>
+    </h-form>
+  </h-modal>
 </template>
 
 <style scoped></style>

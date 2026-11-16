@@ -1,0 +1,32 @@
+{
+  "messages": {
+    "uploadConfirm": "Upload {count} file(s)?",
+    "uploadFailed": "Couldn't upload {name}",
+    "thumbnailSignedUrlFailed": "Couldn't create a signed URL for {path} to make the thumbnail",
+    "thumbnailUploadFailed": "Couldn't upload thumbnail {name}",
+    "thumbnailCreateFailed": "Couldn't create a thumbnail for {name}",
+    "mediaRecordCreateFailed": "Couldn't create a record for {name}",
+    "downloadFailed": "Couldn't download media {id}",
+    "uploaderFetchFailed": "Couldn't fetch the uploader of media {id}",
+    "signedUrlFailed": "Couldn't create a signed URL for {path}",
+    "resizedListFailed": "Couldn't list resized images of media {id}",
+    "mediaFetchFailed": "Couldn't fetch media {id}",
+    "mediaNotFound": "Media {id} not found",
+    "deleteConfirm": "Delete this file?",
+    "deleteFailed": "Couldn't delete media {id}",
+    "fetchMediaFailed": "Couldn't fetch media",
+    "countTotalFailed": "Couldn't count total media",
+    "countUserUploadsFailed": "Couldn't count your uploads",
+    "countNewUploadsFailed": "Couldn't count new uploads"
+  },
+  "elements": {
+    "galleryMediaRegionLabel": "Gallery media",
+    "uploadButton": "Upload",
+    "uploadAddButtonText": "Add",
+    "uploadDropZoneText": "Add files or drop them here",
+    "uploadedMediaAlt": "Uploaded media",
+    "mediaDetailBy": "By {name}",
+    "mediaDetailUploaded": "Uploaded {date}",
+    "mediaDetailSize": "Size {size}"
+  }
+}

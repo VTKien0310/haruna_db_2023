@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.node.json",
+  "include": ["generate-m3-themes.ts", "generate-pwa-assets.ts"],
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": true,
+    "allowImportingTsExtensions": true
+  }
+}

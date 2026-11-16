@@ -2,6 +2,7 @@ import { useAuthStore } from "@/modules/auth/stores/AuthStore";
 import type { User } from "@supabase/supabase-js";
 import type { BackendPort } from "@/ports/backend/BackendPort";
 import type { ProfileDetail } from "@/modules/auth/AuthTypes";
+import { t } from "@/modules/auth/locales";
 import type { ToastService } from "@/modules/master/services/ToastService";
 
 export class ProfileService {
@@ -24,23 +25,35 @@ export class ProfileService {
     const currentUser = await this.me();
     if (!currentUser) {
       this.authStore.profile = null;
+      this.authStore.userSpecialPermissions = [];
       return;
     }
 
-    const { data, error } = await this.backendPort.spbClient
-      .from("profiles")
-      .select()
-      .eq("user_id", currentUser.id);
+    const [profileResult, specialPermissionsResult] = await Promise.all([
+      this.backendPort.spbClient
+        .from("profiles")
+        .select()
+        .eq("user_id", currentUser.id),
+      this.backendPort.spbClient
+        .from("user_special_permissions")
+        .select()
+        .eq("user_id", currentUser.id),
+    ]);
 
-    if (error || !data) {
-      this.toastService.error(`Failed to fetch current user profile`);
-
+    if (profileResult.error || !profileResult.data) {
+      this.toastService.error(t("messages.fetchProfileFailed"));
       this.authStore.profile = null;
+    } else {
+      this.authStore.profile = profileResult.data[0];
+    }
 
+    if (specialPermissionsResult.error || !specialPermissionsResult.data) {
+      this.toastService.error(t("messages.fetchSpecialPermissionsFailed"));
+      this.authStore.userSpecialPermissions = [];
       return;
     }
 
-    this.authStore.profile = data[0];
+    this.authStore.userSpecialPermissions = specialPermissionsResult.data;
   }
 
   async updateCurrentUserProfile(profileDetail: ProfileDetail): Promise<void> {
@@ -49,8 +62,7 @@ export class ProfileService {
         password: profileDetail.password,
       });
       if (error) {
-        const errorMessage = error.message.slice(0, -1); // remove the "." in the error message
-        this.toastService.error(errorMessage);
+        this.toastService.error(t("messages.updatePasswordFailed"));
       }
     }
 
@@ -60,11 +72,13 @@ export class ProfileService {
         .from("profiles")
         .update({
           name: profileDetail.name,
+          birth_date: profileDetail.birthDate,
+          work_start_date: profileDetail.workStartDate,
         })
         .eq("user_id", currentUser.id);
 
       if (error) {
-        this.toastService.error(`Failed to update username`);
+        this.toastService.error(t("messages.updateProfileFailed"));
       }
     }
 
