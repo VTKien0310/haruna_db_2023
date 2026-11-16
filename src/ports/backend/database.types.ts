@@ -155,6 +155,7 @@ export type Database = {
           no_deduction: number;
           note: string;
           owner_id: string;
+          title: string;
           updated_at: string;
         };
         ComputedFields: never;
@@ -166,6 +167,7 @@ export type Database = {
           no_deduction?: number;
           note?: string;
           owner_id?: string;
+          title?: string;
           updated_at?: string;
         };
         Update: {
@@ -176,6 +178,7 @@ export type Database = {
           no_deduction?: number;
           note?: string;
           owner_id?: string;
+          title?: string;
           updated_at?: string;
         };
         Relationships: [];
@@ -453,6 +456,7 @@ export type Database = {
           id: string;
           time: number;
           type: number;
+          title: string;
           updated_at: string;
         };
         ComputedFields: never;
@@ -462,6 +466,7 @@ export type Database = {
           id?: string;
           time: number;
           type: number;
+          title?: string;
           updated_at?: string;
         };
         Update: {
@@ -470,6 +475,7 @@ export type Database = {
           id?: string;
           time?: number;
           type?: number;
+          title?: string;
           updated_at?: string;
         };
         Relationships: [];
