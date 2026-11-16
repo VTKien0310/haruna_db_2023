@@ -153,7 +153,9 @@ export type Database = {
           entry_type: string | null;
           id: string;
           no_deduction: number;
+          note: string;
           owner_id: string;
+          title: string;
           updated_at: string;
         };
         ComputedFields: never;
@@ -163,7 +165,9 @@ export type Database = {
           entry_type?: string | null;
           id?: string;
           no_deduction?: number;
+          note?: string;
           owner_id?: string;
+          title?: string;
           updated_at?: string;
         };
         Update: {
@@ -172,7 +176,9 @@ export type Database = {
           entry_type?: string | null;
           id?: string;
           no_deduction?: number;
+          note?: string;
           owner_id?: string;
+          title?: string;
           updated_at?: string;
         };
         Relationships: [];
@@ -225,8 +231,10 @@ export type Database = {
           cause: string;
           created_at: string;
           entry_id: string;
+          exceed_bank_value: number;
           id: string;
           pto_bank_id: string;
+          type: number;
           value: number;
         };
         ComputedFields: never;
@@ -234,16 +242,20 @@ export type Database = {
           cause: string;
           created_at?: string;
           entry_id: string;
+          exceed_bank_value?: number;
           id?: string;
           pto_bank_id: string;
+          type?: number;
           value: number;
         };
         Update: {
           cause?: string;
           created_at?: string;
           entry_id?: string;
+          exceed_bank_value?: number;
           id?: string;
           pto_bank_id?: string;
+          type?: number;
           value?: number;
         };
         Relationships: [
@@ -444,6 +456,7 @@ export type Database = {
           id: string;
           time: number;
           type: number;
+          title: string;
           updated_at: string;
         };
         ComputedFields: never;
@@ -453,6 +466,7 @@ export type Database = {
           id?: string;
           time: number;
           type: number;
+          title?: string;
           updated_at?: string;
         };
         Update: {
@@ -461,6 +475,7 @@ export type Database = {
           id?: string;
           time?: number;
           type?: number;
+          title?: string;
           updated_at?: string;
         };
         Relationships: [];
