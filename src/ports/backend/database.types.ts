@@ -115,6 +115,25 @@ export type Database = {
         };
         Relationships: [];
       };
+      miss_check_in_entries: {
+        Row: {
+          date: string;
+          id: string;
+          penalty: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          date: string;
+          id?: string;
+          penalty: number;
+        };
+        Update: {
+          date?: string;
+          id?: string;
+          penalty?: number;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           birth_date: string;
