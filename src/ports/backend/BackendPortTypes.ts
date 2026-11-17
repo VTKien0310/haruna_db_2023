@@ -1,3 +1,14 @@
+export class BackendApiError extends Error {
+  constructor(
+    public readonly code: string,
+    message: string,
+    public readonly status: number,
+  ) {
+    super(message);
+    this.name = "BackendApiError";
+  }
+}
+
 type BackendApiErrorContent = {
   error: {
     code: string;
@@ -23,13 +34,13 @@ function isBackendApiErrorContent(
 ): content is BackendApiErrorContent {
   if (typeof content !== "object" || content === null) return false;
 
-  const errorContent = content as BackendApiErrorContent;
-
+  const error = (content as { error?: unknown }).error;
+  if (!error || typeof error !== "object") return false;
+  const fields = error as Record<string, unknown>;
   return (
-    errorContent.error !== undefined &&
-    errorContent.error.code !== undefined &&
-    errorContent.error.message !== undefined &&
-    errorContent.error.path !== undefined
+    typeof fields.code === "string" &&
+    typeof fields.message === "string" &&
+    typeof fields.path === "string"
   );
 }
 

@@ -1,3 +1,7 @@
+import { useAttendanceStore } from "@/modules/attendance/AttendanceStore";
+import { AttendanceService } from "@/modules/attendance/services/AttendanceService";
+import { AttendanceFormService } from "@/modules/attendance/services/AttendanceFormService";
+import { AttendancePresentationService } from "@/modules/attendance/services/AttendancePresentationService";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthenticationService } from "@/modules/auth/services/AuthenticationService";
 import { ProfileService } from "@/modules/auth/services/ProfileService";
@@ -13,6 +17,8 @@ import { useThemeStore } from "@/modules/master/stores/ThemeStore";
 import { THEME_STORAGE_KEY } from "@/modules/master/ThemeEntities";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
 import { t } from "@/modules/auth/locales";
+const display = new AttendancePresentationService();
+const forms = new AttendanceFormService(display);
 
 describe("AuthenticationService", () => {
   let backend: ReturnType<typeof makeBackendFake>;
@@ -32,6 +38,7 @@ describe("AuthenticationService", () => {
       new GalleryListService(backend.port, toast.service),
       profile,
       new TranslationService(backend.port, toast.service),
+      new AttendanceService(backend.port, toast.service, display, forms),
     );
   });
   it.each([null, { access_token: "dummy" }])(
@@ -60,7 +67,9 @@ describe("AuthenticationService", () => {
       } else expect(router.push).toHaveBeenCalledWith({ name: "master" });
     },
   );
-  it("clears gallery and history after successful sign-out", async () => {
+  it("clears attendance, gallery, and history after successful sign-out", async () => {
+    useAttendanceStore().state.owner = "user-1";
+    useAttendanceStore().state.missed = ["2026-11-16"];
     useGalleryListStore().media = [makeMedia()];
     useTranslationStore().histories = [makeHistory()];
     useAuthStore().passwordRecoveryRequired = true;
@@ -68,6 +77,8 @@ describe("AuthenticationService", () => {
     expect(await service.signOut()).toBe(true);
     expect(useGalleryListStore().media).toEqual([]);
     expect(useTranslationStore().histories).toEqual([]);
+    expect(useAttendanceStore().state.owner).toBe("");
+    expect(useAttendanceStore().state.missed).toEqual([]);
     expect(useAuthStore().passwordRecoveryRequired).toBe(false);
   });
   it("preserves local state when sign-out fails", async () => {
@@ -103,12 +114,19 @@ describe("AuthenticationService", () => {
       session: unknown,
     ) => void;
     callback("SIGNED_IN", { user: { id: "user-1" } });
+    expect(useAttendanceStore().state.owner).toBe("user-1");
+    useAttendanceStore().state.missed = ["2026-11-16"];
+    callback("TOKEN_REFRESHED", { user: { id: "user-1" } });
+    expect(useAttendanceStore().state.missed).toEqual(["2026-11-16"]);
+    callback("SIGNED_IN", { user: { id: "user-2" } });
+    expect(useAttendanceStore().state.owner).toBe("user-2");
+    expect(useAttendanceStore().state.missed).toEqual([]);
     expect(router.push).not.toHaveBeenCalled();
     useAuthStore().passwordRecoveryRequired = true;
     callback("SIGNED_OUT", null);
     expect(router.push).toHaveBeenCalledWith({ name: "auth.login" });
     expect(useAuthStore().passwordRecoveryRequired).toBe(false);
-    expect(refresh).toHaveBeenCalledTimes(2);
+    expect(refresh).toHaveBeenCalledTimes(4);
   });
   it("opens the reset page when a recovery session starts", async () => {
     backend.auth.onAuthStateChange.mockReturnValue({});

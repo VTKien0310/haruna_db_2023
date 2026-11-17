@@ -1,3 +1,4 @@
+import { useAttendanceService } from "@/modules/attendance/AttendanceServiceContainer";
 import { AuthenticationService } from "@/modules/auth/services/AuthenticationService";
 import { ProfileService } from "@/modules/auth/services/ProfileService";
 import { backendPort } from "@/ports/backend/BackendPort";
@@ -17,6 +18,7 @@ const useAuthenticationService = () =>
     useGalleryListService(),
     useProfileService(),
     useTranslationService(),
+    useAttendanceService(),
   );
 
 export { useProfileService, useAuthenticationService };

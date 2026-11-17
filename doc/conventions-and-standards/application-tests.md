@@ -27,7 +27,7 @@ seeders); fakes live in `tests/fakes/`.
   `tests/fakes/Collaborators.ts`, and record builders using relative paths.
   `backend.query(queryResult([makeMedia()]))` queues the next `.from(...)` result;
   chains record arguments without emulating SQL/RLS. Explicitly configure
-  `backend.get/post`, `auth`, and `storage`; use `BackendApiResult.ok/err` for Custom API results.
+  `backend.get/post/patch`, `auth`, and `storage`; use `BackendApiResult.ok/err` for Custom API results.
 - Use `appMountOptions()` from `tests/support/mountApp.ts` for Pinia, Haruna UI,
   and targeted stubs. Workflow tests mock container factories to connect real
   services/stores to fake dependencies; isolated UI tests may use service doubles.

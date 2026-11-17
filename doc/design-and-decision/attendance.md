@@ -14,7 +14,7 @@ A recorded absence is time the employee treats as actually taken. It is not a re
 ## 2. Working time
 
 | Item              | Rule                            |
-|-------------------|---------------------------------|
+| ----------------- | ------------------------------- |
 | Ordinary workdays | Monday through Friday           |
 | Morning           | 08:00 up to 12:00 (240 minutes) |
 | Lunch             | 12:00 up to 13:30, not work     |
@@ -42,13 +42,13 @@ Arrival shows when presence starts. It does not show an early departure or a tem
 
 ### 3.2 Paid absence
 
-| Kind              | What is recorded             | Missed scheduled time                                                                    |
-|-------------------|------------------------------|------------------------------------------------------------------------------------------|
-| Late coverage     | The time late coverage ends  | From the start of scheduled work until that time                                         |
-| Early departure   | The time the employee left   | From that time through the end of scheduled work                                         |
-| Temporary absence | A start and an end           | The recorded interval                                                                    |
-| Half day          | Morning or afternoon         | That shift, 240 minutes                                                                  |
-| Full day          | A range of dates             | 480 minutes on each scheduled day in the range, and none on a day with no scheduled work |
+| Kind              | What is recorded            | Missed scheduled time                                                                    |
+| ----------------- | --------------------------- | ---------------------------------------------------------------------------------------- |
+| Late coverage     | The time late coverage ends | From the start of scheduled work until that time                                         |
+| Early departure   | The time the employee left  | From that time through the end of scheduled work                                         |
+| Temporary absence | A start and an end          | The recorded interval                                                                    |
+| Half day          | Morning or afternoon        | That shift, 240 minutes                                                                  |
+| Full day          | A range of dates            | 480 minutes on each scheduled day in the range, and none on a day with no scheduled work |
 
 A recorded paid absence counts only the minutes that overlap scheduled work.
 
@@ -140,21 +140,21 @@ company:
 
 ## 8. Examples
 
-| Situation                                                | Missed minutes | Paid time                                             |
-|----------------------------------------------------------|---------------:|-------------------------------------------------------|
-| Arrives at 08:00, no absence                             |              0 | None                                                  |
-| Arrives at 09:00, no absence                             |             60 | 60, when the balance covers them                      |
-| Late coverage until 09:00, arrives at 09:05              |             65 | 65, counted once                                      |
-| Morning off, arrives at 13:30                            |            240 | 240                                                   |
-| Morning off, arrives at 14:00                            |            270 | 270, counted once                                     |
-| Absent 10:00–11:00, otherwise present from 08:00         |             60 | 60                                                    |
-| Leaves at 16:30                                          |             60 | 60                                                    |
-| Remote work for the full day, no arrival                 |              0 | None                                                  |
-| No arrival, no remote work, and no recorded paid absence |            480 | As much as the balance can pay. The rest is unpaid.   |
-| Full-day recorded paid absence on a scheduled day        |            480 | 480, once                                             |
-| Recorded paid absence on a day with no scheduled work    |              0 | None                                                  |
-| 150 minutes missed, 90 minutes of balance left           |            150 | 90 paid and 60 unpaid                                 |
-| Morning recorded paid absence, afternoon remote work     |            240 | 240. No arrival is required during that remote work.  |
+| Situation                                                | Missed minutes | Paid time                                            |
+| -------------------------------------------------------- | -------------: | ---------------------------------------------------- |
+| Arrives at 08:00, no absence                             |              0 | None                                                 |
+| Arrives at 09:00, no absence                             |             60 | 60, when the balance covers them                     |
+| Late coverage until 09:00, arrives at 09:05              |             65 | 65, counted once                                     |
+| Morning off, arrives at 13:30                            |            240 | 240                                                  |
+| Morning off, arrives at 14:00                            |            270 | 270, counted once                                    |
+| Absent 10:00–11:00, otherwise present from 08:00         |             60 | 60                                                   |
+| Leaves at 16:30                                          |             60 | 60                                                   |
+| Remote work for the full day, no arrival                 |              0 | None                                                 |
+| No arrival, no remote work, and no recorded paid absence |            480 | As much as the balance can pay. The rest is unpaid.  |
+| Full-day recorded paid absence on a scheduled day        |            480 | 480, once                                            |
+| Recorded paid absence on a day with no scheduled work    |              0 | None                                                 |
+| 150 minutes missed, 90 minutes of balance left           |            150 | 90 paid and 60 unpaid                                |
+| Morning recorded paid absence, afternoon remote work     |            240 | 240. No arrival is required during that remote work. |
 
 ## 9. Where the accounts can disagree
 
@@ -165,3 +165,49 @@ This account can still disagree with the company at these points:
 - Arrival seconds are dropped, as in section 3.1.
 - Remote work is a full day or one shift.
 - Paid time is taken on the workday itself. A future absence leaves the balance on an earlier day unchanged.
+
+## 10. Frontend integration with the current API
+
+The attendance frontend reads owned records and PTO banks through Supabase. All
+writes go through the Custom API. Like translation, attendance passes paths relative
+to the configured API root (`attendance/...`); the root includes `/api/`. The
+missed-check-in date suggestions come from
+`GET /api/attendance/missed-check-ins`; the frontend never creates system penalty
+entries. Existing RLS policies enforce read access.
+
+The current API differs from the account described above. The frontend preserves
+these differences until the backend accounting is reconciled:
+
+- Banks expose annual, seniority, and extended balances. The frontend displays
+  their stored values without calculating entitlement or redistributing balances.
+- Full-day time-off ranges must contain only dates with both shifts scheduled.
+  The API rejects a range containing a nonworking day; the frontend does not split
+  the request into separate writes.
+- Check-in requires a scheduled morning shift. On an afternoon-only workday that
+  requires presence, the dashboard explains the limitation and disables check-in.
+- The API supports deduction exemptions for check-ins and absences. Manual forms
+  expose that choice; quick check-in uses normal deduction. Remote work is always
+  exempt.
+- Editing is available for supported current-year entries, within the original
+  year. A time-off edit changes one date. Past-year and system-created entries
+  remain read-only in the frontend.
+
+The dashboard uses `Asia/Ho_Chi_Minh` for dates and clock times. It captures arrival
+time when the check-in button is pressed and drops seconds. Workday exceptions,
+employment start, and the union of remote-work and absence intervals determine
+whether any scheduled time still requires presence. Recorded arrival takes
+precedence in the status display.
+
+The ledger groups transactions by their creation month in company time, which can
+be different from the affected work month. Transaction `value` includes
+`exceed_bank_value`. Actual PTO movement is their difference. Monthly summaries
+separate deductions, restorations, net balance change, excess incurred, and excess
+cancelled. Summaries use every transaction for the selected bank, fetched in
+bounded batches; they never summarize only a visible page. One displayed workday
+is 480 minutes. A missing bank is distinct from a zero balance.
+
+Attendance state stays in memory and is cleared on account changes. Writes
+invalidate affected views, which reload on page entry. The dashboard also refreshes
+when it returns to the foreground and when the company date changes. Failed reads
+show retry states, and failed writes preserve the form. The application tests use
+fake backends; they do not validate deployed RLS or API accounting.
