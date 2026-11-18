@@ -11,7 +11,7 @@ import { TranslationService } from "@/modules/translation/TranslationService";
 import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
 import { useAuthStore } from "@/modules/auth/stores/AuthStore";
 import { makeBackendFake } from "../../../fakes/BackendFake";
-import { makeRouter, makeToast } from "../../../fakes/Collaborators";
+import { makeModal, makeRouter, makeToast } from "../../../fakes/Collaborators";
 import { appMountOptions } from "../../../support/mountApp";
 import { t } from "@/modules/auth/locales";
 const display = new AttendancePresentationService();
@@ -49,7 +49,13 @@ describe("AuthResetPasswordPage workflow", () => {
         new GalleryListService(backend.port, toast.service),
         new ProfileService(backend.port, toast.service),
         new TranslationService(backend.port, toast.service),
-        new AttendanceService(backend.port, toast.service, display, forms),
+        new AttendanceService(
+          backend.port,
+          toast.service,
+          display,
+          forms,
+          makeModal().service,
+        ),
       ),
     );
   });

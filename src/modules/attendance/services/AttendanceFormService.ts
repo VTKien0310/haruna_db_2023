@@ -1,9 +1,14 @@
-import { type Row } from "../AttendanceEntities";
+import {
+  type Row,
+  WorkdayExceptionTime,
+  WorkdayExceptionType,
+} from "../AttendanceEntities";
 import dayjs from "dayjs";
 
 import {
   type AttendanceEntry,
   type AttendanceFormData,
+  type WorkdayExceptionFormData,
   ATTENDANCE_ZONE,
   ENDPOINTS,
 } from "../AttendanceTypes";
@@ -197,5 +202,51 @@ export class AttendanceFormService {
       body.duration = f.direction === "0" ? mins - start : start + 240 - mins;
     }
     return body;
+  }
+
+  emptyWorkdayException(): WorkdayExceptionFormData {
+    return {
+      type: String(WorkdayExceptionType.HOLIDAY),
+      date: this.presentation.now().format("YYYY-MM-DD"),
+      time: String(WorkdayExceptionTime.FULL_DAY),
+      title: "",
+    };
+  }
+
+  workdayExceptionMutable(date: string): boolean {
+    return (
+      this.validDate(date) &&
+      date >= this.presentation.now().format("YYYY-MM-DD")
+    );
+  }
+
+  validateWorkdayException(f: WorkdayExceptionFormData): string {
+    if (!f.title.trim()) return t("workdayExceptionTitleRequired");
+    if (!this.validDate(f.date) || !this.workdayExceptionMutable(f.date))
+      return t("workdayExceptionDateInvalid");
+    if (!["0", "1"].includes(f.type) || !["0", "1", "2"].includes(f.time))
+      return t("workdayExceptionInputInvalid");
+
+    const weekday = dayjs.utc(f.date).day();
+    if (
+      (f.type === String(WorkdayExceptionType.HOLIDAY) &&
+        (weekday === 0 || weekday === 6)) ||
+      (f.type === String(WorkdayExceptionType.WORKDAY) &&
+        weekday > 0 &&
+        weekday < 6)
+    )
+      return t("workdayExceptionDayInvalid");
+    return "";
+  }
+
+  workdayExceptionPayload(
+    f: WorkdayExceptionFormData,
+  ): Record<string, unknown> {
+    return {
+      type: Number(f.type),
+      date: f.date,
+      time: Number(f.time),
+      title: f.title.trim(),
+    };
   }
 }

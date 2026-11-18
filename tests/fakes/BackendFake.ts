@@ -80,6 +80,8 @@ export function makeBackendFake() {
     patch:
       strictMock<Promise<BackendApiResult<unknown, Error>>>("backend.patch"),
     post: strictMock<Promise<BackendApiResult<unknown, Error>>>("backend.post"),
+    delete:
+      strictMock<Promise<BackendApiResult<unknown, Error>>>("backend.delete"),
     spbClient: {
       from: strictMock<ReturnType<typeof makeQuery>>("database.from"),
       auth,

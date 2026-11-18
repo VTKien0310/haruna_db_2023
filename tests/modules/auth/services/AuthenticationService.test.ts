@@ -10,7 +10,7 @@ import { TranslationService } from "@/modules/translation/TranslationService";
 import { useGalleryListStore } from "@/modules/gallery/stores/GalleryListStore";
 import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
 import { makeBackendFake } from "../../../fakes/BackendFake";
-import { makeRouter, makeToast } from "../../../fakes/Collaborators";
+import { makeModal, makeRouter, makeToast } from "../../../fakes/Collaborators";
 import { makeHistory, makeMedia } from "../../../factories/Records";
 import { ThemeService } from "@/modules/master/services/ThemeService";
 import { useThemeStore } from "@/modules/master/stores/ThemeStore";
@@ -38,7 +38,13 @@ describe("AuthenticationService", () => {
       new GalleryListService(backend.port, toast.service),
       profile,
       new TranslationService(backend.port, toast.service),
-      new AttendanceService(backend.port, toast.service, display, forms),
+      new AttendanceService(
+        backend.port,
+        toast.service,
+        display,
+        forms,
+        makeModal().service,
+      ),
     );
   });
   it.each([null, { access_token: "dummy" }])(

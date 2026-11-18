@@ -48,3 +48,10 @@ export interface AttendanceFormData {
   note: string;
   exempt: boolean;
 }
+
+export interface WorkdayExceptionFormData {
+  type: string;
+  date: string;
+  time: string;
+  title: string;
+}

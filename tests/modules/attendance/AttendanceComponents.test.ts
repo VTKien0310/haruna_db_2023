@@ -11,7 +11,7 @@ import { useAttendanceStore } from "@/modules/attendance/AttendanceStore";
 import { AttendanceService } from "@/modules/attendance/services/AttendanceService";
 import { appMountOptions } from "../../support/mountApp";
 import { makeBackendFake, queryResult } from "../../fakes/BackendFake";
-import { makeToast } from "../../fakes/Collaborators";
+import { makeModal, makeToast } from "../../fakes/Collaborators";
 import { BackendApiResult } from "@/ports/backend/BackendPortTypes";
 import { bank, entry } from "./AttendanceFixtures";
 import { t } from "@/modules/attendance/locales";
@@ -56,6 +56,7 @@ describe("AttendanceComponents", () => {
       toast.service,
       display,
       forms,
+      makeModal().service,
     );
     dependencies.service!.resetSession("owner");
     const wrapper = mount(AttendanceEntryForm, appMountOptions());
@@ -86,6 +87,7 @@ describe("AttendanceComponents", () => {
       makeToast().service,
       display,
       forms,
+      makeModal().service,
     );
     dependencies.service!.resetSession("owner");
     const wrapper = mount(AttendanceEntryForm, appMountOptions());
@@ -107,6 +109,7 @@ describe("AttendanceComponents", () => {
       makeToast().service,
       display,
       forms,
+      makeModal().service,
     );
     dependencies.service!.resetSession("owner");
     const wrapper = mount(AttendanceEntryForm, {
@@ -129,6 +132,7 @@ describe("AttendanceComponents", () => {
       makeToast().service,
       display,
       forms,
+      makeModal().service,
     );
     const store = useAttendanceStore();
     store.state.dashboardStatus = "error";
@@ -199,6 +203,7 @@ describe("AttendanceDashboard lifecycle", () => {
       makeToast().service,
       display,
       forms,
+      makeModal().service,
     );
     dependencies.service = service;
     dependencies.service!.resetSession("owner");

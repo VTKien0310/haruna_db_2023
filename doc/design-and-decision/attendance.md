@@ -211,3 +211,30 @@ invalidate affected views, which reload on page entry. The dashboard also refres
 when it returns to the foreground and when the company date changes. Failed reads
 show retry states, and failed writes preserve the form. The application tests use
 fake backends; they do not validate deployed RLS or API accounting.
+
+### Workday-exception management
+
+The list and create pages are available only to users with
+`MANAGE_WORKDAY_EXCEPTIONS`. Navigation hides the link, both routes check the
+current user's permission, and account changes trigger a new check. An
+unauthorized deep link goes to the existing not-found page without reading the
+management list. These client checks do not replace API authorization.
+
+The list reads every exception through Supabase in ascending date and ID order,
+using bounded batches. Existing authenticated read access remains available to
+ordinary attendance views because they also need the working calendar. Creating
+and deleting exceptions goes through the Custom API; there is no edit endpoint.
+
+Creation accepts a nonblank title, a full day or one shift, and today or a future
+company date. Holidays require Monday through Friday; added workdays require
+Saturday or Sunday. Full-day entries conflict with every exception on the date,
+holiday and workday types cannot share a date, and only matching-type morning and
+afternoon entries may coexist. Past entries are read-only. Deletion requires the
+same today-or-future rule.
+
+Creating a holiday can exempt matching attendance entries for every user and
+refund outstanding penalties, so the frontend explains and confirms that effect.
+Deleting a holiday does not reverse exemptions, balances, refunds, or PTO
+transactions, and its confirmation says so. Failed writes preserve the current
+form or list, and successful writes invalidate the management list and all
+attendance views affected by the working calendar and PTO history.

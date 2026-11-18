@@ -1,13 +1,20 @@
 import type { BackendPort } from "@/ports/backend/BackendPort";
 import { BackendApiError } from "@/ports/backend/BackendPortTypes";
 import type { ToastService } from "@/modules/master/services/ToastService";
+import type { ModalService } from "@/modules/master/services/ModalService";
 import { useAttendanceStore } from "../AttendanceStore";
-import { ENTRY_TABLES, type Row } from "../AttendanceEntities";
+import {
+  ENTRY_TABLES,
+  type Row,
+  type WorkdayException,
+  WorkdayExceptionType,
+} from "../AttendanceEntities";
 import {
   type AttendanceEntry,
   type AttendanceFact,
   type AttendanceFormData,
   type EntryFilters,
+  type WorkdayExceptionFormData,
   ENDPOINTS,
   PAGE_SIZE,
 } from "../AttendanceTypes";
@@ -21,6 +28,7 @@ export class AttendanceService {
     private readonly toast: ToastService,
     private readonly presentation: AttendancePresentationService,
     private readonly forms: AttendanceFormService,
+    private readonly modal: ModalService,
   ) {}
   resetSession(owner: string) {
     const store = useAttendanceStore();
@@ -36,7 +44,14 @@ export class AttendanceService {
       epoch: 0,
       revision: 0,
       saving: false,
-      requests: { dashboard: 0, ledger: 0, list: 0, detail: 0, missed: 0 },
+      requests: {
+        dashboard: 0,
+        ledger: 0,
+        list: 0,
+        detail: 0,
+        missed: 0,
+        workdayExceptions: 0,
+      },
       today: "",
       todayEntries: [],
       exceptions: [],
@@ -55,6 +70,9 @@ export class AttendanceService {
       detailStatus: "idle",
       missed: [],
       missedStatus: "idle",
+      workdayExceptions: [],
+      workdayExceptionsStatus: "idle",
+      deletingWorkdayException: "",
     };
   }
   private async all<T>(
@@ -172,6 +190,26 @@ export class AttendanceService {
   }
   private current(s: ReturnType<typeof useAttendanceStore>["state"]) {
     return useAttendanceStore().state === s;
+  }
+  private invalidateViews(
+    s: ReturnType<typeof useAttendanceStore>["state"],
+  ): void {
+    s.revision++;
+    for (const key of [
+      "dashboard",
+      "ledger",
+      "list",
+      "detail",
+      "missed",
+      "workdayExceptions",
+    ] as const)
+      s.requests[key]++;
+    s.dashboardStatus = "idle";
+    s.ledgerStatus = "idle";
+    s.listStatus = "idle";
+    s.detailStatus = "idle";
+    s.missedStatus = "idle";
+    s.workdayExceptionsStatus = "idle";
   }
   async loadLedger(year?: string): Promise<boolean> {
     const s = useAttendanceStore().state;
@@ -344,6 +382,160 @@ export class AttendanceService {
       return false;
     }
   }
+  async loadWorkdayExceptions(): Promise<boolean> {
+    const s = useAttendanceStore().state;
+    if (!s.owner) return false;
+    const request = ++s.requests.workdayExceptions;
+    s.workdayExceptionsStatus = "loading";
+    try {
+      const exceptions = await this.all<WorkdayException>((a, b) =>
+        this.backend.spbClient
+          .from("workday_exceptions")
+          .select("id, type, date, time, title, created_at, updated_at")
+          .order("date")
+          .order("id")
+          .range(a, b),
+      );
+      if (!this.current(s) || request !== s.requests.workdayExceptions)
+        return false;
+      if (!exceptions) {
+        s.workdayExceptionsStatus = "error";
+        this.toast.error(t("workdayExceptionsLoadFailed"));
+        return false;
+      }
+      s.workdayExceptions = exceptions;
+      s.workdayExceptionsStatus = "ready";
+      return true;
+    } catch {
+      if (this.current(s) && request === s.requests.workdayExceptions) {
+        s.workdayExceptionsStatus = "error";
+        this.toast.error(t("workdayExceptionsLoadFailed"));
+      }
+      return false;
+    }
+  }
+
+  private workdayExceptionWriteError(
+    error: Error,
+    action: "create" | "delete",
+  ): void {
+    const code = error instanceof BackendApiError ? error.code : "";
+    switch (code) {
+      case "past_workday_exception_immutable":
+        this.toast.error(t("workdayExceptionDateInvalid"));
+        return;
+      case "invalid_workday_exception_day":
+        this.toast.error(t("workdayExceptionDayInvalid"));
+        return;
+      case "workday_exception_overlap":
+        this.toast.error(t("workdayExceptionOverlap"));
+        return;
+      case "pto_adjustment_conflict":
+        this.toast.error(t("workdayExceptionPtoConflict"));
+        return;
+      case "workday_exception_not_found":
+        this.toast.error(t("workdayExceptionNotFound"));
+        return;
+      case "forbidden":
+        this.toast.error(t("workdayExceptionPermissionDenied"));
+        return;
+      case "validation_error":
+        this.toast.error(t("workdayExceptionInputInvalid"));
+        return;
+      default:
+        this.toast.error(
+          t(
+            action === "create"
+              ? "workdayExceptionSaveFailed"
+              : "workdayExceptionDeleteFailed",
+          ),
+        );
+    }
+  }
+
+  async createWorkdayException(
+    form: WorkdayExceptionFormData,
+  ): Promise<boolean> {
+    const s = useAttendanceStore().state;
+    if (!s.owner || s.saving) return false;
+    const validation = this.forms.validateWorkdayException(form);
+    if (validation) {
+      this.toast.error(validation);
+      return false;
+    }
+    s.saving = true;
+    try {
+      if (
+        form.type === String(WorkdayExceptionType.HOLIDAY) &&
+        !(await this.modal.confirm(t("workdayExceptionHolidayConfirm")))
+      )
+        return false;
+      if (!this.current(s)) return false;
+      const result = await this.backend.post<WorkdayException>(
+        "attendance/workday-exceptions",
+        this.forms.workdayExceptionPayload(form),
+      );
+      if (!this.current(s)) return false;
+      if (result.isErr()) {
+        this.workdayExceptionWriteError(result.unwrapErr(), "create");
+        return false;
+      }
+      this.invalidateViews(s);
+      this.toast.info(t("workdayExceptionSaved"));
+      return true;
+    } catch {
+      if (this.current(s)) this.toast.error(t("workdayExceptionSaveFailed"));
+      return false;
+    } finally {
+      if (this.current(s)) s.saving = false;
+    }
+  }
+
+  async deleteWorkdayException(exception: WorkdayException): Promise<boolean> {
+    const s = useAttendanceStore().state;
+    if (!s.owner || s.saving) return false;
+    if (
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        exception.id,
+      ) ||
+      !this.forms.workdayExceptionMutable(exception.date)
+    ) {
+      this.toast.error(t("workdayExceptionDateInvalid"));
+      return false;
+    }
+    s.saving = true;
+    s.deletingWorkdayException = exception.id;
+    try {
+      const confirmed = await this.modal.confirm(
+        t(
+          exception.type === WorkdayExceptionType.HOLIDAY
+            ? "workdayExceptionDeleteHolidayConfirm"
+            : "workdayExceptionDeleteWorkdayConfirm",
+        ),
+      );
+      if (!confirmed || !this.current(s)) return false;
+      const result = await this.backend.delete(
+        `attendance/workday-exceptions/${encodeURIComponent(exception.id)}`,
+      );
+      if (!this.current(s)) return false;
+      if (result.isErr()) {
+        this.workdayExceptionWriteError(result.unwrapErr(), "delete");
+        return false;
+      }
+      this.invalidateViews(s);
+      this.toast.info(t("workdayExceptionDeleted"));
+      return true;
+    } catch {
+      if (this.current(s)) this.toast.error(t("workdayExceptionDeleteFailed"));
+      return false;
+    } finally {
+      if (this.current(s)) {
+        s.saving = false;
+        s.deletingWorkdayException = "";
+      }
+    }
+  }
+
   async quickCheckIn(): Promise<boolean> {
     const s = useAttendanceStore().state;
     const pressed = this.presentation.now();
@@ -426,20 +618,7 @@ export class AttendanceService {
         );
         return false;
       }
-      s.revision++;
-      for (const key of [
-        "dashboard",
-        "ledger",
-        "list",
-        "detail",
-        "missed",
-      ] as const)
-        s.requests[key]++;
-      s.dashboardStatus = "idle";
-      s.ledgerStatus = "idle";
-      s.listStatus = "idle";
-      s.detailStatus = "idle";
-      s.missedStatus = "idle";
+      this.invalidateViews(s);
       this.toast.info(t("saved"));
       return true;
     } catch {

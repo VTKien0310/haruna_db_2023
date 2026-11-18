@@ -12,7 +12,7 @@ import {
   queryResult,
   queryError,
 } from "../../fakes/BackendFake";
-import { makeToast } from "../../fakes/Collaborators";
+import { makeModal, makeToast } from "../../fakes/Collaborators";
 import { entry, bank, transaction } from "./AttendanceFixtures";
 import { t } from "@/modules/attendance/locales";
 const display = new AttendancePresentationService();
@@ -20,15 +20,18 @@ const forms = new AttendanceFormService(display);
 describe("AttendanceService", () => {
   let backend: ReturnType<typeof makeBackendFake>,
     toast: ReturnType<typeof makeToast>,
+    modal: ReturnType<typeof makeModal>,
     service: AttendanceService;
   beforeEach(() => {
     backend = makeBackendFake();
     toast = makeToast();
+    modal = makeModal();
     service = new AttendanceService(
       backend.port,
       toast.service,
       display,
       forms,
+      modal.service,
     );
     service.resetSession("owner");
     vi.useFakeTimers();
@@ -295,6 +298,7 @@ describe("AttendanceService", () => {
       toast.service,
       display,
       forms,
+      modal.service,
     );
     expect(await next.loadMissed()).toBe(true);
     resolve(BackendApiResult.ok(["2026-11-10"]));

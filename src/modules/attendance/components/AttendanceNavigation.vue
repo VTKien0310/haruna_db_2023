@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "@/modules/auth/stores/AuthStore";
+import { UserSpecialPermissionType } from "@/modules/auth/AuthEntities";
 import {
   HSidebarItem,
   HSidebarItemContent,
@@ -11,7 +13,8 @@ import { AttendanceRouteName } from "../AttendanceRouter";
 import { t } from "../locales";
 const emit = defineEmits<{ navigate: [] }>();
 const route = useRoute(),
-  router = useRouter();
+  router = useRouter(),
+  authStore = useAuthStore();
 const active = computed(() => String(route.name).startsWith("attendance."));
 const expanded = ref(active.value);
 watch(
@@ -20,11 +23,22 @@ watch(
     if (active.value) expanded.value = true;
   },
 );
-const links = [
+const links = computed(() => [
   { name: AttendanceRouteName.LEDGER, label: t("ledger") },
   { name: AttendanceRouteName.CREATE, label: t("create") },
   { name: AttendanceRouteName.ENTRIES, label: t("entries") },
-];
+  ...(authStore.userSpecialPermissions.some(
+    (row) =>
+      row.permission === UserSpecialPermissionType.MANAGE_WORKDAY_EXCEPTIONS,
+  )
+    ? [
+        {
+          name: AttendanceRouteName.WORKDAY_EXCEPTIONS,
+          label: t("workdayExceptions"),
+        },
+      ]
+    : []),
+]);
 </script>
 <template>
   <div>
@@ -52,7 +66,9 @@ const links = [
         :active="
           route.name === link.name ||
           (link.name === AttendanceRouteName.ENTRIES &&
-            route.name === AttendanceRouteName.DETAIL)
+            route.name === AttendanceRouteName.DETAIL) ||
+          (link.name === AttendanceRouteName.WORKDAY_EXCEPTIONS &&
+            route.name === AttendanceRouteName.WORKDAY_EXCEPTION_CREATE)
         "
         @click="
           router.push({ name: link.name });

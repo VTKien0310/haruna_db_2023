@@ -13,7 +13,7 @@ import {
   queryResult,
   queryError,
 } from "../../fakes/BackendFake";
-import { makeToast } from "../../fakes/Collaborators";
+import { makeModal, makeToast } from "../../fakes/Collaborators";
 import { bank, entry, transaction } from "./AttendanceFixtures";
 import { t } from "@/modules/attendance/locales";
 const display = new AttendancePresentationService();
@@ -51,6 +51,7 @@ async function setup(path: string) {
     makeToast().service,
     display,
     forms,
+    makeModal().service,
   );
   deps.service.resetSession("owner");
   const router = createRouter({

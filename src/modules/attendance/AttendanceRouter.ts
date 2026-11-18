@@ -1,9 +1,12 @@
 import type { RouteRecordRaw } from "vue-router";
+import { ensureWorkdayExceptionAccess } from "./AttendanceGuards";
 export enum AttendanceRouteName {
   LEDGER = "attendance.ledger",
   CREATE = "attendance.create",
   ENTRIES = "attendance.entries",
   DETAIL = "attendance.detail",
+  WORKDAY_EXCEPTIONS = "attendance.workday-exceptions",
+  WORKDAY_EXCEPTION_CREATE = "attendance.workday-exception-create",
 }
 const routes: RouteRecordRaw[] = [
   {
@@ -25,6 +28,18 @@ const routes: RouteRecordRaw[] = [
     path: "/attendance/entries/:id",
     name: AttendanceRouteName.DETAIL,
     component: () => import("./pages/AttendanceDetailPage.vue"),
+  },
+  {
+    path: "/attendance/workday-exceptions",
+    name: AttendanceRouteName.WORKDAY_EXCEPTIONS,
+    component: () => import("./pages/AttendanceWorkdayExceptionsPage.vue"),
+    beforeEnter: ensureWorkdayExceptionAccess,
+  },
+  {
+    path: "/attendance/workday-exceptions/create",
+    name: AttendanceRouteName.WORKDAY_EXCEPTION_CREATE,
+    component: () => import("./pages/AttendanceWorkdayExceptionCreatePage.vue"),
+    beforeEnter: ensureWorkdayExceptionAccess,
   },
 ];
 export default routes;

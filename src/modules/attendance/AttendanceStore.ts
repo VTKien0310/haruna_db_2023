@@ -12,7 +12,14 @@ export const useAttendanceStore = defineStore("attendance", () => {
     epoch: 0,
     revision: 0,
     saving: false,
-    requests: { dashboard: 0, ledger: 0, list: 0, detail: 0, missed: 0 },
+    requests: {
+      dashboard: 0,
+      ledger: 0,
+      list: 0,
+      detail: 0,
+      missed: 0,
+      workdayExceptions: 0,
+    },
     today: "",
     todayEntries: [] as AttendanceEntry[],
     exceptions: [] as Row<"workday_exceptions">[],
@@ -31,6 +38,9 @@ export const useAttendanceStore = defineStore("attendance", () => {
     detailStatus: "idle" as LoadStatus,
     missed: [] as string[],
     missedStatus: "idle" as LoadStatus,
+    workdayExceptions: [] as Row<"workday_exceptions">[],
+    workdayExceptionsStatus: "idle" as LoadStatus,
+    deletingWorkdayException: "",
   });
   return { state };
 });

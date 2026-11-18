@@ -58,6 +58,10 @@ class BackendPort {
     return this.request<T>("PATCH", path, body);
   }
 
+  async delete(path: string): Promise<BackendApiResult<null, Error>> {
+    return this.request<null>("DELETE", path);
+  }
+
   private async buildHeaders(): Promise<Record<string, string>> {
     let headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -95,6 +99,8 @@ class BackendPort {
       return BackendApiResult.err(
         new Error(`HTTP error ${status}: ${statusText}`),
       );
+    if (status === 204 && envelope === null)
+      return BackendApiResult.ok(null as T);
     if (envelope?.ok !== true || !("content" in envelope)) {
       return BackendApiResult.err(new Error("Invalid API response"));
     }

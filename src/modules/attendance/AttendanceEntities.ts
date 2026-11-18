@@ -3,6 +3,19 @@ export type Row<T extends keyof Database["public"]["Tables"]> =
   Database["public"]["Tables"][T]["Row"];
 export type PtoBank = Row<"pto_banks">;
 export type PtoTransaction = Row<"pto_transactions">;
+export type WorkdayException = Row<"workday_exceptions">;
+
+export enum WorkdayExceptionType {
+  WORKDAY = 0,
+  HOLIDAY = 1,
+}
+
+export enum WorkdayExceptionTime {
+  FULL_DAY = 0,
+  MORNING = 1,
+  AFTERNOON = 2,
+}
+
 export const ENTRY_TABLES = [
   "check_in_entries",
   "time_off_entries",
