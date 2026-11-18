@@ -46,6 +46,18 @@ afterEach(() => {
 });
 
 describe("AuthProfilePage appearance", () => {
+  it("stretches the logout button across the profile container", async () => {
+    const wrapper = mount(AuthProfilePage, appMountOptions());
+    await flushPromises();
+    try {
+      expect(wrapper.get('button[aria-label="logout"]').classes()).toContain(
+        "w-full!",
+      );
+    } finally {
+      wrapper.unmount();
+    }
+  });
+
   it.each(THEME_OPTIONS)(
     "selects $label without submitting the account form",
     async (theme) => {
