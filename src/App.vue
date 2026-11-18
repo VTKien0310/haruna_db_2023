@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AttendanceNavigation from "@/modules/attendance/components/AttendanceNavigation.vue";
 import { computed, onUnmounted, ref, watch } from "vue";
 import { AuthRouteName } from "@/modules/auth/AuthRouter";
 import { MasterRouteName } from "@/modules/master/MasterRouter";
@@ -133,6 +134,7 @@ onUnmounted((): void => {
               <h-sidebar-item-title>{{ item.label }}</h-sidebar-item-title>
             </h-sidebar-item-content>
           </h-sidebar-item>
+          <AttendanceNavigation @navigate="closeSidebar" />
         </div>
       </h-sidebar>
     </HDrawer>

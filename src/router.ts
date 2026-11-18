@@ -1,3 +1,4 @@
+import attendanceRouter from "@/modules/attendance/AttendanceRouter";
 import { createRouter, createWebHistory } from "@ionic/vue-router";
 import authRouter from "@/modules/auth/AuthRouter";
 import masterRouter from "@/modules/master/MasterRouter";
@@ -9,6 +10,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     ...masterRouter,
+    ...attendanceRouter,
     ...authRouter,
     ...galleryRouter,
     ...translationRouter,

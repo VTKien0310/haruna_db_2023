@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { IonPage, onIonViewDidEnter } from "@ionic/vue";
+import AttendanceDashboard from "@/modules/attendance/components/AttendanceDashboard.vue";
+import { IonPage, onIonViewDidEnter, onIonViewWillLeave } from "@ionic/vue";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Media } from "@/modules/gallery/GalleryEntities";
@@ -16,6 +17,11 @@ import { useTranslationService } from "@/modules/translation/TranslationServiceC
 import { useTranslationStore } from "@/modules/translation/stores/TranslationStore";
 import { TranslationRouteName } from "@/modules/translation/TranslationRouter";
 import { t } from "@/modules/master/locales";
+
+const attendanceActive = ref(false);
+onIonViewWillLeave(() => {
+  attendanceActive.value = false;
+});
 
 const mediaDetailService = useMediaDetailService();
 
@@ -52,6 +58,7 @@ const navigateToTranslationHistory = (historyId: string): void => {
   });
 };
 onIonViewDidEnter(async () => {
+  attendanceActive.value = true;
   isFetchingData.value = true;
 
   // ensure the current user's profile is loaded in the store
@@ -93,6 +100,7 @@ onIonViewDidEnter(async () => {
       <h-progress-bar v-if="isFetchingData" class="w-full" indeterminate />
 
       <div class="w-full px-2 pt-1">
+        <AttendanceDashboard :active="attendanceActive" />
         <div
           class="mb-1 grid w-full grid-cols-3 place-content-center place-items-center gap-1"
         >

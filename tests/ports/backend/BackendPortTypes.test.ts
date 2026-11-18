@@ -36,4 +36,12 @@ describe("BackendApiResult", () => {
         error: { code: "dummy", message: "Failed", path: "/test" },
       }),
     ).toBe(true));
+  it("rejects malformed structured errors without throwing", () => {
+    for (const error of [
+      null,
+      "error",
+      { code: 1, message: "error", path: "/" },
+    ])
+      expect(isBackendApiErrorContent({ error })).toBe(false);
+  });
 });
