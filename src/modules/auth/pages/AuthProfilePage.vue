@@ -148,7 +148,7 @@ onMounted(() => {
         <h-button
           @click="handleLogout"
           icon="logout"
-          class="w-full"
+          class="w-full!"
           color="error"
         />
         <ThemeSelector />
