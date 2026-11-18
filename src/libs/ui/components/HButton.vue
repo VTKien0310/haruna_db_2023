@@ -157,65 +157,63 @@ function click(event: MouseEvent): void {
 </template>
 
 <style scoped>
-@layer components {
-  .h-button-filled {
-    color: var(--h-btn-content);
-    background: var(--h-btn-container);
-    border-color: transparent;
-  }
-  .h-button-tonal {
-    color: var(--h-btn-content);
-    background: var(--h-btn-container);
-    border-color: transparent;
-  }
-  .h-button-outlined {
-    color: var(--h-btn-content);
-    background: transparent;
-    border-color: var(--h-btn-outline);
-  }
-  .h-button-text {
-    color: var(--h-btn-content);
-    background: transparent;
-    border-color: transparent;
-  }
-  .h-button-elevated {
-    color: var(--h-btn-content);
-    background: var(--h-btn-container);
-    border-color: transparent;
-    box-shadow: var(--shadow-level-1);
-  }
-  .h-button-size-xsmall {
-    --h-button-height: 2rem;
-    min-width: 4rem;
-  }
-  .h-button-size-small {
-    --h-button-height: 2.5rem;
-    min-width: 4rem;
-  }
-  .h-button-size-medium {
-    --h-button-height: 3.5rem;
-    min-width: 5rem;
-  }
-  .h-button-size-large {
-    --h-button-height: 6rem;
-    min-width: 6rem;
-  }
-  .h-button-size-xlarge {
-    --h-button-height: 8.5rem;
-    min-width: 8.5rem;
-  }
-  .h-button-icon-only {
-    width: var(--h-button-height);
-    height: var(--h-button-height);
-    min-width: var(--h-button-height);
-    padding: 0;
-  }
-  .h-button-shape-round {
-    border-radius: 9999px;
-  }
-  .h-button-shape-square {
-    border-radius: var(--radius-small);
-  }
+.h-button-filled {
+  color: var(--h-btn-content);
+  background: var(--h-btn-container);
+  border-color: transparent;
+}
+.h-button-tonal {
+  color: var(--h-btn-content);
+  background: var(--h-btn-container);
+  border-color: transparent;
+}
+.h-button-outlined {
+  color: var(--h-btn-content);
+  background: transparent;
+  border-color: var(--h-btn-outline);
+}
+.h-button-text {
+  color: var(--h-btn-content);
+  background: transparent;
+  border-color: transparent;
+}
+.h-button-elevated {
+  color: var(--h-btn-content);
+  background: var(--h-btn-container);
+  border-color: transparent;
+  box-shadow: var(--shadow-level-1);
+}
+.h-button-size-xsmall {
+  --h-button-height: 2rem;
+  min-width: 4rem;
+}
+.h-button-size-small {
+  --h-button-height: 2.5rem;
+  min-width: 4rem;
+}
+.h-button-size-medium {
+  --h-button-height: 3.5rem;
+  min-width: 5rem;
+}
+.h-button-size-large {
+  --h-button-height: 6rem;
+  min-width: 6rem;
+}
+.h-button-size-xlarge {
+  --h-button-height: 8.5rem;
+  min-width: 8.5rem;
+}
+.h-button-icon-only {
+  width: var(--h-button-height);
+  height: var(--h-button-height);
+  min-width: var(--h-button-height);
+  padding: 0;
+}
+.h-button-shape-round {
+  border-radius: 9999px;
+}
+.h-button-shape-square {
+  border-radius: var(--radius-small);
 }
 .h-button-disabled {
   color: var(--color-disabled-content);
