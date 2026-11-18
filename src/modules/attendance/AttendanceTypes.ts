@@ -9,8 +9,16 @@ export const ENDPOINTS: Partial<Record<EntryKind, string>> = {
 };
 export const ATTENDANCE_ZONE = "Asia/Ho_Chi_Minh";
 export const PAGE_SIZE = 50;
+export const WORKDAY_CALENDAR_MIN_YEAR = 2026;
 
 export type LoadStatus = "idle" | "loading" | "ready" | "error";
+export type WorkdayCalendarDayStatus = "past" | "today" | "future";
+export interface WorkdayCalendarDay {
+  date: string;
+  day: number;
+  status: WorkdayCalendarDayStatus;
+  exceptions: Row<"workday_exceptions">[];
+}
 
 export type AttendanceFact = {
   date: string;

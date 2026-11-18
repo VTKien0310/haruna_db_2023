@@ -212,6 +212,19 @@ when it returns to the foreground and when the company date changes. Failed read
 show retry states, and failed writes preserve the form. The application tests use
 fake backends; they do not validate deployed RLS or API accounting.
 
+### Workday-exception calendar
+
+Every authenticated user can open a separate read-only workday calendar without
+`MANAGE_WORKDAY_EXCEPTIONS`. The calendar uses each exception's effective work
+`date`, not its creation timestamp, and groups entries in a Monday-first month
+view. It opens on the current company month and supports January 2026 through
+December of the current company year; future months in that year remain visible.
+Past, current, and future dates have distinct presentations using the company
+date. Each entry shows its title, holiday or added-workday type, and full-day or
+shift period, including both matching half-shift entries when they share a date.
+The calendar reuses the authenticated Supabase read and does not expose creation
+or deletion controls.
+
 ### Workday-exception management
 
 The list and create pages are available only to users with

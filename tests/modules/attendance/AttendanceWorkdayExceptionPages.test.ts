@@ -4,6 +4,7 @@ import { createMemoryHistory, createRouter } from "vue-router";
 import { nextTick } from "vue";
 import AttendanceWorkdayExceptionsPage from "@/modules/attendance/pages/AttendanceWorkdayExceptionsPage.vue";
 import AttendanceWorkdayExceptionCreatePage from "@/modules/attendance/pages/AttendanceWorkdayExceptionCreatePage.vue";
+import AttendanceWorkdayCalendarPage from "@/modules/attendance/pages/AttendanceWorkdayCalendarPage.vue";
 import AttendanceNavigation from "@/modules/attendance/components/AttendanceNavigation.vue";
 import { AttendanceRouteName } from "@/modules/attendance/AttendanceRouter";
 import { AttendanceFormService } from "@/modules/attendance/services/AttendanceFormService";
@@ -90,6 +91,11 @@ async function setup(path = "/workday-exceptions") {
       {
         path: "/entries",
         name: AttendanceRouteName.ENTRIES,
+        component,
+      },
+      {
+        path: "/workday-calendar",
+        name: AttendanceRouteName.WORKDAY_CALENDAR,
         component,
       },
       { path: "/404", name: MasterRouteName.NOT_FOUND, component },
@@ -196,6 +202,115 @@ describe("AttendanceWorkdayExceptionsPage", () => {
   });
 });
 
+describe("AttendanceWorkdayCalendarPage", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-11-17T02:00:00Z"));
+  });
+
+  it("loads without management access and renders every same-day exception", async () => {
+    const { backend, options } = await setup("/workday-calendar");
+    dependencies.access.mockClear();
+    backend.query(
+      queryResult([
+        exception({ id: "past", date: "2026-11-16", title: "Past holiday" }),
+        exception({
+          id: "today-am",
+          date: "2026-11-17",
+          time: 1,
+          title: "Morning holiday",
+        }),
+        exception({
+          id: "today-pm",
+          date: "2026-11-17",
+          time: 2,
+          title: "Afternoon holiday",
+        }),
+        exception({
+          id: "future",
+          date: "2026-11-18",
+          type: WorkdayExceptionType.WORKDAY,
+          title: "Future workday",
+        }),
+      ]),
+    );
+    const wrapper = mount(AttendanceWorkdayCalendarPage, options);
+    await flushPromises();
+    expect(dependencies.access).not.toHaveBeenCalled();
+    expect(wrapper.get("h1").text()).toBe(t("workdayCalendar"));
+    expect(wrapper.get("h2").text()).toBe("November 2026");
+    expect(
+      wrapper.get('time[aria-current="date"]').attributes("datetime"),
+    ).toBe("2026-11-17");
+    const cells = wrapper.findAll("tbody td");
+    const pastCell = cells.find((cell) =>
+      cell.find('time[datetime="2026-11-16"]').exists(),
+    )!;
+    const todayCell = cells.find((cell) =>
+      cell.find('time[datetime="2026-11-17"]').exists(),
+    )!;
+    const futureCell = cells.find((cell) =>
+      cell.find('time[datetime="2026-11-18"]').exists(),
+    )!;
+    expect(pastCell.text()).toContain(t("past"));
+    expect(todayCell.text()).toContain(t("today"));
+    expect(futureCell.text()).toContain(t("future"));
+    expect(todayCell.text()).toContain("Morning holiday");
+    expect(todayCell.text()).toContain("Afternoon holiday");
+    expect(wrapper.text()).toContain("Future workday");
+    expect(wrapper.text()).toContain(t("morning"));
+    expect(wrapper.text()).toContain(t("afternoon"));
+    expect(wrapper.text()).toContain(t("workday"));
+    expect(wrapper.text()).not.toContain(t("createWorkdayException"));
+    expect(wrapper.text()).not.toContain(t("workdayExceptionDelete"));
+  });
+
+  it("keeps empty months visible and clamps navigation to 2026 and the current year", async () => {
+    const { backend, options } = await setup("/workday-calendar");
+    backend.query(queryResult([]));
+    const wrapper = mount(AttendanceWorkdayCalendarPage, options);
+    await flushPromises();
+    expect(wrapper.findAll("tbody time")).toHaveLength(30);
+    expect(wrapper.text()).toContain(t("workdayCalendarEmpty"));
+    const previous = wrapper.get(`button[aria-label="${t("previousMonth")}"]`);
+    const next = wrapper.get(`button[aria-label="${t("nextMonth")}"]`);
+    for (let index = 0; index < 10; index++) await previous.trigger("click");
+    expect(wrapper.get("h2").text()).toBe("January 2026");
+    expect(previous.attributes("disabled")).toBeDefined();
+    await previous.trigger("click");
+    expect(wrapper.get("h2").text()).toBe("January 2026");
+    for (let index = 0; index < 11; index++) await next.trigger("click");
+    expect(wrapper.get("h2").text()).toBe("December 2026");
+    expect(next.attributes("disabled")).toBeDefined();
+    await next.trigger("click");
+    expect(wrapper.get("h2").text()).toBe("December 2026");
+    expect(wrapper.findAll("tbody time")).toHaveLength(31);
+    await wrapper
+      .findAll("button")
+      .find((button) => button.text() === t("today"))!
+      .trigger("click");
+    expect(wrapper.get("h2").text()).toBe("November 2026");
+  });
+
+  it("shows read failures and retries into the calendar", async () => {
+    const { backend, options } = await setup("/workday-calendar");
+    backend.query(queryError());
+    const wrapper = mount(AttendanceWorkdayCalendarPage, options);
+    await flushPromises();
+    expect(wrapper.get("[role=alert]").text()).toContain(
+      t("workdayExceptionsLoadFailed"),
+    );
+    backend.query(queryResult([]));
+    await wrapper
+      .findAll("button")
+      .find((button) => button.text() === t("retry"))!
+      .trigger("click");
+    await flushPromises();
+    expect(wrapper.get("h2").text()).toBe("November 2026");
+    expect(wrapper.text()).toContain(t("workdayCalendarEmpty"));
+  });
+});
+
 describe("AttendanceWorkdayExceptionCreatePage", () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -278,5 +393,20 @@ describe("AttendanceNavigation workday exceptions", () => {
     await router.push("/workday-exceptions/create");
     await nextTick();
     expect(link.attributes("aria-current")).toBe("page");
+  });
+
+  it("shows the calendar without the management permission", async () => {
+    const { router, options } = await setup("/entries");
+    const wrapper = mount(AttendanceNavigation, options);
+    expect(wrapper.text()).toContain(t("workdayCalendar"));
+    expect(wrapper.text()).not.toContain(t("workdayExceptions"));
+    await wrapper
+      .findAll("button")
+      .find((button) => button.text() === t("workdayCalendar"))!
+      .trigger("click");
+    await flushPromises();
+    expect(router.currentRoute.value.name).toBe(
+      AttendanceRouteName.WORKDAY_CALENDAR,
+    );
   });
 });

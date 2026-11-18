@@ -27,6 +27,7 @@ const links = computed(() => [
   { name: AttendanceRouteName.LEDGER, label: t("ledger") },
   { name: AttendanceRouteName.CREATE, label: t("create") },
   { name: AttendanceRouteName.ENTRIES, label: t("entries") },
+  { name: AttendanceRouteName.WORKDAY_CALENDAR, label: t("workdayCalendar") },
   ...(authStore.userSpecialPermissions.some(
     (row) =>
       row.permission === UserSpecialPermissionType.MANAGE_WORKDAY_EXCEPTIONS,

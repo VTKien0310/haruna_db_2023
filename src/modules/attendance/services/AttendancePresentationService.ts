@@ -1,4 +1,9 @@
-import { type AttendanceEntry, ATTENDANCE_ZONE } from "../AttendanceTypes";
+import {
+  type AttendanceEntry,
+  ATTENDANCE_ZONE,
+  WORKDAY_CALENDAR_MIN_YEAR,
+  type WorkdayCalendarDay,
+} from "../AttendanceTypes";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -42,6 +47,69 @@ export class AttendancePresentationService {
 
   now() {
     return dayjs().tz(ATTENDANCE_ZONE);
+  }
+  workdayCalendarYears(): string[] {
+    const currentYear = this.now().year();
+    return Array.from(
+      {
+        length: Math.max(0, currentYear - WORKDAY_CALENDAR_MIN_YEAR + 1),
+      },
+      (_, index) => String(WORKDAY_CALENDAR_MIN_YEAR + index),
+    );
+  }
+  workdayCalendarMonths(): { value: string; label: string }[] {
+    return Array.from({ length: 12 }, (_, index) => {
+      const value = String(index + 1).padStart(2, "0");
+      return {
+        value,
+        label: dayjs
+          .utc(`${WORKDAY_CALENDAR_MIN_YEAR}-${value}-01`)
+          .format("MMMM"),
+      };
+    });
+  }
+  workdayCalendarWeekdays(): { short: string; label: string }[] {
+    return Array.from({ length: 7 }, (_, index) => {
+      const day = dayjs.utc("2026-01-05").add(index, "day");
+      return { short: day.format("ddd"), label: day.format("dddd") };
+    });
+  }
+  workdayCalendarMonthLabel(month: string): string {
+    return dayjs.utc(`${month}-01`).format("MMMM YYYY");
+  }
+  shiftWorkdayCalendarMonth(month: string, amount: number): string {
+    return dayjs.utc(`${month}-01`).add(amount, "month").format("YYYY-MM");
+  }
+  workdayCalendarWeeks(
+    month: string,
+    exceptions: Row<"workday_exceptions">[],
+  ): (WorkdayCalendarDay | null)[][] {
+    const start = dayjs.utc(`${month}-01`);
+    const today = this.now().format("YYYY-MM-DD");
+    const byDate = new Map<string, Row<"workday_exceptions">[]>();
+    for (const exception of exceptions) {
+      const rows = byDate.get(exception.date) ?? [];
+      rows.push(exception);
+      byDate.set(exception.date, rows);
+    }
+    const cells: (WorkdayCalendarDay | null)[] = Array.from(
+      { length: (start.day() + 6) % 7 },
+      () => null,
+    );
+    for (let day = 1; day <= start.daysInMonth(); day++) {
+      const date = start.date(day).format("YYYY-MM-DD");
+      cells.push({
+        date,
+        day,
+        status: date < today ? "past" : date === today ? "today" : "future",
+        exceptions: byDate.get(date) ?? [],
+      });
+    }
+    while (cells.length % 7) cells.push(null);
+    const weeks: (WorkdayCalendarDay | null)[][] = [];
+    for (let start = 0; start < cells.length; start += 7)
+      weeks.push(cells.slice(start, start + 7));
+    return weeks;
   }
   dateTime(value: string) {
     return dayjs(value).tz(ATTENDANCE_ZONE).format("YYYY-MM-DD HH:mm");

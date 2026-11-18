@@ -106,6 +106,70 @@ describe("AttendancePresentationService", () => {
     expect(display.minutes(null)).toBe("—");
   });
 });
+describe("AttendancePresentationService workday calendar", () => {
+  it("provides supported years and stable month and weekday labels", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2027-01-01T00:00:00Z"));
+    expect(display.workdayCalendarYears()).toEqual(["2026", "2027"]);
+    const months = display.workdayCalendarMonths();
+    expect(months).toHaveLength(12);
+    expect(months[0]).toEqual({ value: "01", label: "January" });
+    expect(months[11]).toEqual({ value: "12", label: "December" });
+    expect(
+      display.workdayCalendarWeekdays().map((weekday) => weekday.label),
+    ).toEqual([
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ]);
+    expect(display.workdayCalendarMonthLabel("2026-02")).toBe("February 2026");
+  });
+
+  it("groups same-day exceptions and uses the company date for day states", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-11-16T18:00:59Z"));
+    const weeks = display.workdayCalendarWeeks("2026-11", [
+      exception({ id: "past", date: "2026-11-16" }),
+      exception({ id: "today-am", date: "2026-11-17", time: 1 }),
+      exception({ id: "today-pm", date: "2026-11-17", time: 2 }),
+      exception({ id: "future", date: "2026-11-18" }),
+      exception({ id: "outside", date: "2026-12-01" }),
+    ]);
+    expect(weeks).toHaveLength(6);
+    expect(weeks[0].slice(0, 6)).toEqual(Array.from({ length: 6 }, () => null));
+    const days = weeks.flat().filter((day) => day !== null);
+    expect(days).toHaveLength(30);
+    expect(days[0]).toMatchObject({ date: "2026-11-01", status: "past" });
+    expect(days.find((day) => day.date === "2026-11-16")?.status).toBe("past");
+    const today = days.find((day) => day.date === "2026-11-17");
+    expect(today?.status).toBe("today");
+    expect(today?.exceptions.map((row) => row.id)).toEqual([
+      "today-am",
+      "today-pm",
+    ]);
+    expect(days.find((day) => day.date === "2026-11-18")?.status).toBe(
+      "future",
+    );
+    expect(
+      days.flatMap((day) => day.exceptions.map((row) => row.id)),
+    ).not.toContain("outside");
+  });
+
+  it("handles leap months and transitions across calendar years", () => {
+    const leapDays = display
+      .workdayCalendarWeeks("2028-02", [])
+      .flat()
+      .filter((day) => day !== null);
+    expect(leapDays).toHaveLength(29);
+    expect(display.shiftWorkdayCalendarMonth("2026-01", -1)).toBe("2025-12");
+    expect(display.shiftWorkdayCalendarMonth("2026-12", 1)).toBe("2027-01");
+    expect(display.shiftWorkdayCalendarMonth("2026-11", 1)).toBe("2026-12");
+  });
+});
 describe("AttendanceFormService", () => {
   it("validates ranges, shifts, clock order, and current-year check-ins", () => {
     vi.useFakeTimers();

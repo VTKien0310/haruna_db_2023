@@ -98,4 +98,13 @@ describe("ensureWorkdayExceptionAccess", () => {
       expect(route?.beforeEnter).toBe(ensureWorkdayExceptionAccess);
     }
   });
+
+  it("does not require management access for the read-only calendar", () => {
+    const route = attendanceRoutes.find(
+      (candidate) => candidate.name === AttendanceRouteName.WORKDAY_CALENDAR,
+    );
+    expect(route).toBeDefined();
+    expect(route?.path).toBe("/attendance/workday-calendar");
+    expect(route?.beforeEnter).toBeUndefined();
+  });
 });
