@@ -28,6 +28,11 @@ export function makeQuery(result: QueryResult) {
     update: vi.fn((..._args: unknown[]) => chain),
     delete: vi.fn((..._args: unknown[]) => chain),
     eq: vi.fn((..._args: unknown[]) => chain),
+    in: vi.fn((..._args: unknown[]) => chain),
+    gte: vi.fn((..._args: unknown[]) => chain),
+    lte: vi.fn((..._args: unknown[]) => chain),
+    lt: vi.fn((..._args: unknown[]) => chain),
+    ilike: vi.fn((..._args: unknown[]) => chain),
     filter: vi.fn((..._args: unknown[]) => chain),
     limit: vi.fn((..._args: unknown[]) => chain),
     range: vi.fn((..._args: unknown[]) => chain),
@@ -72,7 +77,11 @@ export function makeBackendFake() {
   const fake = {
     rootEndpoint: "https://backend.invalid/",
     get: strictMock<Promise<BackendApiResult<unknown, Error>>>("backend.get"),
+    patch:
+      strictMock<Promise<BackendApiResult<unknown, Error>>>("backend.patch"),
     post: strictMock<Promise<BackendApiResult<unknown, Error>>>("backend.post"),
+    delete:
+      strictMock<Promise<BackendApiResult<unknown, Error>>>("backend.delete"),
     spbClient: {
       from: strictMock<ReturnType<typeof makeQuery>>("database.from"),
       auth,

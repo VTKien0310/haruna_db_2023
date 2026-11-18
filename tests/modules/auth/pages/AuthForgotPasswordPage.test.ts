@@ -1,3 +1,6 @@
+import { AttendanceService } from "@/modules/attendance/services/AttendanceService";
+import { AttendanceFormService } from "@/modules/attendance/services/AttendanceFormService";
+import { AttendancePresentationService } from "@/modules/attendance/services/AttendancePresentationService";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises, mount } from "@vue/test-utils";
 import AuthForgotPasswordPage from "@/modules/auth/pages/AuthForgotPasswordPage.vue";
@@ -7,9 +10,11 @@ import { GalleryListService } from "@/modules/gallery/services/GalleryListServic
 import { TranslationService } from "@/modules/translation/TranslationService";
 import { useAuthenticationService } from "@/modules/auth/AuthServiceContainer";
 import { makeBackendFake } from "../../../fakes/BackendFake";
-import { makeRouter, makeToast } from "../../../fakes/Collaborators";
+import { makeModal, makeRouter, makeToast } from "../../../fakes/Collaborators";
 import { appMountOptions } from "../../../support/mountApp";
 import { t } from "@/modules/auth/locales";
+const display = new AttendancePresentationService();
+const forms = new AttendanceFormService(display);
 
 vi.mock("@/modules/auth/AuthServiceContainer", () => ({
   useAuthenticationService: vi.fn(),
@@ -31,6 +36,13 @@ describe("AuthForgotPasswordPage workflow", () => {
         new GalleryListService(backend.port, toast.service),
         new ProfileService(backend.port, toast.service),
         new TranslationService(backend.port, toast.service),
+        new AttendanceService(
+          backend.port,
+          toast.service,
+          display,
+          forms,
+          makeModal().service,
+        ),
       ),
     );
   });

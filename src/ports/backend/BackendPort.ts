@@ -1,8 +1,8 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { FileOptions } from "@supabase/storage-js";
 import type { Database } from "@/ports/backend/database.types";
-import type { BackendApiResponse } from "@/ports/backend/BackendPortTypes";
 import {
+  BackendApiError,
   isBackendApiErrorContent,
   BackendApiResult,
 } from "@/ports/backend/BackendPortTypes";
@@ -51,6 +51,17 @@ class BackendPort {
     return this.request<T>("POST", path, body, params);
   }
 
+  async patch<T>(
+    path: string,
+    body?: Record<string, unknown>,
+  ): Promise<BackendApiResult<T, Error>> {
+    return this.request<T>("PATCH", path, body);
+  }
+
+  async delete(path: string): Promise<BackendApiResult<null, Error>> {
+    return this.request<null>("DELETE", path);
+  }
+
   private async buildHeaders(): Promise<Record<string, string>> {
     let headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -64,6 +75,36 @@ class BackendPort {
     }
 
     return headers;
+  }
+
+  private decodeBackendApiResponse<T>(
+    response: unknown,
+    status: number,
+    statusText: string = "",
+  ): BackendApiResult<T, Error> {
+    const envelope =
+      response && typeof response === "object"
+        ? (response as Record<string, unknown>)
+        : null;
+    const successful = status >= 200 && status < 300;
+    if (
+      envelope &&
+      isBackendApiErrorContent(envelope.content) &&
+      (!successful || envelope.ok !== true)
+    ) {
+      const { code, message } = envelope.content.error;
+      return BackendApiResult.err(new BackendApiError(code, message, status));
+    }
+    if (!successful)
+      return BackendApiResult.err(
+        new Error(`HTTP error ${status}: ${statusText}`),
+      );
+    if (status === 204 && envelope === null)
+      return BackendApiResult.ok(null as T);
+    if (envelope?.ok !== true || !("content" in envelope)) {
+      return BackendApiResult.err(new Error("Invalid API response"));
+    }
+    return BackendApiResult.ok(envelope.content as T);
   }
 
   private async request<T>(
@@ -94,25 +135,12 @@ class BackendPort {
         body: body !== undefined ? JSON.stringify(body) : undefined,
       });
 
-      if (!response.ok) {
-        return BackendApiResult.err(
-          new Error(`HTTP error ${response.status}: ${response.statusText}`),
-        );
-      }
-
-      const apiResponse = (await response.json()) as BackendApiResponse<T>;
-
-      if (!apiResponse.ok) {
-        if (isBackendApiErrorContent(apiResponse.content)) {
-          const { code, message, path: errorPath } = apiResponse.content.error;
-          return BackendApiResult.err(
-            new Error(`[${code}] ${message} (path: ${errorPath})`),
-          );
-        }
-        return BackendApiResult.err(new Error("Unknown API error occurred"));
-      }
-
-      return BackendApiResult.ok(apiResponse.content as T);
+      const apiResponse: unknown = await response.json().catch(() => null);
+      return this.decodeBackendApiResponse<T>(
+        apiResponse,
+        response.status,
+        response.statusText,
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return BackendApiResult.err(error);

@@ -1,3 +1,4 @@
+import type { AttendanceService } from "@/modules/attendance/services/AttendanceService";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import type { BackendPort } from "@/ports/backend/BackendPort";
 import type {
@@ -22,6 +23,7 @@ export class AuthenticationService {
     private readonly galleryListService: GalleryListService,
     private readonly profileService: ProfileService,
     private readonly translationService: TranslationService,
+    private readonly attendanceService: AttendanceService,
   ) {}
 
   async isCurrentlyAuthenticated(): Promise<boolean> {
@@ -56,6 +58,7 @@ export class AuthenticationService {
       return false;
     }
 
+    this.attendanceService.resetSession("");
     this.galleryListService.reset();
     this.translationService.resetHistories();
     useAuthStore().passwordRecoveryRequired = false;
@@ -153,6 +156,7 @@ export class AuthenticationService {
   async registerOnAuthStateChange(): Promise<void> {
     this.backendPort.spbClient.auth.onAuthStateChange(
       (event: AuthChangeEvent, session: Session | null) => {
+        this.attendanceService.resetSession(session?.user?.id ?? "");
         this.profileService.refreshCurrentUserProfile();
 
         if (event === "PASSWORD_RECOVERY" && session?.user) {
