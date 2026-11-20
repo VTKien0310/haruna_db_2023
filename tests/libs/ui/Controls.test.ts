@@ -252,7 +252,36 @@ describe("HImage", () => {
 });
 
 describe("HPagination and progress", () => {
-  it("enforces bounds and disabled state while emitting page changes", async () => {
+  function stubMatchMedia(initialMatches: boolean) {
+    let listener: ((event: MediaQueryListEvent) => void) | null = null;
+    const mediaQuery = {
+      matches: initialMatches,
+      media: "(min-width: 640px)",
+      addEventListener: (
+        _type: string,
+        cb: (event: MediaQueryListEvent) => void,
+      ) => {
+        listener = cb;
+      },
+      removeEventListener: () => {
+        listener = null;
+      },
+    };
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      writable: true,
+      value: () => mediaQuery,
+    });
+    return {
+      setMatches(next: boolean) {
+        mediaQuery.matches = next;
+        listener?.({ matches: next } as MediaQueryListEvent);
+      },
+      hasListener: () => listener !== null,
+    };
+  }
+
+  it("enforces bounds, prev/next controls, keyboard navigation, and disabled state", async () => {
     const wrapper = mount(HPagination, {
       ...appMountOptions(),
       props: { modelValue: 1, pages: 3 },
@@ -266,15 +295,107 @@ describe("HPagination and progress", () => {
     expect(wrapper.get('[aria-label="Page 2"]').classes()).toContain(
       "h-button-text",
     );
+    expect(
+      wrapper.get('[aria-label="Previous page"]').attributes("disabled"),
+    ).toBeDefined();
+    expect(
+      wrapper.get('[aria-label="Next page"]').attributes("disabled"),
+    ).toBeUndefined();
+
     await wrapper.get("nav").trigger("keydown", { key: "ArrowLeft" });
     expect(wrapper.emitted("update:modelValue")).toBeUndefined();
-    await wrapper.get('[aria-label="Page 2"]').trigger("click");
+    await wrapper.get('[aria-label="Next page"]').trigger("click");
     expect(wrapper.emitted("update:modelValue")).toEqual([[2]]);
-    await wrapper.setProps({ modelValue: 3, disabled: true });
+    await wrapper.get("nav").trigger("keydown", { key: "End" });
+    expect(wrapper.emitted("update:modelValue")).toEqual([[2], [3]]);
+
+    await wrapper.setProps({ modelValue: 3 });
+    expect(
+      wrapper.get('[aria-label="Next page"]').attributes("disabled"),
+    ).toBeDefined();
+    await wrapper.get('[aria-label="Previous page"]').trigger("click");
+    await wrapper.get("nav").trigger("keydown", { key: "Home" });
+    expect(wrapper.emitted("update:modelValue")).toEqual([[2], [3], [2], [1]]);
+
+    await wrapper.setProps({ disabled: true });
     await wrapper.get('[aria-label="Page 2"]').trigger("click");
-    expect(wrapper.emitted("update:modelValue")).toHaveLength(1);
+    expect(wrapper.emitted("update:modelValue")).toHaveLength(4);
     await wrapper.setProps({ pages: 0 });
     expect(wrapper.find("nav").exists()).toBe(false);
+  });
+
+  it("truncates large page counts with responsive ellipsis on mobile and desktop", async () => {
+    const media = stubMatchMedia(false);
+    const wrapper = mount(HPagination, {
+      ...appMountOptions(),
+      props: { modelValue: 1, pages: 12 },
+    });
+    const labels = () =>
+      wrapper.findAll("li").map((item) => item.text().trim());
+
+    expect(labels()).toEqual([
+      "chevron_left",
+      "1",
+      "2",
+      "3",
+      "…",
+      "12",
+      "chevron_right",
+    ]);
+
+    await wrapper.setProps({ modelValue: 6 });
+    expect(labels()).toEqual([
+      "chevron_left",
+      "1",
+      "…",
+      "6",
+      "…",
+      "12",
+      "chevron_right",
+    ]);
+
+    await wrapper.setProps({ modelValue: 12 });
+    expect(labels()).toEqual([
+      "chevron_left",
+      "1",
+      "…",
+      "10",
+      "11",
+      "12",
+      "chevron_right",
+    ]);
+
+    media.setMatches(true);
+    await flushPromises();
+    expect(labels()).toEqual([
+      "chevron_left",
+      "1",
+      "…",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "chevron_right",
+    ]);
+
+    await wrapper.setProps({ modelValue: 6 });
+    expect(labels()).toEqual([
+      "chevron_left",
+      "1",
+      "…",
+      "5",
+      "6",
+      "7",
+      "…",
+      "12",
+      "chevron_right",
+    ]);
+
+    expect(media.hasListener()).toBe(true);
+    wrapper.unmount();
+    expect(media.hasListener()).toBe(false);
+    Reflect.deleteProperty(window, "matchMedia");
   });
   it("clamps progress, handles a zero maximum and omits indeterminate values", async () => {
     const wrapper = mount(HProgressBar, {

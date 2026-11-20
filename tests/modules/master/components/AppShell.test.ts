@@ -4,6 +4,7 @@ import App from "@/App.vue";
 import router from "@/router";
 import { appMountOptions, SlotStub } from "../../../support/mountApp";
 import { t } from "@/modules/master/locales";
+import { t as attendanceT } from "@/modules/attendance/locales";
 
 vi.mock("@/router", async () => {
   const { createMemoryHistory, createRouter } = await import("vue-router");
@@ -108,6 +109,18 @@ describe("App shell", () => {
     expect(menu.attributes("aria-expanded")).toBe("true");
     expect(wrapper.get("header").attributes()).toHaveProperty("inert");
     const nav = document.querySelector('nav[aria-label="Main navigation"]')!;
+    expect(
+      Array.from(
+        nav.querySelectorAll<HTMLSpanElement>("button span.text-label-large"),
+      ).map((el) => el.textContent?.trim()),
+    ).toEqual([
+      t("elements.navHome"),
+      attendanceT("attendance"),
+      t("elements.navTranslation"),
+      t("elements.navGallery"),
+      t("elements.navBookmarks"),
+      t("elements.navProfile"),
+    ]);
     expect(nav.querySelector('[aria-current="page"]')?.textContent).toContain(
       t("elements.navGallery"),
     );

@@ -145,6 +145,7 @@ describe("HForm and fields", () => {
     expect(textarea.attributes("disabled")).toBeDefined();
     expect(textarea.attributes("rows")).toBe("5");
     expect(textarea.classes()).toContain("resize-none");
+    expect(textarea.classes()).toContain("h-full");
     expect(wrapper.get(".h-field-control").classes()).toContain(
       "h-field-readonly",
     );

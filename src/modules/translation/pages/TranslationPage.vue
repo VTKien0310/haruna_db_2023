@@ -277,7 +277,7 @@ onIonViewDidEnter(async () => {
             </div>
           </div>
 
-          <div v-if="totalHistoryPages > 1" class="mt-3 flex justify-center">
+          <div v-if="totalHistoryPages > 1" class="mt-4 flex justify-center">
             <h-pagination
               v-model="translationStore.currentHistoryPage"
               :pages="totalHistoryPages"
