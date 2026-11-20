@@ -84,7 +84,7 @@ const rowCount = computed(() =>
       v-bind="nativeAttrs()"
       :id="controlId()"
       ref="control"
-      class="h-field-input text-on-surface text-body-large min-h-12 w-full flex-1 resize-none bg-transparent outline-none"
+      class="h-field-input text-on-surface text-body-large h-full min-h-12 w-full flex-1 resize-none bg-transparent outline-none"
       :value="modelValue"
       :rows="rowCount"
       :name="name"

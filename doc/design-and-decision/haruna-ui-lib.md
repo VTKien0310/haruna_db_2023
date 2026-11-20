@@ -76,7 +76,10 @@ dimensions.
   accessible names and all buttons have a 48px minimum touch target. Pressing
   morphs the shape. `HButtonToggle`
   is a connected group with 2px gaps, secondary selected roles, and filled selected
-  icons. `HCard` variants are elevated, filled, and outlined (default), with
+  icons. `HPagination` renders a single-row Material pagination bar with previous/next
+  icon buttons, circular 40px page controls (`filled` active, `on-surface` text
+  inactive), responsive ellipsis truncation (0 siblings below 640px, 1 sibling from
+  640px up), and arrow/Home/End keyboard navigation. `HCard` variants are elevated, filled, and outlined (default), with
   `rounded-medium` geometry.
 - **Surfaces:** cards use `surface-container-low`, `surface-container-highest`, or
   `surface` with `outline-variant`; dialogs use `surface-container-high`,
