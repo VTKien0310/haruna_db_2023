@@ -1,0 +1,44 @@
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firebase-hosting-live
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - run: npm ci
+
+      - name: Build production app
+        run: |
+          : "${VITE_SUPABASE_API_URL:?Configure this GitHub Actions variable}"
+          : "${VITE_SUPABASE_ANON_KEY:?Configure this GitHub Actions variable}"
+          : "${VITE_BACKEND_API_URL:?Configure this GitHub Actions variable}"
+          npm run build
+        env:
+          VITE_SUPABASE_API_URL: ${{ vars.VITE_SUPABASE_API_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_BACKEND_API_URL: ${{ vars.VITE_BACKEND_API_URL }}
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HARUNADIGITALBOOK }}
+          projectId: harunadigitalbook
+          channelId: live
