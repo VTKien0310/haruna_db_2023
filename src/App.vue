@@ -58,36 +58,49 @@ const navigateTo = (
 const currentRouteName = computed(() => router.currentRoute.value.name);
 watch(() => router.currentRoute.value.fullPath, closeSidebar);
 
-interface NavItem {
-  label: string;
-  icon: string;
-  routeName: string;
-  routeParams?: Record<string, string>;
-}
+type NavItem =
+  | {
+      type: "link";
+      label: string;
+      icon: string;
+      routeName: string;
+      routeParams?: Record<string, string>;
+    }
+  | {
+      type: "attendance";
+    };
 
 const navItems = computed<NavItem[]>(() => [
   {
+    type: "link",
     label: t("elements.navHome"),
     icon: "home",
     routeName: MasterRouteName.MASTER,
   },
   {
-    label: t("elements.navGallery"),
-    icon: "image",
-    routeName: GalleryRouteName.LIST,
+    type: "attendance",
   },
   {
+    type: "link",
     label: t("elements.navTranslation"),
     icon: "translate",
     routeName: TranslationRouteName.TRANSLATION,
   },
   {
+    type: "link",
+    label: t("elements.navGallery"),
+    icon: "image",
+    routeName: GalleryRouteName.LIST,
+  },
+  {
+    type: "link",
     label: t("elements.navBookmarks"),
     icon: "topic",
     routeName: WebpageBookmarkRouteName.ROOT,
     routeParams: { id: WEB_BOOKMARK_ROOT_DIR_ID },
   },
   {
+    type: "link",
     label: t("elements.navProfile"),
     icon: "person",
     routeName: AuthRouteName.PROFILE,
@@ -123,18 +136,25 @@ onUnmounted((): void => {
     >
       <h-sidebar>
         <div class="flex flex-col gap-1">
-          <h-sidebar-item
+          <template
             v-for="item in navItems"
-            :key="item.routeName"
-            @click="navigateTo(item.routeName, item.routeParams)"
-            :active="currentRouteName === item.routeName"
+            :key="item.type === 'attendance' ? 'attendance' : item.routeName"
           >
-            <h-sidebar-item-content>
-              <h-icon :name="item.icon" />
-              <h-sidebar-item-title>{{ item.label }}</h-sidebar-item-title>
-            </h-sidebar-item-content>
-          </h-sidebar-item>
-          <AttendanceNavigation @navigate="closeSidebar" />
+            <AttendanceNavigation
+              v-if="item.type === 'attendance'"
+              @navigate="closeSidebar"
+            />
+            <h-sidebar-item
+              v-else
+              @click="navigateTo(item.routeName, item.routeParams)"
+              :active="currentRouteName === item.routeName"
+            >
+              <h-sidebar-item-content>
+                <h-icon :name="item.icon" />
+                <h-sidebar-item-title>{{ item.label }}</h-sidebar-item-title>
+              </h-sidebar-item-content>
+            </h-sidebar-item>
+          </template>
         </div>
       </h-sidebar>
     </HDrawer>

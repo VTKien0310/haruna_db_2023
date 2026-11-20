@@ -4,13 +4,22 @@ import type { PtoBank } from "../AttendanceEntities";
 import { useAttendancePresentationService } from "../AttendanceServiceContainer";
 import { t } from "../locales";
 const display = useAttendancePresentationService();
-defineProps<{ bank: PtoBank | null; originals?: boolean }>();
+defineProps<{
+  bank: PtoBank | null;
+  originals?: boolean;
+  centerOnMobile?: boolean;
+}>();
 const balances = ["annual", "seniority", "extended"] as const;
 </script>
 <template>
-  <HCard
-    ><HCardTitle>{{ t("remaining") }}</HCardTitle
-    ><HCardContent>
+  <HCard class="flex flex-col">
+    <HCardTitle :class="{ 'text-center md:text-left': centerOnMobile }">
+      {{ t("remaining") }}
+    </HCardTitle>
+    <HCardContent
+      class="flex-1"
+      :class="{ 'text-center md:text-left': centerOnMobile }"
+    >
       <p v-if="!bank">{{ t("noBank") }}</p>
       <template v-else>
         <p class="text-headline-small mb-4">
@@ -22,7 +31,12 @@ const balances = ["annual", "seniority", "extended"] as const;
             )
           }}
         </p>
-        <dl class="grid gap-3 sm:grid-cols-3">
+        <dl
+          class="grid gap-3"
+          :class="
+            centerOnMobile && !originals ? 'grid-cols-3' : 'sm:grid-cols-3'
+          "
+        >
           <div v-for="kind in balances" :key="kind">
             <dt class="text-label-large">{{ t(kind) }}</dt>
             <dd>{{ display.minutes(bank[`${kind}_balance`]) }}</dd>
@@ -36,6 +50,6 @@ const balances = ["annual", "seniority", "extended"] as const;
           </div>
         </dl>
       </template>
-    </HCardContent></HCard
-  >
+    </HCardContent>
+  </HCard>
 </template>

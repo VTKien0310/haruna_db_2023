@@ -53,7 +53,7 @@
 }
 .h-field-control:has(textarea) {
   min-height: 3.5rem;
-  align-items: flex-start;
+  align-items: stretch;
   padding-block: 0.5rem;
 }
 .h-field-input {

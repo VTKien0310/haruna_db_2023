@@ -26,8 +26,10 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
 .ai
 /.junie
+/skills
 
 # .env
 .env.development

@@ -146,6 +146,50 @@ describe("AttendanceComponents", () => {
     await flushPromises();
     expect(wrapper.text()).toContain(t("loading"));
   });
+  it("alerts when not checked in yet, spans the check-in button full-width, and centers PTO cards on mobile", async () => {
+    dependencies.service = new AttendanceService(
+      makeBackendFake().port,
+      makeToast().service,
+      display,
+      forms,
+      makeModal().service,
+    );
+    const store = useAttendanceStore();
+    store.state.dashboardStatus = "ready";
+    store.state.today = "2026-11-17";
+    store.state.workStart = "2026-01-01";
+    store.state.exceptions = [];
+    store.state.todayEntries = [];
+    store.state.bank = bank();
+    const wrapper = mount(AttendanceDashboard, {
+      ...appMountOptions(),
+      props: { active: false },
+    });
+    const alert = wrapper.get('[role="alert"]');
+    expect(alert.text()).toContain(t("required"));
+    expect(alert.classes()).toContain("bg-error-container");
+    expect(alert.classes()).toContain("text-on-error-container");
+    expect(wrapper.find('[role="status"]').exists()).toBe(false);
+
+    const checkInButton = wrapper.get("button");
+    expect(checkInButton.text()).toBe(t("checkIn"));
+    expect(checkInButton.classes()).toContain("w-full");
+    expect(checkInButton.attributes("disabled")).toBeUndefined();
+
+    const bankSummary = wrapper.getComponent(AttendanceBankSummary);
+    expect(bankSummary.props("centerOnMobile")).toBe(true);
+    expect(bankSummary.get("dl").classes()).toContain("grid-cols-3");
+    expect(
+      wrapper.findAll(".text-center.md\\:text-left").length,
+    ).toBeGreaterThanOrEqual(4);
+
+    store.state.todayEntries = [entry()];
+    await flushPromises();
+    expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+    const checkedInStatus = wrapper.get('[role="status"]');
+    expect(checkedInStatus.text()).toContain("09:00");
+    expect(checkedInStatus.classes()).not.toContain("bg-error-container");
+  });
   it("opens navigation for detail routes and supports collapse and links", async () => {
     const router = createRouter({
       history: createMemoryHistory(),
