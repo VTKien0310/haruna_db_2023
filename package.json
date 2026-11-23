@@ -23,8 +23,8 @@
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@floating-ui/vue": "^2.0.1",
-    "@ionic/vue": "^9.0.11",
-    "@ionic/vue-router": "^9.0.11",
+    "@ionic/vue": "^9.0.12",
+    "@ionic/vue-router": "^9.0.12",
     "@supabase/supabase-js": "^2.117.3",
     "@tailwindcss/postcss": "^4.3.5",
     "@vueuse/core": "^15.0.0",
@@ -34,7 +34,7 @@
     "pinia": "^4.0.3",
     "pwa-asset-generator": "^8.1.7",
     "vue": "^3.5.45",
-    "vue-chartjs": "^5.3.4",
+    "vue-chartjs": "^5.3.6",
     "vue-router": "^5.4.0"
   },
   "devDependencies": {
